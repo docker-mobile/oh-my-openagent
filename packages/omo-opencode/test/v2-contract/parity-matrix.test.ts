@@ -9,7 +9,7 @@
  * Source matrix with harness evidence: docs/parity-matrix.md on the
  * reference fork (fazulfi/omo-v2, branch port/v2).
  */
-import { describe, expect, test } from "bun:test"
+import { afterAll, describe, expect, test } from "bun:test"
 import * as fs from "node:fs"
 import * as os from "node:os"
 import * as path from "node:path"
@@ -62,8 +62,12 @@ describe("V2 parity matrix — scaffold slice (live rows)", () => {
   })
 })
 
-describe("V2 parity matrix — tools+hooks slice (live rows)", () => {
+describe("V2 parity matrix - tools+hooks slice (live rows)", () => {
   const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "omo-v2-tools-parity-"))
+  // The hermetic home forbids leftover temp entries (#9766): remove the fixture root once the rows are done.
+  afterAll(() => {
+    fs.rmSync(tmpRoot, { recursive: true, force: true })
+  })
   fs.writeFileSync(path.join(tmpRoot, "fixture-parity-needle.txt"), "parity-needle-content")
 
   type ToolDef = {
