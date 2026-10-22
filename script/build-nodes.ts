@@ -16,9 +16,20 @@ export const BUILD_NODES: BuildNode[] = [
 	{ id: "codex-plugin", command: "bun", args: ["run", "build:codex-plugin"], deps: ["git-bash-mcp", "lsp-tools-mcp", "lsp-daemon"] },
 	{ id: "senpi-plugin", command: "bun", args: ["run", "build:senpi-plugin:stage"], deps: ["ast-grep-mcp", "lsp-daemon", "codex-plugin"] },
 	{ id: "index", command: "bun", args: ["build", "packages/omo-opencode/src/index.ts", "--outdir", "dist", "--target", "bun", "--format", "esm", "--external", "zod"], deps: [] },
+	{
+		// The OpenCode 2.x entry: the root package maps ./server here (OpenCode-Go
+		// plugin compatibility path), so a 2.x host resolves the dual definition
+		// instead of the V1 bundle. zod stays external like the main bundle;
+		// everything else (the V2 SDK helpers, the bridge, the V1 graph behind the
+		// lazy import) is bundled in.
+		id: "v2",
+		command: "bun",
+		args: ["build", "packages/omo-opencode/src/v2/index.ts", "--outfile", "dist/v2.js", "--target", "bun", "--format", "esm", "--external", "zod"],
+		deps: [],
+	},
 	{ id: "tui", command: "bun", args: ["build", "packages/omo-opencode/src/tui.ts", "--outdir", "dist", "--target", "bun", "--format", "esm", ...OPENTUI_EXTERNALS.flatMap((name) => ["--external", name])], deps: [] },
 	{ id: "shared-skills-assets", command: "bun", args: ["run", "build:shared-skills-assets"], deps: ["index"] },
-	{ id: "node-require-shim", command: "bun", args: ["run", "build:node-require-shim"], deps: ["index"] },
+	{ id: "node-require-shim", command: "bun", args: ["run", "build:node-require-shim"], deps: ["index", "v2"] },
 	{ id: "declarations", command: "tsc", args: ["--emitDeclarationOnly"], deps: [] },
 	{ id: "cli", command: "bun", args: ["build", "packages/omo-opencode/src/cli/index.ts", "--outdir", "dist/cli", "--target", "bun", "--format", "esm"], deps: [] },
 	{ id: "cli-node", command: "bun", args: ["run", "build:cli-node"], deps: [] },

@@ -107,7 +107,7 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./server": "./dist/index.js",
+    "./server": "./dist/v2.js",
     "./tui": "./dist/tui.js",
     "./schema.json": "./dist/oh-my-opencode.schema.json"
   },
