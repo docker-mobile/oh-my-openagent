@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+**OpenCode 2 support returns as a dual-host plugin (revive edition, slice 1).** The package grows a `./v2` entry that OpenCode 2 hosts can load (`omoV2Plugin`, whose `setup` registers a bootstrap `omo.status` RPC), while the OpenCode 1 entry stays byte-identical and never imports the V2 SDK; the V2 plugin SDK is an optional peer the host provides at runtime. A 25-row runtime parity matrix (3 live rows now, 22 rows keyed to the follow-up subsystem slices) and a `V2 Dual-Host` CI job keep both entries honest on every push. Re-landed from the community scaffold ([upstream #9391](https://github.com/code-yeongyu/oh-my-openagent/pull/9391)) onto the post-revert baseline. ([#1](https://github.com/docker-mobile/oh-my-openagent/pull/1))
+
 ## [5.1.41] - 2026-10-22
 
 
