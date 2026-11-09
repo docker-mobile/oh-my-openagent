@@ -56,11 +56,12 @@ export function applyUserConfiguredFallbackChain(
 export function createModelFallbackContinuationController(args: {
   pluginConfig: OhMyOpenCodeConfig;
   pluginContext: PluginEventContext;
+  modelFallback: ModelFallbackHook | null | undefined;
   lastKnownModelBySession: Map<string, { providerID: string; modelID: string }>;
   continuationsInFlight: Map<string, Promise<boolean>>;
   lastDispatchedContinuationKeys: Map<string, FallbackContinuationDedupeState>;
 }) {
-  const { pluginConfig, pluginContext, lastKnownModelBySession, continuationsInFlight } = args;
+  const { pluginConfig, pluginContext, modelFallback, lastKnownModelBySession, continuationsInFlight } = args;
   const lastDispatchedContinuationKeys = args.lastDispatchedContinuationKeys;
 
   const resolveFallbackProviderID = (sessionID: string, providerHint?: string): string => {

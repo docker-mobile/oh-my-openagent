@@ -29,6 +29,7 @@ use self::psn::{
 pub(crate) use self::focus_records::post_key_records;
 pub(crate) use self::partial::{mark_sent, reporting_partial};
 pub(crate) use self::spi::{capture_spi, front_pid, is_available};
+pub(crate) use self::spi::{front_pid, is_available, spaces, spaces_if_available, SpaceSpi};
 use self::spi::required;
 
 /// Ensures the required background SPI resolved; the error names the missing
