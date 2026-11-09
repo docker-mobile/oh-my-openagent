@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+**A session no longer continues on its compaction model after a compaction.** With `agents.<name>.compaction.model` set, the compaction marker row carries the working agent's name and the summarizer's model, and the agent-name check let the compaction context injector and the session lifecycle take that model as the session's working model. A row with a `compaction` part is no longer used as the working model, and the checkpoint taken before compaction skips the model the summarize request is running on. ([#10120](https://github.com/code-yeongyu/oh-my-openagent/issues/10120), [#10211](https://github.com/code-yeongyu/oh-my-openagent/pull/10211))
+
 ## [5.1.65] - 2026-11-08
 
 **A message an agent sends to a session on another device now says who sent it.** It used to arrive there as plain text, indistinguishable from that session's own user. It now carries the same sender line and authority notice as a message between sessions on one device (the sending session, its workspace and project, and the device it came from), and a leading `/` in it no longer runs a command or expands a prompt template on the receiving side. `omo remote send` from a terminal is unchanged. ([#12858](https://github.com/code-yeongyu/oh-my-openagent/pull/12858), part of [#12852](https://github.com/code-yeongyu/oh-my-openagent/issues/12852))
