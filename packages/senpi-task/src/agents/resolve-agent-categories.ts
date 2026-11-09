@@ -1,9 +1,8 @@
 import type { DelegateFallbackEntry } from "@oh-my-opencode/delegate-core"
 import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
 
-import { DEFAULT_CATEGORIES, resolveCategory, type SenpiModelPort, type SenpiModelRegistryPort } from "../category"
-import { recordRungKey } from "../model-chain"
 import { DEFAULT_CATEGORIES, resolveCategory, type ModelSelectionSource, type SenpiModelPort, type SenpiModelRegistryPort } from "../category"
+import { recordRungKey } from "../model-chain"
 import { findExactAgentModel } from "./agent-model-registry"
 import type { ResolvedModelRecord } from "../state"
 

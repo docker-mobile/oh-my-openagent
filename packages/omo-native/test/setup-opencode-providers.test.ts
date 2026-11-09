@@ -577,7 +577,7 @@ describe("omo setup auth.json at-rest passphrase mode (PR-E)", () => {
           },
         })
 
-        const result = run(item, ["setup", "--yes"])
+        const result = await run(item, ["setup", "--yes"])
         expect(result.status).toBe(0)
 
         // Simulate the first run writing the store plaintext (the launcher under PR-E writes

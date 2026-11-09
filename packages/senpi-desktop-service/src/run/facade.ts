@@ -1,7 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { DESKTOP_METHODS, DISPLAY_METHODS, type DesktopCapabilities } from "@oh-my-opencode/senpi-desktop-protocol";
 import { isDesktopCapabilities, isRecord } from "../service/parse";
-import { ComputerRunError, facadeMethod, type RunScope } from "./context";
+import type { Window as SdkWindow } from "@oh-my-opencode/senpi-desktop-sdk";
+import { ComputerRunError, facadeMethod, openSdk, type RunScope } from "./context";
 import {
 	type DesktopDisplay,
 	type DesktopWindow,
@@ -50,6 +51,13 @@ export function createDesktopFacade(scope: RunScope) {
 	const method = facadeMethod(scope, DESKTOP_METHODS);
 	const listWindows = async ({ call }: RunScope): Promise<readonly DesktopWindow[]> =>
 		expectResult("windows", await call("windows", {}), listOf(isWindow));
+	let computerPromise: Promise<Awaited<ReturnType<typeof openSdk>>["computer"]> | undefined;
+	const sdkWindow = async (id: string): Promise<SdkWindow> => {
+		computerPromise ??= openSdk(scope, {}).then((call) => call.computer);
+		const [found] = await (await computerPromise).windows({ id });
+		if (found === undefined) throw new ComputerRunError("window", `window ${id} is gone`);
+		return found;
+	};
 	const element = async (
 		engineMethod: "ax.elementAt" | "ax.focused",
 		params: object,
@@ -101,12 +109,12 @@ export function createDesktopFacade(scope: RunScope) {
 						`multiple windows match ${JSON.stringify(selector)}:\n${candidates.join("\n")}`,
 					);
 				}
-				return new WindowHandle(scope, only);
+				return new WindowHandle(scope, only, await sdkWindow(only.id));
 			}),
 		focusedWindow: (): Promise<WindowHandle | null> =>
 			method("focusedWindow", async (run) => {
 				const focused = (await listWindows(run)).find((window) => window.focused);
-				return focused === undefined ? null : new WindowHandle(scope, focused);
+				return focused === undefined ? null : new WindowHandle(scope, focused, await sdkWindow(focused.id));
 			}),
 		screenshot: root.screenshot.bind(root),
 		zoom: root.zoom.bind(root),

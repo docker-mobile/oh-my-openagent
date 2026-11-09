@@ -66,7 +66,7 @@ export function wireEventBridge(
   wireDagVerificationContext(pi, engine.runtime)
   const taskRpc = wireTaskRpcBridge(pi, engine, deps.taskRpc)
   const unsubscribeTaskSnapshots = engine.onStoreMutation(() => taskRpc.sync())
-  wireReloadGuard(pi, engine.manager, state.dagReloadSource)
+  wireReloadGuard(pi, state.dagReloadSource)
   if (runPause !== undefined) {
     pi.on("session_hold_changed", (payload, eventCtx) => {
       engine.runtime.captureFrom(asLiveContext(eventCtx))

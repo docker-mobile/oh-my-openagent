@@ -1,11 +1,9 @@
 import { resolveModelForDelegateTask, type DelegateFallbackEntry } from "@oh-my-opencode/delegate-core"
 import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
 
-import type { SenpiModelPort, SenpiModelRegistryPort } from "../category"
 import { missingChainProviders } from "../category/chain-diagnostics"
 import { type AgentCategoryRefusal, firstCategoryDefaultModel, resolveAgentCategoryModel } from "./resolve-agent-categories"
 import type { ModelSelectionSource, SenpiModelPort, SenpiModelRegistryPort } from "../category"
-import { firstCategoryDefaultModel, resolveAgentCategoryModel } from "./resolve-agent-categories"
 import { buildRuntimeModelChain, chainRungCandidates } from "../model-chain"
 import { withoutExcludedModels } from "../model-exclusion"
 import type { ResolvedModelRecord } from "../state"
