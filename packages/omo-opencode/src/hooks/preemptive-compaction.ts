@@ -37,7 +37,7 @@ export function createPreemptiveCompactionHook(
     compactionInProgress,
   })
 
-  const checkCompaction = async (sessionID: string) => {
+  const checkCompaction = async (sessionID: string, toolName?: string) => {
     await runPreemptiveCompactionIfNeeded({
       ctx,
       pluginConfig,
@@ -47,7 +47,7 @@ export function createPreemptiveCompactionHook(
       compactionInProgress,
       compactedSessions,
       lastCompactionTime,
-      toolName: input.tool,
+      toolName,
       lifecycleState,
     })
   }
@@ -56,7 +56,7 @@ export function createPreemptiveCompactionHook(
     input: { tool: string; sessionID: string; callID: string },
     _output: { title: string; output: string; metadata: unknown }
   ) => {
-    await checkCompaction(input.sessionID)
+    await checkCompaction(input.sessionID, input.tool)
   }
 
   const eventHandler = async ({ event }: { event: { type: string; properties?: unknown } }) => {
