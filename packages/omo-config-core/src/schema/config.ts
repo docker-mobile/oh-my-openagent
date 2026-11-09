@@ -9,6 +9,7 @@ import { OmoMemorySettingsLayerSchema, OmoMemorySettingsSchema } from "./memory"
 import { OmoModelCatalogLayerSchema, OmoModelCatalogSchema } from "./model-catalog"
 import { OmoModelPadSchema } from "./model-pad"
 import { OmoModelProfilesLayerSchema, OmoModelProfilesSchema } from "./model-profile"
+import { OmoSecurityAuthAtRestLayerSchema, OmoSecurityAuthAtRestSchema } from "./security-auth-at-rest"
 import { OmoSidePanelSettingsLayerSchema, OmoSidePanelSettingsSchema } from "./side-panel"
 import { OmoTaskSettingsLayerSchema, OmoTaskSettingsSchema } from "./task"
 import { OmoTeamsConfigLayerSchema, OmoTeamsConfigSchema } from "./team"
@@ -48,6 +49,7 @@ export const OmoTypedHarnessConfigSchema = z.object({
   model_profile: z.string().optional(),
   model_pad: OmoModelPadSchema.optional(),
   memory: OmoMemorySettingsLayerSchema.optional(),
+  security: OmoSecurityAuthAtRestLayerSchema.optional(),
   telemetry: OmoTelemetrySettingsLayerSchema.optional(),
   device_service: OmoDeviceServiceSettingsLayerSchema.optional(),
   side_panel: OmoSidePanelSettingsLayerSchema.optional(),
@@ -69,6 +71,7 @@ export const OmoConfigProfileSchema = z.object({
   model_profile: z.string().optional(),
   model_pad: OmoModelPadSchema.optional(),
   memory: OmoMemorySettingsLayerSchema.optional(),
+  security: OmoSecurityAuthAtRestLayerSchema.optional(),
   telemetry: OmoTelemetrySettingsLayerSchema.optional(),
   device_service: OmoDeviceServiceSettingsLayerSchema.optional(),
   side_panel: OmoSidePanelSettingsLayerSchema.optional(),
@@ -95,6 +98,7 @@ export const OmoConfigSchema = z.object({
   model_profile: z.string().optional(),
   model_pad: OmoModelPadSchema.optional(),
   memory: OmoMemorySettingsSchema.optional(),
+  security: OmoSecurityAuthAtRestSchema.optional(),
   telemetry: OmoTelemetrySettingsSchema.optional(),
   device_service: OmoDeviceServiceSettingsSchema.optional(),
   side_panel: OmoSidePanelSettingsSchema.optional(),
@@ -124,6 +128,7 @@ export const OmoConfigLayerSchema = z.object({
   model_profile: z.string().optional(),
   model_pad: OmoModelPadSchema.optional(),
   memory: OmoMemorySettingsLayerSchema.optional(),
+  security: OmoSecurityAuthAtRestLayerSchema.optional(),
   telemetry: OmoTelemetrySettingsLayerSchema.optional(),
   device_service: OmoDeviceServiceSettingsLayerSchema.optional(),
   side_panel: OmoSidePanelSettingsLayerSchema.optional(),
