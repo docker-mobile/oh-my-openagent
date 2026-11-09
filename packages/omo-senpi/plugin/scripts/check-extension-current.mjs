@@ -4,7 +4,7 @@ import { tmpdir } from "node:os"
 import { dirname, join } from "node:path"
 
 import { artifactsMatch } from "./build-artifact.mjs"
-import { buildExtension, COMPUTER_PRELUDE_ASSET_NAME, extensionBuildPaths, GATEWAY_RULES_EXTENSION_NAME, GATEWAY_STORE_WORKER_NAME, memorySyncAssetSources, resolveOutputs, THREAD_SDK_RELATIVE_PATH } from "./build-extension-core.mjs"
+import { buildExtension, COMPUTER_PRELUDE_ASSET_NAME, extensionBuildPaths, GATEWAY_STORE_WORKER_NAME, memorySyncAssetSources, resolveOutputs, THREAD_SDK_RELATIVE_PATH } from "./build-extension-core.mjs"
 import { findStaleRuntimePersona } from "./persona-artifacts.mjs"
 
 /**
@@ -147,7 +147,6 @@ export async function checkExtensionCurrent(options = {}) {
     claimReceiptOutputPath: join(tempRoot, "omo-claim-receipt.js"),
     computerUseOutputPath: join(tempRoot, "omo-computer-use.js"),
     gatewayStoreWorkerOutputPath: join(tempRoot, GATEWAY_STORE_WORKER_NAME),
-    gatewayRulesExtensionOutputPath: join(tempRoot, GATEWAY_RULES_EXTENSION_NAME),
     threadSdkOutputPath: join(tempRoot, THREAD_SDK_RELATIVE_PATH),
   }
   try {

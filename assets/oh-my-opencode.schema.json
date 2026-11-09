@@ -9809,11 +9809,6 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "preemptive_threshold",
-        "cooldown_ms",
-        "enabled"
-      ],
       "additionalProperties": false
     },
     "git_master": {
@@ -9994,6 +9989,10 @@
         "auto_commit": {
           "default": true,
           "type": "boolean"
+        },
+        "auto_merge": {
+          "default": true,
+          "type": "boolean"
         }
       },
       "additionalProperties": false
@@ -10002,6 +10001,10 @@
       "type": "object",
       "properties": {
         "auto_commit": {
+          "default": true,
+          "type": "boolean"
+        },
+        "auto_merge": {
           "default": true,
           "type": "boolean"
         }

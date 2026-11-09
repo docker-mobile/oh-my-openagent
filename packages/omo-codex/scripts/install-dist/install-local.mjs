@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// omo-codex-install:04adba6725cce14ff852ea4223a8ce39fd58970bfc3bb7fcbe6e38c21cb477e0:47d403858091617d2fcd5a7a6ca206c3ca78b48c8d923703e04225df36e1fb5a
+// omo-codex-install:c8b696cad9588a10debf0feb66ad83b3667ac8a0dec2dc193d22bfa33ff046df:861a4d500614d7d3d27db3991a6299d4d912c7ddbb859d9dcdbda6c8c07e15fc
 var __esm = (fn, res, err) => () => {
   if (fn)
     try {
@@ -68,7 +68,7 @@ function writeFileAtomically(filePath, content, options = {}) {
   const fsyncImpl = options.fsyncSync ?? fsyncSync;
   const tempPath = `${filePath}.${process.pid}.${randomUUID()}.tmp`;
   try {
-    writeFileSync(tempPath, content, "utf-8");
+    writeFileSync(tempPath, content, { encoding: "utf-8", mode: options.mode });
     const tempFileDescriptor = openSync(tempPath, "r+");
     try {
       tolerantFsyncSync(tempFileDescriptor, fsyncImpl);
@@ -641,7 +641,7 @@ var init_injected_client = __esm(() => {
   };
 });
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/extensions/error-tracking/modifiers/module.node.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/extensions/error-tracking/modifiers/module.node.mjs
 import { dirname as dirname11, posix as posix3, sep as sep8 } from "node:path";
 function createModulerModifier() {
   const getModuleFromFileName = createGetModuleFromFilename();
@@ -678,7 +678,7 @@ function normalizeWindowsPath(path) {
 }
 var init_module_node = () => {};
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/types.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/types.mjs
 var types_PostHogPersistedProperty;
 var init_types = __esm(() => {
   types_PostHogPersistedProperty = /* @__PURE__ */ function(PostHogPersistedProperty) {
@@ -720,7 +720,7 @@ var init_types = __esm(() => {
   }({});
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/utils/string-utils.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/utils/string-utils.mjs
 function safeJsonStringify(value) {
   const ancestors = [];
   return JSON.stringify(value, function(_key, replacementValue) {
@@ -746,7 +746,7 @@ function safeJsonStringify(value) {
 }
 var init_string_utils = () => {};
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/utils/type-utils.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/utils/type-utils.mjs
 function isPrimitive(value) {
   return value === null || typeof value != "object";
 }
@@ -791,15 +791,28 @@ var init_type_utils = __esm(() => {
   };
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/utils/bot-detection.mjs
-var DEFAULT_BLOCKED_UA_STRS, isBlockedUA = function(ua, customBlockedUserAgents = []) {
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/utils/bot-detection.mjs
+function buildCacheKey(ua, custom) {
+  let customEncoded = "";
+  for (let i = 0;i < custom.length; i++) {
+    const c = custom[i];
+    customEncoded += c.length + ":" + c;
+  }
+  return ua.length + ":" + ua + "|" + custom.length + ":" + customEncoded;
+}
+var DEFAULT_BLOCKED_UA_STRS, UA_CACHE, MAX_CACHE_ENTRIES = 256, isBlockedUA = function(ua, customBlockedUserAgents = []) {
   if (!ua)
     return false;
+  const key = buildCacheKey(ua, customBlockedUserAgents);
+  const cached = UA_CACHE.get(key);
+  if (cached !== undefined)
+    return cached;
   const uaLower = ua.toLowerCase();
-  return DEFAULT_BLOCKED_UA_STRS.concat(customBlockedUserAgents).some((blockedUA) => {
-    const blockedUaLower = blockedUA.toLowerCase();
-    return uaLower.indexOf(blockedUaLower) !== -1;
-  });
+  const result = DEFAULT_BLOCKED_UA_STRS.concat(customBlockedUserAgents).some((blockedUA) => uaLower.indexOf(blockedUA.toLowerCase()) !== -1);
+  if (UA_CACHE.size >= MAX_CACHE_ENTRIES)
+    UA_CACHE.clear();
+  UA_CACHE.set(key, result);
+  return result;
 };
 var init_bot_detection = __esm(() => {
   DEFAULT_BLOCKED_UA_STRS = [
@@ -863,6 +876,7 @@ var init_bot_detection = __esm(() => {
     "sentryuptimebot",
     "uptimerobot",
     "headlesschrome",
+    "lightpanda",
     "cypress",
     "google-hoteladsverifier",
     "adsbot-google",
@@ -881,14 +895,15 @@ var init_bot_detection = __esm(() => {
     "google-inspectiontool",
     "bytespider"
   ];
+  UA_CACHE = new Map;
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/utils/browser-utils.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/utils/browser-utils.mjs
 var init_browser_utils = __esm(() => {
   init_string_utils();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/utils/number-utils.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/utils/number-utils.mjs
 function clampToRange(value, min, max, logger, fallbackValue) {
   if (min > max) {
     logger.warn("min cannot be greater than max.");
@@ -911,7 +926,7 @@ var init_number_utils = __esm(() => {
   init_type_utils();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/utils/bucketed-rate-limiter.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/utils/bucketed-rate-limiter.mjs
 function resolveExceptionRateLimiterConfig(config = {}) {
   return {
     refillRate: config.exceptionRateLimiterRefillRate ?? config.__exceptionRateLimiterRefillRate ?? DEFAULT_EXCEPTION_RATE_LIMITER_REFILL_RATE,
@@ -965,7 +980,7 @@ var init_bucketed_rate_limiter = __esm(() => {
   init_number_utils();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/vendor/uuidv7.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/vendor/uuidv7.mjs
 class UUID {
   constructor(bytes) {
     this.bytes = bytes;
@@ -1140,7 +1155,7 @@ var init_uuidv7 = __esm(() => {
   /*! LICENSE: uuidv7.mjs.LICENSE.txt */
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/utils/promise-queue.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/utils/promise-queue.mjs
 class PromiseQueue {
   add(promise) {
     const promiseUUID = uuidv7();
@@ -1182,7 +1197,7 @@ var init_promise_queue = __esm(() => {
   init_uuidv7();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/utils/logger.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/utils/logger.mjs
 function createConsole(consoleLike = console) {
   const lockedMethods = {
     log: consoleLike.log.bind(consoleLike),
@@ -1224,8 +1239,8 @@ var _createLogger = (prefix, maybeCall, consoleLike) => {
 }, passThrough = (fn) => fn();
 var init_logger = () => {};
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/utils/user-agent-utils.mjs
-var MOBILE = "Mobile", IOS = "iOS", ANDROID = "Android", TABLET = "Tablet", ANDROID_TABLET, APPLE = "Apple", APPLE_WATCH, SAFARI = "Safari", BLACKBERRY = "BlackBerry", SAMSUNG = "Samsung", SAMSUNG_BROWSER, SAMSUNG_INTERNET, CHROME = "Chrome", CHROME_OS, CHROME_IOS, INTERNET_EXPLORER = "Internet Explorer", INTERNET_EXPLORER_MOBILE, OPERA = "Opera", OPERA_MINI, EDGE = "Edge", MICROSOFT_EDGE, FIREFOX = "Firefox", FIREFOX_IOS, NINTENDO = "Nintendo", PLAYSTATION = "PlayStation", XBOX = "Xbox", ANDROID_MOBILE, MOBILE_SAFARI, WINDOWS = "Windows", WINDOWS_PHONE, GENERIC = "Generic", GENERIC_MOBILE, GENERIC_TABLET, KONQUEROR = "Konqueror", OCULUS_BROWSER = "Oculus Browser", VIVALDI = "Vivaldi", YANDEX = "Yandex", WHALE = "Whale", DUCKDUCKGO = "DuckDuckGo", PALE_MOON = "Pale Moon", WATERFOX = "Waterfox", BRAVE = "Brave", CLAUDE = "Claude", CODEX = "Codex", CHATGPT = "ChatGPT", GOOGLE_SEARCH_APP = "Google Search App", BROWSER_VERSION_REGEX_SUFFIX = "(\\d+(\\.\\d+)?)", DEFAULT_BROWSER_VERSION_REGEX, AI_APP_VERSION_REGEX, XBOX_REGEX, PLAYSTATION_REGEX, NINTENDO_REGEX, BLACKBERRY_REGEX, windowsVersionMap, versionRegexes, osMatchers;
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/utils/user-agent-utils.mjs
+var MOBILE = "Mobile", IOS = "iOS", ANDROID = "Android", TABLET = "Tablet", ANDROID_TABLET, APPLE = "Apple", APPLE_WATCH, SAFARI = "Safari", BLACKBERRY = "BlackBerry", SAMSUNG = "Samsung", SAMSUNG_BROWSER, SAMSUNG_INTERNET, CHROME = "Chrome", CHROME_OS, CHROME_IOS, INTERNET_EXPLORER = "Internet Explorer", INTERNET_EXPLORER_MOBILE, OPERA = "Opera", OPERA_MINI, EDGE = "Edge", MICROSOFT_EDGE, FIREFOX = "Firefox", FIREFOX_IOS, NINTENDO = "Nintendo", PLAYSTATION = "PlayStation", XBOX = "Xbox", ANDROID_MOBILE, MOBILE_SAFARI, WINDOWS = "Windows", WINDOWS_PHONE, GENERIC = "Generic", GENERIC_MOBILE, GENERIC_TABLET, KONQUEROR = "Konqueror", OCULUS_BROWSER = "Oculus Browser", VIVALDI = "Vivaldi", YANDEX = "Yandex", WHALE = "Whale", DUCKDUCKGO = "DuckDuckGo", PALE_MOON = "Pale Moon", WATERFOX = "Waterfox", BRAVE = "Brave", CLAUDE = "Claude", CODEX = "Codex", CHATGPT = "ChatGPT", GOOGLE_SEARCH_APP = "Google Search App", BROWSER_VERSION_REGEX_SUFFIX = "(\\d+(\\.\\d+)?)", DEFAULT_BROWSER_VERSION_REGEX, AI_APP_VERSION_REGEX, PLAYSTATION_REGEX, NINTENDO_REGEX, BLACKBERRY_REGEX, windowsVersionMap, versionRegexes, osMatchers;
 var init_user_agent_utils = __esm(() => {
   init_string_utils();
   init_type_utils();
@@ -1242,14 +1257,13 @@ var init_user_agent_utils = __esm(() => {
   ANDROID_MOBILE = ANDROID + " " + MOBILE;
   MOBILE_SAFARI = MOBILE + " " + SAFARI;
   WINDOWS_PHONE = WINDOWS + " Phone";
-  GENERIC_MOBILE = GENERIC + " " + MOBILE.toLowerCase();
-  GENERIC_TABLET = GENERIC + " " + TABLET.toLowerCase();
-  DEFAULT_BROWSER_VERSION_REGEX = new RegExp("Version/" + BROWSER_VERSION_REGEX_SUFFIX);
-  AI_APP_VERSION_REGEX = new RegExp("(" + CLAUDE + "|" + CODEX + "|" + CHATGPT + ")\\/" + BROWSER_VERSION_REGEX_SUFFIX);
-  XBOX_REGEX = new RegExp(XBOX, "i");
-  PLAYSTATION_REGEX = new RegExp(PLAYSTATION + " \\w+", "i");
-  NINTENDO_REGEX = new RegExp(NINTENDO + " \\w+", "i");
-  BLACKBERRY_REGEX = new RegExp(BLACKBERRY + "|PlayBook|BB10", "i");
+  GENERIC_MOBILE = GENERIC + " mobile";
+  GENERIC_TABLET = GENERIC + " tablet";
+  DEFAULT_BROWSER_VERSION_REGEX = /* @__PURE__ */ new RegExp("Version/" + BROWSER_VERSION_REGEX_SUFFIX);
+  AI_APP_VERSION_REGEX = /* @__PURE__ */ new RegExp("(" + CLAUDE + "|" + CODEX + "|" + CHATGPT + ")\\/" + BROWSER_VERSION_REGEX_SUFFIX);
+  PLAYSTATION_REGEX = /* @__PURE__ */ new RegExp(PLAYSTATION + " \\w+", "i");
+  NINTENDO_REGEX = /* @__PURE__ */ new RegExp(NINTENDO + " \\w+", "i");
+  BLACKBERRY_REGEX = /* @__PURE__ */ new RegExp(BLACKBERRY + "|PlayBook|BB10", "i");
   windowsVersionMap = {
     "NT3.51": "NT 3.11",
     "NT4.0": "NT 4.0",
@@ -1265,19 +1279,19 @@ var init_user_agent_utils = __esm(() => {
   };
   versionRegexes = {
     [INTERNET_EXPLORER_MOBILE]: [
-      new RegExp("rv:" + BROWSER_VERSION_REGEX_SUFFIX)
+      /* @__PURE__ */ new RegExp("rv:" + BROWSER_VERSION_REGEX_SUFFIX)
     ],
     [MICROSOFT_EDGE]: [
-      new RegExp(EDGE + "?\\/" + BROWSER_VERSION_REGEX_SUFFIX)
+      /* @__PURE__ */ new RegExp(EDGE + "?\\/" + BROWSER_VERSION_REGEX_SUFFIX)
     ],
     [CHROME]: [
-      new RegExp("(" + CHROME + "|CrMo)\\/" + BROWSER_VERSION_REGEX_SUFFIX)
+      /* @__PURE__ */ new RegExp("(" + CHROME + "|CrMo)\\/" + BROWSER_VERSION_REGEX_SUFFIX)
     ],
     [CHROME_IOS]: [
-      new RegExp("CriOS\\/" + BROWSER_VERSION_REGEX_SUFFIX)
+      /* @__PURE__ */ new RegExp("CriOS\\/" + BROWSER_VERSION_REGEX_SUFFIX)
     ],
     "UC Browser": [
-      new RegExp("(UCBrowser|UCWEB)\\/" + BROWSER_VERSION_REGEX_SUFFIX)
+      /* @__PURE__ */ new RegExp("(UCBrowser|UCWEB)\\/" + BROWSER_VERSION_REGEX_SUFFIX)
     ],
     [SAFARI]: [
       DEFAULT_BROWSER_VERSION_REGEX
@@ -1286,41 +1300,41 @@ var init_user_agent_utils = __esm(() => {
       DEFAULT_BROWSER_VERSION_REGEX
     ],
     [OPERA]: [
-      new RegExp("(" + OPERA + "|OPR)\\/" + BROWSER_VERSION_REGEX_SUFFIX)
+      /* @__PURE__ */ new RegExp("(" + OPERA + "|OPR)\\/" + BROWSER_VERSION_REGEX_SUFFIX)
     ],
     [FIREFOX]: [
-      new RegExp(FIREFOX + "\\/" + BROWSER_VERSION_REGEX_SUFFIX)
+      /* @__PURE__ */ new RegExp(FIREFOX + "\\/" + BROWSER_VERSION_REGEX_SUFFIX)
     ],
     [FIREFOX_IOS]: [
-      new RegExp("FxiOS\\/" + BROWSER_VERSION_REGEX_SUFFIX)
+      /* @__PURE__ */ new RegExp("FxiOS\\/" + BROWSER_VERSION_REGEX_SUFFIX)
     ],
     [KONQUEROR]: [
-      new RegExp("Konqueror[:/]?" + BROWSER_VERSION_REGEX_SUFFIX, "i")
+      /* @__PURE__ */ new RegExp("Konqueror[:/]?" + BROWSER_VERSION_REGEX_SUFFIX, "i")
     ],
     [BLACKBERRY]: [
-      new RegExp(BLACKBERRY + " " + BROWSER_VERSION_REGEX_SUFFIX),
+      /* @__PURE__ */ new RegExp(BLACKBERRY + " " + BROWSER_VERSION_REGEX_SUFFIX),
       DEFAULT_BROWSER_VERSION_REGEX
     ],
     [ANDROID_MOBILE]: [
-      new RegExp("android\\s" + BROWSER_VERSION_REGEX_SUFFIX, "i")
+      /* @__PURE__ */ new RegExp("android\\s" + BROWSER_VERSION_REGEX_SUFFIX, "i")
     ],
     [SAMSUNG_INTERNET]: [
-      new RegExp(SAMSUNG_BROWSER + "\\/" + BROWSER_VERSION_REGEX_SUFFIX)
+      /* @__PURE__ */ new RegExp(SAMSUNG_BROWSER + "\\/" + BROWSER_VERSION_REGEX_SUFFIX)
     ],
     [OCULUS_BROWSER]: [
-      new RegExp("OculusBrowser\\/" + BROWSER_VERSION_REGEX_SUFFIX)
+      /* @__PURE__ */ new RegExp("OculusBrowser\\/" + BROWSER_VERSION_REGEX_SUFFIX)
     ],
     [VIVALDI]: [
-      new RegExp(VIVALDI + "\\/" + BROWSER_VERSION_REGEX_SUFFIX)
+      /* @__PURE__ */ new RegExp(VIVALDI + "\\/" + BROWSER_VERSION_REGEX_SUFFIX)
     ],
     [YANDEX]: [
-      new RegExp("YaBrowser\\/" + BROWSER_VERSION_REGEX_SUFFIX)
+      /* @__PURE__ */ new RegExp("YaBrowser\\/" + BROWSER_VERSION_REGEX_SUFFIX)
     ],
     [WHALE]: [
-      new RegExp(WHALE + "\\/" + BROWSER_VERSION_REGEX_SUFFIX)
+      /* @__PURE__ */ new RegExp(WHALE + "\\/" + BROWSER_VERSION_REGEX_SUFFIX)
     ],
     [BRAVE]: [
-      new RegExp(BRAVE + "\\/" + BROWSER_VERSION_REGEX_SUFFIX)
+      /* @__PURE__ */ new RegExp(BRAVE + "\\/" + BROWSER_VERSION_REGEX_SUFFIX)
     ],
     [CLAUDE]: [
       AI_APP_VERSION_REGEX
@@ -1332,41 +1346,41 @@ var init_user_agent_utils = __esm(() => {
       AI_APP_VERSION_REGEX
     ],
     [DUCKDUCKGO]: [
-      new RegExp("(DuckDuckGo|Ddg)\\/" + BROWSER_VERSION_REGEX_SUFFIX)
+      /* @__PURE__ */ new RegExp("(DuckDuckGo|Ddg)\\/" + BROWSER_VERSION_REGEX_SUFFIX)
     ],
     [PALE_MOON]: [
-      new RegExp("PaleMoon\\/" + BROWSER_VERSION_REGEX_SUFFIX)
+      /* @__PURE__ */ new RegExp("PaleMoon\\/" + BROWSER_VERSION_REGEX_SUFFIX)
     ],
     [WATERFOX]: [
-      new RegExp(WATERFOX + "\\/" + BROWSER_VERSION_REGEX_SUFFIX)
+      /* @__PURE__ */ new RegExp(WATERFOX + "\\/" + BROWSER_VERSION_REGEX_SUFFIX)
     ],
     [GOOGLE_SEARCH_APP]: [
-      new RegExp("GSA\\/" + BROWSER_VERSION_REGEX_SUFFIX)
+      /* @__PURE__ */ new RegExp("GSA\\/" + BROWSER_VERSION_REGEX_SUFFIX)
     ],
     [INTERNET_EXPLORER]: [
-      new RegExp("(rv:|MSIE )" + BROWSER_VERSION_REGEX_SUFFIX)
+      /* @__PURE__ */ new RegExp("(rv:|MSIE )" + BROWSER_VERSION_REGEX_SUFFIX)
     ],
     Mozilla: [
-      new RegExp("rv:" + BROWSER_VERSION_REGEX_SUFFIX)
+      /* @__PURE__ */ new RegExp("rv:" + BROWSER_VERSION_REGEX_SUFFIX)
     ]
   };
   osMatchers = [
     [
-      new RegExp(XBOX + "; " + XBOX + " (.*?)[);]", "i"),
+      /* @__PURE__ */ new RegExp(XBOX + "; " + XBOX + " (.*?)[);]", "i"),
       (match) => [
         XBOX,
         match && match[1] || ""
       ]
     ],
     [
-      new RegExp(NINTENDO, "i"),
+      /* @__PURE__ */ new RegExp(NINTENDO, "i"),
       [
         NINTENDO,
         ""
       ]
     ],
     [
-      new RegExp(PLAYSTATION, "i"),
+      /* @__PURE__ */ new RegExp(PLAYSTATION, "i"),
       [
         PLAYSTATION,
         ""
@@ -1380,7 +1394,7 @@ var init_user_agent_utils = __esm(() => {
       ]
     ],
     [
-      new RegExp(WINDOWS, "i"),
+      /* @__PURE__ */ new RegExp(WINDOWS, "i"),
       (_, user_agent) => {
         if (/Phone/.test(user_agent) || /WPDesktop/.test(user_agent))
           return [
@@ -1442,7 +1456,7 @@ var init_user_agent_utils = __esm(() => {
       }
     ],
     [
-      new RegExp("(" + ANDROID + " (\\d+)\\.(\\d+)\\.?(\\d+)?|" + ANDROID + ")", "i"),
+      /* @__PURE__ */ new RegExp("(" + ANDROID + " (\\d+)\\.(\\d+)\\.?(\\d+)?|" + ANDROID + ")", "i"),
       (match) => {
         if (match && match[2]) {
           const versionParts = [
@@ -1503,10 +1517,10 @@ var init_user_agent_utils = __esm(() => {
   ];
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/utils/webview-app-utils.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/utils/webview-app-utils.mjs
 var init_webview_app_utils = () => {};
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/utils/json-utils.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/utils/json-utils.mjs
 function sanitizeString(value) {
   let output = "";
   for (let index = 0;index < value.length; index++) {
@@ -1554,14 +1568,14 @@ var init_json_utils = __esm(() => {
   dateToISOString = Date.prototype.toISOString;
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/utils/retry-after.mjs
-function parseRetryAfterMs(value, now = Date.now()) {
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/utils/retry-after.mjs
+function parseRetryAfterMs(value, now = Date.now(), maxMs = MAX_RETRY_AFTER_MS) {
   if (typeof value != "string" || !value)
     return;
   const raw = value.trim();
   const trimmed = /^\d+\s*,/.test(raw) ? raw.slice(0, raw.indexOf(",")).trim() : raw;
   if (/^\d+$/.test(trimmed)) {
-    const ms = 1000 * Math.min(Number(trimmed), MAX_RETRY_AFTER_MS / 1000);
+    const ms = 1000 * Math.min(Number(trimmed), maxMs / 1000);
     return ms > 0 ? ms : undefined;
   }
   if (!/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*[ ,]/.test(trimmed))
@@ -1570,7 +1584,7 @@ function parseRetryAfterMs(value, now = Date.now()) {
   const ms = Date.parse(date) - now;
   if (!Number.isFinite(ms) || ms <= 0)
     return;
-  return Math.min(ms, MAX_RETRY_AFTER_MS);
+  return Math.min(ms, maxMs);
 }
 
 class RetryAfterWindow {
@@ -1617,7 +1631,7 @@ class RetryAfterWindow {
 var MAX_RETRY_AFTER_MS = 300000, CLOCK_STEP_TOLERANCE_MS = 5000;
 var init_retry_after = () => {};
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/utils/index.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/utils/index.mjs
 function isValidUUID(value) {
   return typeof value == "string" && UUID_REGEX.test(value);
 }
@@ -1710,45 +1724,60 @@ var init_utils = __esm(() => {
   UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/chunk-ids.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/chunk-ids.mjs
 function getFilenameToChunkIdMap(stackParser) {
-  const chunkIdMap = globalThis._posthogChunkIds;
-  if (!chunkIdMap)
+  const posthogChunkIds = globalThis._posthogChunkIds;
+  const nativeDebugIds = globalThis._debugIds;
+  if (!posthogChunkIds && !nativeDebugIds)
     return;
-  const chunkIdKeys = Object.keys(chunkIdMap);
-  if (cachedFilenameChunkIds && chunkIdKeys.length === lastKeysCount)
+  const posthogKeys = posthogChunkIds ? Object.keys(posthogChunkIds) : [];
+  const nativeKeys = nativeDebugIds ? Object.keys(nativeDebugIds) : [];
+  if (cachedFilenameChunkIds && matchesSnapshot(posthogChunkIds, posthogKeys, lastPostHogChunkIds) && matchesSnapshot(nativeDebugIds, nativeKeys, lastNativeDebugIds))
     return cachedFilenameChunkIds;
-  lastKeysCount = chunkIdKeys.length;
-  cachedFilenameChunkIds = chunkIdKeys.reduce((acc, stackKey) => {
-    if (!parsedStackResults)
-      parsedStackResults = {};
-    const result = parsedStackResults[stackKey];
-    if (result)
-      acc[result[0]] = result[1];
-    else {
+  lastPostHogChunkIds = posthogChunkIds ? {
+    ...posthogChunkIds
+  } : undefined;
+  lastNativeDebugIds = nativeDebugIds ? {
+    ...nativeDebugIds
+  } : undefined;
+  cachedFilenameChunkIds = {};
+  parsedStackResults ??= {};
+  const addChunkIds = (keys, chunkIds) => {
+    for (const stackKey of keys) {
+      const chunkId = chunkIds[stackKey];
+      if (!chunkId)
+        continue;
+      const cachedFilename = parsedStackResults?.[stackKey];
+      if (cachedFilename) {
+        cachedFilenameChunkIds[cachedFilename] = chunkId;
+        continue;
+      }
       const parsedStack = stackParser(stackKey);
       for (let i = parsedStack.length - 1;i >= 0; i--) {
-        const stackFrame = parsedStack[i];
-        const filename = stackFrame?.filename;
-        const chunkId = chunkIdMap[stackKey];
-        if (filename && chunkId) {
-          acc[filename] = chunkId;
-          parsedStackResults[stackKey] = [
-            filename,
-            chunkId
-          ];
+        const filename = parsedStack[i]?.filename;
+        if (filename) {
+          cachedFilenameChunkIds[filename] = chunkId;
+          parsedStackResults[stackKey] = filename;
           break;
         }
       }
     }
-    return acc;
-  }, {});
+  };
+  if (nativeDebugIds)
+    addChunkIds(nativeKeys, nativeDebugIds);
+  if (posthogChunkIds)
+    addChunkIds(posthogKeys, posthogChunkIds);
   return cachedFilenameChunkIds;
 }
-var parsedStackResults, lastKeysCount, cachedFilenameChunkIds;
+function matchesSnapshot(chunkIds, keys, snapshot) {
+  if (!chunkIds || !snapshot)
+    return chunkIds === snapshot;
+  return keys.length === Object.keys(snapshot).length && keys.every((key) => chunkIds[key] === snapshot[key]);
+}
+var parsedStackResults, lastPostHogChunkIds, lastNativeDebugIds, cachedFilenameChunkIds;
 var init_chunk_ids = () => {};
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/error-properties-builder.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/error-properties-builder.mjs
 class ErrorPropertiesBuilder {
   constructor(coercers, stackParser, modifiers = []) {
     this.coercers = coercers;
@@ -1978,7 +2007,7 @@ var init_error_properties_builder = __esm(() => {
   init_chunk_ids();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/parsers/base.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/parsers/base.mjs
 function isAppFilename(filename) {
   if (!filename || filename === ANONYMOUS_FILENAME)
     return false;
@@ -2016,7 +2045,7 @@ var init_base = __esm(() => {
   ];
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/parsers/safari.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/parsers/safari.mjs
 var extractSafariExtensionDetails = (func, filename) => {
   const isSafariExtension = func.indexOf("safari-extension") !== -1;
   const isSafariWebExtension = func.indexOf("safari-web-extension") !== -1;
@@ -2032,7 +2061,7 @@ var init_safari = __esm(() => {
   init_base();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/parsers/chrome.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/parsers/chrome.mjs
 var chromeRegexNoFnName, chromeRegex, chromeEvalRegex, chromeStackLineParser = (line, platform) => {
   const noFnParts = chromeRegexNoFnName.exec(line);
   if (noFnParts) {
@@ -2062,7 +2091,7 @@ var init_chrome = __esm(() => {
   chromeEvalRegex = /\((\S*)(?::(\d+))(?::(\d+))\)/;
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/parsers/gecko.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/parsers/gecko.mjs
 var geckoREgex, geckoEvalRegex, geckoStackLineParser = (line, platform) => {
   const parts = geckoREgex.exec(line);
   if (parts) {
@@ -2089,17 +2118,17 @@ var init_gecko = __esm(() => {
   geckoEvalRegex = /(\S+) line (\d+)(?: > eval line \d+)* > eval/i;
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/parsers/winjs.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/parsers/winjs.mjs
 var init_winjs = __esm(() => {
   init_base();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/parsers/opera.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/parsers/opera.mjs
 var init_opera = __esm(() => {
   init_base();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/parsers/node.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/parsers/node.mjs
 function filenameIsInApp(filename, isNative = false) {
   const isInternal = isNative || filename && !filename.startsWith("/") && !filename.match(/^[A-Z]:/) && !filename.startsWith(".") && !filename.match(/^[a-zA-Z]([a-zA-Z0-9.\-+])*:\/\//);
   return !isInternal && filename !== undefined && !filename.includes("node_modules/");
@@ -2170,12 +2199,12 @@ var FILENAME_MATCH, FULL_MATCH, PROMISE_COMBINATOR, PROMISE_INDEX, PROMISE_FRAME
 var init_node = __esm(() => {
   init_base();
   FILENAME_MATCH = /^\s*[-]{4,}$/;
-  FULL_MATCH = /at (?:async )?(?:(.+?)\s+\()?(?:(.+):(\d+):(\d+)?|([^)]+))\)?/;
+  FULL_MATCH = /at (?:async (?!\((?!.*\)\s+\()))?(?:(.+?)\s+\()?(?:(.+):(\d+):(\d+)?|([^)]+))\)?/;
   PROMISE_COMBINATOR = /^Promise\.(?:all|any)$/;
   PROMISE_INDEX = /^index \d+$/;
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/parsers/index.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/parsers/index.mjs
 function isSameFrame(a, b) {
   return a.filename === b.filename && a.function === b.function && a.module === b.module && a.lineno === b.lineno && a.colno === b.colno;
 }
@@ -2325,12 +2354,12 @@ var init_parsers = __esm(() => {
   WEBPACK_ERROR_REGEXP = /\(error: (.*)\)/;
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/coercers/dom-exception-coercer.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/coercers/dom-exception-coercer.mjs
 var init_dom_exception_coercer = __esm(() => {
   init_utils();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/coercers/error-coercer.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/coercers/error-coercer.mjs
 class ErrorCoercer {
   match(err) {
     return isError(err);
@@ -2372,12 +2401,12 @@ var init_error_coercer = __esm(() => {
   init_type_utils();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/coercers/error-event-coercer.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/coercers/error-event-coercer.mjs
 var init_error_event_coercer = __esm(() => {
   init_utils();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/coercers/string-coercer.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/coercers/string-coercer.mjs
 class StringCoercer {
   match(input) {
     return typeof input == "string";
@@ -2410,7 +2439,7 @@ var init_string_coercer = __esm(() => {
   ERROR_TYPES_PATTERN = /^(?:[Uu]ncaught (?:exception: )?)?(?:((?:Eval|Internal|Range|Reference|Syntax|Type|URI|)Error): )?(.*)$/i;
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/types.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/types.mjs
 var severityLevels;
 var init_types2 = __esm(() => {
   severityLevels = [
@@ -2423,7 +2452,7 @@ var init_types2 = __esm(() => {
   ];
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/coercers/utils.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/coercers/utils.mjs
 function extractExceptionKeysForMessage(err, maxLength = 40) {
   const keys = Object.keys(err);
   keys.sort();
@@ -2441,7 +2470,7 @@ function extractExceptionKeysForMessage(err, maxLength = 40) {
 }
 var init_utils2 = () => {};
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/coercers/object-coercer.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/coercers/object-coercer.mjs
 class ObjectCoercer {
   match(candidate) {
     return typeof candidate == "object" && candidate !== null;
@@ -2512,7 +2541,7 @@ var init_object_coercer = __esm(() => {
   init_utils2();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/coercers/event-coercer.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/coercers/event-coercer.mjs
 class EventCoercer {
   match(err) {
     return isEvent(err);
@@ -2532,7 +2561,7 @@ var init_event_coercer = __esm(() => {
   init_utils2();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/coercers/primitive-coercer.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/coercers/primitive-coercer.mjs
 class PrimitiveCoercer {
   match(candidate) {
     return isPrimitive(candidate);
@@ -2550,12 +2579,12 @@ var init_primitive_coercer = __esm(() => {
   init_utils();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/coercers/promise-rejection-event.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/coercers/promise-rejection-event.mjs
 var init_promise_rejection_event = __esm(() => {
   init_utils();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/coercers/index.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/coercers/index.mjs
 var init_coercers = __esm(() => {
   init_dom_exception_coercer();
   init_error_coercer();
@@ -2567,7 +2596,7 @@ var init_coercers = __esm(() => {
   init_promise_rejection_event();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/utils.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/utils.mjs
 class ReduceableCache {
   constructor(_maxSize) {
     this._maxSize = _maxSize;
@@ -2594,7 +2623,7 @@ class ReduceableCache {
 }
 var init_utils3 = () => {};
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/exception-steps.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/exception-steps.mjs
 var EXCEPTION_STEP_INTERNAL_FIELDS, RESERVED_EXCEPTION_STEP_KEYS;
 var init_exception_steps = __esm(() => {
   init_utils();
@@ -2608,14 +2637,19 @@ var init_exception_steps = __esm(() => {
   ]);
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/release.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/release.mjs
 function getInjectedReleaseId() {
+  if ("u" > typeof process) {
+    const fromEnvironment = process.env.POSTHOG_RELEASE_ID?.trim();
+    if (fromEnvironment)
+      return fromEnvironment;
+  }
   const injected = globalThis._posthogReleaseId;
   return typeof injected == "string" && injected.length > 0 ? injected : undefined;
 }
 var init_release = () => {};
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/error-tracking/index.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/error-tracking/index.mjs
 var init_error_tracking = __esm(() => {
   init_error_properties_builder();
   init_parsers();
@@ -2625,13 +2659,13 @@ var init_error_tracking = __esm(() => {
   init_release();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/cookie.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/cookie.mjs
 var init_cookie = __esm(() => {
   init_utils();
   init_uuidv7();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/featureFlagUtils.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/featureFlagUtils.mjs
 function getFlagDetailFromFlagAndPayload(key, value, payload) {
   return {
     key,
@@ -2730,6 +2764,8 @@ var init_featureFlagUtils = __esm(() => {
     "epik",
     "qclid",
     "sccid",
+    "oppref",
+    "bfcid",
     "irclid",
     "_kx"
   ];
@@ -2760,7 +2796,7 @@ var init_featureFlagUtils = __esm(() => {
   ];
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/eventemitter.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/eventemitter.mjs
 class SimpleEventEmitter {
   constructor() {
     this.events = {};
@@ -2783,7 +2819,7 @@ class SimpleEventEmitter {
 }
 var init_eventemitter = () => {};
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/gzip.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/gzip.mjs
 function isGzipSupported() {
   return "CompressionStream" in globalThis && "TextEncoder" in globalThis && "Response" in globalThis && typeof Response.prototype.blob == "function";
 }
@@ -2850,7 +2886,7 @@ var init_gzip = __esm(() => {
   init_utils();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/posthog-core-stateless.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/posthog-core-stateless.mjs
 async function logFlushError(err) {
   if (err instanceof PostHogFetchHttpError) {
     let text = "";
@@ -2918,7 +2954,10 @@ class PostHogCoreStateless {
     ], createDefaultStackParser());
   }
   getEvaluationRuntime() {}
-  constructor(apiKey, options = {}) {
+  get apiKey() {
+    return this.projectToken;
+  }
+  constructor(projectToken, options = {}) {
     this.flushPromise = null;
     this.pendingFlushPromise = null;
     this.flushPromises = new Set;
@@ -2927,13 +2966,13 @@ class PostHogCoreStateless {
     this.promiseQueue = new PromiseQueue;
     this._events = new SimpleEventEmitter;
     this._isInitialized = false;
-    const normalizedApiKey = typeof apiKey == "string" ? apiKey.trim() : "";
+    const normalizedProjectToken = typeof projectToken == "string" ? projectToken.trim() : "";
     const normalizedHost = typeof options.host == "string" ? options.host.trim() : "";
-    const missingApiKey = !normalizedApiKey;
+    const missingProjectToken = !normalizedProjectToken;
     this._logger = createLogger("[PostHog]", this.logMsgIfDebug.bind(this));
-    if (missingApiKey)
-      this._logger.error("You must pass your PostHog project's api key. The client will be disabled.");
-    this.apiKey = normalizedApiKey;
+    if (missingProjectToken)
+      this._logger.error("You must pass your PostHog project token. The client will be disabled.");
+    this.projectToken = normalizedProjectToken;
     this.host = removeTrailingSlash(normalizedHost || "https://us.i.posthog.com");
     this.flushAt = options.flushAt ? Math.max(options.flushAt, 1) : 20;
     this.maxBatchSize = Math.max(this.flushAt, options.maxBatchSize ?? 100);
@@ -2952,7 +2991,7 @@ class PostHogCoreStateless {
     this.featureFlagsRequestMaxRetries = options.featureFlagsRequestMaxRetries ?? 1;
     this.remoteConfigRequestTimeoutMs = options.remoteConfigRequestTimeoutMs ?? 3000;
     this.disableGeoip = options.disableGeoip ?? true;
-    this.disabled = (options.disabled ?? false) || missingApiKey;
+    this.disabled = (options.disabled ?? false) || missingProjectToken;
     this.historicalMigration = options?.historicalMigration ?? false;
     this._initPromise = Promise.resolve();
     this._isInitialized = true;
@@ -3012,10 +3051,7 @@ class PostHogCoreStateless {
   }
   buildPayload(payload) {
     const userProperties = payload.properties || {};
-    let properties = {
-      ...userProperties,
-      ...this.getCommonEventProperties()
-    };
+    let properties = this.mergeCommonEventProperties(userProperties);
     applyCallerFeatureFlagOverrides(properties, userProperties);
     if (payload.event === "$feature_flag_called" && properties.$feature_flag_has_experiment === false && this.isMinimalFlagCalledEventsEnabled())
       properties = minimizeFlagCalledEventProperties(properties);
@@ -3023,6 +3059,12 @@ class PostHogCoreStateless {
       distinct_id: payload.distinct_id,
       event: payload.event,
       properties
+    };
+  }
+  mergeCommonEventProperties(properties) {
+    return {
+      ...properties,
+      ...this.getCommonEventProperties()
     };
   }
   isMinimalFlagCalledEventsEnabled() {
@@ -3132,7 +3174,7 @@ class PostHogCoreStateless {
       host = "https://us-assets.i.posthog.com";
     else if (host === "https://eu.i.posthog.com")
       host = "https://eu-assets.i.posthog.com";
-    const url = `${host}/array/${this.apiKey}/config`;
+    const url = `${host}/array/${this.projectToken}/config`;
     const fetchOptions = {
       method: "GET",
       headers: {
@@ -3155,7 +3197,7 @@ class PostHogCoreStateless {
     const configParam = fetchConfig ? "&config=true" : "";
     const url = `${this.host}/flags/?v=2${configParam}`;
     const requestData = {
-      token: this.apiKey,
+      token: this.projectToken,
       distinct_id: distinctId,
       groups,
       person_properties: personProperties,
@@ -3315,7 +3357,7 @@ class PostHogCoreStateless {
       this._logger.info("Loading surveys is disabled.");
       return [];
     }
-    const url = `${this.host}/api/surveys/?token=${this.apiKey}`;
+    const url = `${this.host}/api/surveys/?token=${this.projectToken}`;
     const fetchOptions = {
       method: "GET",
       headers: {
@@ -3563,7 +3605,7 @@ class PostHogCoreStateless {
   }
   async sendBatch(batchMessages, retryOptions, route = DEFAULT_QUEUE_ROUTE) {
     const data = {
-      api_key: this.apiKey,
+      api_key: this.projectToken,
       batch: batchMessages.map((message) => {
         if (!message)
           return message;
@@ -3691,7 +3733,7 @@ class PostHogCoreStateless {
         measuredLocally: true
       };
     }
-    const url = auth === "bearer" ? `${this.host}/i/v1/${path}` : `${this.host}/i/v1/${path}?token=${encodeURIComponent(this.apiKey)}`;
+    const url = auth === "bearer" ? `${this.host}/i/v1/${path}` : `${this.host}/i/v1/${path}?token=${encodeURIComponent(this.projectToken)}`;
     const gzippedPayload = this.disableCompression ? null : await this.compressPayload(serialized);
     const body = gzippedPayload || serialized;
     const fetchOptions = {
@@ -3700,7 +3742,7 @@ class PostHogCoreStateless {
         ...this.getCustomHeaders(),
         "Content-Type": "application/json",
         ...auth === "bearer" && {
-          Authorization: `Bearer ${this.apiKey}`
+          Authorization: `Bearer ${this.projectToken}`
         },
         ...gzippedPayload !== null && {
           "Content-Encoding": "gzip"
@@ -3983,7 +4025,7 @@ var init_posthog_core_stateless = __esm(() => {
   };
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/posthog-core.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/posthog-core.mjs
 var init_posthog_core = __esm(() => {
   init_featureFlagUtils();
   init_types();
@@ -3992,12 +4034,24 @@ var init_posthog_core = __esm(() => {
   init_utils();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/tracing-headers.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/privacy.mjs
+var init_privacy = () => {};
+
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/tracing-headers.mjs
 var init_tracing_headers = __esm(() => {
   init_type_utils();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/featureFlagLocalEvaluation.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/featureFlagLocalEvaluation.mjs
+function readContextValue(read) {
+  try {
+    return read();
+  } catch (e) {
+    if (e instanceof InconclusiveMatchError)
+      throw new InconclusiveMatchError(e.message, "missing_context");
+    throw e;
+  }
+}
 function isTruthyOrFalsyPropertyValue(value) {
   if (typeof value == "boolean")
     return true;
@@ -4150,12 +4204,112 @@ function exactMatchString(value) {
   }
   return serializeJsonValue(value);
 }
-function isValidRegex(regex) {
-  try {
-    new RegExp(regex);
+function getPortableRegexClasses(pattern) {
+  const classes = [];
+  let classStart = -1;
+  let previousToken = "";
+  for (let index = 0;index < pattern.length; index++) {
+    const character = pattern[index];
+    if (character.charCodeAt(0) > 127)
+      return null;
+    if (character === "\\") {
+      const escaped = pattern[++index];
+      if (escaped === undefined)
+        break;
+      if (escaped === "x") {
+        if (!/^[\da-f]{2}$/i.test(pattern.slice(index + 1, index + 3)))
+          return null;
+        index += 2;
+      } else if (!"dDsSwWbBfnrtv".includes(escaped) && !LITERAL_ESCAPED_PUNCTUATION.test(escaped))
+        return null;
+      if (classStart === -1 && "bB".includes(escaped))
+        return null;
+      previousToken = "literal";
+      continue;
+    }
+    if (character === "[") {
+      if (classStart !== -1)
+        return null;
+      classStart = index;
+    } else if (character === "]" && classStart !== -1) {
+      const contentStart = classStart + (pattern[classStart + 1] === "^" ? 2 : 1);
+      if (index === contentStart)
+        return null;
+      classes.push(pattern.slice(classStart, index + 1));
+      classStart = -1;
+      previousToken = "literal";
+      continue;
+    } else if (classStart !== -1) {
+      if ([
+        "&&",
+        "--",
+        "~~"
+      ].includes(pattern.slice(index, index + 2)))
+        return null;
+      continue;
+    } else if (character === "(" && pattern[index + 1] === "?") {
+      if (pattern[index + 2] !== ":")
+        return null;
+      index += 2;
+    } else if (character === "{") {
+      const repetition = /^\{(\d+)(?:,(\d*))?\}/.exec(pattern.slice(index));
+      if (!repetition || [
+        "",
+        "|",
+        "("
+      ].includes(previousToken) || repetition.slice(1).some((count) => Number(count) > 4294967295))
+        return null;
+    } else if ("*+?}".includes(character) && (pattern[index + 1] === "+" || pattern[index + 1] === "{"))
+      return null;
+    if ("*+?{".includes(character) && [
+      "^",
+      "$",
+      "empty group"
+    ].includes(previousToken))
+      return null;
+    previousToken = character === ")" && [
+      "(",
+      "empty group"
+    ].includes(previousToken) ? "empty group" : character;
+  }
+  return classes;
+}
+function regexRequiresServerEvaluation(message) {
+  const error = new InconclusiveMatchError(message);
+  Object.defineProperty(error, Symbol.for("posthog.requiresServerRegexEvaluation"), {
+    value: true
+  });
+  return error;
+}
+function matchFeatureFlagRegex(pattern, value) {
+  if (pattern === "")
     return true;
+  const characterClasses = getPortableRegexClasses(pattern);
+  if (characterClasses === null)
+    throw regexRequiresServerEvaluation("Regex syntax requires server evaluation");
+  let regex;
+  try {
+    regex = new RegExp(pattern);
+  } catch (error) {
+    if (error instanceof SyntaxError)
+      return null;
+    throw regexRequiresServerEvaluation("Regex compilation requires server evaluation");
+  }
+  for (const characterClass of characterClasses)
+    try {
+      new RegExp(characterClass, "u");
+    } catch {
+      throw regexRequiresServerEvaluation("Regex character class syntax requires server evaluation");
+    }
+  for (let index = 0;index < value.length; index++) {
+    const character = value[index];
+    if (character.charCodeAt(0) > 127 || character === "\r")
+      throw regexRequiresServerEvaluation("Regex matching for Unicode or carriage returns requires server evaluation");
+  }
+  try {
+    return regex.test(value);
   } catch {
-    return false;
+    throw regexRequiresServerEvaluation("Regex execution requires server evaluation");
   }
 }
 function asciiLowercase(value) {
@@ -4314,7 +4468,72 @@ function relativeDateParseForFeatureFlagMatching(value) {
   }
   return parsedDt;
 }
+function parseDateFilter(value) {
+  if (typeof value == "boolean")
+    throw new InconclusiveMatchError("Date operations cannot be performed on boolean values");
+  return relativeDateParseForFeatureFlagMatching(String(value)) ?? convertToDateTime(value);
+}
+function assertFeatureFlagFilterSupported(property, options = {}) {
+  const value = property.value;
+  const parsingPolicy = options.semverParsingPolicy ?? "strict";
+  switch (property.operator || "exact") {
+    case "exact":
+    case "is_not":
+      for (const item of Array.isArray(value) ? value : [
+        value
+      ])
+        exactMatchString(item);
+      return;
+    case "is_set":
+    case "is_not_set":
+    case "icontains":
+    case "not_icontains":
+    case "starts_with":
+    case "not_starts_with":
+    case "ends_with":
+    case "not_ends_with":
+    case "regex":
+    case "not_regex":
+    case "gt":
+    case "gte":
+    case "lt":
+    case "lte":
+      return;
+    case "is_date_after":
+    case "is_date_before":
+      parseDateFilter(value);
+      return;
+    case "semver_eq":
+    case "semver_neq":
+    case "semver_gt":
+    case "semver_gte":
+    case "semver_lt":
+    case "semver_lte":
+      parseFeatureFlagSemver(String(value), parsingPolicy);
+      return;
+    case "semver_tilde":
+      computeTildeBounds(String(value), parsingPolicy);
+      return;
+    case "semver_caret":
+      computeCaretBounds(String(value), parsingPolicy);
+      return;
+    case "semver_wildcard":
+      computeWildcardBounds(String(value), parsingPolicy);
+      return;
+    default:
+      throw new InconclusiveMatchError(`Unknown operator: ${property.operator}`);
+  }
+}
 function matchFeatureFlagProperty(property, propertyValues, options = {}) {
+  try {
+    return matchPropertyValue(property, propertyValues, options);
+  } catch (e) {
+    if (e instanceof InconclusiveMatchError && e.reason === "missing_context")
+      assertFeatureFlagFilterSupported(property, options);
+    throw e;
+  }
+}
+function matchPropertyValue(property, propertyValues, options) {
   const key = property.key;
   const value = property.value;
   const operator = property.operator || "exact";
@@ -4326,26 +4545,31 @@ function matchFeatureFlagProperty(property, propertyValues, options = {}) {
     else if (operator === "is_set")
       return true;
   } else
-    throw new InconclusiveMatchError(`Property ${key} not found in propertyValues`);
+    throw new InconclusiveMatchError(`Property ${key} not found in propertyValues`, "missing_context");
   const overrideValue = propertyValues[key];
   if (overrideValue === undefined) {
     options.warnFunction?.(`Property ${key} cannot have a value of undefined with the ${operator} operator`);
-    return operator === "is_not";
+    throw new InconclusiveMatchError(`Property ${key} is undefined in propertyValues`);
   }
-  if (overrideValue === null && !NULL_VALUES_ALLOWED_OPERATORS.includes(operator) && operator !== "exact" && operator !== "is_not") {
+  if (overrideValue === null && !NULL_VALUES_ALLOWED_OPERATORS.includes(operator)) {
     options.warnFunction?.(`Property ${key} cannot have a value of null with the ${operator} operator`);
     return false;
   }
   const computeExactMatch = (target, actual) => {
-    if (isTruthyOrFalsyPropertyValue(target)) {
-      assertJsonRepresentable(actual);
+    if (options.propertyMatchingVersion !== 2 && isTruthyOrFalsyPropertyValue(target) || Array.isArray(target) && target.length === 0) {
+      readContextValue(() => assertJsonRepresentable(actual));
       return isTruthyPropertyValue(target) === isTruthyPropertyValue(actual);
     }
+    if (options.propertyMatchingVersion === 2 && typeof actual == "number" && isTruthyOrFalsyPropertyValue(target)) {
+      readContextValue(() => assertJsonRepresentable(actual));
+      return false;
+    }
     if (Array.isArray(target)) {
-      const actualString = exactMatchString(actual).toLowerCase();
+      const actualString = readContextValue(() => exactMatchString(actual)).toLowerCase();
       return target.some((item) => exactMatchString(item).toLowerCase() === actualString);
     }
-    return exactMatchString(target).toLowerCase() === exactMatchString(actual).toLowerCase();
+    const targetString = exactMatchString(target).toLowerCase();
+    return targetString === readContextValue(() => exactMatchString(actual)).toLowerCase();
   };
   const compare = (lhs, rhs, comparisonOperator) => {
     if (comparisonOperator === "gt")
@@ -4357,6 +4581,15 @@ function matchFeatureFlagProperty(property, propertyValues, options = {}) {
     if (comparisonOperator === "lte")
       return lhs <= rhs;
     throw new Error(`Invalid operator: ${comparisonOperator}`);
+  };
+  const parseContextSemver = () => readContextValue(() => parseFeatureFlagSemver(String(overrideValue), parsingPolicy));
+  const compareContextSemverToFilter = () => {
+    const filterParsed = parseFeatureFlagSemver(String(value), parsingPolicy);
+    return compareSemverTuples(parseContextSemver(), filterParsed);
+  };
+  const isContextSemverWithin = ({ lower, upper }) => {
+    const overrideParsed = parseContextSemver();
+    return compareSemverTuples(overrideParsed, lower) >= 0 && compareSemverTuples(overrideParsed, upper) < 0;
   };
   switch (operator) {
     case "exact":
@@ -4378,9 +4611,12 @@ function matchFeatureFlagProperty(property, propertyValues, options = {}) {
     case "not_ends_with":
       return !asciiLowercase(overrideValue).endsWith(asciiLowercase(value));
     case "regex":
-      return isValidRegex(String(value)) && String(overrideValue).match(String(value)) !== null;
-    case "not_regex":
-      return isValidRegex(String(value)) && String(overrideValue).match(String(value)) === null;
+    case "not_regex": {
+      const matched = matchFeatureFlagRegex(String(value), String(overrideValue));
+      if (matched === null)
+        return false;
+      return operator === "regex" ? matched : !matched;
+    }
     case "gt":
     case "gte":
     case "lt":
@@ -4393,41 +4629,28 @@ function matchFeatureFlagProperty(property, propertyValues, options = {}) {
     }
     case "is_date_after":
     case "is_date_before": {
-      if (typeof value == "boolean")
-        throw new InconclusiveMatchError("Date operations cannot be performed on boolean values");
-      let parsedDate = relativeDateParseForFeatureFlagMatching(String(value));
-      if (parsedDate == null)
-        parsedDate = convertToDateTime(value);
-      const overrideDate = convertToDateTime(overrideValue);
+      const parsedDate = parseDateFilter(value);
+      const overrideDate = readContextValue(() => convertToDateTime(overrideValue));
       return operator === "is_date_before" ? overrideDate < parsedDate : overrideDate > parsedDate;
     }
     case "semver_eq":
-      return compareSemverTuples(parseFeatureFlagSemver(String(overrideValue), parsingPolicy), parseFeatureFlagSemver(String(value), parsingPolicy)) === 0;
+      return compareContextSemverToFilter() === 0;
     case "semver_neq":
-      return compareSemverTuples(parseFeatureFlagSemver(String(overrideValue), parsingPolicy), parseFeatureFlagSemver(String(value), parsingPolicy)) !== 0;
+      return compareContextSemverToFilter() !== 0;
     case "semver_gt":
-      return compareSemverTuples(parseFeatureFlagSemver(String(overrideValue), parsingPolicy), parseFeatureFlagSemver(String(value), parsingPolicy)) > 0;
+      return compareContextSemverToFilter() > 0;
     case "semver_gte":
-      return compareSemverTuples(parseFeatureFlagSemver(String(overrideValue), parsingPolicy), parseFeatureFlagSemver(String(value), parsingPolicy)) >= 0;
+      return compareContextSemverToFilter() >= 0;
     case "semver_lt":
-      return compareSemverTuples(parseFeatureFlagSemver(String(overrideValue), parsingPolicy), parseFeatureFlagSemver(String(value), parsingPolicy)) < 0;
+      return compareContextSemverToFilter() < 0;
     case "semver_lte":
-      return compareSemverTuples(parseFeatureFlagSemver(String(overrideValue), parsingPolicy), parseFeatureFlagSemver(String(value), parsingPolicy)) <= 0;
-    case "semver_tilde": {
-      const overrideParsed = parseFeatureFlagSemver(String(overrideValue), parsingPolicy);
-      const { lower, upper } = computeTildeBounds(String(value), parsingPolicy);
-      return compareSemverTuples(overrideParsed, lower) >= 0 && compareSemverTuples(overrideParsed, upper) < 0;
-    }
-    case "semver_caret": {
-      const overrideParsed = parseFeatureFlagSemver(String(overrideValue), parsingPolicy);
-      const { lower, upper } = computeCaretBounds(String(value), parsingPolicy);
-      return compareSemverTuples(overrideParsed, lower) >= 0 && compareSemverTuples(overrideParsed, upper) < 0;
-    }
-    case "semver_wildcard": {
-      const overrideParsed = parseFeatureFlagSemver(String(overrideValue), parsingPolicy);
-      const { lower, upper } = computeWildcardBounds(String(value), parsingPolicy);
-      return compareSemverTuples(overrideParsed, lower) >= 0 && compareSemverTuples(overrideParsed, upper) < 0;
-    }
+      return compareContextSemverToFilter() <= 0;
+    case "semver_tilde":
+      return isContextSemverWithin(computeTildeBounds(String(value), parsingPolicy));
+    case "semver_caret":
+      return isContextSemverWithin(computeCaretBounds(String(value), parsingPolicy));
+    case "semver_wildcard":
+      return isContextSemverWithin(computeWildcardBounds(String(value), parsingPolicy));
     default:
       throw new InconclusiveMatchError(`Unknown operator: ${operator}`);
   }
@@ -4439,9 +4662,23 @@ async function hashSHA1(text) {
   const hashBuffer = await subtle.digest("SHA-1", new TextEncoder().encode(text));
   return Array.from(new Uint8Array(hashBuffer)).map((byte) => byte.toString(16).padStart(2, "0")).join("");
 }
-async function getFeatureFlagHash(key, bucketingValue, salt = "") {
-  const hashString = await hashSHA1(`${key}.${bucketingValue}${salt}`);
+async function getFeatureFlagHash(key, bucketingValue, salt = "", separator = ".") {
+  const hashString = await hashSHA1(`${key}${separator}${bucketingValue}${salt}`);
   return parseInt(hashString.slice(0, 15), 16) / LONG_SCALE;
+}
+async function getHoldoutVariant(holdout, bucketingValue) {
+  if (holdout == null || holdout.id == null || holdout.exclusion_percentage == null)
+    return;
+  const rawPercentage = Number(holdout.exclusion_percentage);
+  if (!Number.isFinite(rawPercentage))
+    return;
+  const percentage = Math.min(Math.max(rawPercentage, 0), 100);
+  if (percentage !== 100) {
+    const hash = await getFeatureFlagHash("holdout", bucketingValue, "", "-");
+    if (hash > percentage / 100)
+      return;
+  }
+  return `holdout-${holdout.id}`;
 }
 function getFeatureFlagVariantLookupTable(variants) {
   const table = [];
@@ -4468,23 +4705,33 @@ function resolveFeatureFlagPayload(payloads, flagValue) {
   const payload = payloads[payloadKey] || null;
   return payload == null ? null : parsePayload(payload);
 }
-var NULL_VALUES_ALLOWED_OPERATORS, LONG_SCALE = 1152921504606847000, InconclusiveMatchError;
+var NULL_VALUES_ALLOWED_OPERATORS, LONG_SCALE = 1152921504606847000, InconclusiveMatchError, LITERAL_ESCAPED_PUNCTUATION;
 var init_featureFlagLocalEvaluation = __esm(() => {
   init_featureFlagUtils();
   NULL_VALUES_ALLOWED_OPERATORS = [
+    "exact",
     "is_not",
-    "is_set"
+    "icontains",
+    "not_icontains",
+    "starts_with",
+    "not_starts_with",
+    "ends_with",
+    "not_ends_with",
+    "regex",
+    "not_regex"
   ];
   InconclusiveMatchError = class InconclusiveMatchError extends Error {
-    constructor(message) {
+    constructor(message, reason = "unsupported_definition") {
       super(message);
       this.name = this.constructor.name;
+      this.reason = reason;
       Object.setPrototypeOf(this, InconclusiveMatchError.prototype);
     }
   };
+  LITERAL_ESCAPED_PUNCTUATION = /[\x20-\x2f:;=?@\x5b-\x60\x7b-\x7e]/;
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/utils/otlp-any-value.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/utils/otlp-any-value.mjs
 function newState() {
   return {
     ancestors: new WeakSet,
@@ -4665,7 +4912,7 @@ var init_otlp_any_value = __esm(() => {
   propertyIsEnumerable = Object.prototype.propertyIsEnumerable;
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/utils/otlp-resource.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/utils/otlp-resource.mjs
 function buildOtlpResourceAttributes(config, sdkName, sdkVersion) {
   return {
     ...assignUserAttributes({}, config.resourceAttributes),
@@ -4736,43 +4983,15 @@ var init_otlp_resource = __esm(() => {
   };
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/logs/logs-utils.mjs
-var OTLP_SEVERITY_MAP, DEFAULT_OTLP_SEVERITY;
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/logs/logs-utils.mjs
 var init_logs_utils = __esm(() => {
   init_utils();
   init_json_utils();
   init_otlp_any_value();
   init_otlp_resource();
-  OTLP_SEVERITY_MAP = {
-    trace: {
-      text: "TRACE",
-      number: 1
-    },
-    debug: {
-      text: "DEBUG",
-      number: 5
-    },
-    info: {
-      text: "INFO",
-      number: 9
-    },
-    warn: {
-      text: "WARN",
-      number: 13
-    },
-    error: {
-      text: "ERROR",
-      number: 17
-    },
-    fatal: {
-      text: "FATAL",
-      number: 21
-    }
-  };
-  DEFAULT_OTLP_SEVERITY = OTLP_SEVERITY_MAP.info;
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/utils/flush-timer.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/utils/flush-timer.mjs
 class FlushTimer {
   constructor(_onFire) {
     this._onFire = _onFire;
@@ -4805,7 +5024,7 @@ var init_flush_timer = __esm(() => {
   init_utils();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/utils/backoff.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/utils/backoff.mjs
 function drawJitter() {
   return 1 - JITTER + Math.random() * JITTER * 2;
 }
@@ -4818,7 +5037,7 @@ function backoffDelayMs(baseMs, failures, jitter, maxMs) {
 var MAX_FLUSH_BACKOFF_EXPONENT = 6, MAX_FLUSH_BACKOFF_MS = 30000, JITTER = 0.25, NO_JITTER = 1;
 var init_backoff = () => {};
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/logs/index.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/logs/index.mjs
 var init_logs = __esm(() => {
   init_logs_utils();
   init_types();
@@ -4828,427 +5047,7 @@ var init_logs = __esm(() => {
   init_backoff();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/metrics/metrics-utils.mjs
-function msToUnixNano(ms) {
-  return String(ms) + "000000";
-}
-function seriesKey(type, name, unit, attributes) {
-  let attrsKey = "";
-  if (attributes) {
-    const keys = Object.keys(attributes).sort();
-    attrsKey = keys.map((k) => `${JSON.stringify(k)}:${JSON.stringify(attributes[k])}`).join(",");
-  }
-  return `${type}\x00${name}\x00${unit ?? ""}\x00${attrsKey}`;
-}
-function bucketIndexFor(value, bounds) {
-  for (let i = 0;i < bounds.length; i++)
-    if (value <= bounds[i])
-      return i;
-  return bounds.length;
-}
-function buildMetricsResourceAttributes(config, scopeName, scopeVersion) {
-  return buildOtlpResourceAttributes(config, scopeName, scopeVersion);
-}
-function buildOtlpMetricsPayload(metrics, resourceAttributes, scopeName, scopeVersion) {
-  return {
-    resourceMetrics: [
-      {
-        resource: {
-          attributes: toOtlpResourceKeyValueList(resourceAttributes)
-        },
-        scopeMetrics: [
-          {
-            scope: {
-              name: scopeName,
-              version: scopeVersion
-            },
-            metrics
-          }
-        ]
-      }
-    ]
-  };
-}
-var DEFAULT_HISTOGRAM_BOUNDS;
-var init_metrics_utils = __esm(() => {
-  init_otlp_resource();
-  DEFAULT_HISTOGRAM_BOUNDS = [
-    0,
-    5,
-    10,
-    25,
-    50,
-    75,
-    100,
-    250,
-    500,
-    750,
-    1000,
-    2500,
-    5000,
-    7500,
-    1e4
-  ];
-});
-
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/metrics/config.mjs
-function resolveMetricsConfig(config) {
-  const resourceAttributes = config?.resourceAttributes;
-  return {
-    serviceName: resourceAttributes?.["service.name"] ?? config?.serviceName,
-    serviceVersion: resourceAttributes?.["service.version"] ?? config?.serviceVersion,
-    environment: resourceAttributes?.["deployment.environment"] ?? config?.environment,
-    resourceAttributes,
-    beforeSend: config?.beforeSend,
-    flushIntervalMs: config?.flushIntervalMs ?? DEFAULT_FLUSH_INTERVAL_MS,
-    maxSeriesPerFlush: config?.maxSeriesPerFlush ?? DEFAULT_MAX_SERIES_PER_FLUSH
-  };
-}
-var DEFAULT_FLUSH_INTERVAL_MS = 1e4, DEFAULT_MAX_SERIES_PER_FLUSH = 1000;
-var init_config = () => {};
-
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/metrics/index.mjs
-class PostHogMetrics {
-  constructor(_instance, _config, _logger) {
-    this._instance = _instance;
-    this._config = _config;
-    this._logger = _logger;
-    this._series = new Map;
-    this._flushTimer = new FlushTimer(() => this.flush().catch((e) => {
-      this._logger.error("Metrics flush failed:", e);
-    }));
-    this._flushPromise = null;
-    this._seriesCapWarned = false;
-    this._typeByName = new Map;
-    this._typeCollisionWarned = new Set;
-    this._retryAfter = new RetryAfterWindow;
-    this._consecutiveFlushFailures = 0;
-    this._flushJitter = NO_JITTER;
-    this._generation = 0;
-  }
-  count(name, value = 1, options) {
-    this._capture({
-      name,
-      type: "count",
-      value,
-      unit: options?.unit,
-      attributes: options?.attributes
-    });
-  }
-  gauge(name, value, options) {
-    this._capture({
-      name,
-      type: "gauge",
-      value,
-      unit: options?.unit,
-      attributes: options?.attributes
-    });
-  }
-  histogram(name, value, options) {
-    this._capture({
-      name,
-      type: "histogram",
-      value,
-      unit: options?.unit,
-      attributes: options?.attributes
-    });
-  }
-  flush() {
-    const prev = this._flushPromise;
-    const run = async () => {
-      if (prev)
-        await prev.catch(() => {});
-      await this._doFlush();
-    };
-    const p = run().finally(() => {
-      if (this._flushPromise === p)
-        this._flushPromise = null;
-    });
-    this._flushPromise = p;
-    return p;
-  }
-  drainWindow() {
-    if (this._series.size === 0)
-      return null;
-    const window = this._series;
-    this._series = new Map;
-    this._seriesCapWarned = false;
-    this._typeByName = new Map;
-    this._typeCollisionWarned = new Set;
-    return this._buildPayload(window);
-  }
-  reset() {
-    this._generation++;
-    this._retryAfter.reset();
-    this._consecutiveFlushFailures = 0;
-    this._flushJitter = NO_JITTER;
-    this._flushTimer.clear();
-    this._series = new Map;
-    this._flushPromise = null;
-    this._seriesCapWarned = false;
-    this._typeByName = new Map;
-    this._typeCollisionWarned = new Set;
-  }
-  _capture(sample) {
-    if (this._instance.isDisabled || this._instance.optedOut)
-      return;
-    const filtered = this._runBeforeSend(sample);
-    if (filtered === null)
-      return;
-    if (!filtered.name || typeof filtered.name != "string")
-      return void this._logger.warn("Dropping metric with empty name");
-    if (typeof filtered.value != "number" || !Number.isFinite(filtered.value))
-      return void this._logger.warn(`Dropping metric '${filtered.name}': value must be a finite number`);
-    if (filtered.type === "count" && filtered.value < 0)
-      return void this._logger.warn(`Dropping count '${filtered.name}': counters are monotonic, value must be >= 0`);
-    let attributes;
-    let key;
-    try {
-      attributes = filtered.attributes ? {
-        ...filtered.attributes
-      } : undefined;
-      key = seriesKey(filtered.type, filtered.name, filtered.unit, attributes);
-    } catch (e) {
-      this._logger.warn(`Dropping metric '${filtered.name}': attributes could not be serialized`, e);
-      return;
-    }
-    let state = this._series.get(key);
-    if (!state) {
-      if (!this._admitNewSeries())
-        return;
-      state = {
-        name: filtered.name,
-        type: filtered.type,
-        unit: filtered.unit,
-        attributes,
-        windowStartMs: Date.now()
-      };
-      this._series.set(key, state);
-    }
-    const seenType = this._typeByName.get(filtered.name);
-    if (seenType === undefined)
-      this._typeByName.set(filtered.name, filtered.type);
-    else if (seenType !== filtered.type && !this._typeCollisionWarned.has(filtered.name)) {
-      this._typeCollisionWarned.add(filtered.name);
-      this._logger.warn(`Metric name '${filtered.name}' is already used as a ${seenType}; recording it as a ${filtered.type} too will blend both series in charts. Use a distinct name.`);
-    }
-    this._fold(state, filtered.value);
-    this._armFlushTimer();
-  }
-  _admitNewSeries() {
-    if (this._series.size < this._config.maxSeriesPerFlush)
-      return true;
-    if (!this._seriesCapWarned) {
-      this._seriesCapWarned = true;
-      this._logger.warn(`Metric series cap reached (${this._config.maxSeriesPerFlush} per flush window); dropping new series until the next flush. Reduce attribute cardinality.`);
-    }
-    return false;
-  }
-  _fold(state, value) {
-    switch (state.type) {
-      case "count":
-        state.total = (state.total ?? 0) + value;
-        break;
-      case "gauge":
-        state.last = value;
-        break;
-      case "histogram": {
-        if (!state.hist)
-          state.hist = {
-            count: 0,
-            sum: 0,
-            min: value,
-            max: value,
-            bucketCounts: new Array(DEFAULT_HISTOGRAM_BOUNDS.length + 1).fill(0)
-          };
-        const hist = state.hist;
-        hist.count += 1;
-        hist.sum += value;
-        hist.min = Math.min(hist.min, value);
-        hist.max = Math.max(hist.max, value);
-        hist.bucketCounts[bucketIndexFor(value, DEFAULT_HISTOGRAM_BOUNDS)] += 1;
-        break;
-      }
-    }
-  }
-  _runBeforeSend(sample) {
-    const beforeSend = this._config.beforeSend;
-    if (!beforeSend)
-      return sample;
-    const fns = isArray(beforeSend) ? beforeSend : [
-      beforeSend
-    ];
-    let result = sample;
-    for (const fn of fns)
-      try {
-        const next = fn(result);
-        if (!next) {
-          this._logger.info("Metric was rejected in beforeSend function");
-          return null;
-        }
-        result = next;
-      } catch (e) {
-        this._logger.error("Error in beforeSend function for metric:", e);
-        return null;
-      }
-    return result;
-  }
-  _armFlushTimer() {
-    if (this._flushTimer.pending)
-      return;
-    this._flushTimer.arm(this._nextFlushDelay());
-  }
-  _nextFlushDelay() {
-    return Math.max(backoffDelayMs(this._config.flushIntervalMs, this._consecutiveFlushFailures, this._flushJitter, MAX_FLUSH_BACKOFF_MS), this._retryAfter.remainingMs());
-  }
-  async _doFlush() {
-    this._flushTimer.clear();
-    if (this._series.size === 0)
-      return;
-    const window = this._series;
-    this._series = new Map;
-    this._seriesCapWarned = false;
-    this._typeByName = new Map;
-    this._typeCollisionWarned = new Set;
-    const generation = this._generation;
-    const outcome = await this._instance._sendMetricsBatch(this._buildPayload(window));
-    if (generation !== this._generation)
-      return;
-    this._retryAfter.record(outcome);
-    if (outcome.kind === "retry-later") {
-      this._consecutiveFlushFailures++;
-      this._flushJitter = drawJitter();
-    } else {
-      this._consecutiveFlushFailures = 0;
-      this._flushJitter = NO_JITTER;
-    }
-    if (this._flushTimer.pending)
-      this._flushTimer.arm(this._nextFlushDelay());
-    switch (outcome.kind) {
-      case "ok":
-        return;
-      case "retry-later":
-        this._mergeWindowBack(window);
-        this._flushTimer.armNoEarlierThan(this._nextFlushDelay());
-        return;
-      case "too-large":
-        this._logger.warn("Metrics batch exceeded the server size limit and was dropped");
-        return;
-      case "fatal":
-        this._logger.error("Failed to send metrics batch:", outcome.error);
-        return;
-    }
-  }
-  _buildPayload(window) {
-    return buildOtlpMetricsPayload(this._buildMetrics(window), buildMetricsResourceAttributes(this._config, this._instance.getLibraryId(), this._instance.getLibraryVersion()), this._instance.getLibraryId(), this._instance.getLibraryVersion());
-  }
-  _buildMetrics(window) {
-    const nowNano = msToUnixNano(Date.now());
-    const byMetric = new Map;
-    for (const state of window.values()) {
-      const metricKey = seriesKey(state.type, state.name, state.unit, undefined);
-      let metric = byMetric.get(metricKey);
-      if (!metric) {
-        metric = {
-          name: state.name,
-          ...state.unit && {
-            unit: state.unit
-          }
-        };
-        if (state.type === "count")
-          metric.sum = {
-            aggregationTemporality: OTLP_TEMPORALITY_DELTA,
-            isMonotonic: true,
-            dataPoints: []
-          };
-        else if (state.type === "gauge")
-          metric.gauge = {
-            dataPoints: []
-          };
-        else
-          metric.histogram = {
-            aggregationTemporality: OTLP_TEMPORALITY_DELTA,
-            dataPoints: []
-          };
-        byMetric.set(metricKey, metric);
-      }
-      const attributes = toOtlpKeyValueList(state.attributes ?? {}, this._logger);
-      const startNano = msToUnixNano(state.windowStartMs);
-      if (state.type === "count") {
-        const dp = {
-          attributes,
-          startTimeUnixNano: startNano,
-          timeUnixNano: nowNano,
-          asDouble: state.total ?? 0
-        };
-        metric.sum.dataPoints.push(dp);
-      } else if (state.type === "gauge") {
-        const dp = {
-          attributes,
-          timeUnixNano: nowNano,
-          asDouble: state.last ?? 0
-        };
-        metric.gauge.dataPoints.push(dp);
-      } else if (state.hist) {
-        const dp = {
-          attributes,
-          startTimeUnixNano: startNano,
-          timeUnixNano: nowNano,
-          count: state.hist.count,
-          sum: state.hist.sum,
-          min: state.hist.min,
-          max: state.hist.max,
-          bucketCounts: state.hist.bucketCounts,
-          explicitBounds: DEFAULT_HISTOGRAM_BOUNDS
-        };
-        metric.histogram.dataPoints.push(dp);
-      }
-    }
-    return Array.from(byMetric.values());
-  }
-  _mergeWindowBack(window) {
-    for (const [key, old] of window) {
-      const current = this._series.get(key);
-      if (!current) {
-        if (this._admitNewSeries())
-          this._series.set(key, old);
-        continue;
-      }
-      current.windowStartMs = Math.min(current.windowStartMs, old.windowStartMs);
-      switch (current.type) {
-        case "count":
-          current.total = (current.total ?? 0) + (old.total ?? 0);
-          break;
-        case "gauge":
-          break;
-        case "histogram":
-          if (old.hist)
-            if (current.hist) {
-              current.hist.count += old.hist.count;
-              current.hist.sum += old.hist.sum;
-              current.hist.min = Math.min(current.hist.min, old.hist.min);
-              current.hist.max = Math.max(current.hist.max, old.hist.max);
-              for (let i = 0;i < current.hist.bucketCounts.length; i++)
-                current.hist.bucketCounts[i] += old.hist.bucketCounts[i];
-            } else
-              current.hist = old.hist;
-          break;
-      }
-    }
-  }
-}
-var OTLP_TEMPORALITY_DELTA = 1;
-var init_metrics = __esm(() => {
-  init_utils();
-  init_flush_timer();
-  init_retry_after();
-  init_backoff();
-  init_otlp_any_value();
-  init_metrics_utils();
-  init_config();
-});
-
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/traces/ids.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/traces/ids.mjs
 function getRandomBytes(byteLength) {
   const bytes = new Uint8Array(byteLength);
   const cryptoLike = globalThis.crypto;
@@ -5286,16 +5085,15 @@ function isValidTraceId(value) {
 function isValidSpanId(value) {
   return isValidHexId(value, SPAN_ID_HEX, INVALID_SPAN_ID);
 }
-var TRACE_ID_BYTES = 16, SPAN_ID_BYTES = 8, TRACE_ID_HEX, SPAN_ID_HEX, INVALID_TRACE_ID, INVALID_SPAN_ID, HEX_RE;
+var TRACE_ID_BYTES = 16, SPAN_ID_BYTES = 8, TRACE_ID_HEX, SPAN_ID_HEX, INVALID_SPAN_ID = "0000000000000000", INVALID_TRACE_ID, HEX_RE;
 var init_ids = __esm(() => {
   TRACE_ID_HEX = 2 * TRACE_ID_BYTES;
   SPAN_ID_HEX = 2 * SPAN_ID_BYTES;
-  INVALID_TRACE_ID = "0".repeat(TRACE_ID_HEX);
-  INVALID_SPAN_ID = "0".repeat(SPAN_ID_HEX);
+  INVALID_TRACE_ID = INVALID_SPAN_ID + INVALID_SPAN_ID;
   HEX_RE = /^[0-9a-f]+$/;
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/traces/traceparent.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/traces/traceparent.mjs
 function parseTraceparent(value) {
   const fields = matchTraceparent(value);
   return fields && {
@@ -5372,7 +5170,526 @@ var init_traceparent = __esm(() => {
   TRACEPARENT_RE = /^([0-9a-f]{2})-([0-9a-f]{32})-([0-9a-f]{16})-([0-9a-f]{2})(-.*)?$/;
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/traces/sanitize.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/metrics/metrics-utils.mjs
+function msToUnixNano(ms) {
+  return String(ms) + "000000";
+}
+function seriesKey(type, name, unit, attributes) {
+  let attrsKey = "";
+  if (attributes) {
+    const keys = Object.keys(attributes).sort();
+    attrsKey = keys.map((k) => `${JSON.stringify(k)}:${JSON.stringify(attributes[k])}`).join(",");
+  }
+  return `${type}\x00${name}\x00${unit ?? ""}\x00${attrsKey}`;
+}
+function bucketIndexFor(value, bounds) {
+  for (let i = 0;i < bounds.length; i++)
+    if (value <= bounds[i])
+      return i;
+  return bounds.length;
+}
+function buildMetricsResourceAttributes(config, scopeName, scopeVersion) {
+  return buildOtlpResourceAttributes(config, scopeName, scopeVersion);
+}
+function buildOtlpMetricsPayload(metrics, resourceAttributes, scopeName, scopeVersion) {
+  return {
+    resourceMetrics: [
+      {
+        resource: {
+          attributes: toOtlpResourceKeyValueList(resourceAttributes)
+        },
+        scopeMetrics: [
+          {
+            scope: {
+              name: scopeName,
+              version: scopeVersion
+            },
+            metrics
+          }
+        ]
+      }
+    ]
+  };
+}
+var DEFAULT_HISTOGRAM_BOUNDS;
+var init_metrics_utils = __esm(() => {
+  init_otlp_resource();
+  DEFAULT_HISTOGRAM_BOUNDS = [
+    0,
+    5,
+    10,
+    25,
+    50,
+    75,
+    100,
+    250,
+    500,
+    750,
+    1000,
+    2500,
+    5000,
+    7500,
+    1e4
+  ];
+});
+
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/metrics/config.mjs
+function resolveMetricsConfig(config) {
+  const resourceAttributes = config?.resourceAttributes;
+  return {
+    serviceName: resourceAttributes?.["service.name"] ?? config?.serviceName,
+    serviceVersion: resourceAttributes?.["service.version"] ?? config?.serviceVersion,
+    environment: resourceAttributes?.["deployment.environment"] ?? config?.environment,
+    resourceAttributes,
+    beforeSend: config?.beforeSend,
+    flushIntervalMs: config?.flushIntervalMs ?? DEFAULT_FLUSH_INTERVAL_MS,
+    maxSeriesPerFlush: config?.maxSeriesPerFlush ?? DEFAULT_MAX_SERIES_PER_FLUSH
+  };
+}
+var DEFAULT_FLUSH_INTERVAL_MS = 1e4, DEFAULT_MAX_SERIES_PER_FLUSH = 1000;
+var init_config = () => {};
+
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/metrics/index.mjs
+class PostHogMetrics {
+  constructor(_instance, _config, _logger) {
+    this._instance = _instance;
+    this._config = _config;
+    this._logger = _logger;
+    this._series = new Map;
+    this._flushTimer = new FlushTimer(() => this.flush().catch((e) => {
+      this._logger.error("Metrics flush failed:", e);
+    }));
+    this._flushPromise = null;
+    this._seriesCapWarned = false;
+    this._typeByName = new Map;
+    this._typeCollisionWarned = new Set;
+    this._boundsByHistogram = new Map;
+    this._boundsConflictWarned = new Set;
+    this._boundsCapWarned = false;
+    this._retryAfter = new RetryAfterWindow;
+    this._consecutiveFlushFailures = 0;
+    this._flushJitter = NO_JITTER;
+    this._generation = 0;
+  }
+  count(name, value = 1, options) {
+    this._capture({
+      name,
+      type: "count",
+      value,
+      unit: options?.unit,
+      attributes: options?.attributes
+    });
+  }
+  gauge(name, value, options) {
+    this._capture({
+      name,
+      type: "gauge",
+      value,
+      unit: options?.unit,
+      attributes: options?.attributes
+    });
+  }
+  histogram(name, value, options) {
+    this._capture({
+      name,
+      type: "histogram",
+      value,
+      unit: options?.unit,
+      attributes: options?.attributes,
+      bounds: isArray(options?.bounds) ? options.bounds.slice() : options?.bounds
+    });
+  }
+  flush() {
+    const prev = this._flushPromise;
+    const run = async () => {
+      if (prev)
+        await prev.catch(() => {});
+      await this._doFlush();
+    };
+    const p = run().finally(() => {
+      if (this._flushPromise === p)
+        this._flushPromise = null;
+    });
+    this._flushPromise = p;
+    return p;
+  }
+  drainWindow() {
+    if (this._series.size === 0)
+      return null;
+    const window = this._series;
+    this._startWindow();
+    return this._buildPayload(window);
+  }
+  reset() {
+    this._generation++;
+    this._retryAfter.reset();
+    this._consecutiveFlushFailures = 0;
+    this._flushJitter = NO_JITTER;
+    this._flushTimer.clear();
+    this._flushPromise = null;
+    this._startWindow();
+    this._boundsByHistogram = new Map;
+    this._boundsCapWarned = false;
+  }
+  _startWindow() {
+    this._series = new Map;
+    this._seriesCapWarned = false;
+    this._typeByName = new Map;
+    this._typeCollisionWarned = new Set;
+    this._boundsConflictWarned = new Set;
+  }
+  _capture(sample) {
+    if (this._instance.isDisabled || this._instance.optedOut)
+      return;
+    const filtered = this._runBeforeSend(sample);
+    if (filtered === null)
+      return;
+    if (!filtered.name || typeof filtered.name != "string")
+      return void this._logger.warn("Dropping metric with empty name");
+    if (typeof filtered.value != "number" || !Number.isFinite(filtered.value))
+      return void this._logger.warn(`Dropping metric '${filtered.name}': value must be a finite number`);
+    if (filtered.type !== "count" && filtered.type !== "gauge" && filtered.type !== "histogram")
+      return void this._logger.warn(`Dropping metric '${filtered.name}': unknown type '${String(filtered.type)}'`);
+    if (filtered.type === "count" && filtered.value < 0)
+      return void this._logger.warn(`Dropping count '${filtered.name}': counters are monotonic, value must be >= 0`);
+    let attributes;
+    let key;
+    try {
+      attributes = filtered.attributes ? {
+        ...filtered.attributes
+      } : undefined;
+      key = seriesKey(filtered.type, filtered.name, filtered.unit, attributes);
+    } catch (e) {
+      this._logger.warn(`Dropping metric '${filtered.name}': attributes could not be serialized`, e);
+      return;
+    }
+    let state = this._series.get(key);
+    if (!state && !this._admitNewSeries())
+      return;
+    let bounds;
+    if (filtered.type === "histogram") {
+      bounds = this._histogramBounds(filtered.name, filtered.unit, filtered.bounds);
+      if (!bounds)
+        return;
+    }
+    if (!state) {
+      state = {
+        name: filtered.name,
+        type: filtered.type,
+        unit: filtered.unit,
+        attributes,
+        windowStartMs: Date.now(),
+        hist: bounds && emptyHistogram(bounds)
+      };
+      this._series.set(key, state);
+    }
+    const seenType = this._typeByName.get(filtered.name);
+    if (seenType === undefined)
+      this._typeByName.set(filtered.name, filtered.type);
+    else if (seenType !== filtered.type && !this._typeCollisionWarned.has(filtered.name)) {
+      this._typeCollisionWarned.add(filtered.name);
+      this._logger.warn(`Metric name '${filtered.name}' is already used as a ${seenType}; recording it as a ${filtered.type} too will blend both series in charts. Use a distinct name.`);
+    }
+    this._fold(state, filtered.value);
+    const traceContext = this._activeTraceContext();
+    if (traceContext)
+      state.exemplar = {
+        ...traceContext,
+        value: filtered.value,
+        timeMs: Date.now()
+      };
+    this._armFlushTimer();
+  }
+  _activeTraceContext() {
+    try {
+      const parsed = parseTraceparent(this._instance.getActiveSpan?.()?.traceparent());
+      if (parsed && parsed.flags === TRACE_FLAGS_SAMPLED)
+        return {
+          traceId: parsed.traceId,
+          spanId: parsed.spanId
+        };
+    } catch {}
+  }
+  _admitNewSeries() {
+    if (this._series.size < this._config.maxSeriesPerFlush)
+      return true;
+    if (!this._seriesCapWarned) {
+      this._seriesCapWarned = true;
+      this._logger.warn(`Metric series cap reached (${this._config.maxSeriesPerFlush} per flush window); dropping new series until the next flush. Reduce attribute cardinality.`);
+    }
+    return false;
+  }
+  _histogramBounds(name, unit, requested) {
+    if (requested !== undefined && !isValidBounds(requested))
+      return void this._logger.warn(`Dropping histogram '${name}': bounds must be a non-empty array of finite, strictly increasing numbers`);
+    const histogramKey = seriesKey("histogram", name, unit, undefined);
+    const fixed = this._boundsByHistogram.get(histogramKey);
+    if (fixed) {
+      this._warnOnBoundsConflict(name, histogramKey, fixed, requested);
+      return fixed;
+    }
+    if (this._boundsByHistogram.size >= this._config.maxSeriesPerFlush) {
+      if (!this._boundsCapWarned) {
+        this._boundsCapWarned = true;
+        this._logger.warn(`Histogram bounds limit reached (${this._config.maxSeriesPerFlush} distinct histograms); new histograms that pass custom bounds are dropped. Reduce histogram name cardinality.`);
+      }
+      if (requested && !sameBounds(requested, DEFAULT_HISTOGRAM_BOUNDS))
+        return;
+      return DEFAULT_HISTOGRAM_BOUNDS;
+    }
+    const bounds = requested ? requested.slice() : DEFAULT_HISTOGRAM_BOUNDS;
+    this._boundsByHistogram.set(histogramKey, bounds);
+    return bounds;
+  }
+  _warnOnBoundsConflict(name, histogramKey, fixed, requested) {
+    if (sameBounds(fixed, requested ?? DEFAULT_HISTOGRAM_BOUNDS) || this._boundsConflictWarned.has(histogramKey))
+      return;
+    this._boundsConflictWarned.add(histogramKey);
+    this._logger.warn(`Histogram '${name}' already uses the bounds [${fixed.join(", ")}]; samples that pass different bounds are recorded in those buckets.`);
+  }
+  _fold(state, value) {
+    switch (state.type) {
+      case "count":
+        state.total = (state.total ?? 0) + value;
+        break;
+      case "gauge":
+        state.last = value;
+        break;
+      case "histogram": {
+        const hist = state.hist;
+        hist.count += 1;
+        hist.sum += value;
+        hist.min = Math.min(hist.min, value);
+        hist.max = Math.max(hist.max, value);
+        hist.bucketCounts[bucketIndexFor(value, hist.bounds)] += 1;
+        break;
+      }
+    }
+  }
+  _runBeforeSend(sample) {
+    const beforeSend = this._config.beforeSend;
+    if (!beforeSend)
+      return sample;
+    const fns = isArray(beforeSend) ? beforeSend : [
+      beforeSend
+    ];
+    let result = sample;
+    for (const fn of fns)
+      try {
+        const next = fn(result);
+        if (!next) {
+          this._logger.info("Metric was rejected in beforeSend function");
+          return null;
+        }
+        result = next;
+      } catch (e) {
+        this._logger.error("Error in beforeSend function for metric:", e);
+        return null;
+      }
+    return result;
+  }
+  _armFlushTimer() {
+    if (this._flushTimer.pending)
+      return;
+    this._flushTimer.arm(this._nextFlushDelay());
+  }
+  _nextFlushDelay() {
+    return Math.max(backoffDelayMs(this._config.flushIntervalMs, this._consecutiveFlushFailures, this._flushJitter, MAX_FLUSH_BACKOFF_MS), this._retryAfter.remainingMs());
+  }
+  async _doFlush() {
+    this._flushTimer.clear();
+    if (this._series.size === 0)
+      return;
+    const window = this._series;
+    this._startWindow();
+    const generation = this._generation;
+    const outcome = await this._instance._sendMetricsBatch(this._buildPayload(window));
+    if (generation !== this._generation)
+      return;
+    this._retryAfter.record(outcome);
+    if (outcome.kind === "retry-later") {
+      this._consecutiveFlushFailures++;
+      this._flushJitter = drawJitter();
+    } else {
+      this._consecutiveFlushFailures = 0;
+      this._flushJitter = NO_JITTER;
+    }
+    if (this._flushTimer.pending)
+      this._flushTimer.arm(this._nextFlushDelay());
+    switch (outcome.kind) {
+      case "ok":
+        return;
+      case "retry-later":
+        this._mergeWindowBack(window);
+        this._flushTimer.armNoEarlierThan(this._nextFlushDelay());
+        return;
+      case "too-large":
+        this._logger.warn("Metrics batch exceeded the server size limit and was dropped");
+        return;
+      case "fatal":
+        this._logger.error("Failed to send metrics batch:", outcome.error);
+        return;
+    }
+  }
+  _buildPayload(window) {
+    return buildOtlpMetricsPayload(this._buildMetrics(window), buildMetricsResourceAttributes(this._config, this._instance.getLibraryId(), this._instance.getLibraryVersion()), this._instance.getLibraryId(), this._instance.getLibraryVersion());
+  }
+  _buildMetrics(window) {
+    const nowNano = msToUnixNano(Date.now());
+    const byMetric = new Map;
+    for (const state of window.values()) {
+      const metricKey = seriesKey(state.type, state.name, state.unit, undefined);
+      let metric = byMetric.get(metricKey);
+      if (!metric) {
+        metric = {
+          name: state.name,
+          ...state.unit && {
+            unit: state.unit
+          }
+        };
+        if (state.type === "count")
+          metric.sum = {
+            aggregationTemporality: OTLP_TEMPORALITY_DELTA,
+            isMonotonic: true,
+            dataPoints: []
+          };
+        else if (state.type === "gauge")
+          metric.gauge = {
+            dataPoints: []
+          };
+        else
+          metric.histogram = {
+            aggregationTemporality: OTLP_TEMPORALITY_DELTA,
+            dataPoints: []
+          };
+        byMetric.set(metricKey, metric);
+      }
+      const attributes = toOtlpKeyValueList(state.attributes ?? {}, this._logger);
+      const startNano = msToUnixNano(state.windowStartMs);
+      const exemplars = toOtlpExemplars(state.exemplar);
+      if (state.type === "count") {
+        const dp = {
+          attributes,
+          startTimeUnixNano: startNano,
+          timeUnixNano: nowNano,
+          asDouble: state.total ?? 0,
+          ...exemplars
+        };
+        metric.sum.dataPoints.push(dp);
+      } else if (state.type === "gauge") {
+        const dp = {
+          attributes,
+          timeUnixNano: nowNano,
+          asDouble: state.last ?? 0,
+          ...exemplars
+        };
+        metric.gauge.dataPoints.push(dp);
+      } else {
+        const hist = state.hist;
+        const dp = {
+          attributes,
+          startTimeUnixNano: startNano,
+          timeUnixNano: nowNano,
+          count: hist.count,
+          sum: hist.sum,
+          min: hist.min,
+          max: hist.max,
+          bucketCounts: hist.bucketCounts,
+          explicitBounds: hist.bounds,
+          ...exemplars
+        };
+        metric.histogram.dataPoints.push(dp);
+      }
+    }
+    return Array.from(byMetric.values());
+  }
+  _mergeWindowBack(window) {
+    for (const [key, old] of window) {
+      const current = this._series.get(key);
+      if (!current) {
+        if (this._admitNewSeries())
+          this._series.set(key, old);
+        continue;
+      }
+      current.windowStartMs = Math.min(current.windowStartMs, old.windowStartMs);
+      current.exemplar = current.exemplar ?? old.exemplar;
+      switch (current.type) {
+        case "count":
+          current.total = (current.total ?? 0) + (old.total ?? 0);
+          break;
+        case "gauge":
+          break;
+        case "histogram": {
+          const hist = current.hist;
+          const oldHist = old.hist;
+          hist.count += oldHist.count;
+          hist.sum += oldHist.sum;
+          hist.min = Math.min(hist.min, oldHist.min);
+          hist.max = Math.max(hist.max, oldHist.max);
+          for (let i = 0;i < hist.bucketCounts.length; i++)
+            hist.bucketCounts[i] += oldHist.bucketCounts[i];
+          break;
+        }
+      }
+    }
+  }
+}
+function isValidBounds(bounds) {
+  if (!isArray(bounds) || bounds.length === 0)
+    return false;
+  for (let i = 0;i < bounds.length; i++)
+    if (!Number.isFinite(bounds[i]) || i > 0 && bounds[i] <= bounds[i - 1])
+      return false;
+  return true;
+}
+function sameBounds(a, b) {
+  if (a === b)
+    return true;
+  if (a.length !== b.length)
+    return false;
+  for (let i = 0;i < a.length; i++)
+    if (a[i] !== b[i])
+      return false;
+  return true;
+}
+function emptyHistogram(bounds) {
+  return {
+    bounds,
+    count: 0,
+    sum: 0,
+    min: 1 / 0,
+    max: -1 / 0,
+    bucketCounts: new Array(bounds.length + 1).fill(0)
+  };
+}
+function toOtlpExemplars(exemplar) {
+  if (!exemplar)
+    return {};
+  return {
+    exemplars: [
+      {
+        filteredAttributes: [],
+        timeUnixNano: msToUnixNano(exemplar.timeMs),
+        asDouble: exemplar.value,
+        traceId: exemplar.traceId,
+        spanId: exemplar.spanId
+      }
+    ]
+  };
+}
+var OTLP_TEMPORALITY_DELTA = 1;
+var init_metrics = __esm(() => {
+  init_utils();
+  init_flush_timer();
+  init_retry_after();
+  init_backoff();
+  init_otlp_any_value();
+  init_traceparent();
+  init_metrics_utils();
+  init_config();
+});
+
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/traces/sanitize.mjs
 function sanitizeName(name, label, maxLength, logger) {
   if (typeof name == "string" && name.trim())
     return name.length > maxLength ? name.slice(0, maxLength) : name;
@@ -5423,7 +5740,7 @@ function resolveSuppliedTime(value, derived, label, logger) {
 var FALLBACK_SPAN_NAME = "unknown", MAX_TIMESTAMP_MS = 9223372036854, MIN_TIMESTAMP_MS = 0, DEEP_BACKDATE_WARNING_MS = 86400000;
 var init_sanitize = () => {};
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/traces/span.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/traces/span.mjs
 function monotonicNow() {
   const perf = globalThis.performance;
   return typeof perf?.now == "function" ? perf.now() : undefined;
@@ -5564,6 +5881,12 @@ class PostHogSpan {
   }
   traceparent() {
     return formatTraceparent(this._traceId, this._spanId, this._traceFlags);
+  }
+  get traceId() {
+    return this._traceId;
+  }
+  get spanId() {
+    return this._spanId;
   }
   tracestate() {
     return this._traceState ?? null;
@@ -5708,6 +6031,12 @@ class NoopSpan {
     return this;
   }
   traceparent() {
+    return null;
+  }
+  get traceId() {
+    return null;
+  }
+  get spanId() {
     return null;
   }
   tracestate() {
@@ -5920,13 +6249,19 @@ var init_span = __esm(() => {
     traceparent() {
       return this._traceparent;
     }
+    get traceId() {
+      return this._traceparent.split("-")[1] ?? null;
+    }
+    get spanId() {
+      return this._traceparent.split("-")[2] ?? null;
+    }
     tracestate() {
       return this._tracestate ?? null;
     }
   };
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/traces/otlp.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/traces/otlp.mjs
 function spanFlags(record) {
   const traceFlags = parseInt(record.traceFlags, 16);
   const w3c = Number.isFinite(traceFlags) ? 255 & traceFlags : TRACE_FLAGS_SAMPLED2;
@@ -6046,7 +6381,7 @@ var init_otlp = __esm(() => {
   };
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/traces/index.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/traces/index.mjs
 function clockNow() {
   return monotonicNow() ?? Date.now();
 }
@@ -6140,7 +6475,8 @@ class PostHogTraces {
       this._logger.debug("Ignoring an unusable span parent");
     }
     const parent = this._resolveParent(explicitParent, options);
-    this._evictAgedSpans();
+    if (this._liveSpans.size >= this._config.maxLiveSpans)
+      this._evictAgedSpans();
     if (this._liveSpans.size >= this._config.maxLiveSpans) {
       this._recordDrop(1, `the live-span limit (${this._config.maxLiveSpans}) was reached — spans are being started and never ended`);
       return inertSpan(options, this._contextManager.active());
@@ -6612,7 +6948,7 @@ var init_traces = __esm(() => {
   init_backoff();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/traces/context.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/traces/context.mjs
 class SyncSpanContextManager {
   active() {
     return this._active;
@@ -6629,7 +6965,7 @@ class SyncSpanContextManager {
 }
 var init_context = () => {};
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/traces/config.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/traces/config.mjs
 function positiveInteger2(value, fallback) {
   return typeof value == "number" && Number.isInteger(value) && value >= 1 ? value : fallback;
 }
@@ -6693,12 +7029,12 @@ var init_config2 = __esm(() => {
   ];
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/surveys/validation.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/surveys/validation.mjs
 var init_validation = __esm(() => {
   init_types();
 });
 
-// node_modules/.bun/@posthog+core@1.55.0/node_modules/@posthog/core/dist/index.mjs
+// node_modules/.bun/@posthog+core@1.65.0/node_modules/@posthog/core/dist/index.mjs
 var init_dist = __esm(() => {
   init_error_tracking();
   init_featureFlagUtils();
@@ -6719,11 +7055,12 @@ var init_dist = __esm(() => {
   init_cookie();
   init_posthog_core();
   init_posthog_core_stateless();
+  init_privacy();
   init_tracing_headers();
   init_types();
 });
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/extensions/error-tracking/modifiers/context-lines.node.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/extensions/error-tracking/modifiers/context-lines.node.mjs
 import { constants as constants2 } from "node:fs";
 import { open as promises_open } from "node:fs/promises";
 import { isAbsolute as isAbsolute7 } from "node:path";
@@ -7010,7 +7347,7 @@ var init_context_lines_node = __esm(() => {
   LRU_FILE_CONTENTS_FS_READ_FAILED = new ReduceableCache(20);
 });
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/extensions/error-tracking/modifiers/relative-path.node.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/extensions/error-tracking/modifiers/relative-path.node.mjs
 import { isAbsolute as isAbsolute8, relative as relative5, sep as sep9 } from "node:path";
 function createRelativePathModifier(basePath = process.cwd()) {
   const isWindows = sep9 === "\\";
@@ -7027,22 +7364,23 @@ function createRelativePathModifier(basePath = process.cwd()) {
 }
 var init_relative_path_node = () => {};
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/version.mjs
-var version2 = "5.52.4";
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/version.mjs
+var version2 = "5.64.0";
 var init_version = () => {};
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/types.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/types.mjs
 var FeatureFlagError2;
 var init_types3 = __esm(() => {
   FeatureFlagError2 = {
     ERRORS_WHILE_COMPUTING: "errors_while_computing_flags",
     FLAG_MISSING: "flag_missing",
+    LOCAL_EVALUATION_INCONCLUSIVE: "local_evaluation_inconclusive",
     QUOTA_LIMITED: "quota_limited",
     UNKNOWN_ERROR: "unknown_error"
   };
 });
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/feature-flag-evaluations.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/feature-flag-evaluations.mjs
 class FeatureFlagEvaluations {
   constructor(init) {
     this._host = init.host;
@@ -7050,6 +7388,9 @@ class FeatureFlagEvaluations {
     this._groups = init.groups;
     this._disableGeoip = init.disableGeoip;
     this._flags = init.flags;
+    this._unresolvedFlags = Object.freeze({
+      ...init.unresolvedFlags
+    });
     this._requestId = init.requestId;
     this._evaluatedAt = init.evaluatedAt;
     this._flagDefinitionsLoadedAt = init.flagDefinitionsLoadedAt;
@@ -7060,12 +7401,12 @@ class FeatureFlagEvaluations {
   }
   isEnabled(key, options = {}) {
     const flag = this._flags[key];
-    this._recordAccess(key);
+    this._recordAccess(key, options.sendFeatureFlagEvents);
     return flag?.enabled ?? options.defaultValue ?? false;
   }
-  getFlag(key) {
+  getFlag(key, options = {}) {
     const flag = this._flags[key];
-    this._recordAccess(key);
+    this._recordAccess(key, options.sendFeatureFlagEvents);
     if (!flag)
       return;
     if (!flag.enabled)
@@ -7101,6 +7442,9 @@ class FeatureFlagEvaluations {
   get keys() {
     return Object.keys(this._flags);
   }
+  get unresolvedFlags() {
+    return this._unresolvedFlags;
+  }
   _getEventProperties() {
     const properties = {};
     const activeFlags = [];
@@ -7132,8 +7476,10 @@ class FeatureFlagEvaluations {
       isSlice: true
     });
   }
-  _recordAccess(key) {
+  _recordAccess(key, sendFeatureFlagEvents) {
     this._accessed.add(key);
+    if (!this._host.resolveSendFeatureFlagEvents(sendFeatureFlagEvents))
+      return;
     if (this._distinctId === "")
       return;
     if (this._isSlice && !(key in this._flags))
@@ -7161,7 +7507,7 @@ class FeatureFlagEvaluations {
     if (this._quotaLimited)
       errors.push(FeatureFlagError2.QUOTA_LIMITED);
     if (flag === undefined)
-      errors.push(FeatureFlagError2.FLAG_MISSING);
+      errors.push(Object.prototype.hasOwnProperty.call(this._unresolvedFlags, key) ? FeatureFlagError2.LOCAL_EVALUATION_INCONCLUSIVE : FeatureFlagError2.FLAG_MISSING);
     if (errors.length > 0)
       properties.$feature_flag_error = errors.join(",");
     this._host.captureFlagCalledEventIfNeeded({
@@ -7178,11 +7524,29 @@ var init_feature_flag_evaluations = __esm(() => {
   init_types3();
 });
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/extensions/feature-flags/feature-flags.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/extensions/feature-flags/feature-flags.mjs
+function normalizeEvaluationRuntime(value) {
+  return value === "client" || value === "server" ? value : "all";
+}
+function evaluationRuntimesMatch(a, b) {
+  return a === b || a === "all" || b === "all";
+}
 function setCustomErrorPrototype(error, constructor) {
   error.name = constructor.name;
   Error.captureStackTrace(error, constructor);
   Object.setPrototypeOf(error, constructor.prototype);
+}
+function pickUnresolvedReason(current, next) {
+  if (current === undefined)
+    return next;
+  return UNRESOLVED_REASON_PRECEDENCE.indexOf(next) < UNRESOLVED_REASON_PRECEDENCE.indexOf(current) ? next : current;
+}
+function preserveRegexUncertainty(error, original) {
+  if (original instanceof InconclusiveMatchError && Symbol.for("posthog.requiresServerRegexEvaluation") in original)
+    Object.defineProperty(error, Symbol.for("posthog.requiresServerRegexEvaluation"), {
+      value: true
+    });
+  return error;
 }
 
 class FeatureFlagsPoller {
@@ -7192,6 +7556,7 @@ class FeatureFlagsPoller {
     this.backOffCount = 0;
     this.pollerStopped = false;
     this.filteredOutFlagKeys = new Set;
+    this.warnedUnresolvableFlags = new Map;
     this.pollingInterval = pollingInterval;
     this.personalApiKey = personalApiKey;
     this.featureFlags = [];
@@ -7219,6 +7584,24 @@ class FeatureFlagsPoller {
   logMsgIfDebug(fn) {
     if (this.debugMode)
       fn();
+  }
+  currentDefinitions() {
+    return {
+      featureFlagsByKey: this.featureFlagsByKey,
+      groupTypeMapping: this.groupTypeMapping,
+      cohorts: this.cohorts,
+      filteredOutFlagKeys: this.filteredOutFlagKeys,
+      propertyMatchingVersion: this.propertyMatchingVersion
+    };
+  }
+  withEvaluationSnapshot(context) {
+    if (context.definitions)
+      return context;
+    return {
+      ...context,
+      evaluationCache: {},
+      definitions: this.currentDefinitions()
+    };
   }
   createEvaluationContext(distinctId, groups = {}, personProperties = {}, groupProperties = {}, evaluationCache = {}) {
     return {
@@ -7255,34 +7638,42 @@ class FeatureFlagsPoller {
     await this.loadFeatureFlags();
     const response = {};
     const payloads = {};
+    const unresolved = {};
     let fallbackToFlags = this.featureFlags.length == 0;
     const flagsToEvaluate = flagKeysToExplicitlyEvaluate ? flagKeysToExplicitlyEvaluate.map((key) => this.featureFlagsByKey[key]).filter(Boolean) : this.featureFlags;
-    const sharedEvaluationContext = {
+    const sharedEvaluationContext = this.withEvaluationSnapshot({
       ...evaluationContext,
-      evaluationCache: evaluationContext.evaluationCache ?? {}
-    };
+      definitions: undefined
+    });
     await Promise.all(flagsToEvaluate.map(async (flag) => {
       try {
-        const { value: matchValue, payload: matchPayload } = await this.computeFlagAndPayloadLocally(flag, sharedEvaluationContext);
+        const { value: matchValue, payload: matchPayload } = await this.computeFlagAndPayloadLocally(flag, sharedEvaluationContext, {
+          skipLoadCheck: true
+        });
         response[flag.key] = matchValue;
         if (matchPayload)
           payloads[flag.key] = matchPayload;
       } catch (e) {
-        if (e instanceof RequiresServerEvaluation || e instanceof InconclusiveMatchError)
+        if (e instanceof RequiresServerEvaluation || e instanceof InconclusiveMatchError) {
           this.logMsgIfDebug(() => console.debug(`${e.name} when computing flag locally: ${flag.key}: ${e.message}`));
-        else if (e instanceof Error)
+          unresolved[flag.key] = e.reason;
+        } else if (e instanceof Error)
           this.onError?.(new Error(`Error computing flag locally: ${flag.key}: ${e}`));
-        fallbackToFlags = true;
+        if (evaluationRuntimesMatch(normalizeEvaluationRuntime(flag.evaluation_runtime), "server"))
+          fallbackToFlags = true;
       }
     }));
     return {
       response,
       payloads,
+      unresolved,
       fallbackToFlags
     };
   }
   async computeFlagAndPayloadLocally(flag, evaluationContext, options = {}) {
     const { matchValue, skipLoadCheck = false } = options;
+    if (this.loadedSuccessfullyOnce)
+      evaluationContext = this.withEvaluationSnapshot(evaluationContext);
     if (!skipLoadCheck)
       await this.loadFeatureFlags();
     if (!this.loadedSuccessfullyOnce)
@@ -7290,9 +7681,11 @@ class FeatureFlagsPoller {
         value: false,
         payload: null
       };
+    evaluationContext = this.withEvaluationSnapshot(evaluationContext);
+    flag = evaluationContext.definitions.featureFlagsByKey[flag.key] ?? flag;
     let flagValue;
     flagValue = matchValue !== undefined ? matchValue : await this.computeFlagValueLocally(flag, evaluationContext);
-    const payload = this.getFeatureFlagPayload(flag.key, flagValue);
+    const payload = resolveFeatureFlagPayload(flag.filters?.payloads, flagValue);
     return {
       value: flagValue,
       payload
@@ -7303,11 +7696,11 @@ class FeatureFlagsPoller {
     if (!flag.active)
       return false;
     if (flag.ensure_experience_continuity)
-      throw new InconclusiveMatchError("Flag has experience continuity enabled");
+      throw new InconclusiveMatchError("Flag has experience continuity enabled", "experience_continuity");
     const flagFilters = flag.filters || {};
     const aggregation_group_type_index = flagFilters.aggregation_group_type_index;
     if (aggregation_group_type_index != null) {
-      const groupName = this.groupTypeMapping[String(aggregation_group_type_index)];
+      const groupName = evaluationContext.definitions.groupTypeMapping[String(aggregation_group_type_index)];
       if (!groupName) {
         this.logMsgIfDebug(() => console.warn(`[FEATURE FLAGS] Unknown group type index ${aggregation_group_type_index} for feature flag ${flag.key}`));
         throw new InconclusiveMatchError("Flag has unknown group type index");
@@ -7325,7 +7718,7 @@ class FeatureFlagsPoller {
       const bucketingValue = this.getBucketingValueForFlag(flag, distinctId, personProperties);
       if (bucketingValue === undefined) {
         this.logMsgIfDebug(() => console.warn(`[FEATURE FLAGS] Can't compute feature flag: ${flag.key} without $device_id, falling back to server evaluation`));
-        throw new InconclusiveMatchError(`Can't compute feature flag: ${flag.key} without $device_id`);
+        throw new InconclusiveMatchError(`Can't compute feature flag: ${flag.key} without $device_id`, getDefinitionUnresolvedReason(flag, evaluationContext.definitions) ?? "missing_context");
       }
       return await this.matchFeatureFlagProperties(flag, bucketingValue, personProperties, evaluationContext);
     }
@@ -7341,13 +7734,10 @@ class FeatureFlagsPoller {
     }
     return distinctId;
   }
-  getFeatureFlagPayload(key, flagValue) {
-    return resolveFeatureFlagPayload(this.featureFlagsByKey?.[key]?.filters?.payloads, flagValue);
-  }
   async evaluateFlagDependency(property, properties, evaluationContext) {
     const { evaluationCache } = evaluationContext;
     const targetFlagKey = property.key;
-    if (!this.featureFlagsByKey)
+    if (!evaluationContext.definitions.featureFlagsByKey)
       throw new InconclusiveMatchError("Feature flags not available for dependency evaluation");
     if (!("dependency_chain" in property))
       throw new InconclusiveMatchError(`Flag dependency property for '${targetFlagKey}' is missing required 'dependency_chain' field`);
@@ -7356,27 +7746,30 @@ class FeatureFlagsPoller {
       throw new InconclusiveMatchError(`Flag dependency property for '${targetFlagKey}' has an invalid 'dependency_chain' (expected array, got ${typeof dependencyChain})`);
     if (dependencyChain.length === 0)
       throw new InconclusiveMatchError(`Circular dependency detected for flag '${targetFlagKey}' (empty dependency chain)`);
+    const missingDependency = dependencyChain.find((depFlagKey) => !(depFlagKey in evaluationCache) && !evaluationContext.definitions.featureFlagsByKey[depFlagKey] && !evaluationContext.definitions.filteredOutFlagKeys.has(depFlagKey));
+    if (missingDependency !== undefined)
+      throw new InconclusiveMatchError(`Missing flag dependency '${missingDependency}' for flag '${targetFlagKey}'`);
     for (const depFlagKey of dependencyChain) {
       if (!(depFlagKey in evaluationCache)) {
-        const depFlag = this.featureFlagsByKey[depFlagKey];
+        const depFlag = evaluationContext.definitions.featureFlagsByKey[depFlagKey];
         if (depFlag)
           if (depFlag.active)
             try {
               const depResult = await this.computeFlagValueLocally(depFlag, evaluationContext);
               evaluationCache[depFlagKey] = depResult;
             } catch (error) {
-              throw new InconclusiveMatchError(`Error evaluating flag dependency '${depFlagKey}' for flag '${targetFlagKey}': ${error}`);
+              if (error instanceof RequiresServerEvaluation)
+                throw new RequiresServerEvaluation(`Flag dependency '${depFlagKey}' for flag '${targetFlagKey}' requires server evaluation: ${error.message}`, "unresolved_dependency");
+              throw preserveRegexUncertainty(new InconclusiveMatchError(`Error evaluating flag dependency '${depFlagKey}' for flag '${targetFlagKey}': ${error}`, "unresolved_dependency"), error);
             }
           else
             evaluationCache[depFlagKey] = false;
-        else if (this.filteredOutFlagKeys.has(depFlagKey))
-          evaluationCache[depFlagKey] = false;
         else
-          throw new InconclusiveMatchError(`Missing flag dependency '${depFlagKey}' for flag '${targetFlagKey}'`);
+          evaluationCache[depFlagKey] = false;
       }
       const cachedResult = evaluationCache[depFlagKey];
       if (cachedResult == null)
-        throw new InconclusiveMatchError(`Dependency '${depFlagKey}' could not be evaluated`);
+        throw new InconclusiveMatchError(`Dependency '${depFlagKey}' could not be evaluated`, "unresolved_dependency");
     }
     const targetFlagValue = evaluationCache[targetFlagKey];
     return this.flagEvaluatesToExpectedValue(property.value, targetFlagValue);
@@ -7389,27 +7782,33 @@ class FeatureFlagsPoller {
     return false;
   }
   async matchFeatureFlagProperties(flag, bucketingValue, properties, evaluationContext) {
+    evaluationContext = this.withEvaluationSnapshot(evaluationContext);
     const flagFilters = flag.filters || {};
+    const holdoutVariant = await getHoldoutVariant(flagFilters.holdout, bucketingValue);
+    if (holdoutVariant !== undefined)
+      return holdoutVariant;
     const flagConditions = flagFilters.groups || [];
     const flagAggregation = flagFilters.aggregation_group_type_index;
     const earlyExitEnabled = flagFilters.early_exit ?? false;
     const { groups, groupProperties } = evaluationContext;
-    let isInconclusive = false;
+    let inconclusiveReason;
+    let regexError;
+    const deferredRegexValues = new Set;
     let result;
-    for (const condition of flagConditions)
+    for (const condition of flagConditions) {
+      let effectiveBucketingValue = bucketingValue;
       try {
         const conditionAggregation = condition.aggregation_group_type_index !== undefined ? condition.aggregation_group_type_index : flagAggregation;
         let effectiveProperties = properties;
-        let effectiveBucketingValue = bucketingValue;
         if (conditionAggregation !== flagAggregation) {
           if (conditionAggregation != null) {
-            const groupName = this.groupTypeMapping[String(conditionAggregation)];
+            const groupName = evaluationContext.definitions.groupTypeMapping[String(conditionAggregation)];
             if (!groupName || !(groupName in groups)) {
               this.logMsgIfDebug(() => console.debug(`[FEATURE FLAGS] Skipping group condition for flag '${flag.key}': group type index ${conditionAggregation} not available`));
               continue;
             }
             if (!(groupName in groupProperties)) {
-              isInconclusive = true;
+              inconclusiveReason = pickUnresolvedReason(inconclusiveReason, "missing_context");
               continue;
             }
             effectiveProperties = groupProperties[groupName];
@@ -7424,41 +7823,94 @@ class FeatureFlagsPoller {
           break;
         }
         if (earlyExitEnabled && matchResult === "out_of_rollout_bound") {
-          if (isInconclusive)
+          if (inconclusiveReason)
             break;
           return false;
         }
       } catch (e) {
-        if (e instanceof RequiresServerEvaluation)
-          throw e;
-        if (e instanceof InconclusiveMatchError)
-          isInconclusive = true;
-        else
+        if (e instanceof RequiresServerEvaluation) {
+          let definitionReason;
+          try {
+            definitionReason = getDefinitionUnresolvedReason(flag, evaluationContext.definitions);
+          } catch {}
+          const reason = pickUnresolvedReason(pickUnresolvedReason(inconclusiveReason, e.reason), definitionReason ?? e.reason);
+          throw reason === e.reason ? e : new RequiresServerEvaluation(e.message, reason);
+        }
+        if (e instanceof InconclusiveMatchError) {
+          inconclusiveReason = pickUnresolvedReason(inconclusiveReason, e.reason);
+          if (Symbol.for("posthog.requiresServerRegexEvaluation") in e) {
+            regexError = e;
+            if (earlyExitEnabled && condition.rollout_percentage != null && await getFeatureFlagHash(flag.key, effectiveBucketingValue) > condition.rollout_percentage / 100)
+              deferredRegexValues.add(false);
+            else {
+              const variants = flagFilters.multivariate?.variants || [];
+              const override = condition.variant;
+              deferredRegexValues.add(override && variants.some((variant) => variant.key === override) ? override : await this.getMatchingVariant(flag, effectiveBucketingValue) || true);
+            }
+          }
+        } else
           throw e;
       }
-    if (result !== undefined)
+    }
+    if (result !== undefined && !(regexError && [
+      ...deferredRegexValues
+    ].some((value) => value !== result)))
       return result;
-    if (isInconclusive)
-      throw new InconclusiveMatchError("Can't determine if feature flag is enabled or not with given properties");
+    if (inconclusiveReason)
+      throw preserveRegexUncertainty(new InconclusiveMatchError("Can't determine if feature flag is enabled or not with given properties", inconclusiveReason), regexError);
     return false;
   }
   async isConditionMatch(flag, bucketingValue, condition, properties, evaluationContext) {
+    evaluationContext = this.withEvaluationSnapshot(evaluationContext);
+    const definitions = evaluationContext.definitions;
     const rolloutPercentage = condition.rollout_percentage;
     const warnFunction = (msg) => {
       this.logMsgIfDebug(() => console.warn(msg));
     };
     if ((condition.properties || []).length > 0) {
+      let inconclusiveReason;
+      let regexError;
+      let serverEvaluationError;
       for (const prop of condition.properties) {
         const propertyType = prop.type;
         let matches = false;
-        if (propertyType === "cohort") {
-          const inCohort = await matchCohort(prop, properties, this.cohorts, this.debugMode, (depProp) => this.evaluateFlagDependency(depProp, properties, evaluationContext));
-          matches = prop.operator === "not_in" ? !inCohort : inCohort;
-        } else
-          matches = propertyType === "flag" ? await this.evaluateFlagDependency(prop, properties, evaluationContext) : matchProperty(prop, properties, warnFunction);
+        try {
+          if (propertyType === "cohort") {
+            const inCohort = await matchCohort(prop, properties, definitions.cohorts, this.debugMode, (depProp) => this.evaluateFlagDependency(depProp, properties, evaluationContext), definitions.propertyMatchingVersion);
+            matches = prop.operator === "not_in" ? !inCohort : inCohort;
+          } else if (propertyType === "flag")
+            matches = await this.evaluateFlagDependency(prop, properties, evaluationContext);
+          else if (Object.prototype.hasOwnProperty.call(properties, prop.key))
+            matches = matchProperty(prop, properties, warnFunction, definitions.propertyMatchingVersion);
+          else {
+            assertFeatureFlagFilterSupported(prop);
+            inconclusiveReason = pickUnresolvedReason(inconclusiveReason, "missing_context");
+            continue;
+          }
+        } catch (e) {
+          if (e instanceof RequiresServerEvaluation) {
+            if (inconclusiveReason === undefined)
+              serverEvaluationError ??= e;
+            inconclusiveReason = pickUnresolvedReason(inconclusiveReason, e.reason);
+            continue;
+          }
+          if (e instanceof InconclusiveMatchError) {
+            if (Symbol.for("posthog.requiresServerRegexEvaluation") in e)
+              regexError = e;
+            inconclusiveReason = pickUnresolvedReason(inconclusiveReason, e.reason);
+            continue;
+          }
+          if (inconclusiveReason !== undefined)
+            break;
+          throw e;
+        }
         if (!matches)
           return "no_match";
       }
+      if (serverEvaluationError)
+        throw serverEvaluationError;
+      if (inconclusiveReason)
+        throw preserveRegexUncertainty(new InconclusiveMatchError(`Can't determine if a condition of flag ${flag.key} matches`, inconclusiveReason), regexError);
       if (rolloutPercentage == undefined)
         return "match";
     }
@@ -7483,23 +7935,55 @@ class FeatureFlagsPoller {
       return tags.some((tag) => contexts.has(tag));
     });
   }
+  getEvaluationRuntimeForFlag(key) {
+    const flag = this.featureFlagsByKey[key];
+    return flag ? normalizeEvaluationRuntime(flag.evaluation_runtime) : undefined;
+  }
+  getFlagKeysByEvaluationRuntime(runtime) {
+    return this.featureFlags.filter((flag) => evaluationRuntimesMatch(normalizeEvaluationRuntime(flag.evaluation_runtime), runtime)).map((flag) => flag.key);
+  }
   updateFlagState(flagData) {
     const flags = this.filterFlagsByEvaluationContexts(flagData.flags);
-    this.featureFlags = flags;
-    this.featureFlagsByKey = flags.reduce((acc, curr) => (acc[curr.key] = curr, acc), {});
+    const featureFlagsByKey = flags.reduce((acc, curr) => (acc[curr.key] = curr, acc), {});
     const keptKeys = new Set(flags.map((flag) => flag.key));
-    this.filteredOutFlagKeys = new Set(flagData.flags.filter((flag) => !keptKeys.has(flag.key)).map((flag) => flag.key));
-    this.groupTypeMapping = flagData.groupTypeMapping;
+    const filteredOutFlagKeys = new Set(flagData.flags.filter((flag) => !keptKeys.has(flag.key)).map((flag) => flag.key));
+    this.featureFlags = flags;
+    this.featureFlagsByKey = featureFlagsByKey;
+    this.filteredOutFlagKeys = filteredOutFlagKeys;
+    this.groupTypeMapping = flagData.group_type_mapping ?? flagData.groupTypeMapping ?? {};
     this.cohorts = flagData.cohorts;
+    this.propertyMatchingVersion = flagData.property_matching_version ?? flagData.propertyMatchingVersion;
     this.loadedSuccessfullyOnce = true;
-    this.onMinimalFlagCalledEvents?.(flagData.minimalFlagCalledEvents === true);
+    this.onMinimalFlagCalledEvents?.((flagData.minimal_flag_called_events ?? flagData.minimalFlagCalledEvents) === true);
   }
-  warnAboutExperienceContinuityFlags(flags) {
-    if (this.strictLocalEvaluation)
-      return;
-    const experienceContinuityFlags = flags.filter((f) => f.ensure_experience_continuity);
-    if (experienceContinuityFlags.length > 0)
-      console.warn(`[PostHog] You are using local evaluation but ${experienceContinuityFlags.length} flag(s) have experience continuity enabled: ${experienceContinuityFlags.map((f) => f.key).join(", ")}. Experience continuity is incompatible with local evaluation and will cause a server request on every flag evaluation, negating local evaluation cost savings. To avoid server requests and unexpected costs, either disable experience continuity on these flags in PostHog, use strictLocalEvaluation: true in client init, or pass onlyEvaluateLocally: true per flag call (flags that cannot be evaluated locally will return undefined).`);
+  warnAboutUnresolvableFlags(flags) {
+    const experienceContinuityFlags = [];
+    const unsupportedDefinitionFlags = [];
+    const warnedFlags = new Map;
+    const definitions = this.currentDefinitions();
+    for (const flag of flags) {
+      if (!evaluationRuntimesMatch(normalizeEvaluationRuntime(flag.evaluation_runtime), "server"))
+        continue;
+      const reason = getDefinitionUnresolvedReason(flag, definitions);
+      if (!reason)
+        continue;
+      const fingerprint = JSON.stringify(flag);
+      warnedFlags.set(flag.key, fingerprint);
+      if (this.warnedUnresolvableFlags.get(flag.key) !== fingerprint)
+        if (reason === "experience_continuity")
+          experienceContinuityFlags.push(flag.key);
+        else
+          unsupportedDefinitionFlags.push(flag.key);
+    }
+    this.warnedUnresolvableFlags = warnedFlags;
+    if (experienceContinuityFlags.length > 0) {
+      const consequence = this.strictLocalEvaluation ? "With strictLocalEvaluation enabled these flags are left unresolved. To evaluate them locally, disable experience continuity on these flags in PostHog." : "Experience continuity is incompatible with local evaluation and will cause a server request on every flag evaluation, negating local evaluation cost savings. To avoid server requests and unexpected costs, either disable experience continuity on these flags in PostHog, use strictLocalEvaluation: true in client init, or pass onlyEvaluateLocally: true per flag call (flags that cannot be evaluated locally will return undefined).";
+      console.warn(`[PostHog] You are using local evaluation but ${experienceContinuityFlags.length} flag(s) have experience continuity enabled and cannot be resolved locally (reason: experience_continuity): ${experienceContinuityFlags.join(", ")}. ` + consequence);
+    }
+    if (unsupportedDefinitionFlags.length > 0) {
+      const consequence = this.strictLocalEvaluation ? "With strictLocalEvaluation enabled these flags are left unresolved when evaluation reaches that part." : "Evaluating these flags falls back to a server request when evaluation reaches that part.";
+      console.warn(`[PostHog] You are using local evaluation but ${unsupportedDefinitionFlags.length} flag(s) use something local evaluation does not support, such as a static cohort, an unknown operator, or a missing or circular flag dependency (reason: unsupported_definition): ${unsupportedDefinitionFlags.join(", ")}. ${consequence} To evaluate them locally, change these flags in PostHog or upgrade posthog-node.`);
+    }
   }
   async loadFromCache(debugMessage) {
     if (!this.cacheProvider)
@@ -7510,7 +7994,7 @@ class FeatureFlagsPoller {
         this.updateFlagState(cached);
         this.logMsgIfDebug(() => console.debug(`[FEATURE FLAGS] ${debugMessage} (${cached.flags.length} flags)`));
         this.onLoad?.(this.featureFlags.length);
-        this.warnAboutExperienceContinuityFlags(this.featureFlags);
+        this.warnAboutUnresolvableFlags(this.featureFlags);
         return true;
       }
       return false;
@@ -7537,9 +8021,10 @@ class FeatureFlagsPoller {
     return this.flagDefinitionsLoadedAt;
   }
   getPollingInterval() {
+    const interval = this.pollingInterval ?? 30000;
     if (!this.shouldBeginExponentialBackoff)
-      return this.pollingInterval;
-    return Math.min(SIXTY_SECONDS, this.pollingInterval * 2 ** this.backOffCount);
+      return interval;
+    return Math.min(SIXTY_SECONDS, interval * 2 ** this.backOffCount);
   }
   beginBackoff() {
     this.shouldBeginExponentialBackoff = true;
@@ -7557,6 +8042,8 @@ class FeatureFlagsPoller {
       this.poller = undefined;
     }
     try {
+      if (this.cacheProvider && !this.personalApiKey)
+        return void await this.loadFromCache("Loaded flags from cache (cache-only reader)");
       let shouldFetch = true;
       if (this.cacheProvider)
         try {
@@ -7591,6 +8078,7 @@ class FeatureFlagsPoller {
           this.filteredOutFlagKeys = new Set;
           this.groupTypeMapping = {};
           this.cohorts = {};
+          this.propertyMatchingVersion = undefined;
           this.onMinimalFlagCalledEvents?.(false);
           return;
         case 403:
@@ -7604,11 +8092,17 @@ class FeatureFlagsPoller {
           if (!("flags" in responseJson))
             return void this.onError?.(new Error(`Invalid response when getting feature flags: ${JSON.stringify(responseJson)}`));
           this.flagsEtag = res.headers?.get("ETag") ?? undefined;
+          const groupTypeMapping = responseJson.group_type_mapping || {};
+          const minimalFlagCalledEvents = responseJson.minimal_flag_called_events === true;
           const flagData = {
             flags: responseJson.flags ?? [],
-            groupTypeMapping: responseJson.group_type_mapping || {},
+            group_type_mapping: groupTypeMapping,
             cohorts: responseJson.cohorts || {},
-            minimalFlagCalledEvents: responseJson.minimal_flag_called_events === true
+            minimal_flag_called_events: minimalFlagCalledEvents,
+            property_matching_version: responseJson.property_matching_version,
+            propertyMatchingVersion: responseJson.property_matching_version,
+            groupTypeMapping,
+            minimalFlagCalledEvents
           };
           this.updateFlagState(flagData);
           this.flagDefinitionsLoadedAt = Date.now();
@@ -7620,7 +8114,7 @@ class FeatureFlagsPoller {
               this.onError?.(new Error(`Failed to store in cache: ${err}`));
             }
           this.onLoad?.(this.featureFlags.length);
-          this.warnAboutExperienceContinuityFlags(this.featureFlags);
+          this.warnAboutUnresolvableFlags(this.featureFlags);
           break;
         }
         default:
@@ -7630,7 +8124,7 @@ class FeatureFlagsPoller {
       if (err instanceof ClientError)
         this.onError?.(err);
     } finally {
-      if (!this.pollerStopped)
+      if (!this.pollerStopped && this.pollingInterval !== null)
         this.poller = setTimeout(() => this.loadFeatureFlags(true), this.getPollingInterval());
     }
   }
@@ -7648,6 +8142,8 @@ class FeatureFlagsPoller {
     };
   }
   async _requestFeatureFlagDefinitions() {
+    if (!this.personalApiKey)
+      throw new ClientError("A secretKey or personalApiKey is required to fetch feature flag definitions from PostHog.");
     const url = `${this.host}/flags/definitions?token=${this.projectApiKey}&send_cohorts`;
     const options = this.getPersonalApiKeyRequestOptions("GET", this.flagsEtag);
     let abortTimeout = null;
@@ -7706,33 +8202,74 @@ class FeatureFlagsPoller {
       }
   }
 }
-function matchProperty(property, propertyValues, warnFunction) {
+function getDefinitionUnresolvedReason(flag, definitions) {
+  if (!flag.active)
+    return;
+  if (flag.ensure_experience_continuity)
+    return "experience_continuity";
+  const flagFilters = flag.filters || {};
+  const aggregation = flagFilters.aggregation_group_type_index;
+  if (aggregation != null && !definitions.groupTypeMapping[String(aggregation)])
+    return "unsupported_definition";
+  const usesUnsupportedProperty = (flagFilters.groups || []).some((condition) => (condition.properties || []).some((property) => isUnsupportedProperty(property, definitions, new Set)));
+  return usesUnsupportedProperty ? "unsupported_definition" : undefined;
+}
+function isUnsupportedProperty(property, definitions, visitedCohortIds) {
+  if (property.type === "flag") {
+    const dependencyChain = property.dependency_chain;
+    if (!Array.isArray(dependencyChain) || dependencyChain.length === 0)
+      return true;
+    return dependencyChain.some((key) => !definitions.featureFlagsByKey[key] && !definitions.filteredOutFlagKeys.has(key));
+  }
+  if (property.type !== "cohort")
+    try {
+      assertFeatureFlagFilterSupported(property);
+      return false;
+    } catch (e) {
+      if (e instanceof InconclusiveMatchError)
+        return true;
+      throw e;
+    }
+  const cohortId = String(property.value);
+  if (!(cohortId in definitions.cohorts))
+    return true;
+  if (visitedCohortIds.has(cohortId))
+    return false;
+  visitedCohortIds.add(cohortId);
+  return isUnsupportedPropertyGroup(definitions.cohorts[cohortId], definitions, visitedCohortIds);
+}
+function isUnsupportedPropertyGroup(group, definitions, visitedCohortIds) {
+  return (group?.values ?? []).some((value) => ("values" in value) ? isUnsupportedPropertyGroup(value, definitions, visitedCohortIds) : isUnsupportedProperty(value, definitions, visitedCohortIds));
+}
+function matchProperty(property, propertyValues, warnFunction, propertyMatchingVersion) {
   return matchFeatureFlagProperty(property, propertyValues, {
-    warnFunction
+    warnFunction,
+    propertyMatchingVersion
   });
 }
 function checkCohortExists(cohortId, cohortProperties) {
   if (!(cohortId in cohortProperties))
     throw new RequiresServerEvaluation(`cohort ${cohortId} not found in local cohorts - likely a static cohort that requires server evaluation`);
 }
-async function matchCohort(property, propertyValues, cohortProperties, debugMode = false, flagDependencyEvaluator) {
+async function matchCohort(property, propertyValues, cohortProperties, debugMode = false, flagDependencyEvaluator, propertyMatchingVersion) {
   const cohortId = String(property.value);
   checkCohortExists(cohortId, cohortProperties);
   const propertyGroup = cohortProperties[cohortId];
-  return matchPropertyGroup(propertyGroup, propertyValues, cohortProperties, debugMode, flagDependencyEvaluator);
+  return matchPropertyGroup(propertyGroup, propertyValues, cohortProperties, debugMode, flagDependencyEvaluator, propertyMatchingVersion);
 }
-async function matchPropertyGroup(propertyGroup, propertyValues, cohortProperties, debugMode = false, flagDependencyEvaluator) {
+async function matchPropertyGroup(propertyGroup, propertyValues, cohortProperties, debugMode = false, flagDependencyEvaluator, propertyMatchingVersion) {
   if (!propertyGroup)
     return true;
   const propertyGroupType = propertyGroup.type;
   const properties = propertyGroup.values;
   if (!properties || properties.length === 0)
     return true;
-  let errorMatchingLocally = false;
+  let inconclusiveReason;
+  let regexError;
   if ("values" in properties[0]) {
     for (const prop of properties)
       try {
-        const matches = await matchPropertyGroup(prop, propertyValues, cohortProperties, debugMode, flagDependencyEvaluator);
+        const matches = await matchPropertyGroup(prop, propertyValues, cohortProperties, debugMode, flagDependencyEvaluator, propertyMatchingVersion);
         if (propertyGroupType === "AND") {
           if (!matches)
             return false;
@@ -7744,25 +8281,27 @@ async function matchPropertyGroup(propertyGroup, propertyValues, cohortPropertie
         if (err instanceof InconclusiveMatchError) {
           if (debugMode)
             console.debug(`Failed to compute property ${prop} locally: ${err}`);
-          errorMatchingLocally = true;
+          inconclusiveReason = pickUnresolvedReason(inconclusiveReason, err.reason);
+          if (Symbol.for("posthog.requiresServerRegexEvaluation") in err)
+            regexError = err;
         } else
           throw err;
       }
-    if (errorMatchingLocally)
-      throw new InconclusiveMatchError("Can't match cohort without a given cohort property value");
+    if (inconclusiveReason)
+      throw preserveRegexUncertainty(new InconclusiveMatchError("Can't match cohort without a given cohort property value", inconclusiveReason), regexError);
     return propertyGroupType === "AND";
   }
   for (const prop of properties)
     try {
       let matches;
       if (prop.type === "cohort")
-        matches = await matchCohort(prop, propertyValues, cohortProperties, debugMode, flagDependencyEvaluator);
+        matches = await matchCohort(prop, propertyValues, cohortProperties, debugMode, flagDependencyEvaluator, propertyMatchingVersion);
       else if (prop.type === "flag") {
         if (!flagDependencyEvaluator)
           throw new InconclusiveMatchError(`Flag dependency '${prop.key || "unknown"}' cannot be evaluated without a flag dependency evaluator`);
         matches = await flagDependencyEvaluator(prop);
       } else
-        matches = matchProperty(prop, propertyValues);
+        matches = matchProperty(prop, propertyValues, undefined, propertyMatchingVersion);
       const negation = prop.negation || false;
       if (propertyGroupType === "AND") {
         if (!matches && !negation)
@@ -7781,15 +8320,17 @@ async function matchPropertyGroup(propertyGroup, propertyValues, cohortPropertie
       if (err instanceof InconclusiveMatchError) {
         if (debugMode)
           console.debug(`Failed to compute property ${prop} locally: ${err}`);
-        errorMatchingLocally = true;
+        inconclusiveReason = pickUnresolvedReason(inconclusiveReason, err.reason);
+        if (Symbol.for("posthog.requiresServerRegexEvaluation") in err)
+          regexError = err;
       } else
         throw err;
     }
-  if (errorMatchingLocally)
-    throw new InconclusiveMatchError("can't match cohort without a given cohort property value");
+  if (inconclusiveReason)
+    throw preserveRegexUncertainty(new InconclusiveMatchError("can't match cohort without a given cohort property value", inconclusiveReason), regexError);
   return propertyGroupType === "AND";
 }
-var SIXTY_SECONDS = 60000, ClientError, RequiresServerEvaluation;
+var SIXTY_SECONDS = 60000, ClientError, RequiresServerEvaluation, UNRESOLVED_REASON_PRECEDENCE;
 var init_feature_flags = __esm(() => {
   init_dist();
   ClientError = class ClientError extends Error {
@@ -7802,14 +8343,20 @@ var init_feature_flags = __esm(() => {
     }
   };
   RequiresServerEvaluation = class RequiresServerEvaluation extends Error {
-    constructor(message) {
-      super(message);
+    constructor(message, reason = "unsupported_definition") {
+      super(message), this.reason = reason;
       setCustomErrorPrototype(this, RequiresServerEvaluation);
     }
   };
+  UNRESOLVED_REASON_PRECEDENCE = [
+    "experience_continuity",
+    "unsupported_definition",
+    "unresolved_dependency",
+    "missing_context"
+  ];
 });
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/extensions/error-tracking/autocapture.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/extensions/error-tracking/autocapture.mjs
 function splitNodeOptions(nodeOptions) {
   const args = [];
   let current = "";
@@ -7848,49 +8395,355 @@ function findUnhandledRejectionMode(args) {
 function getUnhandledRejectionMode(execArgv = STARTUP_EXEC_ARGV, nodeOptions = STARTUP_NODE_OPTIONS) {
   return findUnhandledRejectionMode(execArgv) ?? findUnhandledRejectionMode(splitNodeOptions(nodeOptions ?? "")) ?? "throw";
 }
-function captureUncaughtException(captureFn, error, origin) {
-  captureFn(error, {
-    mechanism: {
-      type: origin === "unhandledRejection" ? "onunhandledrejection" : "onuncaughtexception",
-      handled: false
-    }
-  });
+function snapshotAsyncContext() {
+  try {
+    const process2 = globalThis.process;
+    const asyncHooks = process2?.getBuiltinModule?.("node:async_hooks");
+    const snapshot = asyncHooks?.AsyncLocalStorage?.snapshot?.();
+    if (snapshot)
+      return snapshot;
+  } catch {}
+  return (run) => run();
 }
-function makeUncaughtExceptionHandler(captureFn, onFatalFn) {
-  let calledFatalError = false;
-  return Object.assign((error, origin) => {
-    const userProvidedListenersCount = global.process.listeners("uncaughtException").filter((listener) => listener.name !== "domainUncaughtExceptionClear" && listener._posthogErrorHandler !== true).length;
-    captureUncaughtException(captureFn, error, origin);
-    if (!calledFatalError && userProvidedListenersCount === 0) {
-      calledFatalError = true;
-      onFatalFn(error);
-    }
-  }, {
+function isPostHogListener(listener) {
+  return typeof listener == "function" && listener._posthogErrorHandler === true;
+}
+function isWeakKey(value) {
+  return typeof value == "object" && value !== null || typeof value == "function";
+}
+function markListener(listener) {
+  return Object.assign(listener, {
     _posthogErrorHandler: true
   });
 }
-function addUncaughtExceptionListener(captureFn, onFatalFn, mode = STARTUP_UNHANDLED_REJECTION_MODE) {
-  const process2 = globalThis.process;
-  if (!process2)
-    return;
-  if (mode === "strict")
-    return void process2.on("uncaughtExceptionMonitor", (error, origin) => captureUncaughtException(captureFn, error, origin));
-  process2.on("uncaughtException", makeUncaughtExceptionHandler(captureFn, onFatalFn));
+function hasHostUnhandledRejectionListener(process2) {
+  return process2.listeners("unhandledRejection").some((listener) => !isPostHogListener(listener));
 }
-function addUnhandledRejectionListener(captureFn, mode = STARTUP_UNHANDLED_REJECTION_MODE) {
-  const process2 = globalThis.process;
-  if (!process2 || mode === "throw" || mode === "strict" || mode === "warn-with-error-code")
+function isFrameworkControlFlow(reason, depth = 0) {
+  try {
+    if (!isWeakKey(reason))
+      return false;
+    const candidate = reason;
+    if (candidate.$$typeof === REACT_POSTPONE)
+      return true;
+    if (typeof candidate.digest == "string" && CONTROL_FLOW_DIGESTS.has(candidate.digest))
+      return true;
+    return depth < 5 && isFrameworkControlFlow(candidate.cause, depth + 1);
+  } catch {
+    return false;
+  }
+}
+function isAbortError(reason) {
+  try {
+    return isWeakKey(reason) && reason.name === "AbortError";
+  } catch {
+    return false;
+  }
+}
+function isIgnored(exception, origin) {
+  return isFrameworkControlFlow(exception) || origin === "unhandledRejection" && isAbortError(exception);
+}
+function captureTargets(state) {
+  const targets = new Map;
+  for (const client of state.clients) {
+    const chosen = targets.get(client.key);
+    if (!chosen || chosen.getContext() === undefined && client.getContext() !== undefined)
+      targets.set(client.key, client);
+  }
+  for (const [key, client] of state.retired)
+    if (!targets.has(key))
+      targets.set(key, client);
+  return [
+    ...targets.values()
+  ];
+}
+function nextTurn(callback) {
+  if (typeof globalThis.setImmediate == "function")
+    setImmediate(callback);
+  else
+    setTimeout(callback, 0);
+}
+function scheduleTurnReset(state) {
+  if (state.turnResetScheduled)
     return;
-  process2.on("unhandledRejection", (reason) => {
-    captureFn(reason, {
-      mechanism: {
-        type: "onunhandledrejection",
-        handled: false
-      }
+  state.turnResetScheduled = true;
+  nextTurn(() => {
+    nextTurn(() => {
+      state.capturedThisTurn.clear();
+      state.turnResetScheduled = false;
     });
   });
 }
-var UNHANDLED_REJECTION_OPTION_NAMES, UNHANDLED_REJECTION_MODES, STARTUP_EXEC_ARGV, STARTUP_NODE_OPTIONS, STARTUP_UNHANDLED_REJECTION_MODE;
+function recordCapture(state, exception, key, source) {
+  const captured = state.capturedThisTurn.get(exception) ?? new Map;
+  if (!captured.has(key))
+    captured.set(key, source);
+  state.capturedThisTurn.set(exception, captured);
+  scheduleTurnReset(state);
+}
+function wasCapturedThisTurn(state, exception) {
+  const captured = state.capturedThisTurn.get(exception);
+  return captured !== undefined && captureTargets(state).every((client) => captured.has(client.key));
+}
+function dispatch(state, exception, hint, skipKeys) {
+  const captured = state.capturedThisTurn.get(exception);
+  const owners = [];
+  for (const client of captureTargets(state))
+    if (!(captured?.has(client.key) || skipKeys?.has(client.key))) {
+      recordCapture(state, exception, client.key, "autocapture");
+      client.capture(exception, hint);
+      owners.push(client);
+    }
+  return owners;
+}
+function captureDeferred(state, deferred) {
+  if (state.deferred.get(deferred.exception) !== deferred)
+    return [];
+  state.deferred.delete(deferred.exception);
+  return deferred.runInContext(() => dispatch(state, deferred.exception, deferred.hint, deferred.skipKeys));
+}
+function deferCapture(state, exception, hint) {
+  if (wasCapturedThisTurn(state, exception) || state.deferred.has(exception))
+    return;
+  const deferred = {
+    exception,
+    hint,
+    skipKeys: new Set(state.capturedThisTurn.get(exception)?.keys()),
+    runInContext: snapshotAsyncContext()
+  };
+  state.deferred.set(exception, deferred);
+  nextTurn(() => captureDeferred(state, deferred));
+}
+async function exitAfterFatalError(state, error) {
+  try {
+    console.error(error);
+  } catch {}
+  capturePendingExceptions();
+  const clients = new Set([
+    ...state.clients,
+    ...state.retired.values()
+  ]);
+  await Promise.all([
+    ...clients
+  ].map((client) => client.shutdown().catch(() => {
+    return;
+  })));
+  globalThis.process.exit(1);
+}
+function captureUncaughtException(state, error, origin, fatal) {
+  const hint = origin === "unhandledRejection" ? UNHANDLED_REJECTION_HINT : UNCAUGHT_EXCEPTION_HINT;
+  if (!fatal) {
+    if (!isIgnored(error, origin))
+      deferCapture(state, error, hint);
+    return;
+  }
+  const deferred = state.deferred.get(error);
+  if (deferred)
+    captureDeferred(state, deferred);
+  else
+    dispatch(state, error, hint);
+}
+function makeUncaughtExceptionHandler(state) {
+  return markListener((error, origin) => {
+    const process2 = globalThis.process;
+    const userProvidedListenersCount = process2.listeners("uncaughtException").filter((listener) => listener.name !== "domainUncaughtExceptionClear" && !isPostHogListener(listener)).length;
+    const fatal = userProvidedListenersCount === 0;
+    captureUncaughtException(state, error, origin, fatal);
+    if (fatal && !state.calledFatalError) {
+      state.calledFatalError = true;
+      exitAfterFatalError(state, error);
+    }
+  });
+}
+function describeReason(reason) {
+  try {
+    return String(reason);
+  } catch {
+    return typeof reason;
+  }
+}
+function toUnhandledRejectionError(reason) {
+  if (reason instanceof Error)
+    return reason;
+  const error = new Error(`This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason "${describeReason(reason)}".`);
+  return Object.assign(error, {
+    name: "UnhandledPromiseRejection",
+    code: "ERR_UNHANDLED_REJECTION"
+  });
+}
+function applyDefaultRejectionHandling(state, reason) {
+  const process2 = globalThis.process;
+  if (state.mode === "warn-with-error-code") {
+    process2.emitWarning(`Unhandled promise rejection: ${describeReason(reason)}`, "UnhandledPromiseRejectionWarning");
+    process2.exitCode = 1;
+    if (!isIgnored(reason, "unhandledRejection"))
+      dispatch(state, reason, UNHANDLED_REJECTION_HINT);
+    return;
+  }
+  if (process2.versions?.bun) {
+    process2.exitCode = 1;
+    dispatch(state, reason, UNHANDLED_REJECTION_HINT);
+    if (!state.calledFatalError) {
+      state.calledFatalError = true;
+      exitAfterFatalError(state, reason);
+    }
+    return;
+  }
+  const escalated = toUnhandledRejectionError(reason);
+  const emit = process2.emit;
+  emit.call(process2, "uncaughtExceptionMonitor", escalated, "unhandledRejection");
+  emit.call(process2, "uncaughtException", escalated, "unhandledRejection");
+}
+function makeUnhandledRejectionHandler(state, replacesDefaultHandling, isInstalled) {
+  return markListener((reason) => {
+    if (replacesDefaultHandling && !hasHostUnhandledRejectionListener(globalThis.process) && isInstalled())
+      return void applyDefaultRejectionHandling(state, reason);
+    if (!isIgnored(reason, "unhandledRejection"))
+      deferCapture(state, reason, UNHANDLED_REJECTION_HINT);
+  });
+}
+function joinHostRejectionQueue(listener) {
+  const process2 = globalThis.process;
+  if (!posthogGlobal[NEXT_REJECTION_FILTER] || typeof process2.rawListeners != "function")
+    return;
+  if (!process2.rawListeners("unhandledRejection").includes(listener))
+    return;
+  const removeListener = Object.getPrototypeOf(process2).removeListener;
+  removeListener.call(process2, "unhandledRejection", listener);
+  if (!process2.listeners("unhandledRejection").includes(listener))
+    process2.prependListener("unhandledRejection", listener);
+}
+function installListeners(state) {
+  const process2 = globalThis.process;
+  const removals = [];
+  const listen = (event, listener) => {
+    process2.on(event, listener);
+    removals.push(() => process2.removeListener(event, listener));
+  };
+  const remove = () => removals.forEach((removal) => removal());
+  if (state.mode === "strict") {
+    const monitor = (error, origin) => captureUncaughtException(state, error, origin, true);
+    listen("uncaughtExceptionMonitor", monitor);
+    return {
+      remove,
+      areInstalled: () => process2.listeners("uncaughtExceptionMonitor").includes(monitor)
+    };
+  }
+  const uncaughtExceptionHandler = makeUncaughtExceptionHandler(state);
+  listen("uncaughtException", uncaughtExceptionHandler);
+  const replacesDefaultHandling = state.mode === "throw" || state.mode === "warn-with-error-code";
+  const followsHostListeners = replacesDefaultHandling && !process2.versions?.bun;
+  const isInstalled = () => process2.listeners("unhandledRejection").includes(listener);
+  const listener = makeUnhandledRejectionHandler(state, replacesDefaultHandling, isInstalled);
+  const keepFirst = () => {
+    const raw = typeof process2.rawListeners == "function" ? process2.rawListeners("unhandledRejection") : [];
+    if (raw.includes(listener) && raw[0] !== listener) {
+      process2.removeListener("unhandledRejection", listener);
+      process2.prependListener("unhandledRejection", listener);
+    }
+  };
+  listen("newListener", markListener((event, added) => {
+    if (isPostHogListener(added))
+      return;
+    if (event === "unhandledRejection") {
+      if (!isInstalled())
+        process2.prependListener("unhandledRejection", listener);
+      queueMicrotask(() => {
+        keepFirst();
+        joinHostRejectionQueue(listener);
+      });
+    } else if (event === NEXT_LISTENER_EVENT)
+      queueMicrotask(() => {
+        if (!isInstalled())
+          process2.prependListener("unhandledRejection", listener);
+      });
+  }));
+  if (followsHostListeners) {
+    listen("removeListener", markListener((event) => {
+      if (event === "unhandledRejection" && isInstalled() && !hasHostUnhandledRejectionListener(process2))
+        process2.removeListener("unhandledRejection", listener);
+    }));
+    if (hasHostUnhandledRejectionListener(process2))
+      process2.prependListener("unhandledRejection", listener);
+  } else
+    process2.prependListener("unhandledRejection", listener);
+  joinHostRejectionQueue(listener);
+  removals.push(() => {
+    process2.removeListener("unhandledRejection", listener);
+    if (typeof process2.rawListeners == "function" && process2.rawListeners("unhandledRejection").includes(listener)) {
+      const removeListener = Object.getPrototypeOf(process2).removeListener;
+      removeListener.call(process2, "unhandledRejection", listener);
+    }
+  });
+  return {
+    remove,
+    areInstalled: () => process2.listeners("uncaughtException").includes(uncaughtExceptionHandler) && (followsHostListeners || isInstalled())
+  };
+}
+function startExceptionAutocapture(client, mode = STARTUP_UNHANDLED_REJECTION_MODE) {
+  if (!globalThis.process?.on)
+    return () => {
+      return;
+    };
+  let state = posthogGlobal[STATE_KEY];
+  if (state) {
+    if (!state.listeners.areInstalled()) {
+      state.listeners.remove();
+      state.listeners = installListeners(state);
+    }
+  } else {
+    const created = {
+      mode,
+      clients: new Set,
+      retired: new Map,
+      capturedThisTurn: new Map,
+      deferred: new Map,
+      turnResetScheduled: false,
+      calledFatalError: false,
+      listeners: {
+        remove: () => {
+          return;
+        },
+        areInstalled: () => true
+      }
+    };
+    created.listeners = installListeners(created);
+    posthogGlobal[STATE_KEY] = created;
+    state = created;
+  }
+  state.clients.add(client);
+  state.retired.delete(client.key);
+  const activeState = state;
+  return () => {
+    if (!activeState.clients.delete(client))
+      return;
+    if (![
+      ...activeState.clients
+    ].some((other) => other.key === client.key))
+      activeState.retired.set(client.key, client);
+  };
+}
+function claimExplicitCapture(error, key) {
+  const state = posthogGlobal[STATE_KEY];
+  if (!state)
+    return true;
+  if (state.capturedThisTurn.get(error)?.get(key) === "autocapture")
+    return false;
+  recordCapture(state, error, key, "app");
+  state.deferred.get(error)?.skipKeys.add(key);
+  return true;
+}
+function capturePendingExceptions() {
+  const owners = new Set;
+  const state = posthogGlobal[STATE_KEY];
+  if (state)
+    for (const deferred of [
+      ...state.deferred.values()
+    ])
+      captureDeferred(state, deferred).forEach((owner) => owners.add(owner));
+  return owners;
+}
+var UNHANDLED_REJECTION_OPTION_NAMES, UNHANDLED_REJECTION_MODES, STARTUP_EXEC_ARGV, STARTUP_NODE_OPTIONS, STARTUP_UNHANDLED_REJECTION_MODE, UNHANDLED_REJECTION_HINT, UNCAUGHT_EXCEPTION_HINT, CONTROL_FLOW_DIGESTS, REACT_POSTPONE, NEXT_REJECTION_FILTER, NEXT_LISTENER_EVENT = "Next.UnhandledRejectionFilter.MacguffinEvent", STATE_KEY, posthogGlobal;
 var init_autocapture = __esm(() => {
   UNHANDLED_REJECTION_OPTION_NAMES = [
     "--unhandled-rejections",
@@ -7908,9 +8761,51 @@ var init_autocapture = __esm(() => {
   ];
   STARTUP_NODE_OPTIONS = globalThis.process?.env?.NODE_OPTIONS;
   STARTUP_UNHANDLED_REJECTION_MODE = getUnhandledRejectionMode();
+  UNHANDLED_REJECTION_HINT = {
+    mechanism: {
+      type: "onunhandledrejection",
+      handled: false
+    }
+  };
+  UNCAUGHT_EXCEPTION_HINT = {
+    mechanism: {
+      type: "onuncaughtexception",
+      handled: false
+    }
+  };
+  CONTROL_FLOW_DIGESTS = new Set([
+    "HANGING_PROMISE_REJECTION",
+    "NEXT_PRERENDER_INTERRUPTED",
+    "DYNAMIC_SERVER_USAGE",
+    "BAILOUT_TO_CLIENT_SIDE_RENDERING"
+  ]);
+  REACT_POSTPONE = Symbol.for("react.postpone");
+  NEXT_REJECTION_FILTER = Symbol.for("next.unhandledRejectionFilter");
+  STATE_KEY = Symbol.for("posthog-node.exception-autocapture.v1");
+  posthogGlobal = globalThis;
 });
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/extensions/error-tracking/index.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/extensions/context/event-context.mjs
+function snapshotEventContext(context) {
+  const snapshot = context ? {
+    ...context,
+    properties: {
+      ...context.properties
+    }
+  } : null;
+  return (event) => Object.assign(event, {
+    [capturedContext]: snapshot
+  });
+}
+function getEventContext(event, fallback) {
+  return capturedContext in event ? event[capturedContext] ?? undefined : fallback;
+}
+var capturedContext;
+var init_event_context = __esm(() => {
+  capturedContext = Symbol("capturedContext");
+});
+
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/extensions/error-tracking/index.mjs
 class error_tracking_ErrorTracking {
   constructor(client, options, _logger) {
     this.client = client;
@@ -7926,7 +8821,8 @@ class error_tracking_ErrorTracking {
   static isPreviouslyCapturedError(x) {
     return isObject2(x) && "__posthog_previously_captured_error" in x && x.__posthog_previously_captured_error === true;
   }
-  static async buildEventMessage(builder, error, hint, distinctId, additionalProperties) {
+  static async buildEventMessage(builder, error, hint, distinctId, additionalProperties, context) {
+    const applyContextSnapshot = snapshotEventContext(context);
     const properties = {
       ...additionalProperties
     };
@@ -7935,7 +8831,7 @@ class error_tracking_ErrorTracking {
     const injectedReleaseId = getInjectedReleaseId();
     if (injectedReleaseId)
       properties.$release_id = injectedReleaseId;
-    return {
+    return applyContextSnapshot({
       event: "$exception",
       distinctId,
       properties: {
@@ -7943,18 +8839,37 @@ class error_tracking_ErrorTracking {
         ...properties
       },
       _originatedFromCaptureException: true
-    };
+    });
+  }
+  get destinationKey() {
+    return `${this.client.apiKey}@${this.client.host}`;
   }
   startAutocaptureIfEnabled() {
     if (this.isEnabled()) {
-      addUncaughtExceptionListener(this.onException.bind(this), this.onFatalError.bind(this));
-      addUnhandledRejectionListener(this.onException.bind(this));
+      this._autocaptureClient = {
+        key: this.destinationKey,
+        capture: (exception, hint) => this.onException(exception, hint),
+        getContext: () => this.client.getContext(),
+        flush: () => this.client.flush(),
+        shutdown: () => this.client.shutdown(SHUTDOWN_TIMEOUT)
+      };
+      this._stopAutocapture = startExceptionAutocapture(this._autocaptureClient);
     }
+  }
+  claimExplicitCapture(error) {
+    return claimExplicitCapture(error, this.destinationKey);
+  }
+  capturePendingExceptions() {
+    for (const owner of capturePendingExceptions())
+      if (owner !== this._autocaptureClient)
+        this.client.addPendingPromise(owner.flush().catch(() => {
+          return;
+        }));
   }
   onException(exception, hint) {
     this.client.addPendingPromise((async () => {
       if (!error_tracking_ErrorTracking.isPreviouslyCapturedError(exception)) {
-        const eventMessage = await error_tracking_ErrorTracking.buildEventMessage(this.client.getErrorPropertiesBuilder(), exception, hint);
+        const eventMessage = await error_tracking_ErrorTracking.buildEventMessage(this.client.getErrorPropertiesBuilder(), exception, hint, undefined, undefined, this.client.getContext());
         const exceptionProperties = eventMessage.properties;
         const exceptionType = exceptionProperties?.$exception_list[0]?.type ?? "Exception";
         const isRateLimited = this._rateLimiter.consumeRateLimit(exceptionType);
@@ -7964,28 +8879,53 @@ class error_tracking_ErrorTracking {
           });
         return this.client._capturePreparedEvent(eventMessage, false);
       }
-    })());
-  }
-  async onFatalError(exception) {
-    console.error(exception);
-    await this.client.shutdown(SHUTDOWN_TIMEOUT);
-    globalThis.process.exit(1);
+    })().catch((error) => {
+      this._logger.error("Failed to capture an exception:", error);
+    }));
   }
   isEnabled() {
     return !this.client.isDisabled && this._exceptionAutocaptureEnabled;
   }
   shutdown() {
     this._rateLimiter.stop();
+    this.capturePendingExceptions();
+    this._stopAutocapture?.();
+    this._stopAutocapture = undefined;
   }
 }
 var SHUTDOWN_TIMEOUT = 2000, error_tracking_default;
 var init_error_tracking2 = __esm(() => {
   init_autocapture();
+  init_event_context();
   init_dist();
   error_tracking_default = error_tracking_ErrorTracking;
 });
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/storage-memory.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/extensions/error-tracking/trace-context.mjs
+async function getActiveTraceProperties() {
+  try {
+    const otelApi = globalThis[OTEL_API_GLOBAL_KEY];
+    const span = otelApi?.context?.active().getValue(SPAN_CONTEXT_KEY);
+    const spanContext = span?.spanContext();
+    const traceId = spanContext?.traceId;
+    const spanId = spanContext?.spanId;
+    if (typeof traceId == "string" && typeof spanId == "string" && TRACE_ID_PATTERN.test(traceId) && SPAN_ID_PATTERN.test(spanId) && !/^0+$/.test(traceId) && !/^0+$/.test(spanId))
+      return {
+        $trace_id: traceId.toLowerCase(),
+        $span_id: spanId.toLowerCase()
+      };
+  } catch {}
+  return {};
+}
+var TRACE_ID_PATTERN, SPAN_ID_PATTERN, OTEL_API_GLOBAL_KEY, SPAN_CONTEXT_KEY;
+var init_trace_context = __esm(() => {
+  TRACE_ID_PATTERN = /^[0-9a-f]{32}$/i;
+  SPAN_ID_PATTERN = /^[0-9a-f]{16}$/i;
+  OTEL_API_GLOBAL_KEY = Symbol.for("opentelemetry.js.api.1");
+  SPAN_CONTEXT_KEY = Symbol.for("OpenTelemetry Context Key SPAN");
+});
+
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/storage-memory.mjs
 class PostHogMemoryStorage {
   getProperty(key) {
     return this._memoryStorage[key];
@@ -7999,7 +8939,21 @@ class PostHogMemoryStorage {
 }
 var init_storage_memory = () => {};
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/capture-v1/config.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/extensions/context/listeners.mjs
+function notifyContextListeners(client, requestEntry = false) {
+  for (const listener of listeners.get(client) ?? [])
+    try {
+      listener(requestEntry);
+    } catch {}
+}
+var REGISTRY_KEY, registryHolder, listeners;
+var init_listeners = __esm(() => {
+  REGISTRY_KEY = Symbol.for("posthog-node.context-listeners");
+  registryHolder = globalThis;
+  listeners = registryHolder[REGISTRY_KEY] ??= new WeakMap;
+});
+
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/capture-v1/config.mjs
 function isCaptureMode(value) {
   return value === "v0" || value === "v1";
 }
@@ -8009,14 +8963,14 @@ function resolveCaptureMode() {
 }
 var init_config3 = () => {};
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/capture-v1/routing.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/capture-v1/routing.mjs
 function isLegacyOnlyEvent(message) {
   return typeof message.event == "string" && message.event.startsWith(AI_EVENT_PREFIX);
 }
 var AI_EVENT_PREFIX = "$ai_", ANALYTICS_ROUTE = "analytics", AI_ROUTE = "ai";
 var init_routing = () => {};
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/capture-v1/errors.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/capture-v1/errors.mjs
 var CaptureV1Error;
 var init_errors = __esm(() => {
   CaptureV1Error = class CaptureV1Error extends Error {
@@ -8036,7 +8990,7 @@ var init_errors = __esm(() => {
   };
 });
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/capture-v1/transform.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/capture-v1/transform.mjs
 function coerceBool(value) {
   if (typeof value == "boolean")
     return value;
@@ -8154,7 +9108,7 @@ var init_transform = __esm(() => {
   ];
 });
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/capture-v1/sender.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/capture-v1/sender.mjs
 class V1CaptureSender {
   constructor(config, hooks) {
     this.config = config;
@@ -8410,11 +9364,11 @@ var init_sender = __esm(() => {
   ]);
 });
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/ai-capture/routing.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/ai-capture/routing.mjs
 var AI_CAPTURE_ROUTE = "ai-capture", AI_CAPTURE_ENDPOINT_PATH = "/i/v0/ai/batch/", AI_MAX_EVENT_BYTES = 8388608, AI_BATCH_TARGET_BYTES = 5242880;
 var init_routing2 = () => {};
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/ai-capture/batching.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/ai-capture/batching.mjs
 function eventByteSize(message) {
   return encoder.encode(safeJsonStringify(message)).length;
 }
@@ -8456,7 +9410,514 @@ var init_batching = __esm(() => {
   encoder = new TextEncoder;
 });
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/client.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/emails/errors.mjs
+function emailErrorName(status, code) {
+  if (code === "missing_secret_key" || status === 401)
+    return "missing_api_key";
+  if (status === undefined) {
+    if (code === "network_error")
+      return "service_unavailable";
+    return code.startsWith("invalid_") ? "validation_error" : "application_error";
+  }
+  switch (status) {
+    case 400:
+      return "validation_error";
+    case 403:
+      return "invalid_permission";
+    case 404:
+      return "not_found";
+    case 409:
+      return code === "template_outdated" ? "validation_error" : "concurrent_idempotent_requests";
+    case 422:
+      return code === "idempotency_key_reused" ? "invalid_idempotent_request" : "validation_error";
+    case 429:
+      return code === "quota_limited" ? "monthly_quota_exceeded" : "rate_limit_exceeded";
+    case 503:
+      return "service_unavailable";
+    default:
+      return "application_error";
+  }
+}
+var EmailError;
+var init_errors2 = __esm(() => {
+  EmailError = class EmailError extends Error {
+    constructor(params) {
+      super(params.message, params.cause === undefined ? undefined : {
+        cause: params.cause
+      });
+      this.name = emailErrorName(params.statusCode, params.code);
+      this.code = params.code;
+      this.statusCode = params.statusCode;
+      this.why = params.why;
+      this.fix = params.fix;
+      this.docsUrl = params.docsUrl;
+      this.field = params.field;
+      this.retryAfterMs = params.retryAfterMs;
+    }
+  };
+});
+
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/emails/emails.mjs
+class EmailSender {
+  constructor(config, hooks) {
+    this.inFlight = new Set;
+    this.config = config;
+    this.hooks = hooks;
+  }
+  send(options, ...unexpected) {
+    return this.track(this.sendUntracked(options, unexpected));
+  }
+  get(id) {
+    return this.track(this.getUntracked(id));
+  }
+  track(pending) {
+    this.inFlight.add(pending);
+    pending.finally(() => this.inFlight.delete(pending));
+    return pending;
+  }
+  async drain() {
+    while (this.inFlight.size > 0)
+      await Promise.all(this.inFlight);
+  }
+  async sendUntracked(options, unexpected) {
+    try {
+      refuseSecondArgument(unexpected);
+      const prepared = prepareSend(options, this.config.maxRetries);
+      const { appHost, secretKey } = this.connect("no email was sent", "Sending email needs secretKey, a project secret API key with the transactional_email:write scope.");
+      const headers = this.headers(secretKey, {
+        "Content-Type": "application/json",
+        "Idempotency-Key": prepared.idempotencyKey
+      });
+      const result = await this.withRetries(prepared.maxRetries, async () => parseSendReply(await this.request(appHost + prepared.path, "POST", headers, prepared.body)));
+      for (const warning of result.warnings)
+        this.hooks.logger.warn(`PostHog email warning ${warning.code}: ${warning.message}`);
+      return {
+        data: result,
+        error: null
+      };
+    } catch (error) {
+      return {
+        data: null,
+        error: asEmailError(error, "Sending the email failed unexpectedly.")
+      };
+    }
+  }
+  async getUntracked(id) {
+    try {
+      if (typeof id != "string" || !UUID_PATTERN.test(id))
+        throw invalid("invalid_message_id", "id must be the message ID that send() returned.", "id");
+      const { appHost, secretKey } = this.connect("no email status was read", "Reading an email status needs secretKey, a project secret API key with the transactional_email:read or transactional_email:write scope.");
+      const url = appHost + STATUS_PATH.replace("{messageId}", id.toLowerCase());
+      const headers = this.headers(secretKey, {});
+      const status = await this.withRetries(this.config.maxRetries, async () => parseStatusReply(await this.request(url, "GET", headers)));
+      return {
+        data: status,
+        error: null
+      };
+    } catch (error) {
+      return {
+        data: null,
+        error: asEmailError(error, "Reading the email status failed unexpectedly.")
+      };
+    }
+  }
+  connect(nothingDone, missingSecretKey) {
+    if (this.hooks.isDisabled())
+      throw new EmailError({
+        code: "client_disabled",
+        message: `The PostHog client is disabled, so ${nothingDone}.`
+      });
+    if (this.hooks.isClosed())
+      throw new EmailError({
+        code: "client_closed",
+        message: `The PostHog client is shut down, so ${nothingDone}.`
+      });
+    const appHost = resolveAppHost(this.config.host, this.config.appHost);
+    if (!appHost)
+      throw new EmailError({
+        code: "missing_app_host",
+        message: "The client's host is not PostHog Cloud, so the client can't tell where to send email. Set appHost to your PostHog app host on the client."
+      });
+    const secretKey = this.config.secretKey?.trim();
+    if (!secretKey)
+      throw new EmailError({
+        code: "missing_secret_key",
+        message: missingSecretKey
+      });
+    return {
+      appHost,
+      secretKey
+    };
+  }
+  headers(secretKey, extra) {
+    const headers = {
+      Authorization: `Bearer ${secretKey}`,
+      Accept: "application/json",
+      ...extra
+    };
+    if (this.hooks.userAgent)
+      headers["User-Agent"] = this.hooks.userAgent;
+    if (this.config.migratedFrom)
+      headers["X-PostHog-Migrated-From"] = this.config.migratedFrom;
+    return headers;
+  }
+  async withRetries(maxRetries, attemptOnce) {
+    for (let attempt = 0;; attempt++) {
+      let error;
+      try {
+        return await attemptOnce();
+      } catch (caught) {
+        error = caught instanceof EmailError ? caught : new EmailError({
+          code: "network_error",
+          message: "The request to PostHog failed.",
+          cause: caught
+        });
+      }
+      const delayMs = retryDelayMs(error, attempt, maxRetries);
+      if (delayMs === undefined)
+        throw error;
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
+  }
+  async request(url, method, headers, body) {
+    const controller = new AbortController;
+    const timeoutMs = this.config.requestTimeoutMs;
+    let timer;
+    const deadline = new Promise((_resolve, reject) => {
+      timer = setTimeout(() => {
+        const timeoutError = new Error(`Email request timed out after ${timeoutMs}ms`);
+        timeoutError.name = "AbortError";
+        reject(timeoutError);
+        controller.abort(timeoutError);
+      }, timeoutMs);
+    });
+    const fetchPromise = Promise.resolve().then(() => this.hooks.fetch(url, {
+      method,
+      headers,
+      ...body === undefined ? {} : {
+        body
+      },
+      signal: controller.signal
+    }));
+    fetchPromise.then((lateResponse) => {
+      if (controller.signal.aborted)
+        Promise.resolve(lateResponse.body?.cancel()).catch(() => {});
+    }).catch(() => {});
+    let response;
+    try {
+      response = await Promise.race([
+        fetchPromise,
+        deadline
+      ]);
+      let text;
+      try {
+        text = await Promise.race([
+          response.text(),
+          deadline
+        ]);
+      } catch (error) {
+        if (response.status >= 200 && response.status < 300)
+          throw error;
+        return {
+          status: response.status,
+          payload: null,
+          retryAfterMs: readRetryAfter(response)
+        };
+      }
+      return {
+        status: response.status,
+        payload: parseJson2(text),
+        retryAfterMs: readRetryAfter(response)
+      };
+    } finally {
+      clearTimeout(timer);
+      if (controller.signal.aborted && response)
+        Promise.resolve(response.body?.cancel()).catch(() => {});
+    }
+  }
+}
+function refuseSecondArgument(unexpected) {
+  if (unexpected.some((argument) => argument !== undefined))
+    throw new EmailError({
+      code: "invalid_form",
+      message: "send takes one options object, so no email was sent. Put idempotencyKey and every other option in it."
+    });
+}
+function prepareSend(options, defaultMaxRetries) {
+  const send = options ?? {};
+  const { to, distinctId, idempotencyKey, maxRetries } = send;
+  if (typeof to != "string" || !to.trim())
+    throw invalid("invalid_recipient", "to must be one email address as a nonempty string.", "to");
+  if (distinctId !== undefined && (typeof distinctId != "string" || !distinctId))
+    throw invalid("invalid_distinct_id", "distinctId must be a nonempty string.", "distinctId");
+  const content = contentOf(send, distinctId);
+  if (idempotencyKey !== undefined && (typeof idempotencyKey != "string" || !IDEMPOTENCY_KEY_PATTERN.test(idempotencyKey)))
+    throw invalid("invalid_idempotency_key", "idempotencyKey must be 1 to 255 visible ASCII characters without spaces.", "idempotencyKey");
+  if (maxRetries !== undefined && !isRetryCount(maxRetries))
+    throw invalid("invalid_max_retries", "maxRetries must be a nonnegative integer.", "maxRetries");
+  return {
+    path: SEND_PATH,
+    body: safeJsonStringify({
+      ...content,
+      to
+    }),
+    idempotencyKey: idempotencyKey ?? globalThis.crypto.randomUUID(),
+    maxRetries: isRetryCount(maxRetries) ? maxRetries : defaultMaxRetries
+  };
+}
+function isRetryCount(value) {
+  return typeof value == "number" && Number.isInteger(value) && value >= 0;
+}
+function contentOf(send, distinctId) {
+  if (send.templateId === undefined === (send.templateKey === undefined))
+    throw new EmailError({
+      code: "invalid_form",
+      message: "Send either templateId, or templateKey with subject and html or text."
+    });
+  return send.templateKey === undefined ? templateContent(send, distinctId) : codeContent(send, distinctId);
+}
+function templateContent(send, distinctId) {
+  const { templateId, templateData } = send;
+  if (typeof templateId != "string" || !UUID_PATTERN.test(templateId))
+    throw invalid("invalid_template_id", "templateId must be the template's UUID.", "templateId");
+  if (templateData !== undefined && (typeof templateData != "object" || templateData === null || Array.isArray(templateData)))
+    throw invalid("invalid_template_data", "templateData must be an object.", "templateData");
+  refuseFieldsOutside(send, TEMPLATE_FORM, CODE_FORM);
+  return {
+    template_id: templateId.toLowerCase(),
+    message_data: templateData ?? {},
+    ...distinctId !== undefined && {
+      distinct_id: distinctId
+    }
+  };
+}
+function codeContent(send, distinctId) {
+  const { templateKey, subject, html, text, from, replyTo, captureEngagement } = send;
+  if (typeof templateKey != "string" || !TEMPLATE_KEY_PATTERN.test(templateKey))
+    throw invalid("invalid_template_key", "templateKey can only have letters, digits, hyphens (-) and underscores (_), at most 400.", "templateKey");
+  refuseFieldsOutside(send, CODE_FORM, TEMPLATE_FORM);
+  if (typeof subject != "string")
+    throw invalid("invalid_form", "A send with templateKey needs a subject.", "subject");
+  if (html !== undefined && typeof html != "string")
+    throw invalid("invalid_form", "html must be a string.", "html");
+  if (text !== undefined && typeof text != "string")
+    throw invalid("invalid_form", "text must be a string.", "text");
+  if (html === undefined && text === undefined)
+    throw invalid("invalid_form", "A send with templateKey needs html, text or both.", "html");
+  const sendsReplyTo = replyTo !== undefined && !(Array.isArray(replyTo) && replyTo.length === 0);
+  return {
+    template_key: templateKey,
+    subject,
+    ...html !== undefined && {
+      html
+    },
+    ...text !== undefined && {
+      text
+    },
+    ...from !== undefined && {
+      from
+    },
+    ...sendsReplyTo && {
+      reply_to: typeof replyTo == "string" ? [
+        replyTo
+      ] : replyTo
+    },
+    capture_engagement: captureEngagement ?? true,
+    ...distinctId !== undefined && {
+      distinct_id: distinctId
+    }
+  };
+}
+function refuseFieldsOutside(send, form, otherForm) {
+  const field = Object.entries(send).find(([name, value]) => value !== undefined && !form.fields.has(name))?.[0];
+  if (field === undefined)
+    return;
+  const message = `A send with ${form.name} doesn't take ${field}, so no email was sent.`;
+  if (!otherForm.fields.has(field))
+    throw new EmailError({
+      code: "invalid_form",
+      message,
+      field,
+      fix: `Remove ${field} and send again.`
+    });
+  throw new EmailError({
+    code: "invalid_form",
+    message,
+    field,
+    why: form.why,
+    fix: `Remove ${field}, or ${otherForm.howToSend}.`
+  });
+}
+function fieldSet(...groups) {
+  return new Set(groups.flatMap((group) => Object.keys(group)));
+}
+function invalid(code, message, field) {
+  return new EmailError({
+    code,
+    message,
+    field
+  });
+}
+function resolveAppHost(host, appHost) {
+  const explicit = typeof appHost == "string" ? removeTrailingSlash(appHost.trim()) : "";
+  if (explicit)
+    return CLOUD_APP_HOSTS[explicit] ?? explicit;
+  return CLOUD_APP_HOSTS[removeTrailingSlash(host)];
+}
+function parseJson2(text) {
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
+}
+function readRetryAfter(response) {
+  try {
+    return parseRetryAfterMs(response.headers?.get("retry-after"), Date.now(), Number.MAX_SAFE_INTEGER);
+  } catch {
+    return;
+  }
+}
+function emails_text(value) {
+  return typeof value == "string" && value ? value : undefined;
+}
+function replyFields(payload) {
+  return payload === null || typeof payload != "object" || Array.isArray(payload) ? {} : payload;
+}
+function parseSendReply({ status, payload, retryAfterMs }) {
+  const fields = replyFields(payload);
+  if (status >= 200 && status < 300) {
+    const id = emails_text(fields.message_id);
+    if (!id)
+      throw new EmailError({
+        code: "api_error",
+        message: "PostHog answered without a message ID.",
+        statusCode: status
+      });
+    const warnings = [];
+    if (Array.isArray(fields.warnings)) {
+      for (const warning of fields.warnings)
+        if (warning !== null && typeof warning == "object")
+          warnings.push({
+            code: emails_text(warning.code) ?? "warning",
+            message: emails_text(warning.detail) ?? emails_text(warning.message) ?? "",
+            fix: emails_text(warning.fix)
+          });
+    }
+    return {
+      id,
+      replayed: fields.replayed === true,
+      warnings
+    };
+  }
+  throw replyError(fields, status, retryAfterMs);
+}
+function parseStatusReply({ status, payload, retryAfterMs }) {
+  const fields = replyFields(payload);
+  if (status < 200 || status >= 300)
+    throw replyError(fields, status, retryAfterMs);
+  const id = emails_text(fields.id);
+  const deliveryStatus = emails_text(fields.status);
+  const createdAt = emails_text(fields.created_at);
+  const statusAt = emails_text(fields.status_at);
+  if (!id || !deliveryStatus || !createdAt || !statusAt)
+    throw new EmailError({
+      code: "api_error",
+      message: "PostHog answered without an email status.",
+      statusCode: status
+    });
+  return {
+    id,
+    status: deliveryStatus,
+    createdAt,
+    statusAt,
+    reason: emails_text(fields.reason) ?? null
+  };
+}
+function replyError(fields, status, retryAfterMs) {
+  return new EmailError({
+    code: emails_text(fields.code) ?? "api_error",
+    message: emails_text(fields.detail) ?? `PostHog answered HTTP ${status}.`,
+    statusCode: status,
+    why: emails_text(fields.why),
+    fix: emails_text(fields.fix),
+    docsUrl: emails_text(fields.docs_url),
+    field: emails_text(fields.attr),
+    retryAfterMs
+  });
+}
+function asEmailError(error, message) {
+  return error instanceof EmailError ? error : new EmailError({
+    code: "unexpected_error",
+    message,
+    cause: error
+  });
+}
+function isRetryable(error) {
+  if (error.statusCode === undefined)
+    return error.code === "network_error";
+  if (error.statusCode === 409)
+    return error.code === "idempotency_key_in_flight";
+  if (error.statusCode === 429)
+    return error.code !== "quota_limited";
+  return error.statusCode === 503;
+}
+function retryDelayMs(error, attempt, maxRetries) {
+  if (attempt >= maxRetries || !isRetryable(error))
+    return;
+  if (error.retryAfterMs !== undefined && error.retryAfterMs > MAX_RETRY_DELAY_MS)
+    return;
+  const backoffMs = Math.min(MAX_RETRY_DELAY_MS, 1000 * 2 ** attempt * (0.8 + 0.4 * Math.random()));
+  return Math.max(backoffMs, error.retryAfterMs ?? 0);
+}
+var SEND_PATH = "/api/projects/@current/messaging/send/email/", STATUS_PATH = "/api/projects/@current/messaging/emails/{messageId}/", US_APP_HOST = "https://us.posthog.com", EU_APP_HOST = "https://eu.posthog.com", CLOUD_APP_HOSTS, MAX_RETRY_DELAY_MS = 30000, UUID_PATTERN, IDEMPOTENCY_KEY_PATTERN, TEMPLATE_KEY_PATTERN, SHARED_FIELDS, TEMPLATE_FIELDS, CODE_FIELDS, TEMPLATE_FORM, CODE_FORM, DEFAULT_EMAIL_REQUEST_TIMEOUT_MS = 15000, DEFAULT_EMAIL_REQUEST_MAX_RETRIES = 2;
+var init_emails = __esm(() => {
+  init_dist();
+  init_errors2();
+  CLOUD_APP_HOSTS = {
+    "https://us.i.posthog.com": US_APP_HOST,
+    "https://us.posthog.com": US_APP_HOST,
+    "https://app.posthog.com": US_APP_HOST,
+    "https://eu.i.posthog.com": EU_APP_HOST,
+    "https://eu.posthog.com": EU_APP_HOST
+  };
+  UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  IDEMPOTENCY_KEY_PATTERN = /^[\x21-\x7e]{1,255}$/;
+  TEMPLATE_KEY_PATTERN = /^[a-zA-Z0-9_-]{1,400}$/;
+  SHARED_FIELDS = {
+    to: true,
+    distinctId: true,
+    idempotencyKey: true,
+    maxRetries: true
+  };
+  TEMPLATE_FIELDS = {
+    templateId: true,
+    templateData: true
+  };
+  CODE_FIELDS = {
+    templateKey: true,
+    subject: true,
+    from: true,
+    replyTo: true,
+    captureEngagement: true,
+    html: true,
+    text: true
+  };
+  TEMPLATE_FORM = {
+    name: "templateId",
+    fields: fieldSet(SHARED_FIELDS, TEMPLATE_FIELDS),
+    why: "A template made in PostHog sets its own sender, subject and content, and follows the project's engagement setting.",
+    howToSend: "send a template made in PostHog with templateId"
+  };
+  CODE_FORM = {
+    name: "templateKey",
+    fields: fieldSet(SHARED_FIELDS, CODE_FIELDS),
+    why: "A send with templateKey takes its content from your code.",
+    howToSend: "send content from your code with templateKey"
+  };
+});
+
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/client.mjs
 function emitDeprecationWarningOnce(id, message) {
   if (_emittedDeprecations.has(id))
     return;
@@ -8473,6 +9934,12 @@ function normalizePersonalApiKey(value) {
 function normalizeHost(value) {
   const normalizedValue = typeof value == "string" ? value.trim() : "";
   return normalizedValue || DEFAULT_NODE_HOST;
+}
+function positiveNumberOr(value, fallback) {
+  return typeof value == "number" && Number.isFinite(value) && value > 0 ? value : fallback;
+}
+function nonNegativeIntegerOr(value, fallback) {
+  return typeof value == "number" && Number.isFinite(value) && value >= 0 ? Math.floor(value) : fallback;
 }
 function normalizeUnsetPersonProperties(value) {
   const propertyNames = Array.isArray(value) ? value : [
@@ -8499,14 +9966,24 @@ var init_client = __esm(() => {
   init_feature_flag_evaluations();
   init_feature_flags();
   init_error_tracking2();
+  init_trace_context();
   init_storage_memory();
+  init_listeners();
+  init_event_context();
   init_config3();
   init_routing();
   init_sender();
   init_batching();
   init_routing2();
+  init_emails();
   _emittedDeprecations = new Set;
   PostHogBackendClient = class PostHogBackendClient extends PostHogCoreStateless {
+    get distinctIdHasSentFlagCalls() {
+      return Object.fromEntries(this._distinctIdHasSentFlagCalls);
+    }
+    set distinctIdHasSentFlagCalls(value) {
+      this._distinctIdHasSentFlagCalls = new Map(Object.entries(value ?? {}));
+    }
     constructor(apiKey, options = {}) {
       const normalizedApiKey = normalizeApiKey(apiKey);
       const normalizedOptions = {
@@ -8516,19 +9993,20 @@ var init_client = __esm(() => {
         host: normalizeHost(options.host),
         personalApiKey: normalizePersonalApiKey(options.secretKey ?? options.personalApiKey)
       };
-      super(normalizedApiKey, normalizedOptions), this._memoryStorage = new PostHogMemoryStorage, this._aiCaptureRouteActive = false, this._minimalFlagCalledEvents = false;
+      super(normalizedApiKey, normalizedOptions), this._memoryStorage = new PostHogMemoryStorage, this._isShutdown = false, this._aiCaptureRouteActive = false, this._minimalFlagCalledEvents = false;
       this.options = normalizedOptions;
       this.captureMode = resolveCaptureMode();
       this.enableFullAiCapture = normalizedOptions.enableFullAiCapture === true;
+      this.privacyMode = normalizedOptions.privacyMode === true;
       this.context = this.initializeContext();
-      this.options.featureFlagsPollingInterval = typeof normalizedOptions.featureFlagsPollingInterval == "number" ? Math.max(normalizedOptions.featureFlagsPollingInterval, MINIMUM_POLLING_INTERVAL) : THIRTY_SECONDS;
+      this.options.featureFlagsPollingInterval = typeof normalizedOptions.featureFlagsPollingInterval == "number" ? Math.max(normalizedOptions.featureFlagsPollingInterval, MINIMUM_POLLING_INTERVAL) : normalizedOptions.featureFlagsPollingInterval === null ? null : THIRTY_SECONDS;
       if (typeof normalizedOptions.waitUntilDebounceMs == "number")
         this.options.waitUntilDebounceMs = Math.max(normalizedOptions.waitUntilDebounceMs, 0);
       if (typeof normalizedOptions.waitUntilMaxWaitMs == "number")
         this.options.waitUntilMaxWaitMs = Math.max(normalizedOptions.waitUntilMaxWaitMs, 0);
-      if (!this.disabled && normalizedOptions.personalApiKey) {
-        if (normalizedOptions.personalApiKey.includes("phc_"))
-          throw new Error('Your Personal API key is invalid. These keys are prefixed with "phx_" and can be created in PostHog project settings.');
+      if (!this.disabled && (normalizedOptions.personalApiKey || normalizedOptions.flagDefinitionCacheProvider)) {
+        if (normalizedOptions.personalApiKey?.includes("phc_"))
+          throw new Error('A project API key ("phc_...") was provided as secretKey or personalApiKey. Pass the project API key as the first constructor argument. For local evaluation, set secretKey (or the deprecated personalApiKey alias) to a server-only Project Secret API Key ("phs_...") or Personal API Key ("phx_...") with feature flag read access.');
         const shouldEnableLocalEvaluation = normalizedOptions.enableLocalEvaluation !== false;
         if (shouldEnableLocalEvaluation)
           this.featureFlagsPoller = new FeatureFlagsPoller({
@@ -8554,7 +10032,7 @@ var init_client = __esm(() => {
           });
       }
       this.errorTracking = new error_tracking_default(this, normalizedOptions, this._logger);
-      this.distinctIdHasSentFlagCalls = {};
+      this._distinctIdHasSentFlagCalls = new Map;
       this.maxCacheSize = normalizedOptions.maxCacheSize || MAX_CACHE_SIZE;
     }
     enqueue(type, message, options, explicitRoute) {
@@ -8577,6 +10055,7 @@ var init_client = __esm(() => {
       return this._flushKeepingRuntimeAlive(true);
     }
     async flush() {
+      this.errorTracking.capturePendingExceptions();
       return this._flushKeepingRuntimeAlive(false);
     }
     _flushKeepingRuntimeAlive(skipThrottledSpans) {
@@ -8734,6 +10213,24 @@ var init_client = __esm(() => {
       if (!this._metrics)
         this._metrics = new PostHogMetrics(this, resolveMetricsConfig(this.options.metrics), this._logger);
       return this._metrics;
+    }
+    get emails() {
+      if (!this._emails)
+        this._emails = new EmailSender({
+          secretKey: this.options.personalApiKey,
+          host: this.host,
+          appHost: this.options.appHost,
+          requestTimeoutMs: positiveNumberOr(this.options.emailRequestTimeoutMs, DEFAULT_EMAIL_REQUEST_TIMEOUT_MS),
+          maxRetries: nonNegativeIntegerOr(this.options.emailRequestMaxRetries, DEFAULT_EMAIL_REQUEST_MAX_RETRIES),
+          migratedFrom: this.options.migratedFrom
+        }, {
+          fetch: (url, fetchOptions) => this.fetch(url, fetchOptions),
+          isDisabled: () => this.disabled,
+          isClosed: () => this._isShutdown,
+          logger: this._logger,
+          userAgent: this.getCustomUserAgent() || undefined
+        });
+      return this._emails;
     }
     initializeSpanContextManager() {
       return new SyncSpanContextManager;
@@ -8951,6 +10448,12 @@ var init_client = __esm(() => {
     isLocalEvaluationReady() {
       return this.featureFlagsPoller?.isLocalEvaluationReady() ?? false;
     }
+    getFeatureFlagEvaluationRuntime(key) {
+      return this.featureFlagsPoller?.getEvaluationRuntimeForFlag(key);
+    }
+    getFeatureFlagKeysByEvaluationRuntime(evaluationRuntime) {
+      return this.featureFlagsPoller?.getFlagKeysByEvaluationRuntime(evaluationRuntime) ?? [];
+    }
     async waitForLocalEvaluationReady(timeoutMs = THIRTY_SECONDS) {
       if (this.isLocalEvaluationReady())
         return true;
@@ -8978,6 +10481,16 @@ var init_client = __esm(() => {
         distinctId: this.context?.get()?.distinctId,
         options: distinctIdOrOptions
       };
+    }
+    async getFeatureFlagDetailsStateless(distinctId, groups = {}, personProperties = {}, groupProperties = {}, disableGeoip, flagKeysToEvaluate) {
+      const details = await super.getFeatureFlagDetailsStateless(distinctId, groups, personProperties, groupProperties, disableGeoip, flagKeysToEvaluate);
+      if (details !== undefined && !isPlainObject3(details.flags)) {
+        const message = "/flags response has a non-object `flags` field, treating it as a failed request";
+        this._logger.warn(`[FEATURE FLAGS] ${message}`);
+        this._events.emit("error", new Error(message));
+        return;
+      }
+      return details;
     }
     async _getFeatureFlagResult(key, distinctId, options = {}, matchValue) {
       if (this.disabled)
@@ -9031,7 +10544,9 @@ var init_client = __esm(() => {
                 key,
                 enabled: value !== false,
                 variant: typeof value == "string" ? value : undefined,
-                payload: localResult.payload ?? undefined
+                payload: localResult.payload ?? undefined,
+                reason: flagReason,
+                reasonCode: flag.active === false ? "flag_disabled" : undefined
               };
             }
           } catch (e) {
@@ -9042,7 +10557,7 @@ var init_client = __esm(() => {
           }
       }
       if (!flagWasLocallyEvaluated && !onlyEvaluateLocally) {
-        const flagsResponse = await super.getFeatureFlagDetailsStateless(evaluationContext.distinctId, evaluationContext.groups, personProperties, groupProperties, disableGeoip, [
+        const flagsResponse = await this.getFeatureFlagDetailsStateless(evaluationContext.distinctId, evaluationContext.groups, personProperties, groupProperties, disableGeoip, [
           key
         ]);
         if (flagsResponse === undefined)
@@ -9075,7 +10590,9 @@ var init_client = __esm(() => {
               key,
               enabled: flagDetail.enabled,
               variant: flagDetail.variant ?? undefined,
-              payload: parsedPayload
+              payload: parsedPayload,
+              reason: flagReason,
+              reasonCode: flagDetail.reason?.code
             };
           }
           if (errors.length > 0)
@@ -9124,7 +10641,7 @@ var init_client = __esm(() => {
       emitDeprecationWarningOnce("getFeatureFlag", "`getFeatureFlag` is deprecated and will be removed in a future major version. Use `posthog.evaluateFlags(distinctId, ...)` and call `flags.getFlag(key)` instead — this consolidates flag evaluation into a single `/flags` request per incoming request.");
       const result = await this._getFeatureFlagResult(key, distinctId, {
         ...options,
-        sendFeatureFlagEvents: options?.sendFeatureFlagEvents ?? this.options.sendFeatureFlagEvent ?? true
+        sendFeatureFlagEvents: this._resolveSendFeatureFlagEvents(options?.sendFeatureFlagEvents)
       });
       if (result === undefined)
         return;
@@ -9150,7 +10667,7 @@ var init_client = __esm(() => {
         return void this._logger.warn("[PostHog] distinctId is required — pass it explicitly or use withContext()");
       return this._getFeatureFlagResult(key, resolvedDistinctId, {
         ...resolvedOptions,
-        sendFeatureFlagEvents: resolvedOptions?.sendFeatureFlagEvents ?? this.options.sendFeatureFlagEvent ?? true
+        sendFeatureFlagEvents: this._resolveSendFeatureFlagEvents(resolvedOptions?.sendFeatureFlagEvents)
       });
     }
     async getRemoteConfigPayload(flagKey) {
@@ -9172,7 +10689,7 @@ var init_client = __esm(() => {
       emitDeprecationWarningOnce("isFeatureEnabled", "`isFeatureEnabled` is deprecated and will be removed in a future major version. Use `posthog.evaluateFlags(distinctId, ...)` and call `flags.isEnabled(key)` instead — this consolidates flag evaluation into a single `/flags` request per incoming request.");
       const result = await this._getFeatureFlagResult(key, distinctId, {
         ...options,
-        sendFeatureFlagEvents: options?.sendFeatureFlagEvents ?? this.options.sendFeatureFlagEvent ?? true
+        sendFeatureFlagEvents: this._resolveSendFeatureFlagEvents(options?.sendFeatureFlagEvents)
       });
       if (result === undefined)
         return;
@@ -9311,7 +10828,7 @@ var init_client = __esm(() => {
       const requestedFlagMissingLocally = requestedFlagKeys !== undefined && Array.from(requestedFlagKeys).some((key) => this.featureFlagsPoller?.featureFlagsByKey[key] === undefined);
       const fallbackToFlags = localResult ? localResult.fallbackToFlags || requestedFlagMissingLocally : true;
       if (fallbackToFlags && !onlyEvaluateLocally) {
-        const details = await super.getFeatureFlagDetailsStateless(evaluationContext.distinctId, evaluationContext.groups, personProperties, groupProperties, disableGeoip, flagKeys);
+        const details = await this.getFeatureFlagDetailsStateless(evaluationContext.distinctId, evaluationContext.groups, personProperties, groupProperties, disableGeoip, flagKeys);
         if (details) {
           this._minimalFlagCalledEvents = details.minimalFlagCalledEvents === true;
           requestId = details.requestId;
@@ -9375,12 +10892,17 @@ var init_client = __esm(() => {
           if (!requestedFlagKeys.has(key))
             delete records[key];
       }
+      const unresolvedFlags = {};
+      for (const [key, reason] of Object.entries(localResult?.unresolved ?? {}))
+        if (!Object.prototype.hasOwnProperty.call(records, key))
+          unresolvedFlags[key] = reason;
       return new FeatureFlagEvaluations({
         host: this._getFeatureFlagEvaluationsHost(),
         distinctId: resolvedDistinctId,
         groups,
         disableGeoip,
         flags: records,
+        unresolvedFlags,
         requestId,
         evaluatedAt,
         flagDefinitionsLoadedAt: this.featureFlagsPoller?.getFlagDefinitionsLoadedAt(),
@@ -9395,16 +10917,18 @@ var init_client = __esm(() => {
       const { distinctId, key, response, groups, disableGeoip, properties } = params;
       const groupSuffix = groups && Object.keys(groups).length > 0 ? `_${JSON.stringify(Object.entries(groups).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0))}` : "";
       const featureFlagReportedKey = `${key}_${response}${groupSuffix}`;
-      if (distinctId in this.distinctIdHasSentFlagCalls && this.distinctIdHasSentFlagCalls[distinctId].has(featureFlagReportedKey))
+      const reported = this._distinctIdHasSentFlagCalls.get(distinctId) ?? new Set;
+      this._distinctIdHasSentFlagCalls.delete(distinctId);
+      this._distinctIdHasSentFlagCalls.set(distinctId, reported);
+      if (reported.has(featureFlagReportedKey))
         return;
-      if (Object.keys(this.distinctIdHasSentFlagCalls).length >= this.maxCacheSize)
-        this.distinctIdHasSentFlagCalls = {};
-      if (this.distinctIdHasSentFlagCalls[distinctId] instanceof Set)
-        this.distinctIdHasSentFlagCalls[distinctId].add(featureFlagReportedKey);
-      else
-        this.distinctIdHasSentFlagCalls[distinctId] = new Set([
-          featureFlagReportedKey
-        ]);
+      reported.add(featureFlagReportedKey);
+      while (this._distinctIdHasSentFlagCalls.size > Math.max(this.maxCacheSize, 1)) {
+        const lruDistinctId = this._distinctIdHasSentFlagCalls.keys().next().value;
+        if (lruDistinctId === undefined)
+          break;
+        this._distinctIdHasSentFlagCalls.delete(lruDistinctId);
+      }
       this.capture({
         distinctId,
         event: "$feature_flag_called",
@@ -9413,10 +10937,14 @@ var init_client = __esm(() => {
         disableGeoip
       });
     }
+    _resolveSendFeatureFlagEvents(perCall) {
+      return perCall ?? this.options.sendFeatureFlagEvent ?? true;
+    }
     _getFeatureFlagEvaluationsHost() {
       if (!this._featureFlagEvaluationsHost)
         this._featureFlagEvaluationsHost = {
           captureFlagCalledEventIfNeeded: (params) => this._captureFlagCalledEventIfNeeded(params),
+          resolveSendFeatureFlagEvents: (perRead) => this._resolveSendFeatureFlagEvents(perRead),
           logWarning: (message) => {
             if (this.options.featureFlagsLogWarnings !== false)
               console.warn(`[PostHog] ${message}`);
@@ -9513,16 +11041,22 @@ var init_client = __esm(() => {
     withContext(data, fn, options) {
       if (!this.context)
         return fn();
-      return this.context.run(data, fn, options);
+      return this.context.run(data, () => {
+        notifyContextListeners(this);
+        return fn();
+      }, options);
     }
     getContext() {
       return this.context?.get();
     }
     enterContext(data, options) {
       this.context?.enter(data, options);
+      notifyContextListeners(this);
     }
     async _shutdown(shutdownTimeoutMs) {
       const shutdownDeadlineMs = Date.now() + (shutdownTimeoutMs ?? 30000);
+      this._isShutdown = true;
+      const emailsDrained = this._emails?.drain();
       const resolve = this._consumeWaitUntilCycle();
       await this.featureFlagsPoller?.stopPoller(shutdownTimeoutMs);
       this.errorTracking.shutdown();
@@ -9534,10 +11068,13 @@ var init_client = __esm(() => {
         await raceWithTimeout(this._traces.flush().catch(() => {}), Math.max(0, shutdownDeadlineMs - Date.now()));
         this._traces.reset();
       }
+      const remainingMs = Math.max(0, shutdownDeadlineMs - Date.now());
+      const emailsSettled = emailsDrained ? raceWithTimeout(emailsDrained, remainingMs) : undefined;
       try {
-        return await super._shutdown(Math.max(0, shutdownDeadlineMs - Date.now()));
+        return await super._shutdown(remainingMs);
       } finally {
-        this.distinctIdHasSentFlagCalls = {};
+        await emailsSettled;
+        this._distinctIdHasSentFlagCalls.clear();
         resolve?.();
       }
     }
@@ -9662,11 +11199,11 @@ var init_client = __esm(() => {
       };
     }
     captureException(error, distinctId, additionalProperties, uuid, flags) {
-      if (!error_tracking_default.isPreviouslyCapturedError(error)) {
+      if (!error_tracking_default.isPreviouslyCapturedError(error) && this.errorTracking.claimExplicitCapture(error)) {
         const syntheticException = new Error("PostHog syntheticException");
         this.addPendingPromise(error_tracking_default.buildEventMessage(this.getErrorPropertiesBuilder(), error, {
           syntheticException
-        }, distinctId, additionalProperties).then((msg) => this._capturePreparedEvent({
+        }, distinctId, additionalProperties, this.getContext()).then((msg) => this._capturePreparedEvent({
           ...msg,
           uuid,
           flags
@@ -9674,11 +11211,11 @@ var init_client = __esm(() => {
       }
     }
     async captureExceptionImmediate(error, distinctId, additionalProperties, flags) {
-      if (!error_tracking_default.isPreviouslyCapturedError(error)) {
+      if (!error_tracking_default.isPreviouslyCapturedError(error) && this.errorTracking.claimExplicitCapture(error)) {
         const syntheticException = new Error("PostHog syntheticException");
         return this.addPendingPromise(error_tracking_default.buildEventMessage(this.getErrorPropertiesBuilder(), error, {
           syntheticException
-        }, distinctId, additionalProperties).then((msg) => this.captureImmediate({
+        }, distinctId, additionalProperties, this.getContext()).then((msg) => this.captureImmediate({
           ...msg,
           flags
         })));
@@ -9689,7 +11226,7 @@ var init_client = __esm(() => {
     }
     async _prepareEventMessage(props, options = {}) {
       const { distinctId, event, properties, groups, flags, sendFeatureFlags, timestamp, disableGeoip, uuid } = props;
-      const contextData = this.context?.get();
+      const contextData = getEventContext(props, this.context?.get());
       const includeContextProperties = options.includeContextProperties ?? true;
       let mergedDistinctId = distinctId || contextData?.distinctId;
       const mergedProperties = includeContextProperties ? {
@@ -9699,6 +11236,8 @@ var init_client = __esm(() => {
       } : {
         ...properties || {}
       };
+      if (event === "$exception" && !(("$trace_id" in mergedProperties) || ("$span_id" in mergedProperties)))
+        Object.assign(mergedProperties, await getActiveTraceProperties());
       if (!mergedDistinctId) {
         mergedDistinctId = uuidv7();
         mergedProperties.$process_person_profile = false;
@@ -9787,7 +11326,33 @@ var init_client = __esm(() => {
   };
 });
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/extensions/context/context.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/extensions/context/lifetime.mjs
+function inheritContextLifetime(parent, child, signal) {
+  const lifetime = parent && lifetimes.get(parent);
+  if (signal)
+    lifetimes.set(child, {
+      signal,
+      parent: lifetime
+    });
+  else if (lifetime)
+    lifetimes.set(child, lifetime);
+  return child;
+}
+function isContextActive(context) {
+  let lifetime = lifetimes.get(context);
+  while (lifetime) {
+    if (lifetime.signal.aborted)
+      return false;
+    lifetime = lifetime.parent;
+  }
+  return true;
+}
+var lifetimes;
+var init_lifetime = __esm(() => {
+  lifetimes = new WeakMap;
+});
+
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/extensions/context/context.mjs
 import { AsyncLocalStorage } from "node:async_hooks";
 
 class PostHogContext {
@@ -9795,7 +11360,8 @@ class PostHogContext {
     this.storage = new AsyncLocalStorage;
   }
   get() {
-    return this.storage.getStore();
+    const context = this.storage.getStore();
+    return context && isContextActive(context) ? context : undefined;
   }
   run(context, fn, options) {
     return this.storage.run(this.resolve(context, options), fn);
@@ -9804,22 +11370,26 @@ class PostHogContext {
     this.storage.enterWith(this.resolve(context, options));
   }
   resolve(context, options) {
+    const current = this.get();
     if (options?.fresh === true)
-      return context;
-    const current = this.get() || {};
-    return {
-      distinctId: context.distinctId ?? current.distinctId,
-      sessionId: context.sessionId ?? current.sessionId,
+      return inheritContextLifetime(undefined, {
+        ...context
+      }, options.signal);
+    return inheritContextLifetime(current, {
+      distinctId: context.distinctId ?? current?.distinctId,
+      sessionId: context.sessionId ?? current?.sessionId,
       properties: {
-        ...current.properties || {},
+        ...current?.properties || {},
         ...context.properties || {}
       }
-    };
+    }, options?.signal);
   }
 }
-var init_context2 = () => {};
+var init_context2 = __esm(() => {
+  init_lifetime();
+});
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/extensions/context/span-context.node.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/extensions/context/span-context.node.mjs
 import { AsyncLocalStorage as AsyncLocalStorage2 } from "node:async_hooks";
 
 class AsyncLocalStorageSpanContextManager {
@@ -9835,7 +11405,7 @@ class AsyncLocalStorageSpanContextManager {
 }
 var init_span_context_node = () => {};
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/gzip.node.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/gzip.node.mjs
 import { gzip } from "node:zlib";
 import { promisify } from "node:util";
 async function gzipCompress2(input, isDebug = true) {
@@ -9853,7 +11423,7 @@ var init_gzip_node = __esm(() => {
   gzipAsync = promisify(gzip);
 });
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/host-os.node.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/host-os.node.mjs
 import { platform, release as release2 } from "node:os";
 function hostOsResourceAttributes() {
   let osName;
@@ -9868,7 +11438,7 @@ var init_host_os_node = __esm(() => {
   init_dist();
 });
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/extensions/sentry-integration.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/extensions/sentry-integration.mjs
 function createEventProcessor(_posthog, { organization, projectId, prefix, severityAllowList = [
   "error"
 ], sendExceptionsToPostHog = true } = {}) {
@@ -9945,31 +11515,36 @@ var init_sentry_integration = __esm(() => {
   };
 });
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/extensions/tracing-headers.mjs
-var init_tracing_headers2 = () => {};
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/extensions/tracing-headers.mjs
+var init_tracing_headers2 = __esm(() => {
+  init_dist();
+});
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/extensions/url-utils.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/extensions/url-utils.mjs
 var init_url_utils = __esm(() => {
   init_dist();
 });
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/extensions/express.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/extensions/express.mjs
 var init_express = __esm(() => {
   init_error_tracking2();
   init_tracing_headers2();
   init_url_utils();
+  init_listeners();
 });
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/exports.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/exports.mjs
 var init_exports = __esm(() => {
+  init_listeners();
   init_feature_flag_evaluations();
+  init_errors2();
   init_dist();
   init_sentry_integration();
   init_express();
   init_types3();
 });
 
-// node_modules/.bun/posthog-node@5.52.4/node_modules/posthog-node/dist/entrypoints/index.node.mjs
+// node_modules/.bun/posthog-node@5.64.0+e40b0dfdd726a224/node_modules/posthog-node/dist/entrypoints/index.node.mjs
 var PostHog;
 var init_index_node = __esm(() => {
   init_module_node();
@@ -10954,11 +12529,13 @@ function posixRuntimeWrapper(binName, cliPath, codexHome, binDir, nodeCliPath) {
 `);
 }
 function windowsRuntimeWrapper(binName, cliPath, codexHome, binDir, nodeCliPath) {
-  const ulwLoopBin = join3(binDir, "omo-ulw-loop.cmd");
+  const ulwLoopBin = escapeCmdQuoted(join3(binDir, "omo-ulw-loop.cmd"));
+  const cli = escapeCmdQuoted(cliPath);
+  const nodeCli = escapeCmdQuoted(nodeCliPath);
   return [
     "@echo off",
     `rem ${RUNTIME_WRAPPER_MARKER}`,
-    `if not defined CODEX_HOME set "CODEX_HOME=${codexHome}"`,
+    `if not defined CODEX_HOME set "CODEX_HOME=${escapeCmdQuoted(codexHome, false)}"`,
     `set "OMO_INVOCATION_NAME=${binName}"`,
     'set "OMO_EDITION=codex"',
     ...windowsNodeDiscoveryLines(),
@@ -10967,28 +12544,32 @@ function windowsRuntimeWrapper(binName, cliPath, codexHome, binDir, nodeCliPath)
     `  "${ulwLoopBin}" ulw-loop %*`,
     "  exit /b %ERRORLEVEL%",
     ")",
-    `if "%OMO_RUNTIME%"=="node" if defined OMO_NODE_BINARY if exist "${nodeCliPath}" (`,
-    `  "%OMO_NODE_BINARY%" "${nodeCliPath}" %*`,
+    `if "%OMO_RUNTIME%"=="node" if defined OMO_NODE_BINARY if exist "${nodeCli}" (`,
+    `  "%OMO_NODE_BINARY%" "${nodeCli}" %*`,
     "  exit /b %ERRORLEVEL%",
     ")",
     'if not defined BUN_BINARY where bun >nul 2>nul && set "BUN_BINARY=bun"',
     'if not defined BUN_BINARY if exist "%USERPROFILE%\\.bun\\bin\\bun.exe" set "BUN_BINARY=%USERPROFILE%\\.bun\\bin\\bun.exe"',
     "if not defined BUN_BINARY (",
-    `  if defined OMO_NODE_BINARY if exist "${nodeCliPath}" (`,
-    `    "%OMO_NODE_BINARY%" "${nodeCliPath}" %*`,
+    `  if defined OMO_NODE_BINARY if exist "${nodeCli}" (`,
+    `    "%OMO_NODE_BINARY%" "${nodeCli}" %*`,
     "    exit /b %ERRORLEVEL%",
     "  )",
-    `  echo ${binName}: bun runtime not found, no Node runtime was discovered from NODE_REPL_NODE_PATH or PATH, or the node fallback CLI is missing at ${nodeCliPath}; install bun from https://bun.sh or rerun LazyCodex install from Codex Desktop 1>&2`,
+    `  echo ${binName}: bun runtime not found, no Node runtime was discovered from NODE_REPL_NODE_PATH or PATH, or the node fallback CLI is missing at "${nodeCli}"; install bun from https://bun.sh or rerun LazyCodex install from Codex Desktop 1>&2`,
     "  exit /b 127",
     ")",
-    `if not exist "${cliPath}" (`,
-    `  echo ${binName}: runtime target missing at ${cliPath}; reinstall with: npx --yes lazycodex-ai@latest install --no-tui 1>&2`,
+    `if not exist "${cli}" (`,
+    `  echo ${binName}: runtime target missing at "${cli}"; reinstall with: npx --yes lazycodex-ai@latest install --no-tui 1>&2`,
     "  exit /b 1",
     ")",
-    `"%BUN_BINARY%" "${cliPath}" %*`,
+    `"%BUN_BINARY%" "${cli}" %*`,
     ""
   ].join(`\r
 `);
+}
+function escapeCmdQuoted(value, delayedExpansion = true) {
+  const percent = value.replaceAll("%", "%%");
+  return delayedExpansion && percent.includes("!") ? percent.replaceAll("^", "^^").replaceAll("!", "^!") : percent;
 }
 function toPosixPath(path) {
   return path.replaceAll("\\", "/");
@@ -13624,7 +15205,7 @@ function toCodexResolution(resolution) {
   };
 }
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/util.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/util.js
 function getEnumValues(entries) {
   const numericValues = Object.values(entries).filter((v) => typeof v === "number");
   const values = Object.entries(entries).filter(([k, _]) => numericValues.indexOf(+k) === -1).map(([_, v]) => v);
@@ -13970,6 +15551,18 @@ function prefixIssues(path, issues) {
 function unwrapMessage(message) {
   return typeof message === "string" ? message : message?.message;
 }
+function sizeCaps(defChecks) {
+  const caps = [];
+  for (const ch of defChecks ?? []) {
+    const d = ch._zod.def;
+    if (!/_(length|size)$|_equals$/.test(d.check))
+      break;
+    const max = d.maximum ?? d.length ?? d.size;
+    if (max >= 0)
+      caps.push([max, ch]);
+  }
+  return caps;
+}
 function attachSchema(issues, start, inst) {
   var _a;
   for (let i = start;i < issues.length; i++) {
@@ -14167,7 +15760,7 @@ function constantCatch(value) {
   return fn;
 }
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/core.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/core.js
 var _a;
 var _zodDesc = { value: undefined, enumerable: false };
 var _E = "captureStackTrace" in Error ? Error : null;
@@ -14285,7 +15878,7 @@ function config(newConfig) {
     Object.assign(globalConfig, newConfig);
   return globalConfig;
 }
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/errors.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/errors.js
 function _getMessage() {
   const internals = this._zod;
   internals.message ?? (internals.message = JSON.stringify(internals.def, jsonStringifyReplacer, 2));
@@ -14400,7 +15993,7 @@ function formatError(error, mapper = (issue) => issue.message) {
   return fieldErrors;
 }
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/parse.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/parse.js
 function finalizeParams(callee, params) {
   return { callee: params?.callee ?? callee, Err: params?.Err };
 }
@@ -14547,7 +16140,7 @@ var _safeEncodeAsync = (_Err) => async (schema, value, _ctx) => {
 var _safeDecodeAsync = (_Err) => async (schema, value, _ctx) => {
   return _safeParseAsync(_Err)(schema, value, _ctx);
 };
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/regexes.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/regexes.js
 var cuid = /^[cC][0-9a-z]{6,}$/;
 var cuid2 = /^[0-9a-z]+$/;
 var ulid = /^[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}$/;
@@ -14605,7 +16198,7 @@ var boolean = /^(?:true|false)$/i;
 var lowercase = /^[^A-Z]*$/;
 var uppercase = /^[^a-z]*$/;
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/checks.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/checks.js
 var $ZodCheck = /* @__PURE__ */ $constructor("$ZodCheck", (inst, def) => {
   var _a;
   inst._zod ?? (inst._zod = {});
@@ -14921,7 +16514,7 @@ var $ZodCheckOverwrite = /* @__PURE__ */ $constructor("$ZodCheckOverwrite", (ins
   };
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/doc.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/doc.js
 class Doc {
   constructor(args = [], closed = {}) {
     this.content = [];
@@ -14963,14 +16556,14 @@ ${content.join(`
   }
 }
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/versions.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/versions.js
 var version = {
   major: 4,
   minor: 6,
-  patch: 5
+  patch: 7
 };
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/schemas.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/schemas.js
 var $ZodType = /* @__PURE__ */ $constructor("$ZodType", (inst, def) => {
   var _a;
   inst ?? (inst = {});
@@ -15519,6 +17112,29 @@ var $ZodNever = /* @__PURE__ */ $constructor("$ZodNever", (inst, def) => {
     return payload;
   };
 });
+function capSize(inst, size) {
+  const caps = sizeCaps(inst._zod.def.checks);
+  if (!caps.length)
+    return;
+  const cap = Math.min(...caps.map((c) => c[0]));
+  const parse = inst._zod.parse;
+  inst._zod.parse = (payload, ctx) => {
+    const n = size(payload.value);
+    if (n > cap && !ctx?.skipChecks && ctx?.direction !== "backward") {
+      for (const [max, ch] of sizeCaps(inst._zod.def.checks)) {
+        if (n > max && ch._zod.def.when(payload)) {
+          const start = payload.issues.length;
+          ch._zod.check(payload);
+          payload.issues[start].continue = false;
+          attachSchema(payload.issues, start, inst);
+          return payload;
+        }
+      }
+    }
+    return parse(payload, ctx);
+  };
+}
+var arraySize = (input) => Array.isArray(input) ? input.length : -1;
 function handleArrayResult(result, final, index) {
   if (result.issues.length) {
     final.issues.push(...prefixIssues(index, result.issues));
@@ -15562,6 +17178,7 @@ var $ZodArray = /* @__PURE__ */ $constructor("$ZodArray", (inst, def) => {
     }
     return payload;
   };
+  capSize(inst, arraySize);
 });
 function handlePropertyResult(result, final, key, input, optin, optout) {
   const isPresent = key in input;
@@ -16585,7 +18202,7 @@ function handleRefineResult(result, payload, input, inst) {
     payload.issues.push(issue(_iss));
   }
 }
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/memoizer.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/memoizer.js
 class $ZodCyclicError extends Error {
   constructor() {
     super(`Cannot parse a reference cycle that closes through a transform`);
@@ -16854,7 +18471,7 @@ function isBackEdge(ctx, value) {
   const backEdges = ctx[STATE]?.backEdges;
   return backEdges !== undefined && isRef(value) && backEdges.has(value);
 }
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/locales/en.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/locales/en.js
 var error = () => {
   const Sizable = {
     string: { unit: "characters", verb: "to have" },
@@ -16976,7 +18593,7 @@ function en_default() {
     localeError: error()
   };
 }
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/registries.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/registries.js
 var _a2;
 class $ZodRegistry {
   constructor() {
@@ -17023,7 +18640,7 @@ function registry() {
 }
 (_a2 = globalThis).__zod_globalRegistry ?? (_a2.__zod_globalRegistry = registry());
 var globalRegistry = globalThis.__zod_globalRegistry;
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/api.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/api.js
 function snapshotChecks(def) {
   if (def.checks)
     def.checks = [...def.checks];
@@ -17471,7 +19088,7 @@ function _check(fn, params) {
   ch._zod.check = fn;
   return ch;
 }
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/to-json-schema.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/to-json-schema.js
 function assignProps(target, ...sources) {
   for (const source of sources) {
     for (const key of Reflect.ownKeys(source)) {
@@ -17994,7 +19611,7 @@ var createStandardJSONSchemaMethod = (schema, io, processors = {}) => (params) =
   extractDefs(ctx, schema);
   return finalize(ctx, schema);
 };
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/json-schema-processors.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/core/json-schema-processors.js
 var narrowMin = (agg, key, value) => {
   if (agg[key] === undefined || value > agg[key])
     agg[key] = value;
@@ -18519,7 +20136,7 @@ var optionalProcessor = (schema, ctx, _json, params) => {
   const seen = ctx.seen.get(schema);
   seen.ref = def.innerType;
 };
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/classic/errors.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/classic/errors.js
 var _installedErrorProtos = /* @__PURE__ */ new WeakSet([Object.prototype, Error.prototype]);
 function _lazyMethod(proto, key, make) {
   Object.defineProperty(proto, key, {
@@ -18564,7 +20181,7 @@ var ZodRealError = /* @__PURE__ */ $constructor("ZodError", initializer2, undefi
   Parent: Error
 });
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/classic/parse.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/classic/parse.js
 var parse2 = /* @__PURE__ */ _parse(ZodRealError);
 var parseAsync = /* @__PURE__ */ _parseAsync(ZodRealError);
 var safeParse = /* @__PURE__ */ _safeParse(ZodRealError);
@@ -18578,7 +20195,7 @@ var safeDecode = /* @__PURE__ */ _safeDecode(ZodRealError);
 var safeEncodeAsync = /* @__PURE__ */ _safeEncodeAsync(ZodRealError);
 var safeDecodeAsync = /* @__PURE__ */ _safeDecodeAsync(ZodRealError);
 
-// node_modules/.bun/zod@4.6.5/node_modules/zod/v4/classic/schemas.js
+// node_modules/.bun/zod@4.6.7/node_modules/zod/v4/classic/schemas.js
 function _ensureDefaultLocale() {
   if (!globalConfig.localeError)
     config(en_default());
@@ -19666,7 +21283,27 @@ var OmoAgentDefInputSchema = object({
   temperature: number2().min(0).max(2).optional(),
   disable: boolean2().optional(),
   permission: OmoAgentPermissionSchema.optional(),
-  prompt_append: string2().optional()
+  prompt_append: string2().optional(),
+  fallback_models: OmoFallbackModelsSchema.optional(),
+  category: string2().optional(),
+  skills: array(string2()).optional(),
+  top_p: number2().min(0).max(1).optional(),
+  mode: _enum(["subagent", "primary", "all"]).optional(),
+  color: string2().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
+  displayName: string2().optional(),
+  max_tokens: number2().int().positive().optional(),
+  provider_options: record(string2(), unknown()).optional(),
+  ultrawork: object({
+    model: string2().optional(),
+    reasoning: OmoReasoningSchema.optional(),
+    variant: string2().optional()
+  }).optional(),
+  compaction: object({
+    model: string2().optional(),
+    reasoning: OmoReasoningSchema.optional(),
+    variant: string2().optional()
+  }).optional(),
+  allow_non_gpt_model: boolean2().optional()
 }).strict();
 var OmoAgentDefSchema = preprocess((value) => isRecord3(value) ? normalizeLegacyModelFields(value) : value, OmoAgentDefInputSchema);
 var OmoAgentsConfigSchema = record(string2(), OmoAgentDefSchema);
@@ -19721,7 +21358,11 @@ var OmoComputerSettingsLayerSchema = object({
   audit_log: object({ enabled: boolean2() }).partial().strict(),
   screenshot_gc: object({ enabled: boolean2(), stale_ms: nonNegativeInteger, scan_interval_ms: nonNegativeInteger }).partial().strict(),
   engine_path: string2().min(1),
-  cua_adapter: boolean2()
+  cua_adapter: boolean2(),
+  run_sandbox: _enum(["vm", "quickjs"]).describe("Where `run` code executes (default: vm; reserved: every run uses vm until the QuickJS cell lands)"),
+  intervention: _enum(["continue", "pause"]).describe("What a background action does while the user uses the target app (default: continue)"),
+  macos_key_priming: _enum(["on", "off"]).describe("macOS background keys first make the target window key (default: off)"),
+  trace: boolean2().describe("Per-request timing traces (default: false)")
 }).partial().strict().describe("Experimental computer use in OmO Native: screenshots, windows, accessibility trees and native mouse and keyboard input. Every key is optional; defaults depend on the host.");
 var OmoComputerSettingsSchema = OmoComputerSettingsLayerSchema;
 
@@ -19797,7 +21438,8 @@ var OmoMemoryRecallSchema = object({
   sidecar_max_tokens: number2().int().positive().default(48000),
   max_concurrent_wakes: number2().int().positive().default(2),
   tool_budget: number2().int().positive().default(8),
-  query_expansion: boolean2().default(false)
+  query_expansion: boolean2().default(false),
+  query_rarity: boolean2().default(true)
 }).strict();
 var OmoMemoryProjectScopeSchema = object({
   nudge: boolean2().default(true),
@@ -19869,7 +21511,8 @@ var OmoMemoryRecallLayerSchema = object({
   sidecar_max_tokens: number2().int().positive().optional(),
   max_concurrent_wakes: number2().int().positive().optional(),
   tool_budget: number2().int().positive().optional(),
-  query_expansion: boolean2().optional()
+  query_expansion: boolean2().optional(),
+  query_rarity: boolean2().optional()
 }).strict();
 var OmoMemoryNudgeLayerSchema = object({
   enabled: boolean2().optional(),
@@ -19979,12 +21622,14 @@ var OmoMemorySettingsSchema = object({
     sidecar_max_tokens: 48000,
     max_concurrent_wakes: 2,
     tool_budget: 8,
-    query_expansion: false
+    query_expansion: false,
+    query_rarity: true
   }),
   project_scope: OmoMemoryProjectScopeSchema.default({ nudge: true, recall: true }),
   projection: OmoMemoryProjectionSchema.default({ max_entries_per_directory: 0, max_bytes: 40960 }),
   runtime: OmoMemoryRuntimeSchema.default({ retention_days: 7, abandoned_journal_days: 14, completions_days: 30, pass_budget_ms: 60000, discard_unreflected_journals: false, max_bytes: 2 * 1024 * 1024 * 1024 }),
   compile_warn_tokens: number2().int().positive().default(30000),
+  facts_note_max_bytes: number2().int().nonnegative().default(48 * 1024),
   agents: record(string2(), OmoMemoryAgentOverridesSchema).default({})
 }).strict();
 var OmoMemorySettingsLayerSchema = object({
@@ -20006,6 +21651,7 @@ var OmoMemorySettingsLayerSchema = object({
   projection: OmoMemoryProjectionLayerSchema.optional(),
   runtime: OmoMemoryRuntimeLayerSchema.optional(),
   compile_warn_tokens: number2().int().positive().optional(),
+  facts_note_max_bytes: number2().int().nonnegative().optional(),
   agents: record(string2(), OmoMemoryAgentOverridesSchema).optional()
 }).strict();
 
@@ -20052,6 +21698,16 @@ var OmoModelProfilesSchema = record(string2(), OmoModelProfileSchema);
 var OmoModelProfileLayerInputSchema = OmoModelProfileInputSchema.partial();
 var OmoModelProfileLayerSchema = preprocess((value) => isRecord6(value) ? normalizeLegacyModelFields(value) : value, OmoModelProfileLayerInputSchema);
 var OmoModelProfilesLayerSchema = record(string2(), OmoModelProfileLayerSchema);
+
+// packages/omo-config-core/src/schema/security-auth-at-rest.ts
+var OmoAuthAtRestModeSchema = _enum(["plain", "passphrase", "ssh-key"]);
+var OmoSecurityAuthAtRestLayerSchema = object({
+  auth_at_rest: OmoAuthAtRestModeSchema.optional(),
+  ssh_key_path: string2().optional()
+}).strict();
+var OmoSecurityAuthAtRestSchema = OmoSecurityAuthAtRestLayerSchema.extend({
+  auth_at_rest: OmoAuthAtRestModeSchema.default("plain")
+}).strict();
 
 // packages/omo-config-core/src/schema/side-panel.ts
 var OmoSidePanelWidthSchema = union([number2().int().min(24).max(160), string2().regex(/^(?:1\d|[2-4]\d|50)%$/)]);
@@ -20173,6 +21829,7 @@ var OmoTaskSettingsSchema = object({
   state_dir: string2().optional(),
   reattach_on_reconcile: boolean2().optional(),
   resume_children: boolean2().default(true),
+  control_channel: boolean2().optional(),
   warnings: OmoTaskWarningsSchema.default({ unavailable_categories: true }),
   wait: OmoTaskWaitSchema.default({ min_ms: 5000, default_ms: 60000, max_ms: 600000 }),
   team: OmoTaskTeamSettingsSchema.default({
@@ -20223,6 +21880,7 @@ var OmoTaskSettingsLayerSchema = object({
   state_dir: string2().optional(),
   reattach_on_reconcile: boolean2().optional(),
   resume_children: boolean2().optional(),
+  control_channel: boolean2().optional(),
   warnings: OmoTaskWarningsLayerSchema.optional(),
   wait: OmoTaskWaitLayerSchema.optional(),
   team: OmoTaskTeamSettingsLayerSchema.optional(),
@@ -20344,6 +22002,7 @@ var OmoTypedHarnessConfigSchema = object({
   model_profile: string2().optional(),
   model_pad: OmoModelPadSchema.optional(),
   memory: OmoMemorySettingsLayerSchema.optional(),
+  security: OmoSecurityAuthAtRestLayerSchema.optional(),
   telemetry: OmoTelemetrySettingsLayerSchema.optional(),
   device_service: OmoDeviceServiceSettingsLayerSchema.optional(),
   side_panel: OmoSidePanelSettingsLayerSchema.optional(),
@@ -20364,6 +22023,7 @@ var OmoConfigProfileSchema = object({
   model_profile: string2().optional(),
   model_pad: OmoModelPadSchema.optional(),
   memory: OmoMemorySettingsLayerSchema.optional(),
+  security: OmoSecurityAuthAtRestLayerSchema.optional(),
   telemetry: OmoTelemetrySettingsLayerSchema.optional(),
   device_service: OmoDeviceServiceSettingsLayerSchema.optional(),
   side_panel: OmoSidePanelSettingsLayerSchema.optional(),
@@ -20389,6 +22049,7 @@ var OmoConfigSchema = object({
   model_profile: string2().optional(),
   model_pad: OmoModelPadSchema.optional(),
   memory: OmoMemorySettingsSchema.optional(),
+  security: OmoSecurityAuthAtRestSchema.optional(),
   telemetry: OmoTelemetrySettingsSchema.optional(),
   device_service: OmoDeviceServiceSettingsSchema.optional(),
   side_panel: OmoSidePanelSettingsSchema.optional(),
@@ -20417,6 +22078,7 @@ var OmoConfigLayerSchema = object({
   model_profile: string2().optional(),
   model_pad: OmoModelPadSchema.optional(),
   memory: OmoMemorySettingsLayerSchema.optional(),
+  security: OmoSecurityAuthAtRestLayerSchema.optional(),
   telemetry: OmoTelemetrySettingsLayerSchema.optional(),
   device_service: OmoDeviceServiceSettingsLayerSchema.optional(),
   side_panel: OmoSidePanelSettingsLayerSchema.optional(),
@@ -21738,7 +23400,23 @@ function toPosixPath2(path) {
 
 // packages/omo-config-core/src/loader/paths.ts
 var MAX_PROJECT_CONFIG_DIRECTORY_DEPTH = 256;
-var ACCOUNT_HOME_DIR = userInfo().homedir;
+
+class AccountHomeResolutionError extends Error {
+  cause;
+  name = "AccountHomeResolutionError";
+  constructor(cause) {
+    const detail = cause instanceof Error ? cause.message : String(cause);
+    super(`Cannot resolve the account home directory: os.userInfo() failed (${detail}).`, { cause });
+    this.cause = cause;
+  }
+}
+function resolveAccountHomeDir() {
+  try {
+    return userInfo().homedir;
+  } catch (error) {
+    throw new AccountHomeResolutionError(error);
+  }
+}
 function resolveHomeDir(env = process.env) {
   const homeDir = env.HOME ?? env.USERPROFILE ?? process.cwd();
   return homeDir.startsWith("/") ? posix.resolve(homeDir) : toPosixPath2(resolve7(homeDir));
@@ -21811,7 +23489,7 @@ function resolveOmoConfigPaths(options) {
   const fileSystem = options.fileSystem ?? DEFAULT_READ_FILE_SYSTEM;
   const env = options.env ?? process.env;
   const userPath = detectUserOmoJsonPath(env, fileSystem);
-  const projectPaths = findProjectConfigPathsFarthestFirst(options.cwd, resolveHomeDir(env), fileSystem, ACCOUNT_HOME_DIR);
+  const projectPaths = findProjectConfigPathsFarthestFirst(options.cwd, resolveHomeDir(env), fileSystem, resolveAccountHomeDir());
   return [
     { path: userPath, scope: "user" },
     ...projectPaths.map((path) => ({ path, scope: "project" }))
