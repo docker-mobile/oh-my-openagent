@@ -174,6 +174,7 @@ export async function executeSyncContinuation(
       task: allowTask,
       call_omo_agent: allowCallOmoAgent,
       question: false,
+      lsp_install_decision: true,
       ...(resumeAgent ? getAgentToolRestrictions(resumeAgent) : {}),
     }
     setSessionTools(continuationID, tools)

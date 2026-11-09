@@ -67,6 +67,7 @@ export function buildSyncPromptTools(
     task: isPlanFamily(agentToUse),
     call_omo_agent: canUseCallOmoAgent(model, inheritedModel),
     question: false,
+    lsp_install_decision: true,
     ...userDenied,
     ...getAgentToolRestrictions(agentToUse),
   }

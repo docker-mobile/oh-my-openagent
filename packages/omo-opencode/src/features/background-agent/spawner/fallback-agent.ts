@@ -38,6 +38,7 @@ export function buildFallbackBody(
       call_omo_agent: originalBody.tools.call_omo_agent !== false
         && canUseCallOmoAgent(originalBody.model),
       question: false,
+      lsp_install_decision: true,
       ...getAgentToolRestrictions(fallbackAgent, options),
     },
   }
