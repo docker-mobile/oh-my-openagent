@@ -13,6 +13,7 @@ import {
   type HostSessionRetryPolicy,
 } from "./host-session"
 import { defaultHostSessionCloser, defaultHostSessionProbe } from "./host-session-default"
+import { createTranscriptArchiveWriter, type TranscriptArchiveWriter } from "../retention/writer"
 import { injectedLifecycleReattachPorts } from "./port"
 import type { IdleReclaimerScheduler, LifecycleDeps, LifecycleReattachPorts, ProcessSignaller, ResidencyRegistry } from "./port"
 import type { BatchAdmissionOptions } from "./residency"
@@ -58,6 +59,7 @@ export type LifecycleContext = {
   readonly hostCloseTimeoutMs: number
   readonly isolation: IsolationRuntime | undefined
   readonly isolationProbe: OwnerProbe | undefined
+  readonly transcriptArchive: TranscriptArchiveWriter | undefined
 }
 
 export function reconciliationActive(context: LifecycleContext): boolean {
@@ -86,12 +88,14 @@ export const defaultSignaller: ProcessSignaller = {
 }
 
 export function resolveContext(deps: LifecycleDeps): LifecycleContext {
+  const now = deps.now ?? Date.now
+  const retentionSettings = deps.config.transcript_retention
   return {
     store: deps.store,
     revivePolicy: deps.revivePolicy,
     registry: deps.registry,
     config: deps.config,
-    now: deps.now ?? Date.now,
+    now,
     signaller: deps.signaller ?? defaultSignaller,
     orphanKillDelayMs: deps.orphanKillDelayMs ?? DEFAULT_ORPHAN_KILL_DELAY_MS,
     hostPid: deps.hostPid ?? process.pid,
@@ -111,6 +115,15 @@ export function resolveContext(deps: LifecycleDeps): LifecycleContext {
     hostCloseTimeoutMs: deps.hostCloseTimeoutMs ?? DEFAULT_HOST_CLOSE_TIMEOUT_MS,
     isolation: deps.isolation,
     isolationProbe: deps.isolationProbe,
+    transcriptArchive:
+      deps.transcriptArchiveDir !== undefined && retentionSettings?.enabled === true
+        ? createTranscriptArchiveWriter({
+            stateDir: deps.store.stateDir,
+            archiveDir: deps.transcriptArchiveDir,
+            settings: retentionSettings,
+            now,
+          })
+        : undefined,
   }
 }
 

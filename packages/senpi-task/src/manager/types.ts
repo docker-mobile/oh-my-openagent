@@ -8,6 +8,7 @@ import type { KernelToolGrant } from "../kernel-tools/resolve"
 import type {
   EffectiveModelRecord,
   ResolvedModelRecord,
+  RetainTranscriptMark,
   TaskRecord,
   TaskStartFailureKind,
   TaskStartFailureReason,
@@ -110,6 +111,9 @@ export type ManagerStartSpec = {
   readonly instructions?: string
   readonly allowed_subagents?: readonly string[]
   readonly run_in_background?: boolean
+  // Durable per-task transcript-retention mark from the task tool's `retain_transcript` param:
+  // true (full), "metadata" (manifest only), false (never).
+  readonly retain_transcript?: RetainTranscriptMark
   readonly memberScopedTools?: readonly ToolDefinition[]
   // TRANSIENT parent kernel-tool grant resolved by the caller against its LIVE capability.
   readonly kernelTools?: KernelToolGrant

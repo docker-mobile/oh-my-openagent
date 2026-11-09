@@ -183,6 +183,7 @@ export type {
   StartQueued,
   TaskNotification,
   CancelRequest,
+  RetainTranscriptMark,
   TaskRecord,
   TaskRecordInput,
   TaskSpawnSpec,

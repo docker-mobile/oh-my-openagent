@@ -62,6 +62,7 @@ import type { ChildPausePort, ChildCreationPort } from "../../../../senpi-task/s
 import type { TaskPauseMethods } from "../../../../senpi-task/src/manager/run-pause"
 import { createEngineRunPause } from "./engine-run-pause"
 import { nativeChildPausePort } from "../../../../senpi-task/src/pause/native-child-pause"
+import { resolveTranscriptArchiveDir } from "./transcript-archive"
 
 export { admitAdapter } from "./engine-admission"
 
@@ -219,6 +220,9 @@ export function composeTaskEngine(deps: ComposeTaskEngineDeps): TaskEngine {
   // Without it every `isolated: true` spawn is refused as `isolation_unavailable`.
   const isolation = createIsolationRuntime()
   const getOmoConfig = deps.getOmoConfig ?? (() => deps.omoConfig)
+  // Bounded transcript retention: the archive lives in the Senpi agent dir's sessions tree so the
+  // existing session finder discovers it. Undefined when task.transcript_retention is off.
+  const transcriptArchiveDir = resolveTranscriptArchiveDir(settings, process.env)
   const { host, lifecycle, resolveInheritedExtensions, runnerContext } = composeEngineHostWiring({
     pi: deps.pi,
     getOmoConfig,
@@ -228,7 +232,7 @@ export function composeTaskEngine(deps: ComposeTaskEngineDeps): TaskEngine {
     ...(deps.host === undefined ? {} : { host: deps.host }),
     baseStore,
     generations: categoryConfigGenerations,
-    lifecycle: { store: storeChain.store, registry, kernelToolBindings, isolation, onStoreMutation: storeChain.onMutation },
+    lifecycle: { store: storeChain.store, registry, kernelToolBindings, isolation, onStoreMutation: storeChain.onMutation, ...(transcriptArchiveDir !== undefined ? { transcriptArchiveDir } : {}) },
   })
 
   const factories = deps.runnerFactories ?? DEFAULT_RUNNER_FACTORIES

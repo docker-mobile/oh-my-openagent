@@ -37,6 +37,7 @@ export type {
   ResolvedModelRecord,
   ResolvedModelSource,
   RunnerKind,
+  RetainTranscriptMark,
   SpawnSpecV1,
   StartQueued,
   SuspensionReason,
