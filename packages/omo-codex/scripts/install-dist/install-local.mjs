@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// omo-codex-install:f99acf0605c4b43c48724b0a63dae84c6ea73027503536813b1c5ce3c8fdc4e7:21b35174be5733e35714681094ea2690b2caf8e110b1a65b191e97411a749e6b
+// omo-codex-install:012524e84cf12391dfa0c49086580d35c67916747269cc083d196250305d5128:e30229b2d9d95425084e15aeaf7c8f557599588de9efe30ceeac4da599c643e6
 var __esm = (fn, res, err) => () => {
   if (fn)
     try {
@@ -20961,6 +20961,15 @@ function record(keyType, valueType, params) {
     ...normalizeParams(params)
   });
 }
+function partialRecord(keyType, valueType, params) {
+  return new ZodRecord({
+    type: "record",
+    keyType,
+    valueType,
+    ...normalizeParams(params),
+    partial: true
+  });
+}
 var ZodEnum = /* @__PURE__ */ $constructor("ZodEnum", (inst, def) => {
   $ZodEnum.init(inst, def);
   ZodType.init(inst, def);
@@ -21446,6 +21455,70 @@ function withoutRetiredCategoryKeys(entry) {
 var OmoCategoryConfigSchema = preprocess((value) => isRecord4(value) ? withoutRetiredCategoryKeys(normalizeLegacyModelFields(value)) : value, OmoCategoryConfigObjectSchema);
 var OmoCategoriesConfigSchema = record(string2(), OmoCategoryConfigSchema);
 
+// packages/utils/src/record-type-guard.ts
+function isPlainRecord2(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+// packages/omo-config-core/src/user-only-settings.ts
+var USER_ONLY_SETTINGS = [
+  ["mcp_env_allowlist"],
+  ["computer", "env"]
+];
+var COMPUTER_ENV_ALLOWLIST = ["DISPLAY", "XAUTHORITY", "WAYLAND_DISPLAY", "XDG_RUNTIME_DIR"];
+function applyUserOnlySettings(data, scope) {
+  const dropped = [];
+  const allowedEnvKeys = new Set(COMPUTER_ENV_ALLOWLIST);
+  function settings(value, prefix) {
+    if (!isPlainRecord2(value))
+      return value;
+    const config = { ...value };
+    if (scope === "project") {
+      for (const [section, field] of USER_ONLY_SETTINGS) {
+        if (field === undefined) {
+          delete config[section];
+        } else if (isPlainRecord2(config[section]) && Object.hasOwn(config[section], field)) {
+          const block = { ...config[section] };
+          delete block[field];
+          config[section] = block;
+          if (section === "computer") {
+            const path = [...prefix, section, field];
+            dropped.push({ path, key: path.join("."), message: "Only user configuration may set computer.env" });
+          }
+        }
+      }
+    } else if (isPlainRecord2(config.computer) && isPlainRecord2(config.computer.env)) {
+      const env = Object.fromEntries(Object.entries(config.computer.env).filter(([key]) => {
+        if (allowedEnvKeys.has(key))
+          return true;
+        const path = [...prefix, "computer", "env", key];
+        dropped.push({ path, key: path.join("."), message: `Allowed environment keys: ${COMPUTER_ENV_ALLOWLIST.join(", ")}` });
+        return false;
+      }));
+      config.computer = { ...config.computer, env };
+    }
+    return config;
+  }
+  function container(value, prefix) {
+    const config = settings(value, prefix);
+    if (!isPlainRecord2(config))
+      return config;
+    for (const harness of ["[opencode]", "[native]", "[senpi]", "[codex]"]) {
+      if (Object.hasOwn(config, harness))
+        config[harness] = settings(config[harness], [...prefix, harness]);
+    }
+    return config;
+  }
+  const value = container(data, []);
+  if (isPlainRecord2(value) && isPlainRecord2(value.profiles)) {
+    value.profiles = Object.fromEntries(Object.entries(value.profiles).map(([name, profile]) => [
+      name,
+      container(profile, ["profiles", name])
+    ]));
+  }
+  return { value, dropped };
+}
+
 // packages/omo-config-core/src/schema/computer.ts
 var positiveInteger = number2().int().positive();
 var nonNegativeInteger = number2().int().nonnegative();
@@ -21462,6 +21535,7 @@ var OmoComputerSettingsLayerSchema = object({
   audit_log: object({ enabled: boolean2() }).partial().strict(),
   screenshot_gc: object({ enabled: boolean2(), stale_ms: nonNegativeInteger, scan_interval_ms: nonNegativeInteger }).partial().strict(),
   engine_path: string2().min(1),
+  env: partialRecord(_enum(COMPUTER_ENV_ALLOWLIST), string2().nullable()).describe("User-only (~/.omo/omo.jsonc, including its harness and profile blocks). Desktop engine overrides for DISPLAY, XAUTHORITY, WAYLAND_DISPLAY and XDG_RUNTIME_DIR only; project settings and other keys are ignored with a config warning. Strings are literal overrides; null removes an inherited variable."),
   cua_adapter: boolean2(),
   run_sandbox: _enum(["vm", "quickjs"]).describe("Where `run` code executes (default: vm; reserved: every run uses vm until the QuickJS cell lands)"),
   intervention: _enum(["continue", "pause"]).describe("What a background action does while the user uses the target app (default: continue)"),
@@ -22111,6 +22185,7 @@ var OmoProvenanceSettingsSchema = object({
 var OmoOpenCodeHarnessConfigSchema = record(string2(), unknown());
 var OmoDisabledSkillsSchema = array(string2());
 var OmoExcludedModelsSchema = array(string2());
+var OmoMcpEnvAllowlistSchema = array(string2()).describe("User-only environment variable names passed to OpenCode MCP servers. Project configuration is ignored.");
 var OmoTypedHarnessConfigSchema = object({
   provenance: OmoProvenanceSettingsSchema.optional(),
   formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
@@ -22133,6 +22208,7 @@ var OmoTypedHarnessConfigSchema = object({
   exclude_models: OmoExcludedModelsSchema.optional()
 }).strict();
 var OmoConfigProfileSchema = object({
+  mcp_env_allowlist: OmoMcpEnvAllowlistSchema.optional(),
   provenance: OmoProvenanceSettingsSchema.optional(),
   formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
   categories: OmoCategoriesConfigSchema.optional(),
@@ -22158,6 +22234,7 @@ var OmoConfigProfileSchema = object({
   "[codex]": OmoTypedHarnessConfigSchema.optional()
 }).strict();
 var OmoConfigSchema = object({
+  mcp_env_allowlist: OmoMcpEnvAllowlistSchema.optional(),
   provenance: OmoProvenanceSettingsSchema.optional(),
   formatOnMutation: OmoFormatOnMutationSchema.optional(),
   $schema: string2().optional(),
@@ -22187,6 +22264,7 @@ var OmoConfigSchema = object({
   legacy_migrations: record(string2(), unknown()).optional()
 }).strict();
 var OmoConfigLayerSchema = object({
+  mcp_env_allowlist: OmoMcpEnvAllowlistSchema.optional(),
   provenance: OmoProvenanceSettingsSchema.optional(),
   formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
   $schema: string2().optional(),
@@ -22329,6 +22407,30 @@ var DEFAULT_READ_FILE_SYSTEM = {
   readFileSync: readFileSync2,
   realpathSync: realpathSync2
 };
+
+// packages/omo-config-core/src/loader/diagnostic-values.ts
+function configFileErrorCode(error) {
+  const code = error instanceof Error ? Reflect.get(error, "code") : undefined;
+  return typeof code === "string" && ["EACCES", "EPERM", "ENOSPC", "EROFS", "EXDEV", "ENOENT", "EIO", "ENOTDIR", "EISDIR"].includes(code) ? ` (${code})` : "";
+}
+function configIssueSummary(issue) {
+  switch (issue.code) {
+    case "invalid_type":
+      return `Expected ${issue.expected}`;
+    case "invalid_value":
+      return "Expected a supported value";
+    case "too_big":
+      return "Value exceeds the maximum";
+    case "too_small":
+      return "Value is below the minimum";
+    case "invalid_format":
+      return "Invalid format";
+    case "unrecognized_keys":
+      return "Unrecognized keys";
+    default:
+      return "Invalid value";
+  }
+}
 
 // packages/omo-config-core/src/loader/disabled-skills.ts
 function toRecord(value) {
@@ -23336,8 +23438,10 @@ function prunePass(root, issues) {
       if (path.length === 0)
         return null;
       const key = path.map((segment) => String(segment)).join(".");
+      const summary = configIssueSummary(issue);
+      const message = path.length < issue.path.length ? `${summary} at ${segmentsOf(issue.path).join(".")}` : summary;
       if (!byKey.has(key))
-        byKey.set(key, { key, message: issue.message, path });
+        byKey.set(key, { key, message, path });
     }
   }
   const targets = [...byKey.values()];
@@ -23473,27 +23577,29 @@ var validateLayerRecord = (record) => {
   const parsed = OmoConfigLayerSchema.safeParse(record);
   return parsed.success ? { success: true } : { success: false, issues: parsed.error.issues };
 };
-function validateConfigLayer(path, data) {
+function validateConfigLayer(path, data, scope) {
   const sanitized = sanitizeUnsafeKeys(data);
-  const record = toRecord2(sanitized.value);
+  const protectedSettings = applyUserOnlySettings(sanitized.value, scope);
+  const record = toRecord2(protectedSettings.value);
   const unsafeIssuePaths = sanitized.issues.flatMap((issue) => issue.keys.map((key) => [...issue.path, key].join(".")));
   const unsafeDiagnostics = unsafeIssuePaths.length === 0 ? [] : [{ kind: "unknown-keys", message: `Ignored unknown keys in ${path}: ${unsafeIssuePaths.join(", ")}`, path, issuePaths: unsafeIssuePaths }];
-  const validation = OmoConfigLayerSchema.safeParse(sanitized.value);
+  const sourceDiagnostics = [...unsafeDiagnostics, ...invalidValueDiagnostics(path, protectedSettings.dropped)];
+  const validation = OmoConfigLayerSchema.safeParse(protectedSettings.value);
   if (validation.success) {
     if (record !== null)
-      return { loaded: true, diagnostics: unsafeDiagnostics, value: record };
+      return { loaded: true, diagnostics: sourceDiagnostics, value: record };
     return {
       loaded: false,
       diagnostics: [{ kind: "validation", message: `Invalid omo config at ${path}: root must be an object`, path }]
     };
   }
-  const rejected = { loaded: false, diagnostics: [validationDiagnostic(path, validation.error.issues)] };
+  const rejected = { loaded: false, diagnostics: [...sourceDiagnostics, validationDiagnostic(path, validation.error.issues)] };
   const unknownIssues = unrecognizedKeyIssues(validation.error.issues);
   if (record === null)
     return rejected;
   let candidate = record;
   let issues = validation.error.issues;
-  const diagnostics = [...unsafeDiagnostics];
+  const diagnostics = [...sourceDiagnostics];
   if (unknownIssues.length > 0) {
     const { issuePaths, stripped } = stripUnrecognizedKeys(record, unknownIssues);
     if (issuePaths.length > 0) {
@@ -23721,9 +23827,8 @@ function readConfigSource(path, scope, fileSystem) {
   try {
     content = fileSystem.readFileSync(path, "utf-8");
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
     return {
-      diagnostics: [{ kind: "read", message: `Failed to read ${path}: ${message}`, path }],
+      diagnostics: [{ kind: "read", message: `Failed to read ${path}${configFileErrorCode(error)}`, path }],
       source: { exists: true, loaded: false, path, scope }
     };
   }
@@ -23738,7 +23843,7 @@ function readConfigSource(path, scope, fileSystem) {
       source: { exists: true, loaded: false, path, scope }
     };
   }
-  const layer = validateConfigLayer(path, parsed.data);
+  const layer = validateConfigLayer(path, parsed.data, scope);
   return layer.loaded ? { diagnostics: layer.diagnostics, source: { exists: true, loaded: true, path, scope }, value: layer.value } : { diagnostics: layer.diagnostics, source: { exists: true, loaded: false, path, scope } };
 }
 function legacyCategoryDiagnostic(path, renames) {

@@ -14,6 +14,7 @@ import { runMemoryRepoMaintenance } from "./repo-maintenance"
 import { ensureRepoConfigDefaults } from "./repo-config-defaults"
 import { PathCommitTimes } from "./repo-commit-times"
 import { GitRevisionReads } from "./repo-revision-reads"
+import { addWorktreeWithRetry } from "./repo-worktree-add"
 import { assertNoUnrelatedChanges } from "./repo-status"
 import { settlePendingRollback } from "./pending-rollback"
 import { assertNoSecretLikeStaging } from "./repo-secret-staging"
@@ -207,7 +208,18 @@ export class GitMemoryRepo {
 
   async worktreeAdd(path: string, branch: string, startPoint = "HEAD"): Promise<void> {
     await withSerializedGitWorktreeMutation(this.dir, () =>
-      withGitLockRetry(() => this.git(["worktree", "add", "-b", branch, path, startPoint])),
+      addWorktreeWithRetry(
+        { path, branch, startPoint },
+        {
+          execute: async (argv) => {
+            await withGitLockRetry(() => this.git(argv))
+          },
+          branchExists: async () => {
+            const result = await this.gitResult(["rev-parse", "--verify", "-q", `refs/heads/${branch}`])
+            return result.code === 0
+          },
+        },
+      ),
     )
   }
 

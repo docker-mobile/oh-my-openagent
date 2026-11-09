@@ -1,5 +1,6 @@
 import * as z from "zod"
 
+import { COMPUTER_ENV_ALLOWLIST } from "../user-only-settings"
 import type { OmoHarnessId } from "./harness"
 
 const positiveInteger = z.number().int().positive()
@@ -30,6 +31,9 @@ export const OmoComputerSettingsLayerSchema = z
       .partial()
       .strict(),
     engine_path: z.string().min(1),
+    env: z.partialRecord(z.enum(COMPUTER_ENV_ALLOWLIST), z.string().nullable()).describe(
+      "User-only (~/.omo/omo.jsonc, including its harness and profile blocks). Desktop engine overrides for DISPLAY, XAUTHORITY, WAYLAND_DISPLAY and XDG_RUNTIME_DIR only; project settings and other keys are ignored with a config warning. Strings are literal overrides; null removes an inherited variable.",
+    ),
     cua_adapter: z.boolean(),
     run_sandbox: z
       .enum(["vm", "quickjs"])
@@ -68,6 +72,7 @@ export const COMPUTER_HARNESS_SUPPORT: Record<ComputerSettingPath, readonly OmoH
   "computer.audit_log": ["native"],
   "computer.screenshot_gc": ["native"],
   "computer.engine_path": ["native"],
+  "computer.env": ["native"],
   "computer.cua_adapter": ["native"],
   "computer.run_sandbox": ["native"],
   "computer.intervention": ["native"],

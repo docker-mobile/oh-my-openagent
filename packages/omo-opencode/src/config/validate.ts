@@ -3,7 +3,7 @@ import { setSkillSourceProvenance } from "@oh-my-opencode/skills-loader-core/ope
 import { knownUserSkillRoots } from "@oh-my-opencode/skills-loader-core/opencode-skill-loader/skill-provenance"
 import { detectWorktreePath } from "@oh-my-opencode/skills-loader-core/shared/project-discovery-dirs"
 
-import { omoConfigDiagnosticLines, type OmoConfigEnv } from "@oh-my-opencode/omo-config-core"
+import { configIssueSummary, omoConfigDiagnosticLines, type OmoConfigEnv } from "@oh-my-opencode/omo-config-core"
 import type * as z from "zod"
 
 import { applyDisabledProviders } from "../shared/disabled-providers"
@@ -41,7 +41,7 @@ function formatIssuePath(path: readonly PropertyKey[]): string {
 }
 
 function schemaMessages(configPath: string, rawConfig: Record<string, unknown>, issues: readonly z.core.$ZodIssue[]): readonly string[] {
-  const validationMessages = issues.map((issue) => `${shortPath(configPath)}: ${formatIssuePath(issue.path)}: ${issue.message}`)
+  const validationMessages = issues.map((issue) => `${shortPath(configPath)}: ${formatIssuePath(issue.path)}: ${configIssueSummary(issue)}`)
   const unknownKeyMessages = findUnknownKeyPaths(OhMyOpenCodeConfigSchema, rawConfig)
     .map((path) => `${shortPath(configPath)}: Unknown config key: ${formatIssuePath(path)}`)
   return [...validationMessages, ...unknownKeyMessages]
@@ -76,11 +76,10 @@ function mergeViews(views: readonly LoadedConfigView[]): OhMyOpenCodeConfig {
   return config
 }
 
-function protectUserFields(
+function protectUserBrowserArguments(
   config: OhMyOpenCodeConfig,
   userConfig: Partial<OhMyOpenCodeConfig>,
 ): OhMyOpenCodeConfig {
-  const userMcpEnvAllowlist = userConfig?.mcp_env_allowlist ?? []
   const userPlaywrightMcpArgs = userConfig?.browser_automation_engine?.playwright_mcp_args
   const browserAutomationEngine = config.browser_automation_engine === undefined
     ? undefined
@@ -91,7 +90,6 @@ function protectUserFields(
 
   return {
     ...config,
-    mcp_env_allowlist: userMcpEnvAllowlist,
     ...(browserAutomationEngine === undefined
       ? {}
       : {
@@ -206,9 +204,11 @@ export function validatePluginConfig(
   const firstFailingView = views.find((view) => view.messages.length > 0)
   const firstView = views[0]
   const userConfig = parseConfig(prunePluginView({ config: chain.protectedUserView, homeDir, keyPrefix: "", path: "" }).config)
-  const config = applyDisabledProviders(materializeAgentModelChains(
-    protectUserFields(mergeViews(views), userConfig),
-  ))
+  const merged = mergeViews(views)
+  const config = applyDisabledProviders(materializeAgentModelChains(protectUserBrowserArguments({
+    ...merged,
+    mcp_env_allowlist: merged.mcp_env_allowlist ?? [],
+  }, userConfig)))
   warnLegacyUlwExecuteKey(chain.views)
   if (config.skills) {
     const owner = chain.views.findLast((view) => Object.hasOwn(view.config, "skills"))

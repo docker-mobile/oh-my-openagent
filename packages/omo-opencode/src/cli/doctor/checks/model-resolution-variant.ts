@@ -1,9 +1,10 @@
 import { resolveAgentVariant } from "../../../shared/agent-variant"
 import type { ModelRequirement } from "../../../shared/model-requirements"
+import { displayConfigIdentifier } from "@oh-my-opencode/omo-config-core"
 import type { OmoConfig } from "./model-resolution-types"
 
 export function formatModelWithVariant(model: string, variant?: string): string {
-  return variant ? `${model} (${variant})` : model
+  return displayConfigIdentifier(variant ? `${model} (${variant})` : model)
 }
 
 /** The builtin requirement's own default effort, shown when nothing user-configured applies. */

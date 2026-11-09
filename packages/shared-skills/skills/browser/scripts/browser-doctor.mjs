@@ -18,5 +18,6 @@ if (process.argv.includes("--json")) {
   if (summary.registeredElsewhere.length > 0) console.log(`extension entries left in other browsers: ${summary.registeredElsewhere.join(", ")} (not removed automatically)`)
   console.log(`browsers detected: ${summary.browsersDetected.map((b) => `${b.id}${b.extensionRegistered ? " (extension registered)" : ""}`).join(", ") || "none"}`)
   console.log(`browsers connected: ${summary.browsersConnected.map((b) => `${b.name} ${b.version} [${b.instanceId}]${b.extensionVersion ? ` extension ${b.extensionVersion}` : ""}`).join(", ") || "none"}`)
+  console.log(`sessions open: ${summary.sessions.map((s) => `${s.sessionId} (browser ${s.browserInstanceId}, window ${s.agentWindowId ?? "-"}${s.createdAtMs === null ? "" : `, since ${new Date(s.createdAtMs).toISOString()}`})`).join(", ") || "none"}`)
   console.log(`\n${summary.remedy}`)
 }

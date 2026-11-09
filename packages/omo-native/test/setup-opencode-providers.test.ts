@@ -53,6 +53,9 @@ function fixture(): Fixture {
   // workspace's, so reading the engine's model list stays offline (a junction needs no privilege on Windows).
   symlinkSync(REPO_NODE_MODULES, join(app, "node_modules"), "junction")
   write(join(app, "package.json"), JSON.stringify({ name: "omo-ai", version: "test", type: "module" }))
+  // The installed engine catalog must resolve from the locked dependency tree, even with a cold
+  // Bun cache. A Windows junction does not need the privilege required for directory symlinks.
+  symlinkSync(realpathSync(resolve(SOURCE_ROOT, "..", "..", "node_modules")), join(app, "node_modules"), process.platform === "win32" ? "junction" : "dir")
   return {
     home: join(root, "home"),
     agentDir: join(root, "senpi-agent"),
@@ -440,6 +443,10 @@ describe("omo setup opencode catalog provider import (#10158)", () => {
 
         expect(result.status).toBe(0)
         expect(config.getError()).toBeUndefined()
+        expect(readJson(join(item.agentDir, "settings.json"))).toMatchObject({
+          defaultProvider: "neuralwatt",
+          defaultModel: "kimi-k2.5",
+        })
         expect(models.map((model: any) => [model.id, model.api, model.baseUrl, model.contextWindow, model.maxTokens, model.reasoning])).toEqual([
           ["kimi-k2.5", "openai-completions", "https://api.neuralwatt.com/v1", 262144, 32768, true],
         ])
