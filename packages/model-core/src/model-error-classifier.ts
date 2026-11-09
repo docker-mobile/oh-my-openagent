@@ -181,7 +181,7 @@ export function hasMoreFallbacks(
  * 3) First provider listed in the fallback entry
  */
 export function selectFallbackProvider(
-  providers: string[],
+  providers: readonly string[],
   preferredProviderID?: string,
 ): string {
   return selectFallbackProviderWithCache(
@@ -192,7 +192,7 @@ export function selectFallbackProvider(
 }
 
 export function selectFallbackProviderWithCache(
-  providers: string[],
+  providers: readonly string[],
   providerCache: ProviderCache,
   preferredProviderID?: string,
 ): string {

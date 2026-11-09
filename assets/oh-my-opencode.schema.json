@@ -8955,6 +8955,9 @@
         "tdd": {
           "default": true,
           "type": "boolean"
+        },
+        "inherit_model": {
+          "type": "boolean"
         }
       },
       "additionalProperties": false

@@ -20,6 +20,7 @@ import { resolveMetadataModel } from "./resolve-metadata-model"
 import { log } from "../../shared/logger"
 import { cancelSyncSessionDeletion, scheduleSyncSessionDeletion } from "./sync-session-cleanup"
 import { formatDeletedSyncSessionError, isSyncSessionDeleted } from "./sync-session-existence"
+import { clearDelegateTaskSyncSession, clearSyncSessionError, registerDelegateTaskSyncSession } from "../../shared/sync-session-error-store"
 
 type ResumeModel = { providerID: string; modelID: string }
 
@@ -113,6 +114,7 @@ export async function executeSyncContinuation(
 ): Promise<string> {
   const { client, syncPollTimeoutMs, taskCleanupDelayMs, sisyphusAgentConfig } = executorCtx
   const toastManager = getTaskToastManager()
+  const hasActiveChildBackgroundTasks = executorCtx.manager?.hasActiveChildTasks?.bind(executorCtx.manager)
   const continuationID = getTaskID(args)
   if (!continuationID) {
     throw new Error("task_id is required to continue a sync task")
@@ -185,6 +187,8 @@ export async function executeSyncContinuation(
       ...(resumeAgent ? getAgentToolRestrictions(resumeAgent) : {}),
     }
     setSessionTools(continuationID, tools)
+    clearSyncSessionError(continuationID)
+    registerDelegateTaskSyncSession(continuationID)
 
     await promptWithModelSuggestionRetry(client, {
       path: { id: continuationID },
@@ -201,6 +205,8 @@ export async function executeSyncContinuation(
       checkToolState: false,
     })
    } catch (promptError) {
+     clearSyncSessionError(continuationID)
+     clearDelegateTaskSyncSession(continuationID)
      if (toastManager) {
        toastManager.removeTask(taskId)
      }
@@ -218,6 +224,7 @@ export async function executeSyncContinuation(
         taskId,
         anchorMessageCount,
         anchorMessageID,
+        hasActiveChildBackgroundTasks,
       }, syncPollTimeoutMs)
       if (pollError && shouldAttemptPollErrorRecovery(pollError)) {
         if (anchorMessageCount === undefined) {
@@ -231,8 +238,8 @@ export async function executeSyncContinuation(
           return pollError
         }
 
-        const duration = formatDuration(startTime)
-        handedBackToParent = true
+      const duration = formatDuration(startTime)
+      handedBackToParent = true
 
         return `${continuationHeadline(recoveredResult.endState, duration)}
 
@@ -274,6 +281,8 @@ ${buildTaskMetadataBlock({
       })}`
    } finally {
      if (toastManager) {
+     clearSyncSessionError(continuationID)
+     clearDelegateTaskSyncSession(continuationID)
        toastManager.removeTask(taskId)
      }
      if (handedBackToParent) {

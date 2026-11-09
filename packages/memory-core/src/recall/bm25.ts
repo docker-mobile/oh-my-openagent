@@ -35,6 +35,15 @@ export interface RankedRecallDocument {
   readonly fullMatch?: true
 }
 
+interface RecallBm25Index {
+  readonly termFrequencies: readonly ReadonlyMap<string, number>[]
+  readonly lengths: readonly number[]
+  readonly documentFrequency: ReadonlyMap<string, number>
+  /** How many notes hold each token before stemming, from the same tokens (the query planner's rarity). */
+  readonly surfaceFrequency: ReadonlyMap<string, number>
+  readonly averageLength: number
+}
+
 interface RecallTokens {
   readonly tokens: string[]
   /** How many of the tokens are Han characters emitted next to the run that contains them. */
@@ -101,6 +110,59 @@ export function recallDocumentTerms(document: RecallDocument): DocumentTermsInpu
   // keeps every length as it was, so planned queries that hold no Han character after NFKC rank and
   // score exactly as before.
   return { terms: tokens.map(stemEnglishToken), length: tokens.length - standaloneHanCharacters }
+}
+
+/**
+ * One index per document array. RecallCorpusCache hands out the same array for as long as HEAD has
+ * not moved, so the index is built once per corpus revision and a moved HEAD (a fresh array) drops it.
+ * The array must not be mutated after it is first ranked: an in-place change keeps the stale index.
+ */
+const INDEXES = new WeakMap<readonly RecallDocument[], RecallBm25Index>()
+
+function indexFor(documents: readonly RecallDocument[]): RecallBm25Index {
+  const cached = INDEXES.get(documents)
+  if (cached !== undefined) return cached
+
+  const termFrequencies: Map<string, number>[] = []
+  const lengths: number[] = []
+  const documentFrequency = new Map<string, number>()
+  const surfaceFrequency = new Map<string, number>()
+  for (const document of documents) {
+    const frequencies = new Map<string, number>()
+    const { tokens, standaloneHanCharacters } = tokenize(`${document.description}\n${document.body}`)
+    for (const token of tokens.map(stemEnglishToken)) frequencies.set(token, (frequencies.get(token) ?? 0) + 1)
+    for (const token of frequencies.keys()) documentFrequency.set(token, (documentFrequency.get(token) ?? 0) + 1)
+    for (const token of new Set(tokens)) surfaceFrequency.set(token, (surfaceFrequency.get(token) ?? 0) + 1)
+    termFrequencies.push(frequencies)
+    // The stand-alone Han characters repeat text the run and its bigrams already count. Leaving them out
+    // keeps every length as it was, so planned queries that hold no Han character after NFKC rank and
+    // score exactly as before.
+    lengths.push(tokens.length - standaloneHanCharacters)
+  }
+  const totalLength = lengths.reduce((sum, length) => sum + length, 0)
+  const index: RecallBm25Index = {
+    termFrequencies,
+    lengths,
+    documentFrequency,
+    surfaceFrequency,
+    averageLength: documents.length === 0 ? 0 : totalLength / documents.length,
+  }
+  INDEXES.set(documents, index)
+  return index
+}
+
+/**
+ * The bm25 index's own document frequencies, read from the same per-revision index the ranking builds so
+ * a caller pays no second tokenization pass: per indexed unit (a stemmed English word, a CJK run or
+ * bigram) and per token before stemming.
+ */
+export function recallDocumentFrequency(documents: readonly RecallDocument[]): {
+  readonly unitFrequency: ReadonlyMap<string, number>
+  readonly surfaceFrequency: ReadonlyMap<string, number>
+  readonly documentCount: number
+} {
+  const index = indexFor(documents)
+  return { unitFrequency: index.documentFrequency, surfaceFrequency: index.surfaceFrequency, documentCount: documents.length }
 }
 
 /**

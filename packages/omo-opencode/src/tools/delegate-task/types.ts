@@ -99,6 +99,7 @@ export interface DelegateTaskToolOptions {
    * If provided, resolveCategoryExecution/resolveSubagentExecution uses this instead of reading from disk cache.
    */
   connectedProvidersOverride?: string[] | null
+  readonly disabledProviders?: readonly string[]
   /**
    * Test hook: bypass fetchAvailableModels() by providing an explicit available model set.
    */

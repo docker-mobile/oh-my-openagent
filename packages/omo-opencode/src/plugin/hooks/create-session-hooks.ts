@@ -128,6 +128,7 @@ export function createSessionHooks(args: {
         },
         onApplied: enableFallbackTitle ? updateFallbackTitle : undefined,
         controllerAccessor: modelFallbackControllerAccessor,
+        disabledProviders: pluginConfig.disabled_providers,
       }))
     : null
 

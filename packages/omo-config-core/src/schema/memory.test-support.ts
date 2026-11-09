@@ -38,6 +38,7 @@ export const FULL_DEFAULTS: OmoMemorySettings = {
     max_concurrent_wakes: 2,
     tool_budget: 8,
     query_expansion: false,
+    query_rarity: true,
   },
   project_scope: { nudge: true, recall: true },
   projection: { max_entries_per_directory: 0, max_bytes: 40960 },

@@ -35,18 +35,6 @@ const DIALOG_GIVES_UP: &str = "5";
 const DIALOG_DEADLINE: Duration = Duration::from_secs(4);
 const RECEIPT_DEADLINE: Duration = Duration::from_secs(2);
 const OK: &str = "OK";
-/// `osascript` is a system binary with no parent watch of its own (G16), so
-/// it runs under a shell whose watcher ends it within 0.2 s of the engine's
-/// death. The shell reaps it, so the watcher never signals a reused pid, and
-/// `$PPID` stays the engine's pid in the watcher's subshell.
-const CONTAINED_OSASCRIPT: &str = r#"/usr/bin/osascript -e "$1" &
-dialog=$!
-( while kill -0 "$PPID" 2>/dev/null; do sleep 0.2; done; kill "$dialog" 2>/dev/null ) >/dev/null 2>&1 &
-watcher=$!
-wait "$dialog"
-status=$?
-kill "$watcher" 2>/dev/null
-exit "$status""#;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CanaryMode {
@@ -100,11 +88,14 @@ struct Dialog {
 pub(super) fn run(input: &mut MacInput) -> CoreResult<CanaryResult> {
     skylight::require_spi()?;
     let front = focus::front_window()?;
-    let dialog = format!(
-        "display dialog \"{DIALOG_MARKER}\" default answer \"\" buttons {{\"OK\"}} \
-         default button 1 giving up after {DIALOG_GIVES_UP}"
-    );
-    let child = contained_osascript(&dialog)
+    let child = Command::new("/usr/bin/osascript")
+        .args([
+            "-e",
+            &format!(
+                "display dialog \"{DIALOG_MARKER}\" default answer \"\" buttons {{\"OK\"}} \
+                 default button 1 giving up after {DIALOG_GIVES_UP}"
+            ),
+        ])
         .stdout(Stdio::piped())
         .stderr(Stdio::null())
         .spawn()
@@ -116,23 +107,6 @@ pub(super) fn run(input: &mut MacInput) -> CoreResult<CanaryResult> {
         input.settle_canary(passed);
     }
     reply
-}
-
-/// Runs `script` in `osascript` contained to this engine's lifetime, in a
-/// process group of its own led by the shell (see [`CONTAINED_OSASCRIPT`]).
-pub(super) fn contained_osascript(script: &str) -> Command {
-    let mut command = Command::new("/bin/sh");
-    command.args(["-c", CONTAINED_OSASCRIPT, "sh", script]).process_group(0);
-    command
-}
-
-/// Ends the contained dialog, its shell and its watcher together.
-fn kill_group(child: &std::process::Child) {
-    if let Ok(group) = libc::pid_t::try_from(child.id()) {
-        // SAFETY: [FFI] the shell is this process's unreaped child and leads
-        // its own group, so the group id cannot have been reused.
-        unsafe { libc::killpg(group, libc::SIGKILL) };
-    }
 }
 
 fn deliver_and_confirm(input: &mut MacInput, mut child: std::process::Child) -> CoreResult<()> {
@@ -179,7 +153,7 @@ fn deliver_and_confirm(input: &mut MacInput, mut child: std::process::Child) -> 
                 thread::sleep(Duration::from_millis(10));
             }
             Ok(None) => {
-                kill_group(&child);
+                let _ = child.kill();
                 return Err(DesktopError::input_failed(
                     "the canary dialog did not dismiss within the receipt deadline",
                 ));
@@ -301,7 +275,3 @@ fn process_name(pid: libc::pid_t) -> String {
     }
     String::from_utf8_lossy(&buffer[..len as usize]).into_owned()
 }
-
-#[cfg(test)]
-#[path = "canary_containment_tests.rs"]
-mod containment_tests;

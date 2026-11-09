@@ -1,19 +1,18 @@
 import type { ModelFallbackInfo } from "../../features/task-toast-manager/types"
-import type { DelegateTaskArgs } from "./types"
+import type { DelegateTaskArgs, DelegatedModelConfig } from "./types"
 import type { ExecutorContext } from "./executor-types"
 import type { FallbackEntry } from "../../shared/model-requirements"
 import { canonicalCategoryName } from "@oh-my-opencode/omo-config-core"
+import type { FallbackEntry } from "../../shared/model-requirements"
 import { mergeCategories } from "../../shared/merge-categories"
 import { SISYPHUS_JUNIOR_AGENT } from "./sisyphus-junior-agent"
 import { resolveCategoryConfig } from "./categories"
 import { builtinCategoryGateModels, CATEGORY_PROMPT_APPEND_RESOLVERS } from "./constants"
 import { parseModelString } from "../../shared/model-string-parser"
-import { CATEGORY_MODEL_REQUIREMENTS } from "../../shared/model-requirements"
 import { normalizeFallbackModels, flattenToFallbackModelStrings } from "../../shared/model-resolver"
 import { buildFallbackChainFromModels, findMostSpecificFallbackEntry } from "../../shared/fallback-chain-from-models"
 import { getAvailableModelsForDelegateTask } from "./available-models"
 import { resolveModelForDelegateTask } from "./model-selection"
-import type { DelegatedModelConfig } from "./types"
 import { applyCategoryParams } from "./delegated-model-config"
 import { applyFallbackEntrySettings } from "./fallback-entry-settings"
 import { lowerReasoningForModel } from "../../shared/agent-variant"
@@ -188,6 +187,7 @@ Available categories: ${allCategoryNames}`)
         ? configuredPrimaryModel !== undefined
         : resolved.isUserConfiguredModel,
       fallbackChain: requirement.fallbackChain,
+      disabledProviders: executorCtx.disabledProviders,
       availableModels,
       systemDefaultModel,
     })

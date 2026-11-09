@@ -41,8 +41,9 @@ function resolveModelAndFallbackChain(args: {
   subagentType: string
   agentOverrides?: AgentOverrides
   userCategories?: CategoriesConfig
+  disabledProviders?: readonly string[]
 }): { model: DelegatedModelConfig | undefined; fallbackChain: FallbackEntry[] | undefined } {
-  const { subagentType, agentOverrides, userCategories } = args
+  const { subagentType, agentOverrides, userCategories, disabledProviders } = args
   const agentConfigKey = getAgentConfigKey(subagentType)
   const agentRequirement = AGENT_MODEL_REQUIREMENTS[agentConfigKey]
 
@@ -82,7 +83,7 @@ function resolveModelAndFallbackChain(args: {
       })
     }
   } else {
-    const firstFallback = getFirstFallbackModel(agentRequirement)
+    const firstFallback = getFirstFallbackModel(agentRequirement, disabledProviders)
     if (firstFallback) {
       const normalized = parseModelString(firstFallback.model)
       if (normalized) {
@@ -115,11 +116,12 @@ function resolveModelAndFallbackChain(args: {
 export function createCallOmoAgent(
   ctx: PluginInput,
   backgroundManager: BackgroundManager,
-  disabledAgents: string[] = [],
+  disabledAgents: readonly string[] = [],
   agentOverrides?: AgentOverrides,
   userCategories?: CategoriesConfig,
   modelFallbackControllerAccessor?: ModelFallbackControllerAccessor,
   planningWarningInjectionDisabled = false,
+  disabledProviders: readonly string[] = [],
 ): ToolDefinition {
   const agentDescriptions = ALLOWED_AGENTS.map(
     (name) => `- ${name}: Specialized agent for ${name} tasks`,
@@ -204,6 +206,7 @@ export function createCallOmoAgent(
         subagentType: args.subagent_type,
         agentOverrides,
         userCategories,
+        disabledProviders,
       })
 
       if (args.run_in_background) {
@@ -244,4 +247,3 @@ export function createCallOmoAgent(
     },
   });
 }
-

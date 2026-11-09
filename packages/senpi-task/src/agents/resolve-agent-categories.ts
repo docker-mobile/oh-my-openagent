@@ -3,6 +3,7 @@ import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
 
 import { DEFAULT_CATEGORIES, resolveCategory, type SenpiModelPort, type SenpiModelRegistryPort } from "../category"
 import { recordRungKey } from "../model-chain"
+import { DEFAULT_CATEGORIES, resolveCategory, type ModelSelectionSource, type SenpiModelPort, type SenpiModelRegistryPort } from "../category"
 import { findExactAgentModel } from "./agent-model-registry"
 import type { ResolvedModelRecord } from "../state"
 
@@ -18,6 +19,7 @@ export type AgentCategorySelection = {
   readonly reasoningEffort?: string
   readonly requested_model?: ResolvedModelRecord
   readonly fallback_models?: readonly ResolvedModelRecord[]
+  readonly source: ModelSelectionSource
 }
 
 // A category the agent resolves through whose whole chain this machine cannot serve: the chain and the
@@ -58,6 +60,7 @@ function findOnlyCategoryModel<TModel extends SenpiModelPort>(
   return {
     provider: found.provider,
     modelId: found.modelId,
+    source: firstCategoryModelSource(input.categories, input.omoConfig),
     ...(input.configuredTuning.variant !== undefined ? { variant: input.configuredTuning.variant } : {}),
     ...(input.configuredTuning.reasoningEffort !== undefined
       ? { reasoningEffort: input.configuredTuning.reasoningEffort }
@@ -83,6 +86,16 @@ export function firstCategoryDefaultModel(
     if (builtin?.model !== undefined) return builtin.model
   }
   return undefined
+}
+
+// Who supplied firstCategoryDefaultModel's answer, walking the categories the same way.
+function firstCategoryModelSource(categories: readonly string[], omoConfig: OmoConfig): ModelSelectionSource {
+  const userCategories = omoConfig.categories
+  for (const name of categories) {
+    if (userCategories !== undefined && Object.hasOwn(userCategories, name) && userCategories[name]?.model !== undefined) return "user"
+    if (Object.hasOwn(DEFAULT_CATEGORIES, name) && DEFAULT_CATEGORIES[name]?.model !== undefined) return "builtin"
+  }
+  return "builtin"
 }
 
 // Categories supply the MODEL only: prompt_append, tools, temperature, top_p, maxTokens and
@@ -119,6 +132,7 @@ export function resolveAgentCategoryModel<TModel extends SenpiModelPort>(
     selection: {
       provider: spec.provider,
       modelId: spec.modelId,
+    source: winner.modelSelection.source,
       ...(input.configuredTuning.variant !== undefined
         ? { variant: input.configuredTuning.variant }
         : categoryReasoning !== undefined ? { variant: categoryReasoning } : {}),

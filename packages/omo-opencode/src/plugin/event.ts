@@ -9,6 +9,7 @@ import { createStaleAgentRegistryRecovery } from "../features/agent-registry-rec
 import { invalidateContextWindowUsageCache } from "../shared/dynamic-truncator";
 import { resolveSessionEventID } from "../shared/event-session-id";
 import { log } from "../shared/logger";
+import { isDelegateTaskSyncSession, recordSyncSessionError } from "../shared/sync-session-error-store";
 import { normalizeSessionStatusToIdle } from "./session-status-normalizer";
 import { pruneRecentSyntheticIdles } from "./recent-synthetic-idles";
 import { extractErrorMessage, extractErrorName } from "./event-error-utils";
@@ -237,7 +238,18 @@ export function createEventHandler(args: {
         const errorName = extractErrorName(error);
         const errorMessage = extractErrorMessage(error);
         if (sessionID) {
-          await modelFallbackHandler.handleSessionError({ sessionID, errorName, errorMessage, props });
+          const handledByModelFallback = await modelFallbackHandler.handleSessionError({
+            sessionID,
+            errorName,
+            errorMessage,
+            props,
+          });
+          if (handledByModelFallback) {
+            await runEventHookSafely("teamMemberErrorHandler", teamHandlers.teamMemberErrorHandler, input);
+            return;
+          }
+
+          if (isDelegateTaskSyncSession(sessionID)) recordSyncSessionError(sessionID, error);
         }
       } catch (err) {
         const sessionID = resolveSessionEventID(props);

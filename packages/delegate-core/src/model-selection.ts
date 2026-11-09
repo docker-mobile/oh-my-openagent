@@ -5,11 +5,12 @@ import {
   parseVariantFromModelID,
   transformModelForProvider,
 } from "@oh-my-opencode/model-core"
+import { resolveDelegateFallback } from "./delegate-fallback-resolution"
 
 export { transformModelForProvider } from "@oh-my-opencode/model-core"
 
 export type DelegateFallbackEntry = {
-  readonly providers: string[]
+  readonly providers: readonly string[]
   readonly model: string
   readonly variant?: string
 }
@@ -26,6 +27,7 @@ export type DelegateModelResolutionInput = {
    * model (#9146). Only a caller whose rungs come from the user's own selection opts in.
    */
   readonly allowUnlistedProviders?: boolean
+  readonly disabledProviders?: readonly string[]
   readonly availableModels: ReadonlySet<string>
   readonly systemDefaultModel?: string
 }
@@ -40,11 +42,6 @@ export type DelegateModelResolutionDeps = {
   readonly hasProviderModelsCache: boolean
   readonly hasConnectedProvidersCache: boolean
   readonly log?: (message: string, metadata?: Record<string, unknown>) => void
-}
-
-function modelIDForProvider(provider: string, model: string): string {
-  const prefix = `${provider}/`
-  return model.startsWith(prefix) ? model.slice(prefix.length) : model
 }
 
 function isExplicitHighModel(model: string): boolean {
@@ -213,73 +210,18 @@ export function resolveModelForDelegateTask(
 
   const fallbackChain = input.fallbackChain
   if (fallbackChain && fallbackChain.length > 0) {
-    if (input.availableModels.size === 0) {
-      if (connectedProviders) {
-        const connectedSet = new Set(connectedProviders)
-        for (const entry of fallbackChain) {
-          for (const provider of entry.providers) {
-            if (connectedSet.has(provider)) {
-              const transformedModelId = transformModelForProvider(provider, modelIDForProvider(provider, entry.model))
-              deps.log?.("[resolveModelForDelegateTask] fallback chain resolved via connected provider", {
-                provider,
-                model: entry.model,
-              })
-              return { model: `${provider}/${transformedModelId}`, variant: entry.variant, fallbackEntry: entry, matchedFallback: true }
-            }
-          }
-        }
-        deps.log?.("[resolveModelForDelegateTask] no connected provider found in fallback chain")
-      } else {
-        const first = fallbackChain[0]
-        const provider = first?.providers?.[0]
-        if (first && provider) {
-          const transformedModelId = transformModelForProvider(provider, first.model)
-          return { model: `${provider}/${transformedModelId}`, variant: first.variant, fallbackEntry: first, matchedFallback: true }
-        }
-      }
-    } else {
-      for (const [entryIndex, entry] of fallbackChain.entries()) {
-        for (const provider of entry.providers) {
-          const entryModelId = modelIDForProvider(provider, entry.model)
-          const transformedModelId = transformModelForProvider(provider, entryModelId)
-          // A listed provider may publish the rung id as the chain spells it rather than transformed
-          // (kimi-coding/kimi-k3 for a kimi-k3 rung); both spellings stay on this provider.
-          const candidateIds = transformedModelId === entryModelId ? [entryModelId] : [transformedModelId, entryModelId]
-          const match = candidateIds
-            .map((modelId) => fuzzyMatchModel(`${provider}/${modelId}`, new Set(input.availableModels), [provider]))
-            .find((candidate) => candidate !== null)
-          if (match) {
-            if (explicitHighModel && entry.variant === "high" && match === explicitHighBaseModel) {
-              return { model: explicitHighModel, fallbackEntry: entry, matchedFallback: true }
-            }
-
-            return { model: match, variant: entry.variant, fallbackEntry: entry, matchedFallback: true }
-          }
-        }
-
-        if (input.allowUnlistedProviders !== true) continue
-
-        const laterRungProviders = new Set(
-          fallbackChain
-            .slice(entryIndex + 1)
-            .filter((candidate) => candidate.model === entry.model)
-            .flatMap((candidate) => candidate.providers),
-        )
-        const crossProviderCandidates = new Set(
-          [...input.availableModels].filter((model) => {
-            const [provider] = model.split("/")
-            return provider !== undefined && !laterRungProviders.has(provider)
-          }),
-        )
-        const crossProviderMatch = fuzzyMatchModel(entry.model, crossProviderCandidates)
-        if (crossProviderMatch) {
-          if (explicitHighModel && entry.variant === "high" && crossProviderMatch === explicitHighBaseModel) {
-            return { model: explicitHighModel, fallbackEntry: entry, matchedFallback: true }
-          }
-
-          return { model: crossProviderMatch, variant: entry.variant, fallbackEntry: entry, matchedFallback: true }
-        }
-      }
+    const resolvedFallback = resolveDelegateFallback({
+      fallbackChain,
+      disabledProviders: input.disabledProviders,
+      availableModels: input.availableModels,
+      connectedProviders,
+      explicitHighModel,
+      explicitHighBaseModel,
+      log: deps.log,
+      allowUnlistedProviders: input.allowUnlistedProviders,
+    })
+    if (resolvedFallback) {
+      return resolvedFallback
     }
   }
 
