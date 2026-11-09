@@ -6,6 +6,8 @@ describe("formatDurationHuman", () => {
   for (const [milliseconds, expected] of [
     [0, "0s"],
     [999, "0s"],
+    [Number.NaN, "0s"],
+    [Number.POSITIVE_INFINITY, "0s"],
     [1000, "1s"],
     [60_000, "1m 0s"],
     [3_600_000, "1h 0m 0s"],
