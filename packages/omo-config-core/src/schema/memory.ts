@@ -58,6 +58,7 @@ export const OmoMemoryRecallSchema = z.object({
   max_concurrent_wakes: z.number().int().positive().default(2),
   tool_budget: z.number().int().positive().default(8),
   query_expansion: z.boolean().default(false),
+  query_rarity: z.boolean().default(true),
 }).strict()
 
 // ---------------------------------------------------------------------------
@@ -177,6 +178,7 @@ export const OmoMemoryRecallLayerSchema = z.object({
   max_concurrent_wakes: z.number().int().positive().optional(),
   tool_budget: z.number().int().positive().optional(),
   query_expansion: z.boolean().optional(),
+  query_rarity: z.boolean().optional(),
 }).strict()
 
 export const OmoMemoryNudgeLayerSchema = z.object({
@@ -324,6 +326,7 @@ export const OmoMemorySettingsSchema = z.object({
     max_concurrent_wakes: 2,
     tool_budget: 8,
     query_expansion: false,
+    query_rarity: true,
   }),
   project_scope: OmoMemoryProjectScopeSchema.default({ nudge: true, recall: true }),
   projection: OmoMemoryProjectionSchema.default({ max_entries_per_directory: 0, max_bytes: 40960 }),
