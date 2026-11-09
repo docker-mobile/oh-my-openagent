@@ -6,6 +6,17 @@ import { join, sep } from "node:path"
 
 const packageRoot = join(import.meta.dir, "..")
 
+function expectSuccess(command: string, result: Bun.SyncSubprocess<"pipe", "pipe">): void {
+  const decoder = new TextDecoder()
+  const message = [
+    `${command} exited ${result.exitCode} (signal=${result.signalCode ?? "none"}, timeout=${result.exitedDueToTimeout ?? false}, maxBuffer=${result.exitedDueToMaxBuffer ?? false})`,
+    `stdout:\n${decoder.decode(result.stdout).slice(-8192)}`,
+    `stderr:\n${decoder.decode(result.stderr).slice(-8192)}`,
+  ].join("\n")
+  expect(result.exitCode, message).toBe(0)
+}
+
+
 // `bun add` of the packed tarball resolves @code-yeongyu/senpi from the npm registry. On CI runners that step has
 // failed in under a second across unrelated PRs while the same pack + add passed on the dev tip, so it gets one
 // retry for a transient registry or network error, and a failure prints bun's output instead of only the exit code.
@@ -25,11 +36,11 @@ describe("omo-ai packed install", () => {
     const root = mkdtempSync(join(tmpdir(), "omo-ai-packed-install-"))
     try {
       const pack = Bun.spawnSync(["bun", "pm", "pack", "--ignore-scripts", "--destination", root], { cwd: packageRoot, stdout: "pipe", stderr: "pipe" })
-      expect(pack.exitCode).toBe(0)
+      expectSuccess("bun pm pack", pack)
       const tarball = [...new Bun.Glob("*.tgz").scanSync(root)][0]
       expect(tarball).toBeDefined()
       const listing = Bun.spawnSync(["tar", "-tzf", join(root, tarball!)], { stdout: "pipe", stderr: "pipe" })
-      expect(listing.exitCode).toBe(0)
+      expectSuccess("tar -tzf", listing)
       const entries = new TextDecoder().decode(listing.stdout).split(/\r?\n/).filter(Boolean).map((entry) => entry.replaceAll("/", sep))
       expect(entries).toContain(join("package", "bin", "senpi-patch.mjs"))
 
@@ -66,7 +77,7 @@ describe("omo-ai packed install", () => {
     const root = mkdtempSync(join(tmpdir(), "omo-ai-ignore-scripts-"))
     try {
       const pack = Bun.spawnSync(["bun", "pm", "pack", "--ignore-scripts", "--destination", root], { cwd: packageRoot, stdout: "pipe", stderr: "pipe" })
-      expect(pack.exitCode).toBe(0)
+      expectSuccess("bun pm pack --ignore-scripts", pack)
       const tarball = [...new Bun.Glob("*.tgz").scanSync(root)][0]
       expect(tarball).toBeDefined()
       const consumer = join(root, "consumer")
