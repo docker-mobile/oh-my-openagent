@@ -135,14 +135,7 @@ function withoutCapabilities(hidden: readonly string[]): Transform {
   })
 }
 
-export type SocketHost = {
-  readonly socket: string
-  readonly pid: number
-  stop(): Promise<void>
-}
-
-/** A real multi-session senpi host process listening on a short socket, with no extensions or skills. */
-export async function startSocketHost(root: string, engineEnv: Readonly<Record<string, string>>): Promise<SocketHost> {
+async function hostEngine(root: string, engineEnv: Readonly<Record<string, string>>): Promise<Engine> {
   // A socket host advertises `extension_events` (a capability omo requires of a task host) only for this client set.
   const env = { ...engineEnv, SENPI_RPC_CLIENT_CAPABILITIES: "extension_events" }
   const { dir: socketDir, socket } = shortSocketDir("model-chain-host", "h.sock")
@@ -162,11 +155,6 @@ export async function startSocketHost(root: string, engineEnv: Readonly<Record<s
     await stop()
     throw error
   }
-  return { socket, pid: host.pid ?? 0, stop }
-}
-
-async function hostEngine(root: string, engineEnv: Readonly<Record<string, string>>): Promise<Engine> {
-  const { socket, pid, stop } = await startSocketHost(root, engineEnv)
   const clients: HostSessionClient[] = []
   const runner = new RpcHostRunner({
     createClient: (socketPath) => {
@@ -186,7 +174,7 @@ async function hostEngine(root: string, engineEnv: Readonly<Record<string, strin
     insideHost: () => false,
     onNotice: () => undefined,
     shardEvents: {},
-    ensureDaemon: () => Promise.resolve({ action: "reuse", reason: "compatible", socket, pid, reused: true, upgradeable: true }),
+    ensureDaemon: () => Promise.resolve({ action: "reuse", reason: "compatible", socket, pid: host.pid ?? 0, reused: true, upgradeable: true }),
   })
   return {
     runner: createRpcManagedRunner(runner),
