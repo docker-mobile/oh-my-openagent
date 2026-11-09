@@ -109,7 +109,6 @@ method_table! {
     HoldMouse = "holdMouse", Exec, Public, HoldMouseParams => Option<ActionReport>;
     RaiseWindow = "raiseWindow", Exec, Public, RaiseWindowParams => Option<ActionReport>;
     RaiseToSpace = "window.bringToCurrentSpace", Exec, Public, BringToCurrentSpaceParams => Option<ActionReport>;
-    AxSelectText = "ax.selectText", Exec, Public, AxSelectTextParams => AxTextSelection;
     MenusItems = "menus.items", Read, Public, MenuPathParams => Vec<MenuItem>;
     MenusSelect = "menus.select", Exec, Public, MenuSelectParams => Option<ActionReport>;
     ClipboardRead = "clipboard.read", Read, Public, EmptyParams => ClipboardText;
