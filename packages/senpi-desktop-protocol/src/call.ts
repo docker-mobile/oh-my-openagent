@@ -69,7 +69,7 @@ export const WINDOW_METHODS: MethodPolicies = {
 	holdKeys: "exec", // Keyboard.hold
 	holdMouse: "exec", // Pointer.hold
 	raise: "exec",
-	bringToCurrentSpace: "exec", // Window.raise
+	bringToCurrentSpace: "exec", // Window.bringToCurrentSpace
 	ax: "read", // Target.ax
 	find: "read", // Window.find
 	ref: "read", // Window.element

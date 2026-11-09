@@ -55,6 +55,7 @@ export function createModelFallbackEventHandler(args: {
     }
   >();
   const continuation = createModelFallbackContinuationController({
+    modelFallback: args.modelFallback,
     pluginConfig: args.pluginConfig,
     pluginContext: args.pluginContext,
     lastKnownModelBySession,

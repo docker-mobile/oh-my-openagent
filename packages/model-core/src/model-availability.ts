@@ -27,7 +27,7 @@ function closestMatch(matches: readonly string[], providers: readonly string[] |
 
 export function fuzzyMatchModel(
 	target: string,
-	available: Set<string>,
+	available: ReadonlySet<string>,
 	providers?: string[],
 ): string | null {
 	if (available.size === 0) {

@@ -39,7 +39,7 @@ function normalizeModelName(name: string): string {
  */
 export function fuzzyMatchModel(
 	target: string,
-	available: Set<string>,
+	available: ReadonlySet<string>,
 	providers?: string[],
 ): string | null {
 	log("[fuzzyMatchModel] called", { target, availableCount: available.size, providers })
