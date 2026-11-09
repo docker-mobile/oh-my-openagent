@@ -25,9 +25,11 @@ export async function resolveSubagentModel(
   agentToUse: string,
   matchedAgent: AgentInfo,
   executorCtx: ExecutorContext,
+  inheritedModel?: string,
 ): Promise<ResolvedSubagentModel> {
   let categoryModel = undefined
   let fallbackChain = undefined
+  let actualModel: string | undefined = undefined
   let resolutionReturnedUndefined = false
 
 
@@ -65,10 +67,11 @@ export async function resolveSubagentModel(
     ? `${normalizedMatchedModel.providerID}/${normalizedMatchedModel.modelID}`
     : undefined
 
-  if (canonicalModels || agentOverride?.model || agentCategoryConfig?.model || agentRequirement || matchedAgent.model) {
+  if (canonicalModels || agentOverride?.model || agentCategoryConfig?.model || agentRequirement || matchedAgent.model || inheritedModel) {
     const resolution = resolveModelForDelegateTask({
       userModel: explicitModel,
       userFallbackModels: flattenToFallbackModelStrings(normalizedAgentFallbackModels),
+      inheritedModel,
       categoryDefaultModel: matchedAgentModelStr,
       fallbackChain: agentRequirement?.fallbackChain,
       availableModels,
@@ -78,6 +81,7 @@ export async function resolveSubagentModel(
     const resolutionSkipped = resolution && "skipped" in resolution
 
     if (resolution && !resolutionSkipped) {
+      actualModel = resolution.model
       const normalized = normalizeModelFormat(resolution.model)
       if (normalized) {
         const variantToUse = agentOverride?.variant ?? resolution.variant ?? agentCategoryConfig?.variant
@@ -85,6 +89,7 @@ export async function resolveSubagentModel(
         categoryModel = applyCategoryParams(resolvedModel, agentCategoryConfig)
       }
     } else if (resolutionSkipped && explicitModel) {
+      actualModel = explicitModel
       const normalized = explicitModel ? normalizeModelFormat(explicitModel) : undefined
       if (normalized) {
         const variantToUse = agentOverride?.variant ?? agentCategoryConfig?.variant
@@ -136,6 +141,7 @@ export async function resolveSubagentModel(
     const fullModel = `${normalizedMatchedModel.providerID}/${normalizedMatchedModel.modelID}`
     if (availableModels.size === 0 || fuzzyMatchModel(fullModel, availableModels, [normalizedMatchedModel.providerID])) {
       categoryModel = normalizedMatchedModel
+      actualModel = fullModel
     } else {
       log("[delegate-task] Skipping unavailable agent default model", {
         agent: agentToUse,
@@ -155,5 +161,5 @@ export async function resolveSubagentModel(
     }
   }
 
-  return { categoryModel, fallbackChain }
+  return { categoryModel, actualModel, fallbackChain }
 }

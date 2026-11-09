@@ -29,7 +29,7 @@ export async function resolveSubagentExecution(
     }
 
     agentToUse = agentMatch.agentToUse
-    const { categoryModel, fallbackChain, error: modelError } = await resolveSubagentModel(agentToUse, agentMatch.matchedAgent, executorCtx)
+    const { categoryModel, actualModel: resolvedActualModel, fallbackChain, error: modelError } = await resolveSubagentModel(agentToUse, agentMatch.matchedAgent, executorCtx, options.inheritedModel)
     if (modelError) {
       log("[delegate-task] Subagent model resolution failed — failing fast before child-session creation", {
         requestedAgent: agentToUse,
@@ -38,7 +38,15 @@ export async function resolveSubagentExecution(
       })
       return { agentToUse: "", categoryModel: undefined, error: modelError }
     }
-    return { agentToUse, categoryModel, fallbackChain }
+    return {
+      agentToUse,
+      categoryModel,
+      actualModel: resolvedActualModel,
+      isUnstableAgent: resolvedActualModel
+        ? ["gemini", "minimax", "kimi"].some((name) => resolvedActualModel.toLowerCase().includes(name))
+        : false,
+      fallbackChain,
+    }
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error)
     log("[delegate-task] Failed to resolve subagent execution", {

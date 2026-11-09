@@ -5,11 +5,15 @@ import type { DelegatedModelConfig } from "./types"
 export interface ResolveSubagentExecutionOptions {
   allowSisyphusJuniorDirect?: boolean
   allowPrimaryAgentDelegation?: boolean
+  /** The delegating session's own model, inherited when the agent has no explicit model (#2738). */
+  inheritedModel?: string
 }
 
 export interface ResolveSubagentExecutionResult {
   agentToUse: string
   categoryModel: DelegatedModelConfig | undefined
+  actualModel?: string
+  isUnstableAgent?: boolean
   fallbackChain?: FallbackEntry[]
   error?: string
 }
@@ -28,6 +32,7 @@ export type SubagentAgentMatch =
 
 export interface ResolvedSubagentModel {
   readonly categoryModel: DelegatedModelConfig | undefined
+  readonly actualModel?: string
   readonly fallbackChain: FallbackEntry[] | undefined
   readonly error?: string
 }

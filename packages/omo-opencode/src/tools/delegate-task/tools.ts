@@ -191,43 +191,46 @@ export function createDelegateTask(options: DelegateTaskToolOptions): ToolDefini
         fallbackChain = resolution.fallbackChain
         maxPromptTokens = resolution.maxPromptTokens
         providerBaseURL = resolveProviderBaseURL(openCodeConfigData, categoryModel?.providerID, categoryModel?.modelID)
-
-        const isRunInBackgroundExplicitlyFalse = isExplicitSyncRun(delegateTaskArgs.run_in_background)
-
-        log("[task] unstable agent detection", {
-          category: delegateTaskArgs.category,
-          actualModel,
-          isUnstableAgent,
-          run_in_background_value: delegateTaskArgs.run_in_background,
-          run_in_background_type: typeof delegateTaskArgs.run_in_background,
-          isRunInBackgroundExplicitlyFalse,
-          willForceBackground: isUnstableAgent && isRunInBackgroundExplicitlyFalse,
-        })
-
-        if (isUnstableAgent && isRunInBackgroundExplicitlyFalse) {
-          const systemContent = buildSystemContent({
-            skillContent,
-            skillContents,
-            categoryPromptAppend,
-            agentName: agentToUse,
-            maxPromptTokens,
-            model: categoryModel,
-            providerBaseURL,
-            availableCategories,
-            availableSkills,
-            nativeSkillInfos,
-          })
-          return executeUnstableAgentTask(delegateTaskArgs, ctx, options, parentContext, agentToUse, categoryModel, systemContent, actualModel)
-        }
       } else {
-        const resolution = await resolveSubagentExecution(delegateTaskArgs, modelOptions, parentContext.agent, categoryExamples)
+        const resolution = await resolveSubagentExecution(delegateTaskArgs, modelOptions, parentContext.agent, categoryExamples, { inheritedModel })
         if (resolution.error) {
           return resolution.error
         }
         agentToUse = resolution.agentToUse
         categoryModel = resolution.categoryModel
+        actualModel = resolution.actualModel
+        isUnstableAgent = resolution.isUnstableAgent ?? false
         fallbackChain = resolution.fallbackChain
         providerBaseURL = resolveProviderBaseURL(openCodeConfigData, categoryModel?.providerID, categoryModel?.modelID)
+      }
+
+      const isRunInBackgroundExplicitlyFalse = isExplicitSyncRun(delegateTaskArgs.run_in_background)
+
+      log("[task] unstable agent detection", {
+        category: delegateTaskArgs.category,
+        subagent_type: delegateTaskArgs.subagent_type,
+        actualModel,
+        isUnstableAgent,
+        run_in_background_value: delegateTaskArgs.run_in_background,
+        run_in_background_type: typeof delegateTaskArgs.run_in_background,
+        isRunInBackgroundExplicitlyFalse,
+        willForceBackground: isUnstableAgent && isRunInBackgroundExplicitlyFalse,
+      })
+
+      if (isUnstableAgent && isRunInBackgroundExplicitlyFalse) {
+        const systemContent = buildSystemContent({
+          skillContent,
+          skillContents,
+          categoryPromptAppend,
+          agentName: agentToUse,
+          maxPromptTokens,
+          model: categoryModel,
+          providerBaseURL,
+          availableCategories,
+          availableSkills,
+          nativeSkillInfos,
+        })
+        return executeUnstableAgentTask(delegateTaskArgs, ctx, options, parentContext, agentToUse, categoryModel, systemContent, actualModel)
       }
 
       const systemContent = buildSystemContent({
