@@ -11,6 +11,7 @@ const INTERRUPTED_GRACE_CYCLES = 3
 const MIN_STABILIZATION_MS = 1_000
 const DEFAULT_EVENT_WATCHDOG_MS = 30_000 // 30 seconds
 const DEFAULT_SECONDARY_MEANINGFUL_WORK_TIMEOUT_MS = 60_000 // 60 seconds
+const DEFAULT_RETRY_STATUS_TIMEOUT_MS = 180_000 // 3 minutes - max time for runtime fallback retries
 
 type SessionStatusMap = Record<string, { type?: string }>
 
@@ -60,6 +61,7 @@ export interface PollOptions {
   minStabilizationMs?: number
   eventWatchdogMs?: number
   secondaryMeaningfulWorkTimeoutMs?: number
+  retryStatusTimeoutMs?: number
   requireMeaningfulWork?: boolean
   /** Injectable clock (default Date.now). Tests drive a virtual clock to assert timing causality deterministically. */
   now?: () => number
@@ -85,6 +87,8 @@ export async function pollForCompletion(
   const secondaryMeaningfulWorkTimeoutMs =
     options.secondaryMeaningfulWorkTimeoutMs ??
     DEFAULT_SECONDARY_MEANINGFUL_WORK_TIMEOUT_MS
+  const retryStatusTimeoutMs =
+    options.retryStatusTimeoutMs ?? DEFAULT_RETRY_STATUS_TIMEOUT_MS
   const requireMeaningfulWork = options.requireMeaningfulWork ?? false
   const now = options.now ?? Date.now
   const sleep = options.sleep ?? ((ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms)))
@@ -93,6 +97,7 @@ export async function pollForCompletion(
   let interruptedCycleCount = 0
   let firstWorkTimestamp: number | null = null
   let secondaryTimeoutChecked = false
+  let retryStatusStartTimestamp: number | null = null
   const pollStartTimestamp = now()
 
   while (!abortController.signal.aborted) {
@@ -158,6 +163,34 @@ export async function pollForCompletion(
       eventState.mainSessionIdle = false
     } else if (isSettledMainStatus(mainSessionStatus)) {
       eventState.mainSessionIdle = true
+    }
+
+    // Track retry status timeout - prevent infinite loop when runtime fallback keeps retrying
+    if (mainSessionStatus === "retry") {
+      if (retryStatusStartTimestamp === null) {
+        retryStatusStartTimestamp = now()
+      } else {
+        const retryDuration = now() - retryStatusStartTimestamp
+        if (retryDuration > retryStatusTimeoutMs) {
+          console.error(
+            pc.red(
+              `\n\nSession stuck in retry status for ${Math.round(
+                retryDuration / 1000
+              )}s - runtime fallback may be failing repeatedly`
+            )
+          )
+          console.error(
+            pc.yellow(
+              `Maximum retry timeout (${Math.round(
+                retryStatusTimeoutMs / 1000
+              )}s) exceeded. Check model availability and network connectivity.`
+            )
+          )
+          return 1
+        }
+      }
+    } else {
+      retryStatusStartTimestamp = null
     }
 
     if (mainSessionStatus === "interrupted") {
