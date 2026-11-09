@@ -43,7 +43,6 @@ function appendFileSection(
     lines.push(`  ... ${omittedCount} more ${label.toLowerCase()} file${omittedCount === 1 ? "" : "s"} omitted.`)
   }
   lines.push("")
->>>>>>> refs/remotes/pr/7131
 }
 
 export function formatFileChanges(stats: GitFileStat[], notepadPath?: string): string {

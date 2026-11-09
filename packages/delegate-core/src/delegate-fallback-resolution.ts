@@ -15,6 +15,7 @@ type DelegateFallbackResolutionInput = {
   readonly connectedProviders: readonly string[] | null
   readonly explicitHighModel: string | undefined
   readonly explicitHighBaseModel: string | null
+  readonly allowUnlistedProviders?: boolean
   readonly log?: (message: string, metadata?: Record<string, unknown>) => void
 }
 

@@ -108,7 +108,7 @@ export async function tryFallbackRetry(args: {
       continue
     }
     const servingProviders = filterProvidersServingModel({
-      providers: candidate.providers,
+      providers: [...candidate.providers],
       model: candidate.model,
       connectedSet,
       modelsByProvider: providerModelsCache?.models,

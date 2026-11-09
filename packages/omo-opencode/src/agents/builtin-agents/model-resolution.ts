@@ -1,7 +1,5 @@
-import { isAnyProviderConnected, resolveModelPipeline } from "../../shared"
+import { isAnyProviderConnected, resolveModelPipeline, type FallbackEntry } from "../../shared"
 import { getFirstAllowedFallbackEntry } from "@oh-my-opencode/model-core"
-import { isAnyProviderConnected } from "../../shared"
-import { resolveModelPipeline, type FallbackEntry } from "../../shared"
 import { transformModelForProvider } from "../../shared/provider-model-id-transform"
 
 export function applyModelResolution(input: {

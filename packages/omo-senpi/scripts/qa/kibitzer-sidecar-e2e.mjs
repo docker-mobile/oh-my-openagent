@@ -97,17 +97,13 @@ import {
   writeOmoConfig,
 } from "./kibitzer-sidecar-support.mjs"
 
-<<<<<<< HEAD
-export const SCENARIOS = ["happy", "provider-429", "context-reseed", "category-unavailable", "refused-pinned-model", "fast-alias-config", "cjk-auto", "query-expansion"]
+export const SCENARIOS = ["happy", "provider-429", "context-reseed", "category-unavailable", "refused-pinned-model", "fast-alias-config", "cjk-auto", "query-expansion", "query-rarity", "query-rarity-off"]
 /**
  * #10536: a priority alias declared only in models.json on an openai-codex-responses provider. senpi's
  * service-tier extension starts such an alias on its base model at session_start, before any request,
  * so the post-start pin check is exercised without the mock speaking that API.
  */
 const FAST_ALIAS = { provider: "omo-codex-mock", base: "luna", alias: "luna-fast" }
-=======
-export const SCENARIOS = ["happy", "provider-429", "context-reseed", "category-unavailable", "refused-pinned-model", "cjk-auto", "query-expansion", "query-rarity", "query-rarity-off"]
->>>>>>> refs/remotes/pr/10043
 /** The pinned model the refused-pinned-model provider refuses, and the builtin quick rung it falls back to. */
 const REFUSED_MODEL = "refused-1"
 const BUILTIN_RUNG = { provider: "deepseek", id: "deepseek-flash" }
@@ -659,9 +655,6 @@ async function runQueryExpansion({ session, state, identity, router, facts, pare
   }
 }
 
-<<<<<<< HEAD
-const RUNNERS = { happy: runHappy, "provider-429": runProvider429, "context-reseed": runContextReseed, "category-unavailable": runCategoryUnavailable, "refused-pinned-model": runRefusedPinnedModel, "fast-alias-config": runFastAliasConfig, "cjk-auto": runCjkAuto, "query-expansion": runQueryExpansion }
-=======
 // ---- query-rarity / query-rarity-off -----------------------------------------------------------------------------
 
 function runQueryRarity(rarityOn) {
@@ -685,8 +678,7 @@ function runQueryRarity(rarityOn) {
   }
 }
 
-const RUNNERS = { "query-rarity": runQueryRarity(true), "query-rarity-off": runQueryRarity(false), happy: runHappy, "provider-429": runProvider429, "context-reseed": runContextReseed, "category-unavailable": runCategoryUnavailable, "refused-pinned-model": runRefusedPinnedModel, "cjk-auto": runCjkAuto, "query-expansion": runQueryExpansion }
->>>>>>> refs/remotes/pr/10043
+const RUNNERS = { "query-rarity": runQueryRarity(true), "query-rarity-off": runQueryRarity(false), happy: runHappy, "provider-429": runProvider429, "context-reseed": runContextReseed, "category-unavailable": runCategoryUnavailable, "refused-pinned-model": runRefusedPinnedModel, "fast-alias-config": runFastAliasConfig, "cjk-auto": runCjkAuto, "query-expansion": runQueryExpansion }
 
 // ---- main --------------------------------------------------------------------------------------------------------
 

@@ -83,7 +83,7 @@ function resolveModelAndFallbackChain(args: {
       })
     }
   } else {
-    const firstFallback = getFirstFallbackModel(agentRequirement, disabledProviders)
+    const firstFallback = getFirstFallbackModel(agentRequirement, undefined, disabledProviders)
     if (firstFallback) {
       const normalized = parseModelString(firstFallback.model)
       if (normalized) {
