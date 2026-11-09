@@ -249,6 +249,17 @@ Team mode is for overlapping lanes that need to exchange discoveries mid-flight.
 
 ---
 
+## Memory-Safe Autonomous Runs
+
+Large `ultrawork` or `/start-work` runs can amplify host memory pressure because each child session has its own prompt history, tool output, subprocesses, and optional tmux pane. Inside an IDE terminal (Zed, VS Code, JetBrains), start conservative and raise limits only after the host stays stable.
+
+Baseline for a memory-pressure investigation: `background_task.defaultConcurrency: 2`, a per-provider `providerConcurrency` cap, `maxDepth: 2`, `maxToolCalls: 120`, and a tightened `team_mode` (`max_parallel_members: 2`, `max_members: 4`, `max_member_turns: 120`).
+
+- Prefer one foreground implementation lane plus background `explore`/`librarian` lanes; avoid launching multiple build/test/dev-server workers from an IDE terminal.
+- Treat repeated stale-task interruptions, disappeared sessions, or host memory-pressure warnings as a stop condition. Collect the useful output, cancel disposable lanes individually, and restart from a smaller plan slice.
+- Keep `tmux_visualization` off while diagnosing host memory pressure. Turn it back on only after the same workload is stable without pane rendering.
+- For leak investigations, run outside the IDE terminal when possible and capture host process memory alongside `oh-my-opencode.log`; this separates OMO orchestration pressure from editor/runtime leaks.
+
 ## Configuration
 
 `omo.json` controls the delegation surfaces. Agent overrides use the agent id as the key; category overrides use the category name.
