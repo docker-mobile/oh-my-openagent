@@ -3,8 +3,52 @@ import type { SessionMessage } from "./executor-types"
 import { classifySyncOutcome, type SyncOutcomeState } from "./sync-session-turns"
 import { normalizeSDKResponse } from "../../shared"
 
+const DEFAULT_MAX_SYNC_RESULT_BYTES = 8192
+const SYNC_RESULT_TRUNCATION_NOTICE =
+  "\n\n[... truncated. Use background_output with full_session=true to retrieve the complete output.]"
+
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value)
+}
+
+function readConfiguredMaxSyncResultBytes(configResult: unknown): number | undefined {
+  if (!isRecord(configResult) || !isRecord(configResult.data) || !isRecord(configResult.data.tool_output)) {
+    return undefined
+  }
+
+  const maxBytes = configResult.data.tool_output.max_bytes
+  return typeof maxBytes === "number" && Number.isSafeInteger(maxBytes) && maxBytes > 0 ? maxBytes : undefined
+}
+
+async function resolveMaxSyncResultBytes(client: OpencodeClient): Promise<number> {
+  const config = client.config
+  if (!config || typeof config.get !== "function") return DEFAULT_MAX_SYNC_RESULT_BYTES
+
+  try {
+    const configResult = await config.get()
+    return readConfiguredMaxSyncResultBytes(configResult) ?? DEFAULT_MAX_SYNC_RESULT_BYTES
+  } catch (error) {
+    if (error instanceof Error) return DEFAULT_MAX_SYNC_RESULT_BYTES
+    throw error
+  }
+}
+
+function truncateSyncResult(textContent: string, maxBytes: number): string {
+  if (Buffer.byteLength(textContent, "utf8") <= maxBytes) return textContent
+
+  const noticeBytes = Buffer.byteLength(SYNC_RESULT_TRUNCATION_NOTICE, "utf8")
+  const contentMaxBytes = Math.max(0, maxBytes - noticeBytes)
+  const textBytes = Buffer.from(textContent, "utf8")
+  let contentEnd = Math.min(contentMaxBytes, textBytes.length)
+  while (contentEnd > 0 && contentEnd < textBytes.length && (textBytes[contentEnd] & 0xc0) === 0x80) {
+    contentEnd -= 1
+  }
+  const truncatedContent = textBytes.subarray(0, contentEnd).toString("utf8")
+  return `${truncatedContent}${SYNC_RESULT_TRUNCATION_NOTICE}`
 }
 
 function messageText(msg: SessionMessage): string {
@@ -100,6 +144,8 @@ export async function fetchSyncResult(
     return { ok: false, error: `No assistant response found.\n\nSession ID: ${sessionID}` }
   }
 
+  const maxSyncResultBytes = await resolveMaxSyncResultBytes(client)
+
   // Abort recovery must validate the LATEST assistant message before accepting
   // any older content. Otherwise a provider abort/error on the newest turn could
   // be masked by returning a stale envelope from an earlier turn — reporting a
@@ -125,11 +171,11 @@ export async function fetchSyncResult(
     if (options.deliverableTag) {
       const tagged = extractTaggedDeliverable(assistantMessages, options.deliverableTag)
       if (tagged) {
-        return { ok: true, textContent: tagged, endState }
+        return { ok: true, textContent: truncateSyncResult(tagged, maxSyncResultBytes), endState }
       }
     }
 
-    return { ok: true, textContent: lastContent, endState }
+    return { ok: true, textContent: truncateSyncResult(lastContent, maxSyncResultBytes), endState }
   }
 
   // Prefer an explicit deliverable envelope (e.g. `<plan>...</plan>`) when the
@@ -140,7 +186,7 @@ export async function fetchSyncResult(
   if (options?.deliverableTag) {
     const tagged = extractTaggedDeliverable(assistantMessages, options.deliverableTag)
     if (tagged) {
-      return { ok: true, textContent: tagged, endState }
+      return { ok: true, textContent: truncateSyncResult(tagged, maxSyncResultBytes), endState }
     }
   }
 
@@ -163,5 +209,5 @@ export async function fetchSyncResult(
     }
   }
 
-  return { ok: true, textContent, endState }
+  return { ok: true, textContent: truncateSyncResult(textContent, maxSyncResultBytes), endState }
 }
