@@ -123,6 +123,14 @@ export function pruneStaleTasksAndNotifications(args: {
 
 export type SessionStatusMap = Record<string, { type: string }>
 
+type CompleteStaleTask = (task: BackgroundTask, errorMessage: string) => void
+
+function completeStaleTask(task: BackgroundTask, errorMessage: string): void {
+  task.status = "cancelled"
+  task.error = errorMessage
+  task.completedAt = new Date()
+}
+
 async function interruptStaleTask(args: {
   task: BackgroundTask
   client: OpencodeClient
@@ -130,6 +138,7 @@ async function interruptStaleTask(args: {
   concurrencyManager: ConcurrencyManager
   notifyParentSession: (task: BackgroundTask) => Promise<void>
   onTaskInterrupted: (task: BackgroundTask) => void
+  completeTask: CompleteStaleTask
   sessionID: string
   reason: string
   staleMinutes: number
@@ -144,6 +153,7 @@ async function interruptStaleTask(args: {
     concurrencyManager,
     notifyParentSession,
     onTaskInterrupted,
+    completeTask,
     sessionID,
     reason,
     staleMinutes,
@@ -172,9 +182,8 @@ async function interruptStaleTask(args: {
 
   if (task.status !== "running" || task.sessionId !== sessionID) return
 
-  task.status = "cancelled"
-  task.error = `Stale timeout (${reason} for ${staleMinutes}min${errorSuffix}). This is a FINAL cancellation - do NOT create a replacement task. If the timeout is too short, increase 'background_task.${timeoutConfigKey}' in .omo/omo.jsonc.`
-  task.completedAt = new Date()
+  const errorMessage = `Stale timeout (${reason} for ${staleMinutes}min${errorSuffix}). This is a FINAL cancellation - do NOT create a replacement task. If the timeout is too short, increase 'background_task.${timeoutConfigKey}' in .omo/omo.jsonc.`
+  completeTask(task, errorMessage)
 
   if (task.concurrencyKey) {
     concurrencyManager.release(task.concurrencyKey)
@@ -200,6 +209,7 @@ export async function checkAndInterruptStaleTasks(args: {
   notifyParentSession: (task: BackgroundTask) => Promise<void>
   sessionStatuses?: SessionStatusMap
   onTaskInterrupted?: (task: BackgroundTask) => void
+  completeTask?: CompleteStaleTask
   getSessionActivity?: SessionActivityResolver
 }): Promise<void> {
   const {
@@ -211,6 +221,7 @@ export async function checkAndInterruptStaleTasks(args: {
     notifyParentSession,
     sessionStatuses,
     onTaskInterrupted = (task) => removeTaskToastTracking(task.id),
+    completeTask: finishStaleTask = completeStaleTask,
   } = args
   const staleTimeoutMs = config?.staleTimeoutMs ?? DEFAULT_STALE_TIMEOUT_MS
   const sessionGoneTimeoutMs = config?.sessionGoneTimeoutMs ?? DEFAULT_SESSION_GONE_TIMEOUT_MS
@@ -275,6 +286,7 @@ export async function checkAndInterruptStaleTasks(args: {
           concurrencyManager,
           notifyParentSession,
           onTaskInterrupted,
+          completeTask: finishStaleTask,
           sessionID,
           reason,
           staleMinutes,
@@ -326,6 +338,7 @@ export async function checkAndInterruptStaleTasks(args: {
         concurrencyManager,
         notifyParentSession,
         onTaskInterrupted,
+        completeTask: finishStaleTask,
         sessionID,
         reason,
         staleMinutes,
