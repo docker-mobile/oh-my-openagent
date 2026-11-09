@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+**Opaque provider failures now advance to a configured fallback model, while user cancellations and explicitly terminal quota errors still stop retrying.** ([#4428](https://github.com/code-yeongyu/oh-my-openagent/pull/4428))
+
 **A session no longer continues on its compaction model after a compaction.** With `agents.<name>.compaction.model` set, the compaction marker row carries the working agent's name and the summarizer's model, and the agent-name check let the compaction context injector and the session lifecycle take that model as the session's working model. A row with a `compaction` part is no longer used as the working model, and the checkpoint taken before compaction skips the model the summarize request is running on. ([#10120](https://github.com/code-yeongyu/oh-my-openagent/issues/10120), [#10211](https://github.com/code-yeongyu/oh-my-openagent/pull/10211))
 
 ## [5.1.65] - 2026-11-08
