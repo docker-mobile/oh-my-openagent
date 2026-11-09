@@ -7,6 +7,8 @@ import { normalizeSDKResponse } from "../../shared"
 import { MIN_SESSION_GONE_POLLS } from "../../features/background-agent/session-existence"
 import { formatDeletedSyncSessionError, isSyncSessionDeleted } from "./sync-session-existence"
 import { latestAssistantText } from "./sync-session-latest-text"
+import { consumeSyncSessionError } from "../../shared/sync-session-error-store"
+import { extractErrorMessage } from "../../features/background-agent/error-classifier"
 
 export { isSessionComplete } from "./sync-session-turns"
 
@@ -202,6 +204,14 @@ export async function pollSyncSession(
         inactiveElapsed: Math.floor(inactiveElapsedMs / 1000) + "s",
         sessionStatus: sessionStatus?.type ?? "not_in_status",
       })
+    }
+
+    // Async session errors recorded through the shared store win over status and messages.
+    const asyncSessionError = consumeSyncSessionError(input.sessionID)
+    if (asyncSessionError !== undefined) {
+      const errorMessage = extractErrorMessage(asyncSessionError) ?? "Session error"
+      log("[task] Poll detected async session error", { sessionID: input.sessionID, sessionError: errorMessage })
+      return errorMessage
     }
 
     // Idle sessions are also absent from the status map, so absence alone is not terminal;

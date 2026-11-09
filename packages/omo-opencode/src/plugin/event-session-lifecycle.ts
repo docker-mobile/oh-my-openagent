@@ -16,6 +16,7 @@ import { resetMessageCursor } from "../shared";
 import { clearSessionModel, setSessionModel } from "../shared/session-model-state";
 import { clearSessionPromptParams } from "../shared/session-prompt-params-state";
 import { deleteSessionTools } from "../shared/session-tools-store";
+import { clearDelegateTaskSyncSession, clearSyncSessionError } from "../shared/sync-session-error-store";
 import { dispatchOpenClawEvent } from "../openclaw/runtime-dispatch";
 import { resolveMessageEventSessionID, resolveSessionEventID } from "../shared/event-session-id";
 import type { OhMyOpenCodeConfig } from "../config";
@@ -145,6 +146,8 @@ export async function handleSessionDeletedEvent(args: {
   clearSessionModel(sessionID);
   clearSessionPromptParams(sessionID);
   syncSubagentSessions.delete(sessionID);
+  clearSyncSessionError(sessionID);
+  clearDelegateTaskSyncSession(sessionID);
   if (!isBtwSideSession) {
     await dispatchOpenClawSessionEvent({ ...args, rawEvent: "session.deleted", sessionID });
   }
