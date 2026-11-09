@@ -1,3 +1,4 @@
+import { NO_HOST_ENDPOINT } from "../lifecycle/host-session"
 import { existsSync, mkdirSync, readFileSync, readdirSync, utimesSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
@@ -87,6 +88,7 @@ function lifecycleFor(fixture: Fixture, transcriptRetentionOverrides: Record<str
     },
   })
   return createTaskLifecycle({
+    hostEndpoint: NO_HOST_ENDPOINT,
     store: fixture.store,
     registry: new FakeRegistry(),
     config,

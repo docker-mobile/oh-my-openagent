@@ -238,13 +238,9 @@ export function composeTaskEngine(deps: ComposeTaskEngineDeps): TaskEngine {
     ...(deps.host === undefined ? {} : { host: deps.host }),
     baseStore,
     generations: categoryConfigGenerations,
-<<<<<<< HEAD
     lifecycle: { store: storeChain.store, registry, kernelToolBindings, isolation, onStoreMutation: storeChain.onMutation,
       ...(transcriptArchiveDir !== undefined ? { transcriptArchiveDir } : {}),
       hostManagerInstance: () => managerRef?.managerInstance },
-=======
-    lifecycle: { store: storeChain.store, registry, kernelToolBindings, isolation, onStoreMutation: storeChain.onMutation, ...(transcriptArchiveDir !== undefined ? { transcriptArchiveDir } : {}) },
->>>>>>> resolve/13
   })
 
   const factories = deps.runnerFactories ?? DEFAULT_RUNNER_FACTORIES

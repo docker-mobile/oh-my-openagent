@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// omo-codex-install:c8b696cad9588a10debf0feb66ad83b3667ac8a0dec2dc193d22bfa33ff046df:861a4d500614d7d3d27db3991a6299d4d912c7ddbb859d9dcdbda6c8c07e15fc
+// omo-codex-install:f99acf0605c4b43c48724b0a63dae84c6ea73027503536813b1c5ce3c8fdc4e7:21b35174be5733e35714681094ea2690b2caf8e110b1a65b191e97411a749e6b
 var __esm = (fn, res, err) => () => {
   if (fn)
     try {
@@ -506,7 +506,7 @@ function createTelemetryClient(input) {
   const sharedProperties = getSharedProperties(input);
   return {
     enabled: true,
-    trackActive: ({ dayUTC, distinctId, reason }) => {
+    trackActive: ({ dayUTC, distinctId, reason, installHash, idScheme }) => {
       try {
         transport.capture({
           distinctId,
@@ -515,7 +515,9 @@ function createTelemetryClient(input) {
             ...sharedProperties,
             $process_person_profile: false,
             day_utc: dayUTC,
-            reason
+            reason,
+            ...installHash === undefined ? {} : { install_hash: installHash },
+            ...idScheme === undefined ? {} : { id_scheme: idScheme }
           }
         });
       } catch (error) {
@@ -11693,12 +11695,98 @@ var init_posthog_transport = __esm(() => {
 // packages/telemetry-core/src/events.ts
 var init_events = () => {};
 
+// packages/telemetry-core/src/device-id.ts
+import { execFileSync as execFileSync2 } from "node:child_process";
+import { createHash as createHash5 } from "node:crypto";
+import { readFileSync as readFileSync5 } from "node:fs";
+function normalizeDeviceId(value, pattern) {
+  const normalized = value.trim().toLowerCase();
+  if (!pattern.test(normalized))
+    return;
+  return /^0+$/.test(normalized.replaceAll("-", "")) ? undefined : normalized;
+}
+function parseDarwinPlatformUuid(ioregOutput) {
+  const match = /"IOPlatformUUID"\s*=\s*"([^"]+)"/.exec(ioregOutput);
+  return match === null ? undefined : normalizeDeviceId(match[1] ?? "", UUID_PATTERN2);
+}
+function parseWindowsMachineGuid(regOutput) {
+  const match = /^\s*MachineGuid\s+REG_\w+\s+(\S+)\s*$/im.exec(regOutput);
+  return match === null ? undefined : normalizeDeviceId(match[1] ?? "", UUID_PATTERN2);
+}
+function readRawDeviceId(deps) {
+  const platform = deps.platform ?? process.platform;
+  const readFile = deps.readFile ?? defaultReadFile;
+  const runCommand = deps.runCommand ?? defaultRunCommand2;
+  try {
+    if (platform === "linux") {
+      for (const file of ["/etc/machine-id", "/var/lib/dbus/machine-id"]) {
+        try {
+          const value = normalizeDeviceId(readFile(file), HEX32_PATTERN);
+          if (value !== undefined)
+            return value;
+        } catch {}
+      }
+      return;
+    }
+    if (platform === "darwin")
+      return parseDarwinPlatformUuid(runCommand("/usr/sbin/ioreg", ["-rd1", "-c", "IOPlatformExpertDevice"]));
+    if (platform === "win32") {
+      return parseWindowsMachineGuid(runCommand("reg", ["query", "HKLM\\SOFTWARE\\Microsoft\\Cryptography", "/v", "MachineGuid"]));
+    }
+    return;
+  } catch {
+    return;
+  }
+}
+function readEnvOverride(env) {
+  const raw = env[TELEMETRY_DEVICE_ID_ENV]?.trim().toLowerCase() ?? "";
+  if (raw === "")
+    return { kind: "unset" };
+  if (DISABLE_VALUES.has(raw))
+    return { kind: "off" };
+  const value = normalizeDeviceId(raw, UUID_PATTERN2) ?? normalizeDeviceId(raw, HEX32_PATTERN) ?? normalizeDeviceId(raw, HEX64_PATTERN);
+  return value === undefined ? { kind: "unset" } : { kind: "id", value };
+}
+function hashDeviceId(rawId) {
+  return createHash5("sha256").update(DEVICE_HASH_DOMAIN).update(rawId).digest("hex");
+}
+function getTelemetryDeviceHash(deps = {}) {
+  const override = readEnvOverride(deps.env ?? process.env);
+  if (override.kind === "off")
+    return;
+  if (override.kind === "id")
+    return hashDeviceId(override.value);
+  const injected = deps.platform !== undefined || deps.readFile !== undefined || deps.runCommand !== undefined;
+  if (injected) {
+    const raw = readRawDeviceId(deps);
+    return raw === undefined ? undefined : hashDeviceId(raw);
+  }
+  if (cachedDefault === undefined) {
+    const raw = readRawDeviceId(deps);
+    cachedDefault = { value: raw === undefined ? undefined : hashDeviceId(raw) };
+  }
+  return cachedDefault.value;
+}
+var TELEMETRY_DEVICE_ID_ENV = "OMO_TELEMETRY_DEVICE_ID", DEVICE_HASH_DOMAIN = "omo:device:v1\x00", UUID_PATTERN2, HEX32_PATTERN, HEX64_PATTERN, DISABLE_VALUES, COMMAND_TIMEOUT_MS = 2000, defaultReadFile = (path) => readFileSync5(path, "utf8"), defaultRunCommand2 = (command, args) => execFileSync2(command, [...args], {
+  encoding: "utf8",
+  maxBuffer: 1024 * 1024,
+  stdio: ["ignore", "pipe", "ignore"],
+  timeout: COMMAND_TIMEOUT_MS,
+  windowsHide: true
+}), cachedDefault;
+var init_device_id = __esm(() => {
+  UUID_PATTERN2 = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+  HEX32_PATTERN = /^[0-9a-f]{32}$/;
+  HEX64_PATTERN = /^[0-9a-f]{64}$/;
+  DISABLE_VALUES = new Set(["0", "false", "no", "none", "off"]);
+});
+
 // packages/telemetry-core/src/install-id.ts
-import { createHash as createHash5, randomBytes } from "node:crypto";
-import { mkdirSync as mkdirSync5, readFileSync as readFileSync5, writeFileSync as writeFileSync2 } from "node:fs";
+import { createHash as createHash6, randomBytes } from "node:crypto";
+import { mkdirSync as mkdirSync5, readFileSync as readFileSync6, writeFileSync as writeFileSync2 } from "node:fs";
 import { dirname as dirname12, join as join38 } from "node:path";
 function getTelemetryInstallDistinctId(stateDir) {
-  return createHash5("sha256").update(readOrCreateInstallId(join38(stateDir, TELEMETRY_INSTALL_ID_FILE_NAME))).digest("hex");
+  return createHash6("sha256").update(readOrCreateInstallId(join38(stateDir, TELEMETRY_INSTALL_ID_FILE_NAME))).digest("hex");
 }
 function readOrCreateInstallId(path) {
   const persisted = readInstallId(path);
@@ -11730,7 +11818,7 @@ function readOrCreateInstallId(path) {
 }
 function readInstallId(path) {
   try {
-    const value = readFileSync5(path, "utf8").trim();
+    const value = readFileSync6(path, "utf8").trim();
     return INSTALL_ID_PATTERN.test(value) ? value : undefined;
   } catch {
     return;
@@ -11740,6 +11828,17 @@ var TELEMETRY_INSTALL_ID_FILE_NAME = "install-id", INSTALL_ID_PATTERN, fallbackI
 var init_install_id = __esm(() => {
   INSTALL_ID_PATTERN = /^[0-9a-f]{64}$/;
   fallbackInstallIds = new Map;
+});
+
+// packages/telemetry-core/src/identity.ts
+function getTelemetryIdentity(stateDir, input = {}) {
+  const installHash = getTelemetryInstallDistinctId(stateDir);
+  const deviceHash = getTelemetryDeviceHash({ ...input.deviceId, env: input.env ?? process.env });
+  return deviceHash === undefined ? { distinctId: installHash, installHash, idScheme: "install" } : { distinctId: deviceHash, installHash, idScheme: "device" };
+}
+var init_identity = __esm(() => {
+  init_device_id();
+  init_install_id();
 });
 
 // packages/telemetry-core/src/posthog-client.ts
@@ -11768,6 +11867,8 @@ var init_src = __esm(() => {
   init_env();
   init_event_id();
   init_events();
+  init_device_id();
+  init_identity();
   init_install_id();
   init_machine_id();
   init_posthog_client();
@@ -11932,9 +12033,12 @@ function createPostHogClient(source, options = {}) {
       if (!activityState.captureDaily) {
         return;
       }
+      const identity = getTelemetryIdentity(options.stateDir ?? getActivityStateDir(), { env: options.env ?? process.env });
       client.trackActive({
         dayUTC: activityState.dayUTC,
-        distinctId: getTelemetryInstallDistinctId(options.stateDir ?? getActivityStateDir()),
+        distinctId: identity.distinctId,
+        idScheme: identity.idScheme,
+        installHash: identity.installHash,
         reason
       });
     },
@@ -21811,6 +21915,14 @@ var OmoTaskDagSettingsSchema = object({
   retention_days: number2().int().positive().default(7),
   max_prompt_bytes: number2().int().positive().default(262144)
 }).strict();
+var OmoTaskTranscriptRetentionSchema = object({
+  enabled: boolean2().default(false),
+  categories: array(string2()).default(["deep"]),
+  ttl_ms: number2().int().positive().default(604800000),
+  max_bytes: number2().int().positive().default(262144),
+  success_sample_denominator: number2().int().positive().default(4),
+  metadata_only_paths: array(string2()).default([])
+}).strict();
 var OmoTaskSettingsSchema = object({
   isolation: OmoTaskIsolationSchema.default(isolationDefaults),
   default_execution_mode: _enum(["auto", "in-process", "process"]).default("auto"),
@@ -21837,7 +21949,8 @@ var OmoTaskSettingsSchema = object({
     max_parallel_members: 4,
     max_wall_clock_minutes: 120
   }),
-  dag: OmoTaskDagSettingsSchema.optional()
+  dag: OmoTaskDagSettingsSchema.optional(),
+  transcript_retention: OmoTaskTranscriptRetentionSchema.optional()
 }).strict();
 var OmoTaskDagSettingsLayerSchema = object({
   max_nodes_per_run: number2().int().positive().optional(),
@@ -21848,6 +21961,14 @@ var OmoTaskDagSettingsLayerSchema = object({
   history_max_limit: number2().int().positive().optional(),
   retention_days: number2().int().positive().optional(),
   max_prompt_bytes: number2().int().positive().optional()
+}).strict();
+var OmoTaskTranscriptRetentionLayerSchema = object({
+  enabled: boolean2().optional(),
+  categories: array(string2()).optional(),
+  ttl_ms: number2().int().positive().optional(),
+  max_bytes: number2().int().positive().optional(),
+  success_sample_denominator: number2().int().positive().optional(),
+  metadata_only_paths: array(string2()).optional()
 }).strict();
 var OmoTaskWaitLayerSchema = object({
   min_ms: number2().int().positive().optional(),
@@ -21884,7 +22005,8 @@ var OmoTaskSettingsLayerSchema = object({
   warnings: OmoTaskWarningsLayerSchema.optional(),
   wait: OmoTaskWaitLayerSchema.optional(),
   team: OmoTaskTeamSettingsLayerSchema.optional(),
-  dag: OmoTaskDagSettingsLayerSchema.optional()
+  dag: OmoTaskDagSettingsLayerSchema.optional(),
+  transcript_retention: OmoTaskTranscriptRetentionLayerSchema.optional()
 }).strict();
 function resolveOmoTaskSettings(input, resolveParallelism = availableParallelism) {
   const record2 = record(string2(), unknown()).parse(input);
@@ -26070,7 +26192,7 @@ function shellQuote(value) {
 
 // packages/omo-codex/src/install/lazycodex-manual-update.ts
 import { spawn as spawn3, spawnSync as spawnSync2 } from "node:child_process";
-import { readFileSync as readFileSync6 } from "node:fs";
+import { readFileSync as readFileSync7 } from "node:fs";
 import { dirname as dirname13, join as join41 } from "node:path";
 import { createInterface as createInterface2 } from "node:readline/promises";
 import { fileURLToPath } from "node:url";
@@ -26301,7 +26423,7 @@ function resolveInstalledVersionPath(env, pluginRoot) {
 }
 function readVersionManifest(path) {
   try {
-    const parsed = JSON.parse(readFileSync6(path, "utf8"));
+    const parsed = JSON.parse(readFileSync7(path, "utf8"));
     if (typeof parsed === "object" && parsed !== null && "version" in parsed && typeof parsed.version === "string") {
       return parsed.version;
     }

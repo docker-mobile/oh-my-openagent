@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, realpathSync, statSync } from "node:fs"
 import { createRequire } from "node:module"
-import { delimiter, dirname, isAbsolute, join, resolve, sep } from "node:path"
+import { basename, delimiter, dirname, isAbsolute, join, resolve, sep } from "node:path"
 
 import type { RpcSpawnRuntime } from "./spawn"
 

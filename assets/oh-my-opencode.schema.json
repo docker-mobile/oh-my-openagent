@@ -9346,6 +9346,10 @@
               "type": "number",
               "minimum": 0
             },
+            "provider_failure_cooldown_seconds": {
+              "type": "number",
+              "minimum": 0
+            },
             "timeout_seconds": {
               "type": "number",
               "minimum": 0
