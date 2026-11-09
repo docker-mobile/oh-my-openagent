@@ -2,6 +2,7 @@ import { access, mkdir } from "node:fs/promises"
 import path from "node:path"
 
 import type { TeamModeConfig } from "../../../config/schema/team-mode"
+import { log } from "../../../shared"
 import { QUESTION_DENIED_SESSION_PERMISSION } from "../../../shared/question-denied-session-permission"
 import type { ExecutorContext } from "../../../tools/delegate-task/executor-types"
 import type { BackgroundTask } from "../../background-agent/types"
@@ -16,7 +17,7 @@ import { cleanupTeamRunResources } from "./cleanup-team-run-resources"
 import { buildTeammateCommunicationAddendum } from "../member-guidance"
 import { resolveMember } from "./resolve-member"
 import { shouldReuseCallerLeadSession } from "../resolve-caller-team-lead"
-import { sweepStaleTeamSessions } from "../team-layout-tmux/sweep-stale-team-sessions"
+import { sweepStaleHerdrTeamWorkspaces, sweepStaleTeamSessions } from "../team-layout-tmux/sweep-stale-team-sessions"
 import { registerTeamRunForSessionCleanup } from "./session-team-run-registry"
 import { assertNoUnresolvedTeamMembers, hasUnresolvedTeamMembers } from "./unresolved-team-members"
 
@@ -135,7 +136,16 @@ export async function createTeamRun(
 
   const activeTeams = await listActiveTeams(config)
   const activeRunIds = new Set(activeTeams.map((t) => t.teamRunId))
-  sweepStaleTeamSessions(activeRunIds).catch(() => {})
+  sweepStaleTeamSessions(activeRunIds).catch((error) => {
+    log("[team-mode] Failed to sweep stale team sessions before create", { error })
+  })
+  // The herdr sweep spawns `herdr workspace list` and can close omo-team-*
+  // workspaces, so it must only run for users who actually selected the
+  // herdr backend - never on a default tmux install (or a machine that just
+  // happens to have herdr installed).
+  if (tmuxMgr?.multiplexer === "herdr") {
+    sweepStaleHerdrTeamWorkspaces(activeRunIds).catch(() => {})
+  }
 
   const baseDir = resolveBaseDir(config)
   await ensureBaseDirs(baseDir)

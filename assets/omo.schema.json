@@ -2486,6 +2486,24 @@
       },
       "additionalProperties": false
     },
+    "security": {
+      "type": "object",
+      "properties": {
+        "auth_at_rest": {
+          "default": "plain",
+          "type": "string",
+          "enum": [
+            "plain",
+            "passphrase",
+            "ssh-key"
+          ]
+        },
+        "ssh_key_path": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
     "telemetry": {
       "type": "object",
       "properties": {
@@ -2692,7 +2710,7 @@
             "continue",
             "pause"
           ],
-          "description": "What a background action does while the user uses the target app (default: pause)"
+          "description": "What a background action does while the user uses the target app (default: continue)"
         },
         "macos_key_priming": {
           "type": "string",
@@ -4995,6 +5013,23 @@
           },
           "additionalProperties": false
         },
+        "security": {
+          "type": "object",
+          "properties": {
+            "auth_at_rest": {
+              "type": "string",
+              "enum": [
+                "plain",
+                "passphrase",
+                "ssh-key"
+              ]
+            },
+            "ssh_key_path": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
         "telemetry": {
           "type": "object",
           "properties": {
@@ -5176,7 +5211,7 @@
                 "continue",
                 "pause"
               ],
-              "description": "What a background action does while the user uses the target app (default: pause)"
+              "description": "What a background action does while the user uses the target app (default: continue)"
             },
             "macos_key_priming": {
               "type": "string",
@@ -7479,6 +7514,23 @@
           },
           "additionalProperties": false
         },
+        "security": {
+          "type": "object",
+          "properties": {
+            "auth_at_rest": {
+              "type": "string",
+              "enum": [
+                "plain",
+                "passphrase",
+                "ssh-key"
+              ]
+            },
+            "ssh_key_path": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
         "telemetry": {
           "type": "object",
           "properties": {
@@ -7660,7 +7712,7 @@
                 "continue",
                 "pause"
               ],
-              "description": "What a background action does while the user uses the target app (default: pause)"
+              "description": "What a background action does while the user uses the target app (default: continue)"
             },
             "macos_key_priming": {
               "type": "string",
@@ -9963,6 +10015,23 @@
           },
           "additionalProperties": false
         },
+        "security": {
+          "type": "object",
+          "properties": {
+            "auth_at_rest": {
+              "type": "string",
+              "enum": [
+                "plain",
+                "passphrase",
+                "ssh-key"
+              ]
+            },
+            "ssh_key_path": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
         "telemetry": {
           "type": "object",
           "properties": {
@@ -10144,7 +10213,7 @@
                 "continue",
                 "pause"
               ],
-              "description": "What a background action does while the user uses the target app (default: pause)"
+              "description": "What a background action does while the user uses the target app (default: continue)"
             },
             "macos_key_priming": {
               "type": "string",
@@ -12453,6 +12522,23 @@
             },
             "additionalProperties": false
           },
+          "security": {
+            "type": "object",
+            "properties": {
+              "auth_at_rest": {
+                "type": "string",
+                "enum": [
+                  "plain",
+                  "passphrase",
+                  "ssh-key"
+                ]
+              },
+              "ssh_key_path": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          },
           "telemetry": {
             "type": "object",
             "properties": {
@@ -12634,7 +12720,7 @@
                   "continue",
                   "pause"
                 ],
-                "description": "What a background action does while the user uses the target app (default: pause)"
+                "description": "What a background action does while the user uses the target app (default: continue)"
               },
               "macos_key_priming": {
                 "type": "string",
@@ -14937,6 +15023,23 @@
                 },
                 "additionalProperties": false
               },
+              "security": {
+                "type": "object",
+                "properties": {
+                  "auth_at_rest": {
+                    "type": "string",
+                    "enum": [
+                      "plain",
+                      "passphrase",
+                      "ssh-key"
+                    ]
+                  },
+                  "ssh_key_path": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false
+              },
               "telemetry": {
                 "type": "object",
                 "properties": {
@@ -15118,7 +15221,7 @@
                       "continue",
                       "pause"
                     ],
-                    "description": "What a background action does while the user uses the target app (default: pause)"
+                    "description": "What a background action does while the user uses the target app (default: continue)"
                   },
                   "macos_key_priming": {
                     "type": "string",
@@ -17421,6 +17524,23 @@
                 },
                 "additionalProperties": false
               },
+              "security": {
+                "type": "object",
+                "properties": {
+                  "auth_at_rest": {
+                    "type": "string",
+                    "enum": [
+                      "plain",
+                      "passphrase",
+                      "ssh-key"
+                    ]
+                  },
+                  "ssh_key_path": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false
+              },
               "telemetry": {
                 "type": "object",
                 "properties": {
@@ -17602,7 +17722,7 @@
                       "continue",
                       "pause"
                     ],
-                    "description": "What a background action does while the user uses the target app (default: pause)"
+                    "description": "What a background action does while the user uses the target app (default: continue)"
                   },
                   "macos_key_priming": {
                     "type": "string",
@@ -19905,6 +20025,23 @@
                 },
                 "additionalProperties": false
               },
+              "security": {
+                "type": "object",
+                "properties": {
+                  "auth_at_rest": {
+                    "type": "string",
+                    "enum": [
+                      "plain",
+                      "passphrase",
+                      "ssh-key"
+                    ]
+                  },
+                  "ssh_key_path": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false
+              },
               "telemetry": {
                 "type": "object",
                 "properties": {
@@ -20086,7 +20223,7 @@
                       "continue",
                       "pause"
                     ],
-                    "description": "What a background action does while the user uses the target app (default: pause)"
+                    "description": "What a background action does while the user uses the target app (default: continue)"
                   },
                   "macos_key_priming": {
                     "type": "string",
@@ -29119,6 +29256,27 @@
             "truncate_all_tool_outputs": {
               "type": "boolean"
             },
+            "context_budget": {
+              "type": "object",
+              "properties": {
+                "max_active_context_tokens": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "warmup_fraction": {
+                  "type": "number",
+                  "minimum": 0.01,
+                  "maximum": 1
+                },
+                "reserve_tokens": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "additionalProperties": false
+            },
             "dynamic_context_pruning": {
               "type": "object",
               "properties": {
@@ -30006,6 +30164,14 @@
                 "inline",
                 "window",
                 "session"
+              ]
+            },
+            "multiplexer": {
+              "default": "tmux",
+              "type": "string",
+              "enum": [
+                "tmux",
+                "herdr"
               ]
             }
           },

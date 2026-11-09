@@ -39,7 +39,7 @@ export async function extractTarGz(
   const entries = await listTarEntries(archivePath, options?.cwd)
   validateArchiveEntries(entries, destDir)
 
-  const args = options?.args ?? ["tar", "-xzf", archivePath, "-C", destDir];
+  const args = options?.args ?? ["tar", "-x", "-z", "-f", archivePath, "-C", destDir];
   const proc = spawn(args, {
     cwd: options?.cwd,
     stdout: "pipe",

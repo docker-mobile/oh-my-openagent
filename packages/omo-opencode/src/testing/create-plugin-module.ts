@@ -291,7 +291,12 @@ export function createPluginModule(overrides: Partial<PluginModuleDeps> = {}): D
       try {
         const { ensureBaseDirs, resolveBaseDir } = await import("../features/team-mode/team-registry/paths")
         const { checkTeamModeDependencies } = await import("../features/team-mode/deps")
-        await checkTeamModeDependencies(teamModeConfig)
+        // Thread the resolved multiplexer (config chain + OMO_TMUX_MULTIPLEXER
+        // override, same resolution the manager is constructed with) so a
+        // config-only herdr user is probed against herdr, not tmux.
+        await checkTeamModeDependencies(teamModeConfig, {
+          multiplexer: deps.createRuntimeTmuxConfig(pluginConfig).multiplexer,
+        })
         await ensureBaseDirs(resolveBaseDir(teamModeConfig))
         if (pluginConfig.disabled_skills?.includes("team-mode")) {
           console.warn(
@@ -370,7 +375,10 @@ export function createPluginModule(overrides: Partial<PluginModuleDeps> = {}): D
 
       "experimental.session.compacting": createSessionCompactingHandler(hooks),
 
-      "experimental.compaction.autocontinue": createCompactionAutocontinueHandler(hooks),
+      "experimental.compaction.autocontinue": createCompactionAutocontinueHandler(hooks, {
+        client: input.client,
+        directory: input.directory,
+      }),
 
       dispose: async (): Promise<void> => {
         runtimeSkillSource?.stop()
