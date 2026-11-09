@@ -5,6 +5,13 @@
   "description": "Configuration schema for the omo.json / omo.jsonc harness-neutral config surface",
   "type": "object",
   "properties": {
+    "mcp_env_allowlist": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "User-only environment variable names passed to OpenCode MCP servers. Project configuration is ignored."
+    },
     "provenance": {
       "type": "object",
       "properties": {
@@ -2661,6 +2668,25 @@
           "type": "string",
           "minLength": 1
         },
+        "env": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "enum": [
+              "DISPLAY",
+              "XAUTHORITY",
+              "WAYLAND_DISPLAY",
+              "XDG_RUNTIME_DIR"
+            ]
+          },
+          "additionalProperties": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": "User-only (~/.omo/omo.jsonc, including its harness and profile blocks). Desktop engine overrides for DISPLAY, XAUTHORITY, WAYLAND_DISPLAY and XDG_RUNTIME_DIR only; project settings and other keys are ignored with a config warning. Strings are literal overrides; null removes an inherited variable."
+        },
         "cua_adapter": {
           "type": "boolean"
         }
@@ -5105,6 +5131,25 @@
             "engine_path": {
               "type": "string",
               "minLength": 1
+            },
+            "env": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "enum": [
+                  "DISPLAY",
+                  "XAUTHORITY",
+                  "WAYLAND_DISPLAY",
+                  "XDG_RUNTIME_DIR"
+                ]
+              },
+              "additionalProperties": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "description": "User-only (~/.omo/omo.jsonc, including its harness and profile blocks). Desktop engine overrides for DISPLAY, XAUTHORITY, WAYLAND_DISPLAY and XDG_RUNTIME_DIR only; project settings and other keys are ignored with a config warning. Strings are literal overrides; null removes an inherited variable."
             },
             "cua_adapter": {
               "type": "boolean"
@@ -7551,6 +7596,25 @@
               "type": "string",
               "minLength": 1
             },
+            "env": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "enum": [
+                  "DISPLAY",
+                  "XAUTHORITY",
+                  "WAYLAND_DISPLAY",
+                  "XDG_RUNTIME_DIR"
+                ]
+              },
+              "additionalProperties": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "description": "User-only (~/.omo/omo.jsonc, including its harness and profile blocks). Desktop engine overrides for DISPLAY, XAUTHORITY, WAYLAND_DISPLAY and XDG_RUNTIME_DIR only; project settings and other keys are ignored with a config warning. Strings are literal overrides; null removes an inherited variable."
+            },
             "cua_adapter": {
               "type": "boolean"
             }
@@ -9996,6 +10060,25 @@
               "type": "string",
               "minLength": 1
             },
+            "env": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "enum": [
+                  "DISPLAY",
+                  "XAUTHORITY",
+                  "WAYLAND_DISPLAY",
+                  "XDG_RUNTIME_DIR"
+                ]
+              },
+              "additionalProperties": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "description": "User-only (~/.omo/omo.jsonc, including its harness and profile blocks). Desktop engine overrides for DISPLAY, XAUTHORITY, WAYLAND_DISPLAY and XDG_RUNTIME_DIR only; project settings and other keys are ignored with a config warning. Strings are literal overrides; null removes an inherited variable."
+            },
             "cua_adapter": {
               "type": "boolean"
             }
@@ -10027,6 +10110,13 @@
       "additionalProperties": {
         "type": "object",
         "properties": {
+          "mcp_env_allowlist": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "User-only environment variable names passed to OpenCode MCP servers. Project configuration is ignored."
+          },
           "provenance": {
             "type": "object",
             "properties": {
@@ -12446,6 +12536,25 @@
               "engine_path": {
                 "type": "string",
                 "minLength": 1
+              },
+              "env": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "enum": [
+                    "DISPLAY",
+                    "XAUTHORITY",
+                    "WAYLAND_DISPLAY",
+                    "XDG_RUNTIME_DIR"
+                  ]
+                },
+                "additionalProperties": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "description": "User-only (~/.omo/omo.jsonc, including its harness and profile blocks). Desktop engine overrides for DISPLAY, XAUTHORITY, WAYLAND_DISPLAY and XDG_RUNTIME_DIR only; project settings and other keys are ignored with a config warning. Strings are literal overrides; null removes an inherited variable."
               },
               "cua_adapter": {
                 "type": "boolean"
@@ -14892,6 +15001,25 @@
                     "type": "string",
                     "minLength": 1
                   },
+                  "env": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string",
+                      "enum": [
+                        "DISPLAY",
+                        "XAUTHORITY",
+                        "WAYLAND_DISPLAY",
+                        "XDG_RUNTIME_DIR"
+                      ]
+                    },
+                    "additionalProperties": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "description": "User-only (~/.omo/omo.jsonc, including its harness and profile blocks). Desktop engine overrides for DISPLAY, XAUTHORITY, WAYLAND_DISPLAY and XDG_RUNTIME_DIR only; project settings and other keys are ignored with a config warning. Strings are literal overrides; null removes an inherited variable."
+                  },
                   "cua_adapter": {
                     "type": "boolean"
                   }
@@ -17337,6 +17465,25 @@
                     "type": "string",
                     "minLength": 1
                   },
+                  "env": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string",
+                      "enum": [
+                        "DISPLAY",
+                        "XAUTHORITY",
+                        "WAYLAND_DISPLAY",
+                        "XDG_RUNTIME_DIR"
+                      ]
+                    },
+                    "additionalProperties": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "description": "User-only (~/.omo/omo.jsonc, including its harness and profile blocks). Desktop engine overrides for DISPLAY, XAUTHORITY, WAYLAND_DISPLAY and XDG_RUNTIME_DIR only; project settings and other keys are ignored with a config warning. Strings are literal overrides; null removes an inherited variable."
+                  },
                   "cua_adapter": {
                     "type": "boolean"
                   }
@@ -19781,6 +19928,25 @@
                   "engine_path": {
                     "type": "string",
                     "minLength": 1
+                  },
+                  "env": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string",
+                      "enum": [
+                        "DISPLAY",
+                        "XAUTHORITY",
+                        "WAYLAND_DISPLAY",
+                        "XDG_RUNTIME_DIR"
+                      ]
+                    },
+                    "additionalProperties": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "description": "User-only (~/.omo/omo.jsonc, including its harness and profile blocks). Desktop engine overrides for DISPLAY, XAUTHORITY, WAYLAND_DISPLAY and XDG_RUNTIME_DIR only; project settings and other keys are ignored with a config warning. Strings are literal overrides; null removes an inherited variable."
                   },
                   "cua_adapter": {
                     "type": "boolean"
