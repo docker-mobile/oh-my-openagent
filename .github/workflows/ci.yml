@@ -1339,7 +1339,7 @@ jobs:
   auto-commit-schema:
     # Pin until this release/deploy path is proven on Ubuntu 26.04: #9947.
     runs-on: ubuntu-24.04
-    needs: [ci-mode, test, typecheck, codex-compatibility, senpi-compatibility, bundle-currency, build, omo-ai-payload-check]
+    needs: [ci-mode, lint-ratchet, test, macos-test-1-status, macos-test-2-status, typecheck, codex-compatibility, macos-codex-status, senpi-compatibility, macos-senpi-status, bundle-currency, build, omo-ai-payload-check]
       # The merge gate reads this map at the base tip to tell whether a PR can change a committed
       # bundle; it is traced from the three generators above, so a stale map is a red build.
       - name: Verify committed Senpi bundle inputs map is current
