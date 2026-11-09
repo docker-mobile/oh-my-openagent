@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+**A chat bot on OmO no longer switches into ultrawork mode when someone else in the chat types the keyword — or when a relayed lane report merely mentions `ulw-loop` mid-sentence.** The ultrawork keyword hook armed on any chat text with no speaker distinction, so a gateway-relayed group-chat message containing `ulw` printed the ULTRAWORK banner, and a relayed status report reading "...ulw-loop G002 checkpoint..." (a mention, not an instruction) armed the receiving session. Arming now keys on relay-layer provenance: an `origin: "relayed"` field the omo gateway sets on external messages suppresses arming (unless the session owner opts in with `omo-senpi-ultrawork-allow-relayed`), while the owner's own prompt — interactive or over rpc — still arms, and the same `ulw-loop` sentence typed by the owner still arms. The suppression takes effect once the senpi host contract and the gateway setter land; this change carries the gate. ([#10096](https://github.com/code-yeongyu/oh-my-openagent/issues/10096))
+
 ## [5.1.65] - 2026-11-08
 
 **A message an agent sends to a session on another device now says who sent it.** It used to arrive there as plain text, indistinguishable from that session's own user. It now carries the same sender line and authority notice as a message between sessions on one device (the sending session, its workspace and project, and the device it came from), and a leading `/` in it no longer runs a command or expands a prompt template on the receiving side. `omo remote send` from a terminal is unchanged. ([#12858](https://github.com/code-yeongyu/oh-my-openagent/pull/12858), part of [#12852](https://github.com/code-yeongyu/oh-my-openagent/issues/12852))
@@ -1272,6 +1274,7 @@ Fixed: OmO Native versions v5.0.0-beta.6 through v5.1.34 kept sending usage even
 **ulw-execute stops a checkpoint that keeps failing instead of retrying it for days.** After the same failure twice in a row, a third failed attempt, or four hours open, the checkpoint and every checkpoint that depends on it are marked blocked (`[~]`) with the gap left, recorded in the ledger and the final report, and the run moves on to the rest of the plan. A broken test harness gets one repair attempt, and work found while a checkpoint is open is queued after it unless it blocks that checkpoint. ([#10051](https://github.com/code-yeongyu/oh-my-openagent/issues/10051))
 
 **Mass research plans its whole collection before it starts instead of one wave at a time.** `mass ulw research` now defines every angle as a harvest, expand and verify chain that passes its findings to the next step through a file, so a fast angle reaches verification while slow ones are still harvesting, and leads that are still open join each cluster of angles as soon as that cluster settles. The mass-ulw and ulw-execute skills no longer say a single node's completion wakes the session; only a finished or paused run does. ([#10049](https://github.com/code-yeongyu/oh-my-openagent/issues/10049))
+
 
 ## [5.1.32] - 2026-10-12
 
