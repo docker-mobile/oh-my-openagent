@@ -28,7 +28,7 @@ function result(text: string, details: TaskToolDetails): AgentToolResult<TaskToo
 }
 
 function continuationFooter(taskId: string): string {
-  return `\n\n[task_id: ${taskId} - continue with task_send(to="${taskId}", message="...")]`
+  return `\n\n[task_id: ${taskId} - continue in an eval cell with tool.task_send({ to: "${taskId}", message: "..." })]`
 }
 
 function syncResult(
@@ -62,7 +62,7 @@ export async function runSpawn(
     })
   }
   const policy = selection.kind === "subagent_type"
-    ? evaluateSpawnPolicy(deps, selection.subagentType, params.prompt, ctx.sessionManager.getSessionId())
+    ? evaluateSpawnPolicy(deps, selection.subagentType, params.prompt, ctx.sessionManager.getSessionId(), ctx.cwd)
     : undefined
   if (policy?.kind === "deny") {
     return result(policy.message, { task_id: "", status: "denied", mode: "spawn", reason: policy.message })

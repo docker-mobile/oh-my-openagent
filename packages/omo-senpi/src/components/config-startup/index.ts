@@ -19,6 +19,7 @@ import { DEVIN_SWE2_SERVED_LANES, isUnservedDevinSWE2Selector } from "@oh-my-ope
 import { categoryShadowedAgentNames, categoryShadowMessage } from "@oh-my-opencode/senpi-task/category-shadow"
 import type { ComponentContext, OmoSenpiComponent, SenpiExtensionAPI } from "../../extension/types"
 import { loadSenpiOmoConfig, type SenpiOmoConfigResult } from "../config-resolution"
+import { CONFIG_STARTUP_NOTICE_SIDE, logStartupNoticesOnHand, type ConfigStartupPlacement } from "./hand-lifetime"
 import { isMetadataOnlyLaunch } from "./metadata-launch"
 import { createOpenCodeRoutingNoticePlan } from "./opencode-routing-notice"
 
@@ -41,6 +42,9 @@ export type SenpiStartupMigrationOptions = {
 export type SenpiStartupMigrationResult = {
   readonly error?: string
   readonly journalResumed: boolean
+  // A live peer host (e.g. a warmed spare starting beside the primary) holds the migration lock and
+  // is migrating this same home, so this host has nothing to report (#12115). Never a warning.
+  readonly peerMigrating?: true
   readonly migratedFrom: readonly string[]
   readonly results: readonly MigrationRunResult[]
 }
@@ -50,6 +54,7 @@ export interface ConfigStartupComponentOptions {
   readonly loadConfig?: typeof loadSenpiOmoConfig
   readonly resolveCwd?: () => string
   readonly runMigration?: (options: SenpiStartupMigrationOptions) => SenpiStartupMigrationResult
+  readonly placement?: () => ConfigStartupPlacement
 }
 
 type NotificationUi = {
@@ -115,7 +120,7 @@ export function runSenpiStartupMigration(options: SenpiStartupMigrationOptions):
       ],
     })
     return {
-      ...(batch.status === "locked" ? { error: "Configuration migration is already running" } : {}),
+      ...(batch.status === "locked" ? { peerMigrating: true as const } : {}),
       journalResumed: batch.journalResumed,
       migratedFrom: migratedSources(batch.results),
       results: batch.results,
@@ -148,20 +153,26 @@ export function createConfigStartupComponent(options: ConfigStartupComponentOpti
   const resolveCwd = options.resolveCwd ?? (() => process.cwd())
   const runMigration = options.runMigration ?? runSenpiStartupMigration
   const argv = options.argv ?? process.argv.slice(2)
+  const placement = options.placement ?? ((): ConfigStartupPlacement => "fused")
   return {
     name: "config-startup",
     async register(pi: SenpiExtensionAPI, ctx: ComponentContext): Promise<void> {
       if (isMetadataOnlyLaunch(argv)) return
       const cwd = resolveCwd()
       const migration = runMigration({ cwd })
+      if (migration.peerMigrating === true) ctx.logger.debug?.("OmO Native: configuration migration skipped; another host holds the migration lock")
       const config = loadConfig({ cwd })
       const notices = notificationMessages(migration, config)
+      if (placement() === "hand") {
+        logStartupNoticesOnHand(notices, ctx.logger)
+        return
+      }
       let reported = false
       pi.on("session_start", (_payload, eventCtx) => {
         if (reported || notices.length === 0) return
         reported = true
         for (const notice of notices) notifyOrLog(eventCtx, ctx, notice.message, notice.type)
-      })
+      }, CONFIG_STARTUP_NOTICE_SIDE)
     },
   }
 }

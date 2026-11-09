@@ -46,6 +46,7 @@ import { TASK_COMPLETION_MESSAGE_TYPE } from "./parent-notifier"
 import { renderCategoryUnavailable, renderTaskCompletion, renderTeamMemberLiveness } from "./renderers"
 import { createResumptionChannelEmitter } from "./resumption-channel-emitter"
 import { createTeamMailboxReconciler, createTeamService } from "./team-service"
+import { onLoopSide } from "./session-plane"
 import { createSessionTransitionBridge } from "./session-transition-bridge"
 import { createSkillInvocationTracker, type SkillInvocationTracker } from "./skill-invocation-tracker"
 import { wireSessionStartProcessSweep } from "./process-sweep"
@@ -73,7 +74,8 @@ export function createTaskComponent(options: TaskComponentOptions = {}): OmoSenp
   const loadConfig = options.loadConfig ?? loadSenpiOmoConfig
   return {
     name: "task",
-    async register(pi: SenpiExtensionAPI, ctx: ComponentContext): Promise<void> {
+    async register(hostPi: SenpiExtensionAPI, ctx: ComponentContext): Promise<void> {
+      const pi = onLoopSide(hostPi)
       // One extension set serves every session of the shared daemon, so the component gates itself
       // on what THIS session is. A DAG child never boots a task engine (parity with the per-child
       // launch, which drops omo's own `-e` entry for DAG-owned children) and a team member gets the
@@ -152,6 +154,7 @@ export function createTaskComponent(options: TaskComponentOptions = {}): OmoSenp
             node.subagentType,
             node.prompt,
             node.parentSessionId,
+            cwd,
           ),
         ...(ctx.idleCoordinator === undefined ? {} : { coordinator: ctx.idleCoordinator }),
       })
@@ -259,7 +262,7 @@ function wireJobWidgets(pi: SenpiExtensionAPI, engine: TaskEngine, cwd: string, 
 function registerRemovedTeamWaitHint(pi: SenpiExtensionAPI): void {
   pi.registerRemovedToolHint?.(
     "team_wait",
-    "team_wait was removed - team messages arrive as steered notifications; send updates with task_send and end your turn.",
+    "team_wait was removed - team messages arrive as steered notifications; send updates with tool.task_send in an eval cell and end your turn.",
   )
 }
 
@@ -307,6 +310,7 @@ function registerTaskTools(
   pi.registerTool({ ...createTaskCancelTool({ manager }), runs: "brain" })
   const output = createTaskOutputTool({
     manager, stateDir: engine.stateDir, resolveCallerSessionId, notices: engine.host.notices.list,
+    ownerStatus: record => engine.controlRequester?.channel.ownerStatus(record),
   })
   const { forgetSession, ...outputTool } = output
   pi.registerTool({ ...outputTool, runs: "brain" })

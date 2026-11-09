@@ -4,6 +4,7 @@ import type { Static } from "typebox"
 
 import type { TaskStatus } from "../../state"
 import { withDroppedSteeringNotice } from "../../state/queued-steering"
+import { TASK_FAMILY_EXPOSURE } from "../exposure"
 import { renderTaskCancelCall, renderTaskCancelResult } from "./renderers"
 import { toolResult } from "./tool-result"
 import type { CancelManager, CancelResultDetails, CancelToolResult } from "./types"
@@ -69,9 +70,18 @@ export async function runTaskCancel(manager: CancelManager, params: TaskCancelIn
     case "stale":
       // task_cancel never names a run, so only a handle-fenced caller reaches this; keep the tool's result shapes.
       return toolResult(`${outcome.reason} No change.`, { kind: "noop", task_id: outcome.task_id, status: outcome.status, reason: outcome.reason })
+    case "owner_cannot_apply":
+      return toolResult(ownerCannotApplyText(outcome), { kind: "owner_cannot_apply", task_id: outcome.task_id, owner_pid: outcome.owner_pid, reason: outcome.reason })
     case "not_found":
       return toolResult(outcome.reason, { kind: "not_found", reason: outcome.reason })
   }
+}
+
+function ownerCannotApplyText(outcome: { readonly task_id: string; readonly owner_pid: number; readonly reason: "owner_unsupported" | "handle_gone" | "channel_disabled" }): string {
+  const where = outcome.reason === "channel_disabled"
+    ? "task.control_channel is off in this process, so it cannot carry a cancel there"
+    : outcome.reason === "handle_gone" ? "that process no longer holds the child" : "that process cannot take a cancel from here"
+  return `owner cannot apply: ${outcome.reason} - task ${outcome.task_id} is running in another omo process (pid ${outcome.owner_pid}); ${where}. It can be cancelled once that process restarts or exits, or from that process. No change.`
 }
 
 export function createTaskCancelTool(deps: TaskCancelDeps): ToolDefinition<typeof TaskCancelParams, CancelResultDetails> {
@@ -79,8 +89,7 @@ export function createTaskCancelTool(deps: TaskCancelDeps): ToolDefinition<typeo
     name: "task_cancel",
     label: "Task Cancel",
     description: DESCRIPTION,
-    // Rarely used: searchable and activated by name on first call (#11454).
-    exposure: "search", allowLazyActivation: true, searchKeywords: ["cancel child", "stop task", "abort subagent"],
+    exposure: TASK_FAMILY_EXPOSURE,
     parameters: TaskCancelParams,
     execute: (_toolCallId, params) => runTaskCancel(deps.manager, params),
     renderCall: (args, theme) => renderTaskCancelCall(args, theme),

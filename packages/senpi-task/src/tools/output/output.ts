@@ -4,6 +4,7 @@ import { Type } from "typebox"
 import type { Static } from "typebox"
 
 import { shouldNotifyStatus } from "../../completion/routing"
+import { TASK_FAMILY_EXPOSURE } from "../exposure"
 import type { ListScope, ListedTask } from "../../manager"
 import type { TaskRecord } from "../../state"
 import { hostLivenessText } from "../../state/host-liveness"
@@ -98,7 +99,9 @@ function outputForRecord(deps: TaskOutputDeps, record: TaskRecord, params: TaskO
   const lease = deps.manager.concurrency?.leaseState(record.task_id, record.notification.run_epoch)
   // Only a still-running child can be waiting on its cancel; a cancelled record says so itself.
   const stop = record.status === "running" && record.cancel_requested !== undefined ? { stop: STOP_PENDING_EXPLANATION } : {}
-  const snapshot = { ...buildTaskSnapshot(record, deps.stateDir, now), ...(lease === undefined ? {} : { lease }), ...stop }
+  const owner = record.status === "running" || record.status === "paused" ? deps.ownerStatus?.(record) : undefined
+  const snapshot = { ...buildTaskSnapshot(record, deps.stateDir, now), ...(lease === undefined ? {} : { lease }), ...stop,
+    ...(owner === undefined ? {} : { owner }) }
   const mode = params.mode ?? "status"
 
   if (mode === "status" || record.status === "lost") {
@@ -160,6 +163,7 @@ function statusText(snapshot: TaskSnapshot): string {
   if (snapshot.suspended !== undefined) parts.push(snapshot.suspended.explanation)
   if (snapshot.awaiting_input !== undefined) parts.push(snapshot.awaiting_input.explanation)
   if (snapshot.stop !== undefined) parts.push(snapshot.stop)
+  if (snapshot.owner !== undefined) parts.push(snapshot.owner)
   if (snapshot.pid !== undefined) parts.push(`pid ${snapshot.pid}`)
   if (snapshot.lost !== undefined) parts.push(snapshot.lost.explanation)
   if (snapshot.isolation !== undefined) parts.push(isolationLine(snapshot.isolation))
@@ -210,6 +214,7 @@ export function createTaskOutputTool(deps: TaskOutputDeps): TaskOutputTool {
     name: "task_output",
     label: "Task Output",
     description: DESCRIPTION,
+    exposure: TASK_FAMILY_EXPOSURE,
     parameters: TaskOutputParams,
     execute: (_toolCallId, params, _signal, _onUpdate, ctx) =>
       runTaskOutput(deps, params, resolveCaller(ctx), statusReads),

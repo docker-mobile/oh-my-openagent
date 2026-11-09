@@ -5,12 +5,13 @@ import { loadPiTui } from "@oh-my-opencode/senpi-task"
 import { defaultCommentCheckerCacheDir } from "../components/comment-checker/resolver"
 
 import { createDagSdkRootProvisioning } from "./dag-sdk-root-provisioning"
+import { installExternalUserInputApi } from "./external-user-input"
 import { isOmoSenpiDisabledByEnv } from "./disable-env"
 import { AGENT_TOOLKIT_SDK_ROOT_ENV, BUNSHIN_TS_SDK_ROOT_ENV, createSdkRootProvisioning } from "./sdk-root-provisioning"
 import { IdleInjectionCoordinator } from "./idle-injection-coordinator"
 import { deliverItems } from "./deliver-items"
 import { publishWakeQueueBaselineOnSessionStart, publishWakeQueueChildWork } from "./wake-queue-source"
-import { createFirstPaintScheduler, createStartupDeferral, type StartupWorkScheduler } from "./startup-deferral"
+import { createFirstPaintScheduler, createStartupDeferral, type ExtensionPlacement, type StartupWorkScheduler } from "./startup-deferral"
 import { installToolCaptureRegistry } from "./tool-capture-registry"
 import { createPrewarmDiagnostics } from "./prewarm-diagnostics"
 import { absentSenpiSeamsNotice, installRemoteWakeRefusal } from "./senpi-seams"
@@ -22,6 +23,11 @@ export interface ComposeOmoSenpiExtensionOptions {
   /** Test seam for the startup deferral; production uses its next-tick scheduler. */
   scheduleStartupWork?: StartupWorkScheduler
   env?: NodeJS.ProcessEnv
+  /**
+   * Where this generation runs. senpi does not report its side to an extension yet, so production composes as
+   * "fused" (today); the hand reads it once the host exposes the side of a split session.
+   */
+  placement?: () => ExtensionPlacement
 }
 
 const REQUIRED_CAPABILITIES = [
@@ -142,6 +148,7 @@ export function composeOmoSenpiExtension(
 
     // Install the capture registry and idle coordinator BEFORE the component loop so every component
     // (lsp registers earlier than task) has its tools captured and shares one injection arbiter.
+    installExternalUserInputApi(pi)
     const captureRegistry = installToolCaptureRegistry(pi)
     const prewarmDiagnostics = createPrewarmDiagnostics(pi, logger)
     // The 200ms batch window: every delivered notification (completions, team messages, the ulw
@@ -191,7 +198,10 @@ export function composeOmoSenpiExtension(
     // as the idle coordinator: a session that ends before the gate opens must not start a
     // half-session's worth of work on a dead API.
     const startupDeferral = createStartupDeferral({
-      schedule: options.scheduleStartupWork ?? createFirstPaintScheduler({ on: (event, handler, registrationOptions) => pi.on(event, handler, registrationOptions) }),
+      schedule: options.scheduleStartupWork ?? createFirstPaintScheduler({
+        on: (event, handler, registrationOptions) => pi.on(event, handler, registrationOptions),
+        placement: options.placement?.() ?? "fused",
+      }),
       onError: (label, error) => logger.warn("omo-senpi deferred startup work failed", { label, error }),
     })
     pi.on("session_shutdown", () => startupDeferral.retire())
