@@ -6,7 +6,7 @@
 > Deep-dives in this folder: TLS impersonation, Playwright routing, fallback, metadata, Jina, cache/archive, RSS, JSON/public APIs, Twitter, Naver, media.
 
 
-> URL 접근이 차단될 때, **사이트 무관한** 우회 전략을 자동 선택한다.
+> URL 접근이 차단될 때, **사이트 무관한** 대체 접근 전략을 자동 선택한다.
 
 ## 하네스 규칙 (Claude에게 강제되는 지침)
 
@@ -33,7 +33,7 @@
 **R6 — 실패 선언은 전수 시도 후에만**: 격자(URL 변환 × TLS impersonate × Referer × Playwright fallback)를 **모두** 돌린 뒤에만 "뚫을 수 없음" 결론. CLI의 `max_attempts` 기본 12가 이를 보장.
 단, R7 조건(WAF 조기 감지)이 성립하면 engine 격자는 계속 돌되, Claude가 **병렬로** MCP 정찰 루트를 시도할 수 있다. 빠른 쪽이 이긴다.
 
-**R7 — WAF 조기 감지 시 API-first 병행 분기** (분기 결정은 자동이지만 사용자가 결과에서 확인 가능 — 어떤 우회 경로로 성공/실패했는지 결과 metadata에 명시):
+**R7 — WAF 조기 감지 시 API-first 병행 분기** (분기 결정은 자동이지만 사용자가 결과에서 확인 가능 — 어떤 접근 경로로 성공/실패했는지 결과 metadata에 명시):
 발동 조건 (AND):
 1. engine 실행 초기에 첫 2~3회 attempt가 모두 `verdict=challenge`
 2. `profile_used`가 `akamai_bot_manager`, `cloudflare_turnstile`, `datadome_probable`, `perimeterx_human`, `f5_big_ip`, `aws_waf` 중 하나로 확정
