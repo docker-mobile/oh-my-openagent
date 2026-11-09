@@ -25,7 +25,11 @@ describe("AGENT_MODEL_REQUIREMENTS", () => {
         })
   })
 
+<<<<<<< HEAD
   test("sisyphus keeps opus primary before Kimi K3.1 Pro, Kimi K3, gpt-5.6-sol, GLM 5.2, and big-pickle fallbacks", () => {
+=======
+  test("sisyphus keeps opus primary before Kimi K3, gpt-5.6-sol, GLM 5.3, and big-pickle fallbacks", () => {
+>>>>>>> refs/remotes/pr/8699
     // given
     const sisyphus = AGENT_MODEL_REQUIREMENTS["sisyphus"]
 
@@ -54,7 +58,7 @@ describe("AGENT_MODEL_REQUIREMENTS", () => {
           variant: "medium",
         })
     expect(fourth?.providers[0]).toBe("zai-coding-plan")
-    expect(fourth?.model).toBe("glm-5.2")
+    expect(fourth?.model).toBe("glm-5.3")
     expect(last?.providers[0]).toBe("opencode")
     expect(last?.model).toBe("big-pickle")
   })

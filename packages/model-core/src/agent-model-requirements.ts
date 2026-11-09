@@ -23,7 +23,7 @@ export const AGENT_MODEL_REQUIREMENTS: Record<string, ModelRequirement> = {
         model: "gpt-5.6-sol",
         variant: "medium",
       },
-      { providers: ["zai-coding-plan", "opencode", "bailian-coding-plan"], model: "glm-5.2" },
+      { providers: ["zai-coding-plan", "opencode", "bailian-coding-plan"], model: "glm-5.3" },
       { providers: ["opencode"], model: "big-pickle" }
     ],
     requiresAnyModel: true,
@@ -63,7 +63,7 @@ export const AGENT_MODEL_REQUIREMENTS: Record<string, ModelRequirement> = {
         model: LATEST_MODEL_BY_FAMILY.claudeOpus,
         variant: "max",
       },
-      { providers: ["opencode-go"], model: "glm-5.2" }
+      { providers: ["opencode-go"], model: "glm-5.3" }
     ],
   },
   librarian: {
@@ -169,7 +169,7 @@ export const AGENT_MODEL_REQUIREMENTS: Record<string, ModelRequirement> = {
         model: "gemini-3.1-pro",
         variant: "high",
       },
-      { providers: ["opencode-go"], model: "glm-5.2" }
+      { providers: ["opencode-go"], model: "glm-5.3" }
     ],
   },
   atlas: {
