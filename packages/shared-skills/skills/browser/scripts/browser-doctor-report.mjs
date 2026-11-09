@@ -16,6 +16,15 @@ function stateOf(report, outdated) {
 
 const named = (browsers) => browsers.map((browser) => `${browser.browser_name} [${browser.instance_id}]`).join(", ")
 
+// A Date holds at most 8.64e15 ms either side of the epoch; toISOString() throws on anything finite beyond that.
+const validTimeMs = (ms) => Number.isFinite(ms) && Math.abs(ms) <= 8.64e15
+
+const sessionsOf = (report) => (report.daemon.sessions ?? []).map((s) => ({ sessionId: s.session_id, browserInstanceId: s.browser_instance_id, agentWindowId: s.agent_window_id ?? null, createdAtMs: validTimeMs(s.created_at_ms) ? s.created_at_ms : null }))
+
+const SESSIONS_NOTE = (sessions) => sessions.length > 0
+  ? `\n${sessions.length} BrowserSkill session(s) are open, each with an Agent Window. Any you did not start in this task was left by an earlier or cancelled task: stop it with \`bsk session stop <id>\` (the daemon also stops sessions idle for 5 minutes).`
+  : ""
+
 // With a 0.4.0 browser connected beside an up-to-date one, a session started without `browser` may land on the 0.4.0
 // one (the daemon picks), so the remedy names the up-to-date browser's instance and lists the browsers to avoid.
 function readyRemedy(report, outdated) {
@@ -50,11 +59,13 @@ export async function runBrowserDoctor({ omowright, entry, browser, doctorOption
   const report = await omowright.bskDoctor({ waitForBrowserMs: 0, browser, ...doctorOptions })
   const outdated = report.browsersConnected.filter((connected) => connected.extension_version === TAB_GROUPING_EXTENSION_VERSION)
   const state = stateOf(report, outdated)
+  const sessions = sessionsOf(report)
   return {
     state,
     omowright: entry,
     cli: report.cli,
     daemon: { running: report.daemon.running, version: report.daemon.version ?? null, protocolVersion: report.daemon.protocolVersion ?? null, error: report.daemon.error ?? null },
+    sessions,
     browser: report.primary ? { id: report.primary.id, label: report.primary.label, confidence: report.identification.confidence, reason: report.identification.reason } : null,
     identificationReason: report.identification.reason,
     candidates: report.identification.candidates.map((c) => ({ id: c.id, label: c.label, signals: c.signals })),
@@ -63,6 +74,6 @@ export async function runBrowserDoctor({ omowright, entry, browser, doctorOption
     browsersDetected: report.browsers.map((detected) => ({ id: detected.id, userDataDir: detected.userDataDir, extensionRegistered: detected.extensionRegistered })),
     browsersConnected: report.browsersConnected.map((connected) => ({ instanceId: connected.instance_id, name: connected.browser_name, version: connected.browser_version, extensionVersion: connected.extension_version ?? null })),
     nextStep: report.nextStep,
-    remedy: remedyFor(state, report, outdated),
+    remedy: remedyFor(state, report, outdated) + SESSIONS_NOTE(sessions),
   }
 }
