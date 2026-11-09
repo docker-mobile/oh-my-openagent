@@ -125,6 +125,8 @@ Internal (tests only): in the omo-native trust-stage TLS probe, a channel that h
 
 - Three `rg` examples used `rg -iE`. In ripgrep `-E` is `--encoding`, not a pattern-type flag, so the combined form consumes the next argument and the examples did not do what they claimed; they now use `rg -i`.
 - One `refactor` guidance line told an agent to fall back from `deep`; that category was split into `deep-low` / `deep-high`, so it now names `deep-high`. ([#12615](https://github.com/code-yeongyu/oh-my-openagent/pull/12615))
+**Failed task control and output calls now return the host’s error-result flag, so the model can distinguish a failure from a successful tool result.** ([#8119](https://github.com/code-yeongyu/oh-my-openagent/pull/8119))
+
 
 The `refactor-squad` member prompts keep `team_send_message` + `team_task_update`. The team-mode surface does not expose `task_send` to members, so an earlier draft of this change that rewrote those prompts to `task_send({ to: "lead" })` was wrong and has been reverted here. ([#12615](https://github.com/code-yeongyu/oh-my-openagent/pull/12615))
 
