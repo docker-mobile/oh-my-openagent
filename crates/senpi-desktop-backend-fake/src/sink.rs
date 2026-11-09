@@ -115,6 +115,10 @@ pub enum SinkOp {
     RaiseWindow {
         id: String,
     },
+    /// A window moved into the current Space; focus is untouched.
+    BringToCurrentSpace {
+        id: String,
+    },
     ReleaseAll,
     WarpCursor(DesktopPoint),
     QueryFrontWindow,
@@ -136,6 +140,11 @@ pub enum SinkOp {
         text: String,
         method: AxInputMethod,
         mode: DeliveryMode,
+    },
+    AxSelectText {
+        node: u64,
+        start: u32,
+        length: u32,
     },
     MenuSelect {
         window: String,

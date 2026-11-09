@@ -32,17 +32,17 @@ const PRELUDE_ASSET_FIELDS: readonly (readonly [field: string, marker: string, s
   [
     "COMPUTER_PRELUDE_JAVASCRIPT",
     "computer.run() expects a function or code string",
-    "7737ef1e5b6304d31ed483243db644f7b180c13e79a5c8d1f9c885fa732f3190",
+    "0986bbdc56e9b18e4a8849db5943254cfb4a1250c309e7bd2ad657be1e3f37dc",
   ],
   [
     "COMPUTER_PRELUDE_PYTHON",
     "Positional args with trailing Nones dropped",
-    "acf410337ec2bac4561aaa06f77a6c5af05578a352e53cbf66aec8497c0493fa",
+    "63598fa5dd76557a496d8c3880ba75d44ef73915ea95b4b3d8733373c8b1f728",
   ],
   [
     "COMPUTER_DECLARATIONS",
     "interface ComputerClickOptions extends ComputerDeliveryOptions",
-    "4d3861c40895d296b8a4c9cc9139e3737970f227ed5b5b8fa82c9cf0924ef640",
+    "6cd4ce42f86d002afbce02f430815fecb394e2b96fb1a82b89623397518c75d4",
   ],
   [
     "COMPUTER_DOCUMENTATION",

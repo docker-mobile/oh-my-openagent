@@ -11,6 +11,8 @@ use crate::error::{CoreResult, DesktopError, TccPermission};
 use crate::frame::FrameGeometry;
 use crate::keys::KeyName;
 pub use crate::protocol_results::AxInputMethod;
+use crate::protocol_results::AxTextSelection;
+use crate::text_range::TextSelectRequest;
 use crate::types::{
     CaptureCaps, DesktopCapabilities, DesktopDisplay, DesktopPoint, DesktopWindow, DisplaySelector, FrontWindow,
     ScreenState, Target,
@@ -224,6 +226,16 @@ pub trait Backend: Send {
     }
     fn raise_window(&mut self, id: &str) -> CoreResult<()>;
 
+    /// Moves window `id` into the user's current Space without switching
+    /// Spaces or activating anything; a window already there is left alone.
+    /// Backends call `check_stop` before the move and while verifying it.
+    /// Backends without Spaces refuse with `SpaceUnsupported`.
+    fn bring_to_current_space(&mut self, _id: &str, _check_stop: &dyn Fn() -> CoreResult<()>) -> CoreResult<()> {
+        Err(DesktopError::space_unsupported(
+            "moving a window to the current Space is not available on this backend",
+        ))
+    }
+
     /// The immediate children of `window`'s menu at `path` (empty = the menu
     /// bar). Backends without menus yet refuse with `AxUnsupported`.
     fn menu_items(&mut self, _window: &DesktopWindow, _path: &[String]) -> CoreResult<Vec<crate::menus::MenuItem>> {
@@ -352,6 +364,13 @@ pub trait AxBackend {
     /// cannot name it keep this default.
     fn owner(&mut self, _h: &AxHandle, _windows: &[DesktopWindow]) -> CoreResult<AxOwner> {
         Ok(AxOwner::Unknown)
+    }
+
+    /// Selects the range `request` names in `h`'s value (`ax.selectText`) by
+    /// writing the element's selected text range: no key is sent and no
+    /// focus moves. Backends without text selection keep this default.
+    fn select_text(&mut self, _h: &AxHandle, _request: &TextSelectRequest) -> CoreResult<AxTextSelection> {
+        Err(DesktopError::ax_unsupported())
     }
 }
 
