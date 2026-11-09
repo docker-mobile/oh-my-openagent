@@ -2,17 +2,19 @@ import type { HookDeps } from "./types"
 import type { AutoRetryHelpers } from "./auto-retry"
 import { HOOK_NAME } from "./constants"
 import { log } from "../../shared/logger"
-import { extractStatusCode, extractErrorName, classifyErrorType, isRetryableError, extractAutoRetrySignal, containsErrorContent } from "./error-classifier"
+import { extractStatusCode, extractErrorName, classifyErrorType, isProviderFailureCoordinationError, isRetryableError, extractAutoRetrySignal, containsErrorContent } from "./error-classifier"
 import { canPrepareFallback, createFallbackState } from "./fallback-state"
 import { getFallbackModelsForSession } from "./fallback-models"
 import { resolveFallbackBootstrapModel } from "./fallback-bootstrap-model"
 import { dispatchFallbackRetry } from "./fallback-retry-dispatcher"
+import { markProviderFailed } from "../../shared/provider-failure-state"
 import { hasVisibleAssistantResponse } from "./visible-assistant-response"
 import { subagentSessions } from "../../features/claude-code-session-state"
 import { resolveMessageEventSessionID } from "../../shared/event-session-id"
 import { normalizeModelToCanonicalString } from "./normalize-model"
 import { isCompactionAgent, hasCompactionPart } from "../../shared/compaction-marker"
 import { isCompactionInFlight } from "../../shared/compaction-in-flight"
+import { resolveFailedProviderID } from "./resolve-failed-provider"
 
 export { hasVisibleAssistantResponse } from "./visible-assistant-response"
 
@@ -188,6 +190,15 @@ export function createMessageUpdateHandler(deps: HookDeps, helpers: AutoRetryHel
         })
       }
 
+      const failedProviderID = resolveFailedProviderID(sessionID, state)
+      if (failedProviderID && isProviderFailureCoordinationError(error, config.retry_on_errors)) {
+        markProviderFailed(sessionID, failedProviderID)
+        sessionLastAccess.set(sessionID, Date.now())
+        log(`[${HOOK_NAME}] Marked provider as failed for proactive fallback`, {
+          sessionID,
+          providerID: failedProviderID,
+        })
+      }
       const fallbackModels = getFallbackModelsForSession(sessionID, resolvedAgent, pluginConfig)
 
       if (fallbackModels.length === 0) {

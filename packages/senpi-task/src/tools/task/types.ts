@@ -7,6 +7,7 @@ import type { ExecutionModeGate, TaskManager } from "../../manager"
 import type {
   EffectiveModelRecord,
   ResolvedModelRecord,
+  RetainTranscriptMark,
   TaskRunStats,
   TaskStartFailureKind,
   TaskStartFailureReason,
@@ -101,6 +102,7 @@ type ResolvedSpawnItemBase = {
   readonly name?: string
   readonly model?: string
   readonly load_skills: readonly string[]
+  readonly retain_transcript?: RetainTranscriptMark
 }
 
 export type ResolvedSpawnItem =

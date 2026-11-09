@@ -3,8 +3,8 @@ import type { DelegateTaskArgs, DelegatedModelConfig } from "./types"
 import type { ExecutorContext } from "./executor-types"
 import { CATEGORY_MODEL_REQUIREMENTS, type FallbackEntry } from "../../shared/model-requirements"
 import { canonicalCategoryName } from "@oh-my-opencode/omo-config-core"
+import { getAgentDisplayName } from "../../shared/agent-display-names"
 import { mergeCategories } from "../../shared/merge-categories"
-import { SISYPHUS_JUNIOR_AGENT } from "./sisyphus-junior-agent"
 import { resolveCategoryConfig } from "./categories"
 import { builtinCategoryGateModels, CATEGORY_PROMPT_APPEND_RESOLVERS } from "./constants"
 import { parseModelString } from "../../shared/model-string-parser"
@@ -317,7 +317,7 @@ Available categories: ${categoryNames.join(", ")}`)
   }
 
   return {
-    agentToUse: SISYPHUS_JUNIOR_AGENT,
+    agentToUse: getAgentDisplayName("sisyphus-junior", executorCtx.agentOverrides),
     categoryModel,
     categoryPromptAppend,
     maxPromptTokens: resolved.config.max_prompt_tokens,

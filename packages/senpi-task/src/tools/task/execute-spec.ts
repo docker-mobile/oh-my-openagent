@@ -50,6 +50,7 @@ export function buildStartSpec(
     ...(params.description !== undefined && { description: params.description }),
     ...(params.run_in_background !== undefined && { run_in_background: params.run_in_background }),
     ...(kernelTools !== undefined && { kernelTools }),
+    ...(params.retain_transcript !== undefined && { retain_transcript: params.retain_transcript }),
   }
 }
 
@@ -138,6 +139,7 @@ export function singleSpawnParams(item: ResolvedSpawnItem, runInBackground: bool
     ...(item.description !== undefined && { description: item.description }),
     ...(item.name !== undefined && { name: item.name }),
     ...(item.model !== undefined && { model: item.model }),
+    ...(item.retain_transcript !== undefined && { retain_transcript: item.retain_transcript }),
     load_skills: [...item.load_skills],
     ...(runInBackground !== undefined && { run_in_background: runInBackground }),
   }

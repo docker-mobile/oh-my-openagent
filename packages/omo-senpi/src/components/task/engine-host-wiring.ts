@@ -22,7 +22,11 @@ export interface EngineHostWiringInput {
   // shard routing registers in the agent-dir store index.
   readonly baseStore: TaskRecordStore
   readonly generations: CategoryConfigGenerations
-  readonly lifecycle: Pick<LifecycleDeps, "store" | "registry" | "kernelToolBindings" | "isolation" | "onStoreMutation" | "hostManagerInstance">
+<<<<<<< HEAD
+  readonly lifecycle: Pick<LifecycleDeps, "store" | "registry" | "kernelToolBindings" | "isolation" | "onStoreMutation" | "hostManagerInstance" | "transcriptArchiveDir">
+=======
+  readonly lifecycle: Pick<LifecycleDeps, "store" | "registry" | "kernelToolBindings" | "isolation" | "onStoreMutation" | "transcriptArchiveDir">
+>>>>>>> resolve/13
 }
 
 export interface EngineHostWiring {

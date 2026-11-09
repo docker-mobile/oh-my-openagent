@@ -210,6 +210,10 @@ export type LifecycleDeps = {
   readonly store: TaskRecordStore
   readonly registry: ResidencyRegistry
   readonly config: OmoTaskSettings
+  // Root of the bounded transcript-retention archive (the adapter resolves it from the Senpi agent
+  // dir). When set AND task.transcript_retention is enabled, the TTL sweep archives a selected
+  // terminal task's visible transcript before expunging its record. Undefined = retention off.
+  readonly transcriptArchiveDir?: string
   readonly now?: () => number
   readonly signaller?: ProcessSignaller
   // Row 17: reclaims stale clones and salvages a crashed host's isolated deltas at session start.

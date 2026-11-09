@@ -223,3 +223,31 @@ export function resolveSenpiLaunchTarget(runtime: RpcSpawnRuntime): SenpiLaunchT
   }
   return { launcher: null, engineVersion: runtime.engineVersion }
 }
+
+const SENPI_PACKAGE_SCOPE_DIR_NAME = "@code-yeongyu"
+const SENPI_PACKAGE_DIR_NAME = "senpi"
+
+// The npm package CLI (bin -> dist/cli.js) is a strict option parser that REJECTS the RPC mode
+// selector; only the compiled single-file Senpi binary dispatches on `--mode`. Handing the CLI
+// `--mode rpc` killed the child before the JSON-RPC handshake with `unknown option '--mode'` (#6715).
+export function senpiPackageCliScript(launcher: SenpiLauncher): string | null {
+  const targets = launcher.prefixArgs.length > 0 ? launcher.prefixArgs : [launcher.command]
+  for (const target of targets) {
+    const distDir = dirname(target)
+    const packageDir = dirname(distDir)
+    if (
+      basename(target) === "cli.js"
+      && basename(distDir) === "dist"
+      && basename(packageDir) === SENPI_PACKAGE_DIR_NAME
+      && basename(dirname(packageDir)) === SENPI_PACKAGE_SCOPE_DIR_NAME
+    ) {
+      return target
+    }
+  }
+  return null
+}
+
+export function senpiRpcEntryNextToCli(cliPath: string): string | null {
+  const sibling = join(dirname(cliPath), "rpc-entry.js")
+  return existsSync(sibling) ? sibling : null
+}

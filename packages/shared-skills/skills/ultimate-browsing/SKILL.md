@@ -115,19 +115,47 @@ When the blocked flow needs the user's account, drive the browser they are alrea
 
 ### Cookie login (cross-platform)
 
+<<<<<<< HEAD
 A login the user holds goes through Tier 2b, never through their cookies: the `browser` skill forbids copying a session out of the user's real browser profile (`references/owned-engine/network.md`, Cookies).
 
 `scripts/extract_cookies.py` reads cookies from the default profile store of a local Chromium-family or Firefox-family browser and optionally injects them over CDP. It resolves browser profile paths and decrypts cookie values per-OS (macOS Keychain, Linux libsecret, Windows DPAPI). Because it always reads that default store, run it only where that browser profile is not the user's live profile (for example a dedicated automation account whose browser the task owns); on the user's own machine it would copy their session, so use Tier 2b instead.
 
+The extractor creates the output parent directory recursively, so no separate `mkdir` command is needed:
+
 ```bash
 # Extract cookies to a file:
-mkdir -p ~/.local/state/omo-cookies
 python3 -B scripts/extract_cookies.py --browser chrome --domain youtube.com --output ~/.local/state/omo-cookies/youtube.cookies.json
 # Extract and inject over CDP (needs a browser started with --remote-debugging-port=9242; connectPipe opens no port):
 python3 -B scripts/extract_cookies.py --browser chrome --domain youtube.com --inject --cdp 9242
 ```
 
 For a Tier 2a owned page, load the exported file and call `omowright.injectCookies(page, cookies)` instead (see [references/chrome-stealth.md](references/chrome-stealth.md)). Cookie export files are written with owner-only `0600` permissions. Do not place live auth cookies in shared temp directories or commit them to a repo. Cookie injection sends values to CDP over stdin rather than argv. Cookies apply on next navigation — reload after injecting. Google services use fingerprint-bound tokens that may not transfer across browser profiles. Limits in [references/chrome-stealth.md](references/chrome-stealth.md).
+=======
+`scripts/extract_cookies.py` reads cookies from a local Chromium-family or Firefox-family browser and optionally injects them into the running CDP session. It resolves browser profile paths and decrypts cookie values per-OS (macOS Keychain, Linux libsecret, Windows DPAPI).
+
+The extractor creates the output parent directory recursively. Use the example
+for the active shell; no separate `mkdir` command is needed:
+
+```bash
+# POSIX shell: extract cookies to a file, or inject into the running CDP session
+python3 scripts/extract_cookies.py --browser chrome --domain youtube.com --output "${XDG_STATE_HOME:-$HOME/.local/state}/omo-cookies/youtube.cookies.json"
+python3 scripts/extract_cookies.py --browser chrome --domain youtube.com --inject --cdp 9242
+```
+
+```powershell
+# Windows PowerShell
+python scripts/extract_cookies.py --browser chrome --domain youtube.com --output "$env:LOCALAPPDATA\omo-cookies\youtube.cookies.json"
+python scripts/extract_cookies.py --browser chrome --domain youtube.com --inject --cdp 9242
+```
+
+```bat
+:: Windows cmd.exe
+python scripts/extract_cookies.py --browser chrome --domain youtube.com --output "%LOCALAPPDATA%\omo-cookies\youtube.cookies.json"
+python scripts/extract_cookies.py --browser chrome --domain youtube.com --inject --cdp 9242
+```
+
+Cookie export files are written with owner-only `0600` permissions. Do not place live auth cookies in shared temp directories or commit them to a repo. Cookie injection sends values to CDP over stdin rather than argv. Cookies apply on next navigation — reload after injecting. Google services use fingerprint-bound tokens that may not transfer across browser profiles. Full detail in [references/chrome-stealth.md](references/chrome-stealth.md).
+>>>>>>> refs/remotes/pr/6833
 
 ## Reference docs
 

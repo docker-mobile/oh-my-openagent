@@ -11,6 +11,7 @@ import { buildNativeAgentPrompt, getNativePromptSource } from "../native-model-p
 import { withRefusalRule } from "../refusal-rule";
 import { buildHephaestusPrompt } from "./gpt";
 import { getFrontierToolSchemaPermission } from "../frontier-tool-schema-guard";
+import { HEPHAESTUS_DELEGATION_ALLOWLIST } from "../../tools/delegate-task/constants";
 
 const MODE: AgentMode = "primary";
 export { isHephaestusSupportedModel, UnsupportedHephaestusModelError } from "./model-support";
@@ -41,7 +42,7 @@ export function getHephaestusPrompt(
 function buildDynamicHephaestusPrompt(ctx?: HephaestusContext): string {
   assertHephaestusSupportedModel(ctx?.model);
   const role = buildHephaestusPrompt(
-    ctx?.availableAgents?.filter((agent) => ["explore", "librarian", "oracle"].includes(agent.name)),
+    ctx?.availableAgents?.filter((agent) => HEPHAESTUS_DELEGATION_ALLOWLIST.includes(agent.name)),
     ctx?.availableTools, ctx?.availableSkills, ctx?.availableCategories, ctx?.useTaskSystem,
   );
   return buildNativeAgentPrompt(ctx?.model, withRefusalRule(role),

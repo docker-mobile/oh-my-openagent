@@ -14,6 +14,8 @@ import {
   readRunningEngineVersion,
   resolveSenpiLauncher,
   resolveSenpiLaunchTarget,
+  senpiPackageCliScript,
+  senpiRpcEntryNextToCli,
 } from "./senpi-launcher"
 
 export {
@@ -147,10 +149,11 @@ function defaultRuntime(): RpcSpawnRuntime {
 /**
  * Build the child spawn descriptor. The child inherits the parent env plus an isolated
  * SENPI_CODING_AGENT_SESSION_DIR; member-only identity is stripped before explicit memberEnv is
- * applied. The real agent dir is deliberately left unset so auth/models resolve normally. It prefers
- * the senpi EXECUTABLE (`<exe> --mode rpc <childArgs>`) so loader-alias hijacking cannot break child
- * resolution; when no executable is found it falls back to the documented `execPath + rpc-entry` path
- * (rpc-entry re-injects `--mode rpc`, so the child args follow the entry).
+ * applied. The real agent dir is deliberately left unset so auth/models resolve normally. A resolved
+ * senpi EXECUTABLE that is NOT the npm package CLI spawns as `<exe> --mode rpc <childArgs>` so
+ * loader-alias hijacking cannot break child resolution; the package CLI cannot take `--mode` (#6715),
+ * so it routes through its own `dist/rpc-entry.js` sibling (which re-injects `--mode rpc`), falling
+ * back to the documented `execPath + rpc-entry` path when no executable or sibling entry exists.
  */
 /**
  * The env/extension preamble shared by the real child and the catalog probe. Both MUST strip member
@@ -201,11 +204,18 @@ export function buildRpcSpawn(spec: RpcSpawnSpec, runtime?: Partial<RpcSpawnRunt
   const ancestryArgs = engineAcceptsSpawnedBy(engineVersion) && spawnedBy !== undefined
     ? ["--spawned-by", JSON.stringify(spawnedBy)] : []
   if (launcher !== null) {
-    return {
-      command: launcher.command,
-      args: [...launcher.prefixArgs, "--mode", "rpc", ...childArgs, ...ancestryArgs],
-      cwd: spec.cwd,
-      env,
+    const packageCli = senpiPackageCliScript(launcher)
+    if (packageCli === null) {
+      return {
+        command: launcher.command,
+        args: [...launcher.prefixArgs, "--mode", "rpc", ...childArgs, ...ancestryArgs],
+        cwd: spec.cwd,
+        env,
+      }
+    }
+    const siblingEntry = senpiRpcEntryNextToCli(packageCli)
+    if (siblingEntry !== null) {
+      return { command: resolved.execPath, args: [siblingEntry, ...childArgs, ...ancestryArgs], cwd: spec.cwd, env }
     }
   }
   return { command: resolved.execPath, args: [resolved.resolveRpcEntry(), ...childArgs, ...ancestryArgs], cwd: spec.cwd, env }
