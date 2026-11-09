@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import { createHash } from "node:crypto";
 import {
 	existsSync,
 	lstatSync,
@@ -22,6 +23,18 @@ import {
 	statusCounts,
 	stopSandboxProcesses,
 } from "./fused-equivalence-support.mjs";
+
+/** The senpi engine the EQ.omo driver runs: the package Node's lookup finds walking up from omo-senpi (resolveEngine). */
+function installedSenpiEngine(qaDir) {
+	for (let dir = join(qaDir, "..", ".."); ; dir = dirname(dir)) {
+		const manifest = join(dir, "node_modules", "@code-yeongyu", "senpi", "package.json");
+		if (existsSync(manifest)) {
+			const { name, version } = JSON.parse(readFileSync(manifest, "utf8"));
+			return `${name}@${version}`;
+		}
+		if (dir === dirname(dir)) throw new Error("@code-yeongyu/senpi is not installed: run bun install");
+	}
+}
 
 const status = (key, text) => ({ type: "extension_ui_request", method: "setStatus", statusKey: key, statusText: text });
 const turnEvent = (type) => ({ type });
@@ -171,7 +184,8 @@ describe("goldenHostLeaks", () => {
 	const notice =
 		"OmO Native sends anonymous usage telemetry (no prompts, code, file paths, or account data) to PostHog in the United States to improve the product.";
 
-	test("#given observations with the telemetry notice and terminal restore events #when scanned #then each leak is named with its path", () => {
+	test("#given observations with the telemetry notice, terminal restore events and a computer launch-context refusal #when scanned #then each leak is named with its path", () => {
+		const refusal = "COMPUTER_LAUNCH_CONTEXT_REQUIRED: Computer use cannot start safely from this host's current macOS launch context.";
 		const observations = {
 			O6: [
 				{
@@ -179,6 +193,11 @@ describe("goldenHostLeaks", () => {
 						{ type: "extension_event", name: "terminal_monitor_state" },
 						{ type: "extension_ui_request", method: "notify", message: notice },
 						{ type: "extension_event", name: "wake_source_state" },
+						{
+							type: "tool_execution_end",
+							error: refusal,
+							result: { details: { value: { code: "COMPUTER_LAUNCH_CONTEXT_REQUIRED" } } },
+						},
 					],
 				},
 			],
@@ -188,11 +207,24 @@ describe("goldenHostLeaks", () => {
 			{ path: "$.O6[0].turn[0].name", reason: "terminal_monitor_state event" },
 			{ path: "$.O6[0].turn[1].message", reason: "telemetry notice" },
 			{ path: "$.O6[0].turn[2].name", reason: "wake_source_state event" },
+			{ path: "$.O6[0].turn[3].error", reason: "computer launch-context refusal" },
+			{ path: "$.O6[0].turn[3].result.details.value.code", reason: "computer launch-context refusal" },
 		]);
 	});
 
 	test("#given observations that only mention the markers inside other text #when scanned #then nothing is reported", () => {
-		const observations = { O1: [{ body: { messages: [{ content: "the terminal_monitor_state event is internal" }] } }] };
+		const observations = {
+			O1: [
+				{
+					body: {
+						messages: [
+							{ content: "the terminal_monitor_state event is internal" },
+							{ content: "a refusal carries the code COMPUTER_LAUNCH_CONTEXT_REQUIRED" },
+						],
+					},
+				},
+			],
+		};
 
 		expect(goldenHostLeaks(observations)).toEqual([]);
 	});
@@ -211,5 +243,33 @@ describe("goldenHostLeaks", () => {
 		);
 
 		expect(leaks).toEqual([]);
+	});
+});
+
+// Cross-platform recorded-artifact contract (#12171): hosted CI compares only the linux-x64 goldens, so a driver change
+// or senpi pin bump re-recorded on one platform leaves another platform's goldens stale with nothing failing. Every
+// platform's baseline must name the driver and engine the cases run today; re-recording that platform clears it.
+describe("EQ.omo golden baselines", () => {
+	test("#given every platform's golden set #when its baseline is read #then it names the current driver hash and the pinned senpi engine", () => {
+		const qaDir = dirname(fileURLToPath(import.meta.url));
+		const root = join(qaDir, "fused-equivalence-golden");
+		const driver = `sha256:${createHash("sha256").update(readFileSync(join(qaDir, "fused-equivalence-e2e.mjs"))).digest("hex")}`;
+		const engine = `${installedSenpiEngine(qaDir)} (pinned)`;
+		const platforms = readdirSync(root);
+		expect(platforms.length).toBeGreaterThan(0);
+
+		const stale = platforms.flatMap((platform) => {
+			const path = join(root, platform, "baseline.json");
+			if (!existsSync(path)) return [`${platform}: no baseline.json`];
+			const baseline = JSON.parse(readFileSync(path, "utf8"));
+			return [
+				...(baseline.hashes?.driver === driver ? [] : [`${platform}: hashes.driver ${baseline.hashes?.driver}, current ${driver}`]),
+				...(baseline.runtimes?.child?.endsWith(` ${engine}`)
+					? []
+					: [`${platform}: runtimes.child ${baseline.runtimes?.child}, pinned ${engine}`]),
+			];
+		});
+
+		expect(stale).toEqual([]);
 	});
 });
