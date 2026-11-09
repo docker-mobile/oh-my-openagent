@@ -11,6 +11,8 @@ export interface GitExecOptions {
   cwd: string
   timeoutMs: number
   env?: NodeJS.ProcessEnv
+  /** The index this one command uses (GIT_INDEX_FILE). Set here, never through env: an index in env is dropped (#12368). */
+  indexFile?: string
   stdin?: string | Buffer
   /** Stops the git process (SIGTERM, so git removes its own lock and temp files) and rejects. */
   signal?: AbortSignal
@@ -257,7 +259,8 @@ export function createNodeGitExec(runtime: NodeGitExecRuntime = {}): GitExec {
       // directory next to NO_FSMONITOR; the value is inert for commands that run no hooks.
       const argv = [...NO_FSMONITOR, "-c", `core.hooksPath=${resolveHooksDir(options.cwd)}`, ...callerArgv]
       // Never the caller's raw environment: an inherited GIT_CONFIG_* or GIT_DIR would redirect this git (#12354).
-      const environment = memoryGitEnvironment(options.env ?? process.env, platform)
+      const filtered = memoryGitEnvironment(options.env ?? process.env, platform)
+      const environment = options.indexFile === undefined ? filtered : { ...filtered, GIT_INDEX_FILE: options.indexFile }
       try {
         return await runCommand("git", argv, options, environment)
       } catch (error) {
