@@ -33120,6 +33120,12 @@
           "properties": {
             "force_enable": {
               "type": "boolean"
+            },
+            "play_sound": {
+              "type": "boolean"
+            },
+            "sound_path": {
+              "type": "string"
             }
           },
           "additionalProperties": false
