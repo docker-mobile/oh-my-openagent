@@ -1,7 +1,7 @@
 import type { AgentConfig } from "@opencode-ai/sdk"
 import type { AgentMode } from "../types"
 import { isGlmModel, isGptModel, buildClaudeThinkingConfig } from "../types"
-import type { AgentOverrideConfig } from "../../config/schema"
+import type { AgentOverrideConfig, CategoryConfig } from "../../config/schema"
 import { createAgentToolRestrictions, migrateAgentConfig, type PermissionValue } from "../../shared/permission-compat"
 import { buildNativeAgentPrompt, getNativePromptSource } from "../native-model-prompt"
 import { withRefusalRule } from "../refusal-rule"
@@ -25,14 +25,19 @@ export function buildSisyphusJuniorPrompt(model: string | undefined, useTaskSyst
 export function createSisyphusJuniorAgentWithOverrides(
   override: AgentOverrideConfig | undefined,
   systemDefaultModel?: string,
-  useTaskSystem = false
+  useTaskSystem = false,
+  categories?: Record<string, CategoryConfig>
 ): AgentConfig {
   if (override?.disable) {
     override = undefined
   }
 
   const overrideModel = (override as { model?: string } | undefined)?.model
-  const model = overrideModel ?? systemDefaultModel ?? SISYPHUS_JUNIOR_DEFAULTS.model
+  const overrideCategory = (override as { category?: string } | undefined)?.category
+  const categoryModel = overrideCategory && categories?.[overrideCategory]?.model
+    ? categories[overrideCategory].model
+    : undefined
+  const model = overrideModel ?? categoryModel ?? systemDefaultModel ?? SISYPHUS_JUNIOR_DEFAULTS.model
   const temperature = override?.temperature ?? SISYPHUS_JUNIOR_DEFAULTS.temperature
 
   const promptAppend = override?.prompt_append
