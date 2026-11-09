@@ -1,5 +1,5 @@
 import type { SessionShutdownEvent } from "@code-yeongyu/senpi"
-import { readSessionRole } from "@oh-my-opencode/senpi-task"
+import { OMO_SENPI_TASK_RPC_CHILD, readSessionRole } from "@oh-my-opencode/senpi-task"
 import type { ComponentContext, SenpiExtensionAPI } from "../../extension/types"
 import type { TaskEngine } from "./engine"
 import { ownHostedTaskId } from "./own-task-identity"
@@ -79,6 +79,8 @@ export function wireEventBridge(
   pi.on("session_start", async (_payload, eventCtx) => {
     engine.runtime.captureFrom(asLiveContext(eventCtx))
     const sessionId = engine.runtime.sessionId()
+    // A marked RPC child must not recursively restore its persisted child tree (#7980).
+    if (process.env[OMO_SENPI_TASK_RPC_CHILD] === "1") return
     // A child session that has not reported its own id yet has nothing to reconcile: its records
     // belong to the parent. The role comes from the session (shared daemon), else from the env.
     if (readSessionRole(pi) !== undefined && sessionId === undefined) {
