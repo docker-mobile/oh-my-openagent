@@ -12,12 +12,25 @@
 //   off-space-capture    full access: resolves the dialog window, switches one Space right (ctrl+right, so a second
 //                        Space must exist), screenshots the now off-Space window, switches back. Expects a frame
 //                        (SkyLight); with --disable-skylight it expects CaptureUnavailable reason off-space.
+//   two-window-typing    macOS key priming (plan row 16): opens two TextEdit documents in the background, A key, then
+//                        types into B three times with macos_key_priming on. Passes when A's text is unchanged, B is
+//                        its original plus every typed piece, and A is TextEdit's key window again once all three
+//                        calls ended (checked once, after the last one). Its variant does the same with A's text
+//                        area focused first (focus only, no selection in A). Priming runs only in a
+//                        reportMode:"object" session, so until omo opens those (plan row 36) this FAILS with
+//                        BackgroundUnavailable; that is not a priming failure.
+//   chrome-two-window-typing, dense-window-observe
+//                        SDK-lane scenarios (plan row 34, computer-control-live-macos-sdk.mjs): the driver spawns
+//                        the engine through the desktop SDK in an object-mode session instead of a senpi session.
+//                        Two Chrome windows with background typing into the non-key one, and a >= 5,000-node Safari
+//                        page observed at the 3,000 ms deadline (cuts, drill, depth-3 skeleton token budget).
 //
 // macOS charges Accessibility to the app that launched the engine, and the engine refuses to run as its own
 // responsible process: start this from Terminal (or the app holding the grants), never from a disclaimed spawn.
 //
 // Usage: SENPI_BIN=<senpi> bun computer-control-live-macos.mjs --engine <path> [--evidence-dir <dir>] [--only a,b]
-//        [--disable-skylight]
+//        [--disable-skylight] [--dense-rows <n>]
+//        bun computer-control-live-macos.mjs --list   (prints every scenario name, one per line, on any host)
 import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
@@ -39,6 +52,7 @@ import {
 	toolResults,
 } from "./computer-control-live-macos-scenarios.mjs";
 import { desktopScenarios } from "./computer-control-live-macos-desktop.mjs";
+import { sdkScenarios } from "./computer-control-live-macos-sdk.mjs";
 import { createSandbox, seedSandbox } from "./drive.mjs";
 import { isolatedChildEnv } from "./sandbox-child-env.mjs";
 import { withTelemetryOptOut } from "./telemetry-opt-out-env.mjs";
@@ -61,6 +75,7 @@ const enginePath = resolve(
 const evidenceDir = argValue("--evidence-dir");
 const only = argValue("--only")?.split(",");
 const skylightDisabled = process.argv.includes("--disable-skylight");
+const denseRows = Number(argValue("--dense-rows") ?? 2_000);
 
 const offSpaceRun = `
 const w = await desktop.window({ title: ${JSON.stringify(TARGET_TITLE)} });
@@ -102,6 +117,100 @@ const offSpaceScenario = {
 					];
 		},
 	},
+};
+
+// Two TextEdit documents, read and closed through TextEdit's own scripting (an oracle outside the engine).
+const textEdit = (script) =>
+	new Promise((resolveRun) => {
+		const child = spawn("osascript", ["-e", script], { stdio: ["ignore", "pipe", "pipe"] });
+		let out = "";
+		child.stdout.on("data", (chunk) => {
+			out += chunk;
+		});
+		child.on("exit", () => resolveRun(out.replace(/\n$/, "")));
+	});
+const sha = (text) => createHash("sha256").update(text).digest("hex");
+const twoWindow = { dir: "", a: "", b: "" };
+const PIECES = ["-qa1", "-qa2", "-qa3"];
+
+async function openDocuments(variant) {
+	twoWindow.dir = join(homedir(), "Library", "Caches", `omo-two-window-qa-${process.pid}-${variant}`);
+	mkdirSync(twoWindow.dir, { recursive: true });
+	const [a, b] = ["A", "B"].map((name) => `qa-${variant}-${name}.txt`);
+	Object.assign(twoWindow, { a, b });
+	writeFileSync(join(twoWindow.dir, a), "alpha original\n");
+	writeFileSync(join(twoWindow.dir, b), "bravo original\n");
+	// `-g` keeps TextEdit in the background; A opens last, so it is the key document.
+	for (const name of [b, a]) {
+		spawn("open", ["-g", "-a", "TextEdit", join(twoWindow.dir, name)]);
+		await new Promise((resolveWait) => setTimeout(resolveWait, 1500));
+	}
+	return {
+		a: await textEdit(`tell application "TextEdit" to get text of document "${a}"`),
+		b: await textEdit(`tell application "TextEdit" to get text of document "${b}"`),
+		key: await textEdit('tell application "TextEdit" to get name of window 1'),
+	};
+}
+
+async function closeDocuments() {
+	if (twoWindow.dir === "") return;
+	for (const name of [twoWindow.a, twoWindow.b]) {
+		await textEdit(`tell application "TextEdit" to close (every document whose name is "${name}") saving no`);
+	}
+	rmSync(twoWindow.dir, { recursive: true, force: true });
+	twoWindow.dir = "";
+}
+
+const twoWindowRun = (b, a, focusA) => `
+const target = await desktop.window({ title: ${JSON.stringify(b)} });
+${focusA ? `const other = await desktop.window({ title: ${JSON.stringify(a)} }); const [field] = await other.find({ role: "textarea" }); if (field !== undefined) await field.focus();` : ""}
+const calls = [];
+for (const piece of ${JSON.stringify(PIECES)}) {
+  try { await target.type(piece); calls.push({ piece, ok: true }); }
+  catch (caught) { calls.push({ piece, ok: false, error: String(caught?.code ?? "") + " " + String(caught?.message ?? caught) }); }
+}
+return JSON.stringify({ twoWindow: calls });
+`;
+
+const twoWindowScenario = (variant, focusA) => ({
+	preset: "full-access",
+	computer: { macos_key_priming: "on" },
+	setup: () => openDocuments(variant),
+	teardown: closeDocuments,
+	steps: () => [
+		{ type: "tool_call", name: "computer", arguments: { action: "run", code: twoWindowRun(twoWindow.b, twoWindow.a, focusA) } },
+		{ type: "text", text: "done" },
+	],
+	drive: async (session) => {
+		session.send({ type: "prompt", message: "control QA: type into the background document B" });
+		await session.until("agent_end", () => session.agentEnds() >= 1);
+		Object.assign(session.observed, {
+			a: await textEdit(`tell application "TextEdit" to get text of document "${twoWindow.a}"`),
+			b: await textEdit(`tell application "TextEdit" to get text of document "${twoWindow.b}"`),
+			key: await textEdit('tell application "TextEdit" to get name of window 1'),
+		});
+	},
+	verify: ({ results, before, observed }) => {
+		const raw = (results[0] ?? "").replaceAll('\\"', '"');
+		const match = /\{"twoWindow":\[.*?\]\}/s.exec(raw);
+		const calls = match === null ? undefined : JSON.parse(match[0]).twoWindow;
+		return [
+			["A was the key document before typing", before?.key === twoWindow.a],
+			["every background type call succeeded", calls?.length === PIECES.length && calls.every((call) => call.ok)],
+			[`A unchanged (sha256 ${sha(before?.a ?? "")} -> ${sha(observed.a ?? "")})`, observed.a === before?.a],
+			// The typed text lands at B's insertion point (the document start after `open`), as one run.
+			[
+				`B is its original plus the typed text (sha256 ${sha(observed.b ?? "")})`,
+				before !== undefined && observed.b?.includes(PIECES.join("")) === true && observed.b.replace(PIECES.join(""), "") === before.b,
+			],
+			["A is the key document again after hand-back", observed.key === twoWindow.a],
+		];
+	},
+});
+
+const twoWindowScenarios = {
+	"two-window-typing": twoWindowScenario("plain", false),
+	"two-window-typing-focused-other": twoWindowScenario("focused", true),
 };
 
 const scrubbedEnv = () =>
@@ -149,13 +258,13 @@ async function dialogClosed(timeoutMs) {
 }
 
 // One senpi rpc session; `steps` is the mock provider's whole script across both prompts.
-function startSession(steps, { preset = "ask", print, env: scenarioEnv = {} } = {}) {
+function startSession(steps, { preset = "ask", print, env: scenarioEnv = {}, computer = {} } = {}) {
 	const sandbox = createSandbox();
 	seedSandbox(sandbox);
 	mkdirSync(join(sandbox.cwd, ".omo"), { recursive: true });
 	writeFileSync(
 		join(sandbox.cwd, ".omo", "omo.jsonc"),
-		JSON.stringify({ computer: { engine_path: enginePath } }),
+		JSON.stringify({ computer: { engine_path: enginePath, ...computer } }),
 	);
 	writeFileSync(
 		join(sandbox.cwd, "mock-script.json"),
@@ -262,7 +371,17 @@ function startSession(steps, { preset = "ask", print, env: scenarioEnv = {} } = 
 		return outcome;
 	};
 	const exited = new Promise((resolveExit) => child.on("exit", resolveExit));
-	return { sandbox, events, send, until, agentEnds, close, exited };
+	return { sandbox, events, send, until, agentEnds, close, exited, observed: {} };
+}
+
+const allScenarios = { ...scenarios, ...desktopScenarios, ...offSpaceScenario, ...twoWindowScenarios, ...sdkScenarios };
+if (process.argv.includes("--list")) {
+	console.log(Object.keys(allScenarios).join("\n"));
+	process.exit(0);
+}
+if (!Number.isInteger(denseRows) || denseRows < 1) {
+	console.log(JSON.stringify({ verdict: "FAIL", reason: "--dense-rows needs a positive integer" }));
+	process.exit(1);
 }
 
 if (process.platform !== "darwin") {
@@ -299,8 +418,30 @@ const before = protectedFiles.map(digest);
 const report = [];
 openTarget();
 try {
-	for (const [name, scenario] of Object.entries({ ...scenarios, ...desktopScenarios, ...offSpaceScenario })) {
+	for (const [name, scenario] of Object.entries(allScenarios)) {
 		if (only !== undefined && !only.includes(name)) continue;
+		if (typeof scenario === "function") {
+			// An SDK-lane scenario: it owns its engine child and windows, and returns its own checks.
+			const started = Date.now();
+			let result;
+			let error;
+			try {
+				result = await scenario({ enginePath, denseRows });
+			} catch (caught) {
+				error = caught instanceof Error ? caught.message : String(caught);
+			}
+			const checks = (result?.checks ?? []).map(([label, ok]) => ({ label, ok }));
+			const pass = error === undefined && checks.length > 0 && checks.every((check) => check.ok);
+			const elapsedMs = Date.now() - started;
+			report.push({ name, pass, error, elapsedMs, checks });
+			if (evidenceDir !== undefined) {
+				const body = `${JSON.stringify({ name, pass, error, elapsedMs, checks, evidence: result?.evidence ?? null }, null, 2)}\n`;
+				writeFileSync(join(evidenceDir, `${name}.json`), body);
+				writeFileSync(join(evidenceDir, `${name}.json.sha256`), `${createHash("sha256").update(body).digest("hex")}  ${name}.json\n`);
+			}
+			continue;
+		}
+		const before = await scenario.setup?.();
 		let steps = scenario.steps;
 		if (typeof steps === "function") {
 			// Every desktop scenario gets a fresh dialog: an admitted click dismisses it.
@@ -319,7 +460,8 @@ try {
 		} catch (caught) {
 			error = caught instanceof Error ? caught.message : String(caught);
 		}
-		const outcome = session.close();
+		const outcome = { ...session.close(), before, observed: session.observed };
+		await scenario.teardown?.();
 		const checks = scenario
 			.verify(outcome)
 			.map(([label, ok]) => ({ label, ok }));

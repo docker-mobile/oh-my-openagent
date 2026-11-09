@@ -22,6 +22,8 @@ pub fn backend_without_services() -> WaylandBackend {
     backend.portal_offered = Some(false);
     backend.capture.probe = Probe::Absent;
     backend.compositor = Some(crate::compositor::hyprland::Detection::NotHyprland);
+    backend.kwin = Some(crate::compositor::kwin::Detection::NotKwin);
+    backend.gnome = Some(crate::compositor::gnome::Detection::NotGnome);
     backend
 }
 

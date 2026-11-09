@@ -49,12 +49,17 @@ pub(super) fn ensure_trusted() -> CoreResult<()> {
     }
 }
 
+/// A retained, generation-bound handle for `element` (see `retained`).
 pub(super) fn handle(element: CFRetained<AXUIElement>) -> AxHandle {
-    AxHandle::native(element)
+    super::retained::wrap(element)
 }
 
-/// The AXUIElement behind a handle this backend produced.
+/// The AXUIElement behind a handle this backend produced: `StaleRef` once the
+/// ref generations that held it expired or its app was replaced.
 pub(crate) fn element(handle: &AxHandle) -> CoreResult<&AXUIElement> {
+    if let Some(found) = super::retained::resolve(handle) {
+        return found;
+    }
     handle
         .downcast_native::<CFRetained<AXUIElement>>()
         .map(|element| &**element)
@@ -119,6 +124,17 @@ pub(super) fn copy_attribute_result(
     };
     // SAFETY: AXUIElementCopyAttributeValue returns a +1 object on success.
     Ok(Some(unsafe { CFRetained::from_raw(pointer) }))
+}
+
+/// A read that tells an empty answer from no answer: `Some(None)` when the
+/// application answered without a value, `None` when it did not answer
+/// (`CannotComplete` is a messaging timeout) or the read failed otherwise.
+pub(crate) fn copy_answered(element: &AXUIElement, attribute: &str) -> Option<Option<CFRetained<CFType>>> {
+    match copy_attribute_result(element, attribute) {
+        Ok(value) => Some(value),
+        Err(error) if error == AXError::NoValue || error == AXError::AttributeUnsupported => Some(None),
+        Err(_) => None,
+    }
 }
 
 pub(crate) fn copy_attribute(element: &AXUIElement, attribute: &str) -> Option<CFRetained<CFType>> {
