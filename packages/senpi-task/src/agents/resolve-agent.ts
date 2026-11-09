@@ -145,7 +145,6 @@ export function resolveAgent<TModel extends SenpiModelPort>(
   const directModels = definition.models?.length && options.distributeModels
     ? options.distributeModels(`agent:${name}`, configuredModels, definition.models_distribution)
     : configuredModels
-  const directModels = agentModelCandidates(definition.model, definition.models, configuredTuning)
   const userAgent = options.omoConfig?.agents !== undefined && Object.hasOwn(options.omoConfig.agents, name) ? options.omoConfig.agents[name] : undefined
   const directSource: ModelSelectionSource = userAgent?.model !== undefined || (userAgent?.models?.length ?? 0) > 0 ? "user" : "builtin"
   for (const candidate of directModels) {

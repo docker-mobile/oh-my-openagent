@@ -70,6 +70,8 @@ export function removeAbandonedRunRoots(
 
 const osTempDir = tmpdir()
 const tempEnvironment = ["TMPDIR", "TEMP", "TMP"].map((name) => [name, process.env[name]] as const)
+const DETACHED_STDIO = { detached: true, stdio: "ignore" } as const
+
 removeAbandonedRunRoots(osTempDir)
 const runRoot = mkdtempSync(join(osTempDir, RUN_ROOT_PREFIX))
 writeFileSync(join(runRoot, OWNER_PID_FILE), String(process.pid))
@@ -157,7 +159,6 @@ export function removeRunRootAside(
   return spawnRemover(aside)
 }
 
-const DETACHED_STDIO = { detached: true, stdio: "ignore" } as const
 
 function spawnDetachedRemover(path: string): ChildProcess {
   // Windows has no /bin/rm, and fs.rmSync's own maxRetries never retries under bun (oven-sh/bun#41480, see
