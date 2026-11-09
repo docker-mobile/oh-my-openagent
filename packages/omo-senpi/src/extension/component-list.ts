@@ -13,6 +13,7 @@ import { createDeviceServiceComponent } from "../components/device-service"
 import { createFallbackArchitectComponent } from "../components/fallback-architect"
 import { createFeedbackComponent } from "../components/feedback"
 import { createGitMasterAttributionComponent } from "../components/git-master"
+import { createHostDenialGuardComponent } from "../components/host-denial-guard"
 import { createInitDeepAdvisorComponent } from "../components/init-deep-advisor"
 import { createLspComponent } from "../components/lsp"
 import { createMemoryComponent } from "../components/memory"
@@ -59,6 +60,7 @@ export function createOmoSenpiComponents(taskComponent: OmoSenpiComponent): OmoS
     createClaimReceiptComponent(),
     createGitMasterAttributionComponent(),
     createFallbackArchitectComponent(),
+    createHostDenialGuardComponent(),
     createAstGrepComponent(),
     createBuiltinMcpsComponent(),
     createLspComponent(),
