@@ -10,15 +10,11 @@ import { createNodeGitExec, type GitExec, type GitExecResult } from "./exec"
 import { describeDirtyMarkdownEncodingIssues } from "./porcelain"
 import { GitPathStateStore } from "./path-state"
 import { authorFlags, commandError, normalizePathspecs, normalizeSeedPath } from "./repo-arguments"
-<<<<<<< HEAD
 import { runMemoryRepoMaintenance } from "./repo-maintenance"
 import { ensureRepoConfigDefaults } from "./repo-config-defaults"
 import { PathCommitTimes } from "./repo-commit-times"
 import { GitRevisionReads } from "./repo-revision-reads"
-=======
-import { parseLogOutput, parseNulPaths } from "./repo-log"
 import { addWorktreeWithRetry } from "./repo-worktree-add"
->>>>>>> refs/remotes/pr/7195
 import { assertNoUnrelatedChanges } from "./repo-status"
 import { settlePendingRollback } from "./pending-rollback"
 import { assertNoSecretLikeStaging } from "./repo-secret-staging"
