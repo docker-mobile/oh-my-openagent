@@ -50,6 +50,8 @@ export function createTaskRunPause(ports: {
   liveHandle(taskId: string): ManagedChildHandle | undefined
   // Rebuild a paused child whose host is gone; it starts no turn (see paused-restore.ts).
   restore?(record: TaskRecord): Promise<ManagedChildHandle>
+  // True when another live host process holds this record; such a child is never paused from here.
+  ownedByLiveHost?(record: TaskRecord): boolean
   track(taskId: string, handle: ManagedChildHandle, model: string, epoch: number, turn: ResumedChildTurn): void
 }) {
   const intents = new PendingPauses()
@@ -71,7 +73,7 @@ export function createTaskRunPause(ports: {
   // The owner is saved on the record so a restarted host re-holds the child under exactly this run.
   function remember(taskId: string, owner: RunPauseOwner): void {
     owners.set(taskId, owner)
-    ports.store.mutate(taskId, fresh => ({ ...fresh, run_pause: {
+    ports.store.mutate(taskId, ({ run_pause_resumed: _previous, ...fresh }) => ({ ...fresh, run_pause: {
       parent_session_id: owner.parentSessionId, parent_pause_seq: owner.parentPauseSeq, run_ref: owner.runRef,
     } }))
   }
@@ -105,6 +107,9 @@ export function createTaskRunPause(ports: {
     const epoch = record.notification.run_epoch
     if (record.status !== "running" && record.status !== "paused") throw new Error(`cannot pause ${record.status} task`)
     if (handle === undefined) {
+      // A live host that still holds the child keeps running it; writing it paused here would leave it
+      // running behind a paused record that no Resume can reach (#12349).
+      if (ports.ownedByLiveHost?.(record) === true) return { refused: "owned_elsewhere" }
       // Its host is gone, so nothing runs: record the pause and the run's sequence; the restore that
       // precedes Resume re-holds the child and reads the cutoff from the child's own answer.
       if (record.status === "running" && !ports.store.transition(taskId, { type: "pause", timestamp: new Date(ports.now()).toISOString() }).applied) {
@@ -190,7 +195,10 @@ export function createTaskRunPause(ports: {
       const unpaused = ports.store.transition(taskId, { type: "unpause", timestamp: new Date(ports.now()).toISOString() })
       if (!unpaused.applied) throw new Error("paused child changed while resuming")
       owners.delete(taskId)
-      ports.store.mutate(taskId, ({ run_pause: _resumed, ...fresh }) => fresh)
+      // The record names the Resume that released it, so a late register for it never re-pauses the child (#12349).
+      ports.store.mutate(taskId, ({ run_pause: _resumed, ...fresh }) => ({ ...fresh, run_pause_resumed: {
+        resume_id: request.resumeId, parent_session_id: request.parentSessionId, parent_pause_seq: request.parentPauseSeq,
+      } }))
       // The returned promise belongs to turnId even when already settled; never waitForOutcome here.
       ports.track(taskId, handle, record.model, record.notification.run_epoch, result)
       const receipt = { turnId: result.turnId }
@@ -213,6 +221,13 @@ export function createTaskRunPause(ports: {
     const record = load(taskId)
     if (record.status !== "running" && record.status !== "paused") return { notHeld: true }
     let cutoff = request.childSeqCutoff
+    const saved = savedRunOwner(record)
+    // A paused child its dead owner left under THIS run is restored and resumed here (#12349 handoff);
+    // any other handle-less paused record keeps the notHeld answer.
+    if (cutoff === undefined && record.status === "paused" && ports.liveHandle(taskId) === undefined
+      && saved?.parentSessionId === request.parentSessionId && saved.runRef.kind === request.runRef.kind && saved.runRef.id === request.runRef.id) {
+      return resumePausedTask(taskId, { ...request, parentPauseSeq: saved.parentPauseSeq, childSeqCutoff: 0 })
+    }
     if (cutoff === undefined) {
       const observed = await observeTaskHold(taskId, request.parentSessionId)
       if (observed?.held !== true) return { notHeld: true }
