@@ -36,6 +36,7 @@ export function createCoreTools(args: {
     pluginConfig.categories,
     managers.modelFallbackControllerAccessor,
     prometheusMdOnlyDisabled,
+    pluginConfig.disabled_providers ?? [],
   )
   const isMultimodalLookerEnabled = !(pluginConfig.disabled_agents ?? []).some(
     (agent) => agent.toLowerCase() === "multimodal-looker",
@@ -78,6 +79,7 @@ export function createCoreTools(args: {
     getLoadedSkills,
     sisyphusAgentConfig: pluginConfig.sisyphus_agent,
     claudeCodeAgentsEnabled: pluginConfig.claude_code?.agents ?? true,
+    disabledProviders: pluginConfig.disabled_providers ?? [],
     syncPollTimeoutMs: pluginConfig.background_task?.syncPollTimeoutMs,
     taskCleanupDelayMs: pluginConfig.background_task?.taskCleanupDelayMs,
     modelFallbackControllerAccessor: managers.modelFallbackControllerAccessor,
@@ -147,7 +149,7 @@ export function createCoreTools(args: {
     call_omo_agent: callOmoAgent,
   }
   if (isMultimodalLookerEnabled) {
-    tools.look_at = factories.createLookAt(ctx)
+    tools.look_at = factories.createLookAt(ctx, pluginConfig.disabled_providers ?? [])
   }
   tools.task = delegateTask
   tools.skill_mcp = skillMcpTool

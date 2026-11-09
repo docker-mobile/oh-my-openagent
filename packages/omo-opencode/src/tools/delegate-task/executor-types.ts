@@ -14,6 +14,7 @@ export interface ExecutorContext {
   agentOverrides?: AgentOverrides
   sisyphusAgentConfig?: SisyphusAgentConfig
   claudeCodeAgentsEnabled?: boolean
+  readonly disabledProviders?: readonly string[]
   modelFallbackControllerAccessor?: ModelFallbackControllerAccessor
   onSyncSessionCreated?: (event: { sessionID: string; parentID: string; title: string }) => Promise<void>
   syncPollTimeoutMs?: number

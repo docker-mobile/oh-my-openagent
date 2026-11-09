@@ -72,6 +72,7 @@ export async function resolveSubagentModel(
       categoryDefaultModel: matchedAgentModelStr,
       fallbackChain: agentRequirement?.fallbackChain,
       availableModels,
+      disabledProviders: executorCtx.disabledProviders,
       systemDefaultModel: undefined,
     })
 
