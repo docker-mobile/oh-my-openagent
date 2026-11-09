@@ -1,3 +1,4 @@
+import { SessionStatusPoll } from "../../shared/session-status-poll"
 import { join } from "node:path"
 import type { PluginInput } from "@opencode-ai/plugin"
 import type { BackgroundTaskConfig, TmuxConfig } from "../../config/schema"
@@ -295,6 +296,7 @@ export class BackgroundManager {
   private directory: string
   private pollingInterval?: ReturnType<typeof setInterval>
   private pollingInFlight = false
+  private readonly sessionStatusPoll = new SessionStatusPoll()
   private concurrencyManager: ConcurrencyManager
   private shutdownTriggered = false
   private config?: BackgroundTaskConfig
@@ -3536,7 +3538,7 @@ The task was re-queued on a fallback model after a retryable failure.
   }
 
   private async pollRunningTasks(): Promise<void> {
-    if (this.pollingInFlight) return
+    if (this.pollingInFlight || this.shutdownTriggered) return
     this.pollingInFlight = true
     try {
       let allStatuses: SessionStatusMap | undefined
@@ -3550,8 +3552,8 @@ The task was re-queued on a fallback model after a retryable failure.
         }
       } else {
         try {
-          const statusResult = await this.client.session.status()
-          allStatuses = normalizeSDKResponse(statusResult, {})
+          const statusResult = await this.sessionStatusPoll.read((options) => this.client.session.status(options))
+          allStatuses = normalizeSDKResponse(statusResult, {}, { preferResponseOnMissingData: true })
         } catch (error) {
           if (!this.loggedSessionStatusUnavailable) {
             log("[background-agent] Error polling session statuses:", { error })
@@ -3559,6 +3561,8 @@ The task was re-queued on a fallback model after a retryable failure.
           }
         }
       }
+
+      if (this.shutdownTriggered) return
 
       this.pruneStaleTasksAndNotifications(allStatuses)
 
@@ -3682,6 +3686,7 @@ The task was re-queued on a fallback model after a retryable failure.
   async shutdown(): Promise<void> {
     if (this.shutdownTriggered) return
     this.shutdownTriggered = true
+    this.sessionStatusPoll.cancel()
     log("[background-agent] Shutting down BackgroundManager")
     this.stopPolling()
     const trackedSessionIDs = new Set<string>()
