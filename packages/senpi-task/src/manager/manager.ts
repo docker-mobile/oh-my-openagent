@@ -14,11 +14,12 @@ import type { RpcChildHandle, RpcRunnerSpec } from "../runners/types"
 import { createTaskRecord, isSpawnSpecV1, nextRunEpoch, parseTaskId, syncTaskIdFloor } from "../state"
 import { TaskIdSpaceExhaustedError } from "../state/id"
 import type { AwaitingInputReason, EffectiveModelRecord, LiveRunStats, ResolvedModelRecord, TaskRecord, TaskRunStats } from "../state"
-import { reopenSelfResumedTurn, type SelfResumedTurnPorts } from "./self-resumed-turn"
+import { createSelfResumedListeners, reopenSelfResumedTurn, type SelfResumedTurnPorts } from "./self-resumed-turn"
 import { createSteeringEngine } from "../steering"
 import type { CancelOptions, CancelOutcome, DestructionPort, InterruptOutcome, RedispatchOutcome, SendInput, SendOutcome, SteeringEngine, SteeringPort } from "../steering"
 import { discardManagedHandle, releaseOnDispose, releaseSupersededHandle, type ManagedChildHandle, type ManagedChildListener } from "./child-handle"
 import { TaskConcurrency } from "./concurrency"
+import type { TaskLeaseHolderView } from "./manager-contract"
 import { failOwnedRun, launchRunOf, ownsRun } from "./launch-fence"
 import { runtimeFallbackCandidates } from "./credential-failure"
 import { chainWithoutRefusingProvider, startCredentialsRefusal } from "./start-credentials-refusal"
@@ -186,6 +187,7 @@ class TaskManagerImpl implements TaskManager {
   // Callers can subscribe before a queued task owns a handle. Each entry is attached exactly once
   // when #launch promotes it, and its returned cleanup owns both pending and live subscriptions.
   readonly #childSubscribers = new Map<string, Map<ManagedChildListener, () => void>>()
+  readonly #selfResumed = createSelfResumedListeners()
   // Release guard: latest released run_epoch per task_id. A revived task (higher epoch) can still
   // release its LATER occupancy, while a stale re-release of an already-released epoch is a no-op.
   // Keyed by task_id (not `${taskId}:${epoch}`) so growth is bounded by live tasks and forget()
@@ -862,6 +864,20 @@ class TaskManagerImpl implements TaskManager {
 
   get concurrency(): TaskConcurrency { return this.#concurrency }
 
+  leaseHolders(): readonly TaskLeaseHolderView[] {
+    return this.#concurrency.leaseHolders().map((holder) => {
+      const record = this.#tryLoad(holder.taskId) ?? undefined
+      return {
+        task_id: holder.taskId,
+        run_epoch: holder.runEpoch,
+        model: holder.model,
+        phase: holder.phase,
+        ...(record === undefined ? {} : { status: record.status, residency_state: record.residency_state, record_run_epoch: record.notification.run_epoch }),
+        live: this.#live.has(holder.taskId),
+      }
+    })
+  }
+
   withdrawAdmissions(taskIds: readonly string[]): void { this.#heldAdmissions.withdraw(taskIds) }
 
   async resumeHeldTask(participant: PauseParticipant, credential: ResumeCredential): Promise<HeldAdmissionResult> {
@@ -933,6 +949,8 @@ class TaskManagerImpl implements TaskManager {
     })
     return () => subscribers.get(listener)?.()
   }
+
+  subscribeSelfResumed(taskId: string, listener: () => void): () => void { return this.#selfResumed.subscribe(taskId, listener) }
 
   runStatsSnapshot(taskId: string): TaskRunStats | undefined { return this.#runStats.get(taskId)?.snapshot(this.#now()) }
   // The in-flight stats tagged with the run they measure; undefined when no tracker or its run is unknown.
@@ -1419,6 +1437,7 @@ class TaskManagerImpl implements TaskManager {
       waitForTerminal: (taskId) => this.waitFor(taskId),
       reserveForRevive: (taskId) => this.#reserveForRevive(taskId),
       trackOutcome: (taskId, handle, model, epoch) => this.#outcome.trackOutcome(taskId, handle, model, epoch),
+      announce: (taskId) => this.#selfResumed.announce(taskId),
     }
   }
 
@@ -1766,12 +1785,17 @@ class TaskManagerImpl implements TaskManager {
 
   // A revived child is running again and SHOULD occupy a slot; re-acquire it and re-arm outcome
   // tracking under the new run_epoch so the eventual second completion releases the slot cleanly.
+  // A run that ended without its outcome settling (the host reconciled its turn as interrupted) still
+  // holds its lease, and re-arming tracking for the next epoch orphans it: nothing would ever release
+  // it, so every reconnect-and-resume leaked one slot until the limiter stayed full (#11677). That
+  // lease moves to the new epoch instead, the way a re-dispatch keeps its slot.
   #reserveForRevive(taskId: string): { readonly ok: false } | { readonly ok: true; commit(): void; release(): void } {
     const live = this.#live.get(taskId)
     const record = this.#tryLoad(taskId)
     if (live === undefined || record === null || record === undefined) return { ok: false }
     const epoch = nextRunEpoch(record)
-    if (!this.#concurrency.tryAcquire(live.model, taskId, epoch)) return { ok: false }
+    if (!this.#concurrency.transferLease(taskId, record.notification.run_epoch, epoch)
+      && !this.#concurrency.tryAcquire(live.model, taskId, epoch)) return { ok: false }
     let released = false
     const release = (): void => {
       if (released) return

@@ -27,7 +27,7 @@ Entry `index.ts` orchestrates a staged initialization across the directories bel
 
 | File | Purpose |
 |------|---------|
-| `index.ts` | Plugin entry; default-exports `pluginModule: PluginModule` with `{ id, server }` |
+| `index.ts` | Plugin entry; default-exports a dual loader definition with `{ id, setup, server }` |
 | `plugin-config.ts` | JSONC parse, multi-level merge (user + walked project), Zod v4 validation, migration |
 | `plugin-state.ts` | `createModelCacheState()`: model resolution cache shared across handlers |
 | `plugin-interface.ts` | 12 OpenCode hook handlers wired into `Hooks` (a further 2, `experimental.session.compacting` + `experimental.compaction.autocontinue`, are wired in `src/testing/create-plugin-module.ts`, for 14 total) |
@@ -36,18 +36,19 @@ Entry `index.ts` orchestrates a staged initialization across the directories bel
 | `create-hooks.ts` | 5-tier composition: `createCoreHooks() + createContinuationHooks() + createSkillHooks()` |
 | `create-runtime-tmux-config.ts` | `isTmuxIntegrationEnabled()` + `createRuntimeTmuxConfig()` |
 
-## INITIALIZATION (7 STEPS)
+## INITIALIZATION (8 STEPS)
 
 ```
 serverPlugin(input, options)
-  1. installAgentSortShim()        # patches Array.prototype.{toSorted,sort} for canonical agent ordering
-  2. initConfigContext()           # detects opencode-vs-openagent config layout
-  3. detectExternalSkillPlugin()   # warn if conflicting plugin loaded
-  4. injectServerAuthIntoClient()  # wire auth headers into shared SDK client
-  5. loadPluginConfig()            # walk project + user JSONC → Zod safeParse → migrate
-  6a. initializeOpenClaw()         # if openclaw config present (start reply-listener daemon)
-  6b. checkTeamModeDependencies()  # if team_mode.enabled (verify git, tmux, ensure ~/.omo/teams/)
-  7. createManagers/Tools/Hooks/PluginInterface
+  1. raiseProcessListenersCap()    # raise process listener cap once (skip Node unlimited 0)
+  2. installAgentSortShim()        # patches Array.prototype.{toSorted,sort} for canonical agent ordering
+  3. initConfigContext()           # detects opencode-vs-openagent config layout
+  4. detectExternalSkillPlugin()   # warn if conflicting plugin loaded
+  5. injectServerAuthIntoClient()  # wire auth headers into shared SDK client
+  6. loadPluginConfig()            # walk project + user JSONC → Zod safeParse → migrate
+  7a. initializeOpenClaw()         # if openclaw config present (start reply-listener daemon)
+  7b. checkTeamModeDependencies()  # if team_mode.enabled (verify git, tmux, ensure ~/.omo/teams/)
+  8. createManagers/Tools/Hooks/PluginInterface
 ```
 
 ## CONFIG LOADING (Phase pipeline)

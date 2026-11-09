@@ -76,7 +76,7 @@ oh-my-opencode/                      # workspace root (no root src/ — it moved
 ├── packages/                        # 45 sibling packages across Core/MCP/Skills/Adapters/Platform/Web. See packages/AGENTS.md
 │   ├── omo-opencode/                # ★ THE OpenCode plugin adapter (formerly root src/). Build entry: src/index.ts
 │   │   ├── src/                     # plugin source and OpenCode-facing adapter shims. Full breakdown → packages/omo-opencode/src/AGENTS.md
-│   │       ├── index.ts             # Plugin entry; thin wrapper re-exporting createPluginModule() from src/testing/
+│   │       ├── index.ts             # Plugin entry; thin wrapper exporting dual V2 setup + V1 server module from src/testing/
 │   │       ├── plugin-interface.ts  # 12 OpenCode hook handlers (+2 wired in testing/create-plugin-module.ts)
 │   │       ├── create-{managers,tools,hooks}.ts  # 4 managers / ToolRegistry / 5-tier hook composition
 │   │       ├── agents/              # 11 agents, 10 createXXXAgent factories (Prometheus special-cased via plugin-handlers/prometheus-agent-config-builder.ts)
@@ -118,6 +118,7 @@ oh-my-opencode/                      # workspace root (no root src/ — it moved
 
 ```
 pluginModule.server(input, options)   # serverPlugin() in packages/omo-opencode/src/testing/create-plugin-module.ts
+  ├─→ raiseProcessListenersCap()      # raise process listener cap once (skip Node unlimited 0)
   ├─→ installAgentSortShim()          # patches Array.prototype.{toSorted,sort} for canonical agent ordering
   ├─→ initConfigContext()             # opencode-vs-openagent layout flag
   ├─→ logLegacyPluginStartupWarning() # warn if loaded under the legacy oh-my-opencode entry
@@ -335,6 +336,12 @@ Digest-verified centrality (refs unmeasured unless noted):
 - Rule blocks in AGENTS.md / SKILL.md use emphatic all-caps imperatives deliberately (QA mandate, merge policy, prompt gate); they are binding contracts, not style noise.
 - Skill precedence is numeric, not directory order: `opencode-project(6) > project(5) > opencode(4) > user(3) > config(2) > builtin=shared(1)` across 7 discover* sources.
 
+## CI GUARDRAILS (2026-08-27 — prevent recurring CI failures)
+
+- **Markdown local-link audit must ignore machine output:** `packages/omo-opencode/src/shared/markdown-link-audit.test.ts` `collectMarkdownFiles()` must filter `git ls-files` to exclude `.omo/` and `.opencode/` (evidence dirs contain `/home/...` absolute paths that trip `maintainer-local path` audit). If you add new machine-output dirs, extend the filter. Fix: `8e0d7f30b fix(test): exclude .omo and .opencode from markdown link audit` resolved `ubuntu 1/2 failure after 3m` (8981 pass 1 fail).
+- **Senpi plugin bundle must be refreshed on Senpi source change:** Any edit under `packages/omo-senpi/`, `packages/senpi-task/`, or `packages/omo-codex/plugin/components/codegraph` must be followed by `bun install && bun run build:senpi-plugin:stage` and commit of `packages/omo-senpi/plugin/extensions/*.js` + `packages/omo-codex/plugin/components/codegraph/dist/*` + `packages/omo-codex/scripts/install-dist/*`. CI job `Verify committed Senpi plugin bundle is current` fails in 39s if stale — this was `senpi-compatibility (ubuntu-latest) failure after 39s` for `7359/7364` fixed by `9bd60f089` / `1e8575f7a`.
+- **Sharded ubuntu CI:** `origin/dev c6b1d190` splits `test (ubuntu-latest)` into `1/2` + `2/2`. Old singular `CANCELLED after 6m` is gone — required checks are now `ubuntu 1/2` + `2/2`. When you sync `origin/dev` into PRs, push the new heads so GitHub re-queues sharded jobs.
+
 ## ANTI-PATTERNS (BLOCKING)
 
 - Never `as any`, `@ts-ignore`, `@ts-expect-error`.
@@ -355,6 +362,7 @@ Digest-verified centrality (refs unmeasured unless noted):
 - **Prompt/prose contract tests are forbidden.** Never assert authored agent prompt, `SKILL.md`, rule, `AGENTS.md`, or markdown-instruction wording, headings, section order, fragments, snapshots, negative past wording, or authored text length. Test only machine-consumed fields/sentinels/tool names, byte or shipped-copy equality between real artifacts, or observable runtime behavior such as parsing, routing, dispatch, state, security, and dynamic input propagation. Pure prose has no automated-test seam; review and QA-by-read are the correct verification.
 - Never dump business logic into `index.ts` — barrel exports only.
 - Prometheus may ONLY edit `.md` files (enforced by `prometheus-md-only` hook); FORBIDDEN paths: `packages/*/src/`, `package.json`, config files.
+- **Corollary of the QA mandate: AI authorship is disclosed, never laundered.** An agent may write any part of a patch, but the PR template's `## AI Assistance` section records it. `pair-programming` is the common case and means the human drove, corrected, and owns the result; `fully AI-authored` still needs a human who read the diff and can answer for it. Evidence written by the agent that produced the change is not evidence: the human runs the surface and pastes what it actually printed. The CLA signature stays personal to the human contributor. See [CONTRIBUTING.md](CONTRIBUTING.md) `AI-generated commits`.
 
 ## COMMANDS
 
@@ -398,6 +406,15 @@ Cross-harness, one-command dev setup. The **single source of truth** is [`script
 **Credentials and isolation.** [`.env.example`](.env.example) is the committed injection point: copy it to `.env` (gitignored) ONCE and fill in keys (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, optionally `OPENCODE_SERVER_PASSWORD`). `setup.sh` and `qa-sandbox.sh` auto-source `.env`, so credentials are set once per machine and never prompted again. For QA, `source` [`script/agent/qa-sandbox.sh`](script/agent/qa-sandbox.sh): it exports an isolated, throwaway environment (its own `XDG_DATA_HOME`/`XDG_CONFIG_HOME`/`XDG_CACHE_HOME`/`XDG_STATE_HOME` and a fresh `CODEX_HOME` under a `mktemp` dir, plus `OPENCODE_DISABLE_AUTOUPDATE`/`OPENCODE_DISABLE_MODELS_FETCH`) so QA NEVER reads or writes the host's real `~/.config/opencode` or `~/.codex`. Mirrors the `opencode-qa` and `codex-qa` skill conventions. For containerized environments, [`.devcontainer/README.md`](.devcontainer/README.md) documents how to inject provider credentials and your `~/.codex`, `~/.claude`, and `~/.config/opencode` config into the container.
 
 **MAINTENANCE - KEEP THIS IN SYNC.** `script/agent/setup.sh`, `script/agent/cleanup.sh`, and harness launchers such as `script/agent/cleanup-hook.sh` are the contract. Whenever a setup dependency or configuration is added, breaks, or changes (a new build step, a pinned tool version in the Dockerfile, a new env var or credential, a new harness wiring file), you MUST, in the SAME change, update: this section; the matching "Development Environment" / "Credentials & Isolation" sections in [`CONTRIBUTING.md`](CONTRIBUTING.md); [`.devcontainer/README.md`](.devcontainer/README.md) if container config injection changed; and the matching skill (`opencode-qa` for the OpenCode side, `codex-qa` for the Codex side) whose isolation conventions `qa-sandbox.sh` mirrors. Keep `script/agent-env.test.ts`, `script/agent-harness-wiring.test.ts`, and `script/agents-md-dev-env.test.ts` green. `CLAUDE.md` is a symlink to this file, so the Claude side stays in sync automatically. The scripts, the docs, and the skills must never drift out of sync.
+
+**Optional LSP runtime budget.** Set `OMO_LSP_DIAGNOSTICS_FRESHNESS_TIMEOUT_MS`
+before starting the harness or shared daemon when a slow language server needs
+more time to publish current diagnostics. It accepts positive integer
+milliseconds up to 2,147,483,647; unset or invalid values retain 3,000 ms.
+Restart an existing daemon after changing it. This is not a credential or a
+replacement for HOME/XDG/`CODEX_HOME`/agent-dir isolation: set it in the actual
+isolated target process and verify child forwarding instead of assuming a host
+export reaches it. See the [LSP runtime guidance](packages/lsp-tools-mcp/README.md).
 
 ## CI/CD
 

@@ -22,6 +22,7 @@ import type { BackgroundManager } from "../features/background-agent"
 type OpencodeClient = PluginInput["client"]
 
 export { createCallOmoAgent } from "./call-omo-agent"
+export { createDshAgentTool } from "./dsh-agent"
 export { createLookAt } from "./look-at"
 export { createMonitorTools } from "./monitor"
 export { createDelegateTask } from "./delegate-task"
@@ -33,6 +34,7 @@ export {
 } from "./task"
 export { createHashlineEditTool } from "./hashline-edit"
 export { createTeamSendMessageTool } from "../features/team-mode/tools/messaging"
+export { createTeamReadMessagesTool } from "../features/team-mode/tools/read-messages"
 
 export function createBackgroundTools(manager: BackgroundManager, client: OpencodeClient): Record<string, ToolDefinition> {
   const outputManager: BackgroundOutputManager = manager

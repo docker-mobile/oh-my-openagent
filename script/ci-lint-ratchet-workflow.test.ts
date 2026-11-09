@@ -13,17 +13,21 @@ function record(value: unknown): Record<string, unknown> {
   return value;
 }
 
-test("lint ratchet is an independent required-check candidate on every dev PR and merge group", () => {
+test("lint ratchet is an independent required-check candidate on every merge group and every gated dev PR (#11868)", () => {
   const workflow = record(load(readFileSync(new URL("../.github/workflows/ci.yml", import.meta.url), "utf8")));
   const triggers = record(workflow.on);
-  expect(record(triggers.pull_request).branches).toContain("dev");
+  // #11743: no base-branch filter, so CI also runs for stacked PRs based on another PR branch;
+  // a filter, if one comes back, must still include dev.
+  const branches = record(triggers.pull_request).branches;
+  if (branches !== undefined) expect(branches).toContain("dev");
+  expect(record(triggers.pull_request)["branches-ignore"]).toBeUndefined();
   expect(record(triggers.pull_request).paths).toBeUndefined();
   expect(record(triggers.pull_request)["paths-ignore"]).toBeUndefined();
   expect(record(triggers.merge_group).types).toContain("checks_requested");
 
   const job = record(record(workflow.jobs)["lint-ratchet"]);
   expect(job.name).toBe("Lint ratchet");
-  expect(job.if).toBeUndefined();
+  expect(job.if).toBe(record(record(workflow.jobs)["ci-mode"]).if);
   expect(job.needs).toBeUndefined();
   expect(job["continue-on-error"]).toBeUndefined();
   if (!Array.isArray(job.steps)) throw new Error("ratchet job must have steps");

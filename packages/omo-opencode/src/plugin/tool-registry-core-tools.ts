@@ -13,7 +13,7 @@ import { createGoalTools } from "../hooks/goal/tools"
 import * as openclawRuntimeDispatch from "../openclaw/runtime-dispatch"
 import { log } from "../shared"
 import { getSisyphusJuniorModelOverride } from "./tool-registry-team-tools"
-import { createNativeSkills, getPluginInputNativeSkills } from "./native-skills"
+import { createNativeSkills, createUnionNativeSkills, getPluginInputNativeSkills } from "./native-skills"
 import { createSkillContext } from "./skill-context"
 import { createRuntimeSkillsResolver, readRuntimeHostSkills } from "./runtime-skill-resolver"
 
@@ -26,6 +26,7 @@ export function createCoreTools(args: {
   readonly factories: ToolRegistryFactories
 }): Record<string, ToolDefinition> {
   const { ctx, pluginConfig, managers, skillContext, availableCategories, factories } = args
+  const prometheusMdOnlyDisabled = (pluginConfig.disabled_hooks ?? []).includes("prometheus-md-only")
   const backgroundTools = factories.createBackgroundTools(managers.backgroundManager, ctx.client)
   const callOmoAgent = factories.createCallOmoAgent(
     ctx,
@@ -34,14 +35,21 @@ export function createCoreTools(args: {
     pluginConfig.agents,
     pluginConfig.categories,
     managers.modelFallbackControllerAccessor,
+    prometheusMdOnlyDisabled,
   )
   const isMultimodalLookerEnabled = !(pluginConfig.disabled_agents ?? []).some(
     (agent) => agent.toLowerCase() === "multimodal-looker",
   )
-  const nativeSkills = getPluginInputNativeSkills(ctx) ?? createNativeSkills({
-    client: ctx.client,
-    directory: ctx.directory,
-  })
+  // Union instead of prefer-then-skip: a host-provided accessor may omit
+  // sibling-plugin skills (#4250) and our /skill fetch can fail on older
+  // hosts, so host-discovered skills stay loadable while either source works.
+  const nativeSkills = createUnionNativeSkills(
+    getPluginInputNativeSkills(ctx),
+    createNativeSkills({
+      client: ctx.client,
+      directory: ctx.directory,
+    }),
+  )
   const getSessionIDForMcp = (): string | undefined => getMainSessionID()
   const getLoadedSkills = createRuntimeSkillsResolver({
     baseSkills: skillContext.mergedSkills,
@@ -73,6 +81,7 @@ export function createCoreTools(args: {
     syncPollTimeoutMs: pluginConfig.background_task?.syncPollTimeoutMs,
     taskCleanupDelayMs: pluginConfig.background_task?.taskCleanupDelayMs,
     modelFallbackControllerAccessor: managers.modelFallbackControllerAccessor,
+    planningWarningInjectionDisabled: prometheusMdOnlyDisabled,
     onSyncSessionCreated: async (event) => {
       log("[index] onSyncSessionCreated callback", {
         sessionID: event.sessionID,

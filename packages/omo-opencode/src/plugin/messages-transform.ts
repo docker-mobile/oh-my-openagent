@@ -17,10 +17,20 @@ const ASSISTANT_PREFILL_UNSUPPORTED_PROVIDERS = new Set([
   "opencode-zen-proxy",
   "vercel",
 ])
-const ASSISTANT_PREFILL_UNSUPPORTED_MODEL_PREFIXES = [
-  "claude-opus-4",
-  "claude-sonnet-4-6",
-  "claude-mythos",
+type AssistantPrefillUnsupportedModelFamily = {
+  readonly family: string
+  readonly minMajor?: number
+  readonly minMinor?: number
+}
+
+// Anthropic disabled assistant prefill per model family starting at these
+// release floors (Opus 4+, Sonnet 4.6+; Mythos never supported it). Numeric
+// floors instead of exact id prefixes so future majors (claude-opus-6, ...)
+// stay covered instead of silently skipping the recovery turn.
+const ASSISTANT_PREFILL_UNSUPPORTED_MODEL_FAMILIES: readonly AssistantPrefillUnsupportedModelFamily[] = [
+  { family: "claude-opus", minMajor: 4 },
+  { family: "claude-sonnet", minMajor: 4, minMinor: 6 },
+  { family: "claude-mythos" },
 ]
 
 type MessageWithParts = {
@@ -142,6 +152,53 @@ function providerCanExposeUnsupportedAssistantPrefill(providerID: string, modelI
     hasAnthropicModelNamespace(modelID)
 }
 
+function readAssistantPrefillModelVersion(
+  modelID: string,
+  familyName: string,
+): number[] | undefined {
+  const remainder = modelID.slice(familyName.length + 1)
+  if (remainder.length === 0) {
+    return undefined
+  }
+
+  const version: number[] = []
+  for (const token of remainder.split("-")) {
+    // Stop at word suffixes (-fast, -thinking) and at dated snapshot ids
+    // (-20250514): only 1-2 digit tokens are release version components.
+    if (!/^\d{1,2}$/.test(token)) {
+      break
+    }
+    version.push(Number(token))
+  }
+
+  return version
+}
+
+function matchesAssistantPrefillUnsupportedFamily(
+  modelID: string,
+  family: AssistantPrefillUnsupportedModelFamily,
+): boolean {
+  if (modelID === family.family) {
+    return family.minMajor === undefined
+  }
+  if (!modelID.startsWith(`${family.family}-`)) {
+    return false
+  }
+
+  const version = readAssistantPrefillModelVersion(modelID, family.family)
+  if (!version || version.length === 0) {
+    return family.minMajor === undefined
+  }
+  if (family.minMajor === undefined || version[0] > family.minMajor) {
+    return true
+  }
+  if (version[0] < family.minMajor) {
+    return false
+  }
+
+  return family.minMinor === undefined || (version[1] ?? 0) >= family.minMinor
+}
+
 function shouldRepairAssistantPrefillForModel(model: ModelIdentifier | undefined): boolean {
   if (!model) {
     return false
@@ -153,7 +210,8 @@ function shouldRepairAssistantPrefillForModel(model: ModelIdentifier | undefined
   }
 
   const modelID = normalizeAssistantPrefillModelID(model.modelID)
-  return ASSISTANT_PREFILL_UNSUPPORTED_MODEL_PREFIXES.some((prefix) => modelID.startsWith(prefix))
+  return ASSISTANT_PREFILL_UNSUPPORTED_MODEL_FAMILIES.some((family) =>
+    matchesAssistantPrefillUnsupportedFamily(modelID, family))
 }
 
 function isCompactionContinuationPart(part: unknown): boolean {
@@ -167,6 +225,36 @@ function isCompactionContinuationPart(part: unknown): boolean {
 
 function hasInternalContinuationTrigger(messages: MessageWithParts[]): boolean {
   return findLastUserTurn(messages)?.parts.some(isCompactionContinuationPart) === true
+}
+
+function isClientExecutedToolPart(part: Part): boolean {
+  if (part.type !== "tool") {
+    return false
+  }
+
+  const metadata: unknown = part.metadata
+  return !(isRecord(metadata) && metadata["providerExecuted"] === true)
+}
+
+// OpenCode sends an assistant message step by step (steps are split at step-start parts), and
+// every client-executed tool part in a step goes out as a tool_use plus a tool_result after it -
+// a pending or running one as an "interrupted" error result. When the last step that reaches the
+// wire carries such a part, the request already ends on a tool result, which is a user turn, so
+// there is no assistant prefill to repair. Appending a recovery turn there would only push text
+// next to the tool result, and that text moves on the next round, rewriting earlier history.
+function assistantTailEndsOnToolResult(message: MessageWithParts): boolean {
+  const parts = message.parts
+  const lastWirePartIndex = parts.findLastIndex((part) =>
+    part.type === "text" || part.type === "reasoning" || part.type === "tool"
+  )
+  if (lastWirePartIndex < 0) {
+    return false
+  }
+
+  const lastStepStartIndex = parts.findLastIndex((part, index) =>
+    index < lastWirePartIndex && part.type === "step-start"
+  )
+  return parts.slice(lastStepStartIndex + 1, lastWirePartIndex + 1).some(isClientExecutedToolPart)
 }
 
 function createAssistantPrefillRecoveryMessage(
@@ -207,7 +295,7 @@ function createAssistantPrefillRecoveryMessage(
 
 function ensureUserTurnAfterAssistantTail(output: MessagesTransformOutput): void {
   const lastMessage = output.messages.at(-1)
-  if (!lastMessage || lastMessage.info.role !== "assistant") {
+  if (!lastMessage || lastMessage.info.role !== "assistant" || assistantTailEndsOnToolResult(lastMessage)) {
     return
   }
 

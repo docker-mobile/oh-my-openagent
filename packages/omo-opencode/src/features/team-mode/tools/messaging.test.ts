@@ -166,12 +166,20 @@ async function waitForEvent<T>(
   }
 }
 
+const dateNowSpies: Array<{ mockRestore(): void }> = []
+
+function freezeDateNow(getCurrentTime: () => number): void {
+  dateNowSpies.push(spyOn(Date, "now").mockImplementation(getCurrentTime))
+}
+
 afterEach(async () => {
+  for (const dateNowSpy of dateNowSpies.splice(0)) dateNowSpy.mockRestore()
   jest.useRealTimers()
   clearTeamSessionRegistry()
   SessionCategoryRegistry.clear()
   clearAllSessionPromptParams()
   releaseAllPromptAsyncReservationsForTesting()
+  jest.restoreAllMocks()
   _resetForTesting()
   await Promise.all(temporaryDirectories.splice(0).map(async (directoryPath) => {
     await rm(directoryPath, { recursive: true, force: true })
@@ -309,6 +317,27 @@ describe("createTeamSendMessageTool", () => {
     const inboxDir = getInboxDir(resolveBaseDir(fixture.config), fixture.teamRunId, "m2")
     const [messageFile] = (await readdir(inboxDir)).filter((entry) => entry.endsWith(".json"))
     const message = MessageSchema.parse(JSON.parse(await readFile(path.join(inboxDir, messageFile), "utf8")))
+    expect(message.from).toBe("m1")
+  })
+
+  test("resolves the 'lead' sentinel to the actual lead member and delivers there", async () => {
+    // given
+    const fixture = await createTeamFixture()
+
+    // when
+    const result = await fixture.tool.execute({
+      teamRunId: fixture.teamRunId,
+      to: "lead",
+      body: "hello lead",
+    }, fixture.toolContext(fixture.memberOneSessionId))
+    const parsedResult = parseToolResult(result)
+
+    // then
+    expect(parsedResult.deliveredTo).toEqual(["team-lead"])
+    const inboxDir = getInboxDir(resolveBaseDir(fixture.config), fixture.teamRunId, "team-lead")
+    const [messageFile] = (await readdir(inboxDir)).filter((entry) => entry.endsWith(".json"))
+    const message = MessageSchema.parse(JSON.parse(await readFile(path.join(inboxDir, messageFile), "utf8")))
+    expect(message.to).toBe("team-lead")
     expect(message.from).toBe("m1")
   })
 
@@ -602,7 +631,7 @@ describe("createTeamSendMessageTool", () => {
     const fixture = await createTeamFixture()
     const fallbackWakeDispatched = createDeferred<void>()
     let currentTime = Date.now()
-    const dateNowSpy = spyOn(Date, "now").mockImplementation(() => currentTime)
+    freezeDateNow(() => currentTime)
     let promptCalls = 0
     const client = {
       session: {
@@ -614,44 +643,44 @@ describe("createTeamSendMessageTool", () => {
     }
     const liveTool = createTeamSendMessageTool(fixture.config, client)
 
-    try {
-      await liveTool.execute({
-        teamRunId: fixture.teamRunId,
-        to: "m2",
-        body: "live ping",
-      }, fixture.toolContext(fixture.memberOneSessionId))
-      await liveTool.execute({
-        teamRunId: fixture.teamRunId,
-        to: "m2",
-        body: "waiting ping",
-      }, fixture.toolContext(fixture.memberOneSessionId))
+    await liveTool.execute({
+      teamRunId: fixture.teamRunId,
+      to: "m2",
+      body: "live ping",
+    }, fixture.toolContext(fixture.memberOneSessionId))
+    await liveTool.execute({
+      teamRunId: fixture.teamRunId,
+      to: "m2",
+      body: "waiting ping",
+    }, fixture.toolContext(fixture.memberOneSessionId))
 
-      expect(promptCalls).toBe(1)
-      const unread = await listUnreadMessages(fixture.teamRunId, "m2", fixture.config)
-      expect(unread.map((message) => message.body)).toEqual(["waiting ping"])
+    expect(promptCalls).toBe(1)
+    const unread = await listUnreadMessages(fixture.teamRunId, "m2", fixture.config)
+    expect(unread.map((message) => message.body)).toEqual(["waiting ping"])
 
-      // when
-      currentTime += DEFAULT_PROMPT_ASYNC_POST_DISPATCH_HOLD_MS
-      await waitForEvent(fallbackWakeDispatched.promise, "pending-delivery fallback mailbox wake")
-      const injection = await pollAndBuildInjection(
-        fixture.memberTwoSessionId,
-        "m2",
-        fixture.teamRunId,
-        fixture.config,
-        "turn-after-pending-fallback-wake",
-      )
+    // when
+    currentTime += DEFAULT_PROMPT_ASYNC_POST_DISPATCH_HOLD_MS
+    await waitForEvent(fallbackWakeDispatched.promise, "pending-delivery fallback mailbox wake")
+    const injection = await pollAndBuildInjection(
+      fixture.memberTwoSessionId,
+      "m2",
+      fixture.teamRunId,
+      fixture.config,
+      "turn-after-pending-fallback-wake",
+    )
 
-      // then
-      expect(promptCalls).toBe(2)
-      expect(injection.injected).toBe(true)
-      expect(injection.content).toContain("waiting ping")
-    } finally {
-      dateNowSpy.mockRestore()
-    }
+    // then
+    expect(promptCalls).toBe(2)
+    expect(injection.injected).toBe(true)
+    expect(injection.content).toContain("waiting ping")
   })
 
   test("#given a queued fallback message was already injected #when the prompt gate clears #then the obsolete wake is cancelled", async () => {
     // given
+    // Keep the blocker reserved until the explicit gate release, regardless of
+    // filesystem/runner latency. Queue draining still uses real timers.
+    const currentTime = Date.now()
+    freezeDateNow(() => currentTime)
     const fixture = await createTeamFixture()
     const probeDispatched = createDeferred<void>()
     const promptTexts: string[] = []
@@ -717,6 +746,10 @@ describe("createTeamSendMessageTool", () => {
 
   test("#given a queued fallback message is pending acknowledgement #when the prompt gate clears #then the obsolete wake is cancelled", async () => {
     // given
+    // Keep the blocker reserved until the explicit gate release, regardless of
+    // filesystem/runner latency. Queue draining still uses real timers.
+    const currentTime = Date.now()
+    freezeDateNow(() => currentTime)
     const fixture = await createTeamFixture()
     const probeDispatched = createDeferred<void>()
     const promptTexts: string[] = []
@@ -847,6 +880,10 @@ describe("createTeamSendMessageTool", () => {
 
   test("#given a queued fallback recipient shut down #when the prompt gate clears #then the obsolete wake is cancelled", async () => {
     // given
+    // Keep the blocker reserved until the explicit gate release, regardless of
+    // filesystem/runner latency. Queue draining still uses real timers.
+    const currentTime = Date.now()
+    freezeDateNow(() => currentTime)
     const fixture = await createTeamFixture()
     const probeDispatched = createDeferred<void>()
     const promptTexts: string[] = []
@@ -911,6 +948,10 @@ describe("createTeamSendMessageTool", () => {
 
   test("#given a queued fallback team was deleted #when the prompt gate clears #then the obsolete wake is cancelled", async () => {
     // given
+    // Keep the blocker reserved until the explicit gate release, regardless of
+    // filesystem/runner latency. Queue draining still uses real timers.
+    const currentTime = Date.now()
+    freezeDateNow(() => currentTime)
     const fixture = await createTeamFixture()
     const probeDispatched = createDeferred<void>()
     const promptTexts: string[] = []

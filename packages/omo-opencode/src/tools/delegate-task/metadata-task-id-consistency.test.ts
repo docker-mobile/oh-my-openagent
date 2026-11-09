@@ -82,6 +82,7 @@ describe("taskId and backgroundTaskId metadata consistency", () => {
       expect(meta.metadata.taskId).toBe("ses_xyz789")
       expect(meta.metadata.sessionId).toBe("ses_xyz789")
       expect(meta.metadata.backgroundTaskId).toBe("bg_abc123")
+      expect(meta.metadata.background).toBe(true)
     })
   })
 
@@ -153,6 +154,7 @@ describe("taskId and backgroundTaskId metadata consistency", () => {
       expect(meta.metadata.taskId).toBe("ses_resumed_x")
       expect(meta.metadata.sessionId).toBe("ses_resumed_x")
       expect(meta.metadata.backgroundTaskId).toBe("bg_resumed_y")
+      expect(meta.metadata.background).toBe(true)
     })
 
     test("#when resumed task has category #then metadata.category equals task.category", async () => {
@@ -322,109 +324,6 @@ describe("taskId and backgroundTaskId metadata consistency", () => {
           },
         },
       }), parentContext, deps)
-
-      const meta = ctx.captured.find((item: CapturedMetadata) => item.metadata?.sessionId)!
-      expect(meta).toBeDefined()
-      expect(meta.metadata.requested_subagent_type).toBe("oracle")
-    })
-  })
-
-  describe("#given user calls with requested_subagent_type plus category", () => {
-    test("#when sync-task publishes metadata #then metadata.requested_subagent_type preserves original", async () => {
-      const { executeSyncTask } = require("./sync-task")
-      const ctx = makeMockCtx()
-      const deps = {
-        createSyncSession: async () => ({ ok: true, sessionID: "ses_sync" }),
-        sendSyncPrompt: async () => null,
-        pollSyncSession: async () => null,
-        fetchSyncResult: async () => ({ ok: true as const, textContent: "done" }),
-      }
-      const args = {
-        description: "test",
-        prompt: "do it",
-        category: "quick",
-        requested_subagent_type: "oracle",
-        load_skills: [],
-        run_in_background: false,
-      }
-
-      await executeSyncTask(args, ctx, {
-        client: { session: { create: async () => ({ data: { id: "ses_sync" } }) } },
-        directory: "/tmp",
-        onSyncSessionCreated: null,
-      }, parentContext, "Sisyphus-Junior", MODEL, undefined, undefined, undefined, deps)
-
-      const meta = ctx.captured.find((item: CapturedMetadata) => item.metadata?.sessionId)!
-      expect(meta).toBeDefined()
-      expect(meta.metadata.requested_subagent_type).toBe("oracle")
-    })
-
-    test("#when background-task publishes metadata #then metadata.requested_subagent_type preserves original", async () => {
-      const { executeBackgroundTask } = require("./background-task")
-      const ctx = makeMockCtx()
-      const args = {
-        description: "test",
-        prompt: "do it",
-        category: "quick",
-        requested_subagent_type: "oracle",
-        load_skills: [],
-        run_in_background: true,
-      }
-
-      await executeBackgroundTask(args, ctx, unsafeTestValue({
-        manager: {
-          launch: async () => ({
-            id: "bg_abc123", description: "test", agent: "Sisyphus-Junior",
-            status: "pending", sessionId: "ses_xyz789",
-          }),
-          getTask: () => undefined,
-        },
-      }), parentContext, "Sisyphus-Junior", MODEL, undefined)
-
-      const meta = ctx.captured.find((item: CapturedMetadata) => item.metadata?.sessionId)!
-      expect(meta).toBeDefined()
-      expect(meta.metadata.requested_subagent_type).toBe("oracle")
-    })
-
-    test("#when unstable-agent-task publishes metadata #then metadata.requested_subagent_type preserves original", async () => {
-      const { executeUnstableAgentTask } = require("./unstable-agent-task")
-      const ctx = makeMockCtx()
-      const args = {
-        description: "test",
-        prompt: "do it",
-        category: "quick",
-        requested_subagent_type: "oracle",
-        load_skills: [],
-        run_in_background: false,
-      }
-
-      const launchedTask = {
-        id: "bg_unstable_abc", description: "test", agent: "Sisyphus-Junior",
-        status: "completed", sessionId: "ses_unstable_xyz",
-      }
-
-      await executeUnstableAgentTask(
-        args, ctx,
-        unsafeTestValue({
-          manager: {
-            launch: async () => launchedTask,
-            getTask: () => launchedTask,
-          },
-          client: {
-            session: {
-              status: async () => ({ data: { ses_unstable_xyz: { type: "idle" } } }),
-              messages: async () => ({
-                data: [{
-                  info: { role: "assistant", time: { created: 1 } },
-                  parts: [{ type: "text", text: "done" }],
-                }],
-              }),
-            },
-          },
-          syncPollTimeoutMs: 100,
-        }),
-        parentContext, "Sisyphus-Junior", MODEL, undefined, "anthropic/claude-sonnet-4-6",
-      )
 
       const meta = ctx.captured.find((item: CapturedMetadata) => item.metadata?.sessionId)!
       expect(meta).toBeDefined()

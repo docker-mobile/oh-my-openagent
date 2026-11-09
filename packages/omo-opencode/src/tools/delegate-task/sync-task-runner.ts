@@ -28,7 +28,10 @@ type SyncTaskRunnerInput = {
   readonly systemContent: string | undefined
   readonly toastManager: TaskToastManager | undefined
   readonly modelInfo: ModelFallbackInfo | undefined
-  readonly registerSyncSession: (newSessionID: string) => Promise<void>
+  readonly registerSyncSession: (
+    newSessionID: string,
+    currentModel?: DelegatedModelConfig,
+  ) => Promise<void>
   readonly publishSyncMetadata: (
     currentSessionID: string,
     currentModel: DelegatedModelConfig | undefined,
@@ -112,6 +115,7 @@ export async function runSyncTaskLoop(input: SyncTaskRunnerInput): Promise<strin
       taskId,
       sisyphusAgentConfig,
       categoryModel: effectiveCategoryModel,
+      inheritedModel: parentContext.model,
     })
     if (promptError) {
       const promptResult = await retrySyncPromptWithFallbacks({
@@ -130,6 +134,7 @@ export async function runSyncTaskLoop(input: SyncTaskRunnerInput): Promise<strin
             taskId,
             sisyphusAgentConfig,
             categoryModel: fallbackModel,
+            inheritedModel: parentContext.model,
           })
         },
       })
@@ -166,6 +171,7 @@ export async function runSyncTaskLoop(input: SyncTaskRunnerInput): Promise<strin
             parentContext,
             startTime,
             textContent: recoveredResult.textContent,
+            endState: recoveredResult.endState,
           })
         }
       }
@@ -194,7 +200,7 @@ export async function runSyncTaskLoop(input: SyncTaskRunnerInput): Promise<strin
       activeSessionID = retrySessionResult.sessionID
       setSyncSessionID(activeSessionID)
       effectiveCategoryModel = nextFallbackModel
-      await registerSyncSession(activeSessionID)
+      await registerSyncSession(activeSessionID, effectiveCategoryModel)
       addRetryTaskToast({
         args,
         agentToUse,
@@ -222,6 +228,7 @@ export async function runSyncTaskLoop(input: SyncTaskRunnerInput): Promise<strin
       parentContext,
       startTime,
       textContent: result.textContent,
+      endState: result.endState,
     })
   }
 }

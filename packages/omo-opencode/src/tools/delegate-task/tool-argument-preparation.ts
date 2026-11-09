@@ -1,5 +1,6 @@
 import type { DelegateTaskArgs, ToolContextWithMetadata } from "./types"
 import { SISYPHUS_JUNIOR_AGENT } from "./sisyphus-junior-agent"
+import { normalizeContinuationTaskID } from "./task-id"
 import { log } from "../../shared/logger"
 
 export async function prepareDelegateTaskArgs(args: Record<string, unknown>, ctx: ToolContextWithMetadata): Promise<DelegateTaskArgs> {
@@ -9,10 +10,11 @@ export async function prepareDelegateTaskArgs(args: Record<string, unknown>, ctx
   let subagentType = originalSubagentType
 
   if (category && subagentType && subagentType !== SISYPHUS_JUNIOR_AGENT) {
-    log("[task] category provided - overriding subagent_type to sisyphus-junior", {
-      category,
-      subagent_type: subagentType,
-    })
+    throw new Error(
+      "task() received both category and subagent_type. " +
+      "Provide only ONE of them: category for task delegation (uses Sisyphus-Junior), " +
+      "or subagent_type for direct agent invocation."
+    )
   }
 
   if (category) {
@@ -81,7 +83,7 @@ export async function prepareDelegateTaskArgs(args: Record<string, unknown>, ctx
     ? loadSkills.filter((value): value is string => typeof value === "string")
     : []
 
-  const taskID = typeof args.task_id === "string" ? args.task_id : undefined
+  const taskID = normalizeContinuationTaskID(args.task_id)
   const command = typeof args.command === "string" ? args.command : undefined
 
 

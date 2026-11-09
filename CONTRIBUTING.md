@@ -25,6 +25,7 @@ First off, thanks for taking the time to contribute! This document provides guid
 - [QA Discipline](#qa-discipline)
 - [Pull Request Process](#pull-request-process)
   - [PR Checklist](#pr-checklist)
+- [AI-generated commits](#ai-generated-commits)
 - [Publishing](#publishing)
 - [Getting Help](#getting-help)
 
@@ -142,6 +143,13 @@ All harnesses delegate to these scripts:
 
 The single source of truth is the `script/agent/` dev-environment contract: `setup.sh`, `cleanup.sh`, and harness launchers such as `cleanup-hook.sh`. Maintenance means keeping those scripts, harness wiring files, and pinned Dockerfile versions in sync.
 
+For slow language servers, optionally export
+`OMO_LSP_DIAGNOSTICS_FRESHNESS_TIMEOUT_MS=6000` before launching the harness or
+shared daemon. Unset or invalid values keep the 3,000 ms default; valid values
+are positive integer milliseconds up to 2,147,483,647. Restart an existing
+daemon after changing it. The separate total request limit still applies; see
+the [LSP runtime guidance](packages/lsp-tools-mcp/README.md).
+
 ## Credentials & Isolation
 
 `.env.example` is the committed injection point. Copy it to `.env` (gitignored) once and fill in your keys:
@@ -151,6 +159,12 @@ The single source of truth is the `script/agent/` dev-environment contract: `set
 - `OPENCODE_SERVER_PASSWORD` (optional)
 
 Both `setup.sh` and `qa-sandbox.sh` auto-source `.env`, so credentials are set once per machine and never prompted again.
+
+The optional LSP freshness budget is runtime tuning, not a credential. Set it
+explicitly in the isolated process used for a custom-budget check; an export
+in the host shell does not prove that a Docker, MCP or daemon child received it.
+Keep the same isolated homes and local mock providers for both unset-default
+and configured-budget checks, and record the effective child value.
 
 For QA isolation, run:
 
@@ -365,6 +379,47 @@ Any change to `packages/omo-opencode` (the OpenCode side) must be QA'd with the 
 - [ ] QA evidence recorded under `.omo/evidence/` and summarized in the PR body, not committed (if harness-connected changes)
 - [ ] Updated documentation if needed (README, AGENTS.md)
 - [ ] No version changes in `package.json`
+- [ ] AI assistance disclosed in the PR template's `## AI Assistance` section (if any part of the change came from an agent)
+
+## AI-generated commits
+
+An agent can be part of how a change gets written in this repository. That is fine. What is not
+fine is a reviewer, or a downstream consumer, being unable to tell. This section says what we
+expect when an agent authored part or all of a change.
+
+**Disclose it.** Tick one box in the PR template's `## AI Assistance` section:
+
+- `none`: you wrote it yourself.
+- `pair-programming`: you drove the agent and reviewed, corrected, and own its output. This is the
+  common case.
+- `fully AI-authored`: an agent produced the change without hand-editing. Say what you ran.
+
+The `CLA Assistant` workflow reads that section and upserts the answer into
+`signatures/ai-attribution.json` on the `cla-signatures` branch, keyed by pull request number. A
+disclosure is informational: the `ai-attribution` check stays `neutral` when nothing was disclosed,
+so an unticked box never blocks a merge. A maintainer can make it mandatory by dispatching the
+workflow with `ai_disclosure_mode=required`, which is the lever to use if this section is not
+being followed.
+
+**Disclosure is not a substitute for review.** Ticking `fully AI-authored` says who typed, not
+whether the change is correct. For any agent-assisted change:
+
+- Evidence in the PR body must come from running the thing yourself. A passing report written by
+  the agent that produced the change is not evidence, and pasting it verbatim is worse than
+  nothing, because it launders an unverified claim into a checked box.
+- Say what the agent got wrong. A fully AI-authored diff with no described corrections usually
+  means nobody read it.
+- You answer for the change. The CLA signature is personal to you and does not transfer to, or
+  from, the tool that wrote the lines.
+
+**Get a second human on security-sensitive surfaces.** A change an agent produced that touches
+credential storage, file-path resolution from config, process launch, or the bundled CA trust
+store should be reviewed by someone other than its author, agent-assisted or not.
+
+**Commit messages.** The commit-style rules above apply unchanged. Do not name the model in the
+subject line, do not add an `Assisted-by:` or `Co-authored-by:` trailer naming a tool, and do not
+paste the agent's summary as the description. The template checkbox is where the attribution
+lives.
 
 ## Publishing
 

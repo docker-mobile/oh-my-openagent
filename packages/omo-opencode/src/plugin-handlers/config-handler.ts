@@ -2,6 +2,7 @@ import type { OhMyOpenCodeConfig } from "../config";
 import { applyRuntimeSkillSourceConfig } from "../features/opencode-runtime-skills"
 import { setAdditionalAllowedMcpEnvVars } from "../features/claude-code-mcp-loader";
 import { applyOpenGatewayProviderConfig } from "../features/opengateway-provider";
+import { applyZaiToolChoiceGuard } from "../features/zai-tool-choice-guard";
 import type { ModelCacheState } from "../plugin-state";
 import { log } from "../shared";
 import { AGENT_DISPLAY_NAMES, getAgentListDisplayName } from "../shared/agent-display-names";
@@ -17,6 +18,7 @@ import {
   clearRegisteredAgentNames,
   registerAgentName,
 } from "../features/claude-code-session-state";
+import { recordAppliedRegistry } from "../features/agent-registry-recovery";
 import { setDefaultAgentForSort } from "../shared/agent-sort-shim";
 import { getConfiguredDefaultAgent } from "./agent-config-assembly";
 import { openCodeShellTypeResolver } from "../shared/opencode-shell"
@@ -137,6 +139,7 @@ export function createConfigHandler(deps: ConfigHandlerDeps) {
 
     setAdditionalAllowedMcpEnvVars(pluginConfig.mcp_env_allowlist ?? [])
     applyOpenGatewayProviderConfig(config);
+    applyZaiToolChoiceGuard(config);
     applyProviderConfig({
       config,
       modelCacheState,
@@ -179,6 +182,8 @@ export function createConfigHandler(deps: ConfigHandlerDeps) {
             agents: cloneAgentConfig(agentResult),
           };
     }
+
+    recordAppliedRegistry(Object.keys(agentResult));
 
     applyToolConfig({ config, pluginConfig, agentResult });
     attachHiddenConfigKeyAliases(config, pluginConfig);

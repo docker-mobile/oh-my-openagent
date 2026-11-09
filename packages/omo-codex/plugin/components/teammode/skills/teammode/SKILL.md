@@ -50,6 +50,14 @@ Inspect your active tool list and select:
    communicate with, and observe plain workers, announce that exact mechanism and use it for
    non-overlapping scopes. Otherwise continue serially and report the capability limitation;
    never promise or imply plain subagents that this session cannot create.
+   When the session exposes `multi_agent_v1.*`, the missing V2 set is a per-session surface
+   choice, not a missing install: Codex picks the surface when the session starts, from the
+   active model's catalog `multi_agent_version`. Tell the user once that a NEW session gets
+   the V2 transport after that model's entry is pinned to `multi_agent_version = "v2"` in a
+   user-owned catalog that `model_catalog_json` names; Codex's fetched `models_cache.json`
+   is overwritten on refresh, so it is no place to pin. This session cannot switch. Do not
+   suggest `codex features enable multi_agent_v2`: on a v1 model LazyCodex's SessionStart
+   migration disables that flag again, and enabling it there fails turns (openai/codex#26753).
 
 Then, BEFORE running `init` (or instead of it in case 4), tell the user in one line what this
 environment provides and which route you picked:
@@ -140,13 +148,16 @@ teams, and a refused command never changes `team.json`.
 **MultiAgentV2 teams:**
 1. If a member needs an isolated worktree, run `worktree-add` BEFORE spawning it - flat
    `spawn_agent` has no cwd argument, so the path must ride in the bootstrap message.
-2. Spawn each member with flat `spawn_agent` using only the V2 schema fields:
+2. Spawn each member with flat `spawn_agent` using the exposed V2 schema fields:
    `task_name` is that member's `--task-name`, `message` is the bootstrap printed by
    `add-member` / `member-prompt`, and `fork_turns` is `"none"` (members read
    `guide.md` for context; full parent history is not their context model). Put any
-   role, priority, or task-specific routing instruction in `message`; V2 does not accept
-   `agent_type`, `model`, `reasoning_effort`, or `service_tier`, so members inherit the
-   session model.
+   priority or task-specific routing instruction in `message`. When the spawn schema
+   exposes `agent_type`, pass an exact installed LazyCodex role for the member's slice:
+   `lazycodex-worker-low`, `lazycodex-worker-medium`, or `lazycodex-worker-high` by
+   difficulty, or `explorer` for read-only search; never generic `worker` or `default`.
+   Omit `model`, `reasoning_effort`, and `service_tier` so the role TOML supplies them.
+   If `agent_type` is not exposed, stop and report incompatible role routing.
 3. `bind-agent --agent-path` with the canonical task name the spawn returned (normally
    `/root/<task_name>`); binding confirms the runtime identity matches the roster and records
    the member's cwd. Members are durable: they persist as subagent threads, survive idling,

@@ -2,7 +2,7 @@ import { join } from "node:path"
 
 import { getOpenCodeCacheDir } from "../../../shared"
 import type { AvailableModelsInfo, ModelResolutionInfo, OmoConfig } from "./model-resolution-types"
-import { formatModelWithVariant, getCategoryEffectiveVariant, getEffectiveVariant } from "./model-resolution-variant"
+import { formatModelWithVariant, getBuiltinVariant, getEffectiveVariant } from "./model-resolution-variant"
 
 function formatCapabilityResolutionLabel(mode: string | undefined): string {
   return mode ?? "unknown"
@@ -14,7 +14,7 @@ export function buildModelResolutionDetails(options: {
   config: OmoConfig
 }): string[] {
   const details: string[] = []
-  const cacheFile = join(getOpenCodeCacheDir(), "models.json")
+  const cacheFile = options.available.cachePath ?? join(getOpenCodeCacheDir(), "models.json")
 
   details.push("═══ Available Models (from cache) ═══")
   details.push("")
@@ -46,15 +46,23 @@ export function buildModelResolutionDetails(options: {
   details.push("")
   details.push("Categories:")
   for (const category of options.info.categories) {
+    if (category.disabled === true) {
+      details.push("  - " + category.name + ": disabled")
+      continue
+    }
+    if (category.runtimeError !== undefined) {
+      details.push(`  ✗ ${category.name}: runtime error: ${category.runtimeError.split("\n")[0]}`)
+      continue
+    }
     const marker = category.userOverride ? "●" : "○"
     const display = formatModelWithVariant(
       category.effectiveModel,
-      getCategoryEffectiveVariant(category.name, category.requirement, options.config)
+      category.runtimeResolved || category.userOverride ? category.userVariant : getBuiltinVariant(category.requirement)
     )
     details.push(`  ${marker} ${category.name}: ${display} [capabilities: ${formatCapabilityResolutionLabel(category.capabilityDiagnostics?.resolutionMode)}]`)
   }
   details.push("")
-  details.push("● = user override, ○ = provider fallback")
+  details.push("● = user override, ○ = provider fallback, ✗ = runtime error, - = disabled")
 
   return details
 }

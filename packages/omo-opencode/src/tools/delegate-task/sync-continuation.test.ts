@@ -920,6 +920,7 @@ describe("executeSyncContinuation - toast cleanup error paths", () => {
       task: false,
       call_omo_agent: false,
       question: false,
+      lsp_install_decision: true,
       write: false,
       edit: false,
       ...TEAM_TOOL_DENIALS,
@@ -995,6 +996,7 @@ describe("executeSyncContinuation - toast cleanup error paths", () => {
       task: false,
       call_omo_agent: false,
       question: false,
+      lsp_install_decision: true,
       write: false,
       edit: false,
       ...TEAM_TOOL_DENIALS,
@@ -1070,8 +1072,63 @@ describe("executeSyncContinuation - toast cleanup error paths", () => {
       task: true,
       call_omo_agent: true,
       question: false,
+      lsp_install_decision: true,
       ...TEAM_TOOL_DENIALS,
     })
+  })
+
+  test("disables call_omo_agent when continuing an Anthropic-backed session", async () => {
+    //#given
+    const promptAsyncCalls: Array<{ path: { id: string }; body: Record<string, unknown> }> = []
+    const mockClient = {
+      session: {
+        messages: async () => ({
+          data: [{
+            info: {
+              id: "msg_002",
+              role: "assistant",
+              time: { created: 2000 },
+              finish: "end_turn",
+              agent: "sisyphus",
+              model: { providerID: "anthropic", modelID: "claude-sonnet-4-6" },
+            },
+          }],
+        }),
+        prompt: async (input: { path: { id: string }; body: Record<string, unknown> }) => {
+          promptAsyncCalls.push(input)
+          return {}
+        },
+        promptAsync: async (input: { path: { id: string }; body: Record<string, unknown> }) => {
+          promptAsyncCalls.push(input)
+          return {}
+        },
+        status: async () => ({ data: { ses_test: { type: "idle" } } }),
+      },
+    }
+    const { executeSyncContinuation } = require("./sync-continuation")
+    const deps = {
+      pollSyncSession: async () => null,
+      fetchSyncResult: async () => ({ ok: true as const, textContent: "Result" }),
+    }
+    const args = {
+      task_id: "ses_test_12345678",
+      prompt: "continue working",
+      description: "resume Anthropic task",
+      load_skills: [],
+      run_in_background: false,
+    }
+
+    //#when
+    await executeSyncContinuation(
+      args,
+      { sessionID: "parent-session", callID: "call-123", metadata: () => {} },
+      { client: mockClient, syncPollTimeoutMs: 100 },
+      { sessionID: "parent-session", messageID: "parent-message" },
+      deps,
+    )
+
+    //#then
+    expect((promptAsyncCalls[0]?.body.tools as Record<string, boolean> | undefined)?.call_omo_agent).toBe(false)
   })
 
   test("attaches the session to the background manager for the poll window and detaches after handback", async () => {

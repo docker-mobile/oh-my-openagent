@@ -1043,6 +1043,13 @@ This key configures the OpenCode plugin inside `[opencode]`. The Senpi harness r
 
 `git_env_prefix` (default `"GIT_MASTER=1"`) is prepended to git commands; set it to `""` to disable.
 
+#### Attribution Overrides
+
+Commit attribution can also be controlled outside configuration files:
+
+- **Git config**: Run `git config --global omo.attribution false` or `git config omo.attribution false` to suppress footers and co-author trailers. `sisyphus.attribution` is also recognized.
+- **Environment variables**: Export `NO_AI_ATTRIBUTION=1`, `OMO_NO_COMMIT_ATTRIBUTION=1`, or `OMO_GIT_ATTRIBUTION=0`.
+
 ### Comment Checker
 
 Customize the comment quality checker:
@@ -1074,6 +1081,41 @@ Built-in MCPs (enabled by default): `websearch` (Exa AI), `context7` (library do
 ```json
 { "disabled_mcps": ["websearch", "context7", "grep_app", "lsp"] }
 ```
+
+#### Web search provider
+
+Exa remains the default. To select a different provider, set `websearch.provider`
+inside `[opencode]` in `~/.omo/omo.jsonc` or your project's `.omo/omo.jsonc`:
+
+```jsonc
+{
+  "[opencode]": {
+    "websearch": { "provider": "parallel" }
+  }
+}
+```
+
+| Provider | Credentials | Tools |
+|----------|-------------|-------|
+| `exa` (default) | Optional `EXA_API_KEY` | Web search |
+| `tavily` | Required `TAVILY_API_KEY`; omitted from MCPs if missing | Web search |
+| `parallel` | No Parallel account or API key required | `web_search` and `web_fetch` |
+
+Parallel connects to `https://search.parallel.ai/mcp` through OpenCode's remote
+MCP client, without authentication headers or OAuth. This selection uses the
+anonymous service even if provider API keys are set in the environment. Free
+access is rate limited; see the [Parallel Search MCP documentation](https://docs.parallel.ai/integrations/mcp/search-mcp).
+
+Once selected and enabled, agents can invoke these tools during their work.
+Search queries, requested URLs, and any supplied objectives, context, or metadata
+are sent to Parallel. OpenCode exposes the tools as `websearch_web_search` and
+`websearch_web_fetch`, using the input schemas returned by the server.
+
+Existing MCP overrides and permissions still apply. A custom `websearch` entry
+in OpenCode's `mcp` configuration overrides the built-in provider. To disable
+web search, add `"websearch"` to `disabled_mcps` inside `[opencode]`. Remove the
+provider setting or select `"exa"` to return to the default. There is no automatic
+fallback between providers.
 
 ### LSP
 

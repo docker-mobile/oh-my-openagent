@@ -3,15 +3,18 @@ import { afterEach, beforeEach, mock, setDefaultTimeout } from "bun:test"
 import { rmSync } from "node:fs"
 import { join } from "node:path"
 import { _resetForTesting as resetClaudeSessionState } from "./packages/omo-opencode/src/features/claude-code-session-state/state"
+import { _resetForTesting as resetAgentRegistrySnapshot } from "./packages/omo-opencode/src/features/agent-registry-recovery/registry-snapshot"
 import { _resetTaskToastManagerForTesting as resetTaskToastManager } from "./packages/omo-opencode/src/features/task-toast-manager/manager"
 import { _resetForTesting as resetModelFallbackState } from "./packages/omo-opencode/src/hooks/model-fallback/hook"
 import { RULES_INJECTOR_STORAGE } from "./packages/omo-opencode/src/hooks/rules-injector/constants"
 import { _resetMemCacheForTesting as resetConnectedProvidersCache } from "./packages/omo-opencode/src/shared/connected-providers-cache"
 import { getOmoOpenCodeCacheDir } from "./packages/omo-opencode/src/shared/data-path"
+import { _resetMemCacheForTesting as resetExhaustedProvidersCache } from "./packages/omo-opencode/src/shared/exhausted-providers-cache"
 import { releaseAllPromptAsyncReservationsForTesting } from "./packages/omo-opencode/src/shared/prompt-async-gate"
 import { resetLiveServerRouteForTesting } from "./packages/omo-opencode/src/shared/live-server-route"
 import { installModuleMockLifecycle } from "./packages/omo-opencode/src/testing/module-mock-lifecycle"
 import { ensureVendoredLspDaemonBuilt } from "./script/ensure-vendored-lsp-daemon"
+import { stageLspDaemonRuntime } from "./packages/omo-senpi/plugin/scripts/stage-lsp-daemon-runtime.mjs"
 import { installEnvironmentIntegrityCheck } from "./test-support/environment-integrity"
 import { installPostHogTestGuard } from "./test-support/posthog-test-guard"
 import { installHermeticHome } from "./test-hermetic-home"
@@ -20,9 +23,12 @@ import { resetTestDeadline } from "./test-support/test-deadline"
 
 // Installer/doctor integration tests need the vendored lsp-daemon dist that CI builds
 // out-of-band before `bun test`; mirror that here so fresh clones/worktrees pass too.
-await ensureVendoredLspDaemonBuilt({
+const builtLspDaemon = await ensureVendoredLspDaemonBuilt({
   packageDir: join(import.meta.dir, "packages", "lsp-daemon"),
 })
+// The freshness check starts verifying the staged runtime once source dist exists.
+// Stage this new build without restaging an existing source dist on every test run.
+if (builtLspDaemon) await stageLspDaemonRuntime()
 
 // senpi-task reads the @earendil-works/pi-tui and @code-yeongyu/senpi namespaces lazily
 // (render helpers and child-session values) so the built task/member blobs do not statically bind
@@ -85,9 +91,11 @@ beforeEach(() => {
   cleanupOmoCacheDir(getOmoOpenCodeCacheDir())
   cleanupRulesInjectorStorage()
   resetClaudeSessionState()
+  resetAgentRegistrySnapshot()
   resetTaskToastManager()
   resetModelFallbackState()
   resetConnectedProvidersCache()
+  resetExhaustedProvidersCache()
   releaseAllPromptAsyncReservationsForTesting()
   resetLiveServerRouteForTesting()
 })
@@ -125,6 +133,7 @@ afterEach(() => {
   cleanupRulesInjectorStorage()
   resetTaskToastManager()
   resetConnectedProvidersCache()
+  resetExhaustedProvidersCache()
   releaseAllPromptAsyncReservationsForTesting()
   resetLiveServerRouteForTesting()
   isGlobalMockCleanup = true

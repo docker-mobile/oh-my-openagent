@@ -9,8 +9,10 @@ import { getMessageDir, normalizeSDKResponse } from "../../shared"
 import { promptWithModelSuggestionRetry } from "../../shared/model-suggestion-retry"
 import { resolveMessageContext } from "../../features/hook-message-injector"
 import { formatDuration } from "./time-formatter"
+import type { SyncOutcomeState } from "./sync-session-turns"
 import { syncContinuationDeps, type SyncContinuationDeps } from "./sync-continuation-deps"
 import { setSessionTools } from "../../shared/session-tools-store"
+import { canUseCallOmoAgent } from "../../shared/delegated-agent-tool-policy"
 import { buildTaskPrompt } from "./prompt-builder"
 import { buildTaskMetadataBlock } from "../../features/tool-metadata-store/task-metadata-contract"
 import { getTaskID } from "./task-id"
@@ -20,6 +22,12 @@ import { cancelSyncSessionDeletion, scheduleSyncSessionDeletion } from "./sync-s
 import { formatDeletedSyncSessionError, isSyncSessionDeleted } from "./sync-session-existence"
 
 type ResumeModel = { providerID: string; modelID: string }
+
+function continuationHeadline(endState: SyncOutcomeState | undefined, duration: string): string {
+  if (endState === "interrupted") return `Task continued but ended before completion (session interrupted) in ${duration}.`
+  if (endState === "failed") return `Task continued but failed in ${duration}.`
+  return `Task continued and completed in ${duration}.`
+}
 
 type ResumeContext = {
   resumeAgent?: string
@@ -166,12 +174,14 @@ export async function executeSyncContinuation(
     await publishToolMetadata(ctx, syncContMeta)
 
     const allowTask = isPlanFamily(resumeAgent)
+    const allowCallOmoAgent = canUseCallOmoAgent(resumeModel, parentContext.model)
     const tddEnabled = sisyphusAgentConfig?.tdd
     const effectivePrompt = buildTaskPrompt(args.prompt, resumeAgent, tddEnabled)
     const tools = {
       task: allowTask,
-      call_omo_agent: true,
+      call_omo_agent: allowCallOmoAgent,
       question: false,
+      lsp_install_decision: true,
       ...(resumeAgent ? getAgentToolRestrictions(resumeAgent) : {}),
     }
     setSessionTools(continuationID, tools)
@@ -224,7 +234,7 @@ export async function executeSyncContinuation(
         const duration = formatDuration(startTime)
         handedBackToParent = true
 
-        return `Task continued and completed in ${duration}.
+        return `${continuationHeadline(recoveredResult.endState, duration)}
 
 ---
 
@@ -250,7 +260,7 @@ ${buildTaskMetadataBlock({
      const duration = formatDuration(startTime)
      handedBackToParent = true
 
-     return `Task continued and completed in ${duration}.
+     return `${continuationHeadline(result.endState, duration)}
 
 ---
 

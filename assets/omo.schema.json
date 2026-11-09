@@ -29064,6 +29064,55 @@
           },
           "additionalProperties": false
         },
+        "dsh": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false,
+              "type": "boolean"
+            },
+            "mode": {
+              "default": "headless",
+              "type": "string",
+              "enum": [
+                "headless",
+                "acp"
+              ]
+            },
+            "command": {
+              "default": "npx",
+              "type": "string"
+            },
+            "args": {
+              "default": [
+                "-y",
+                "@deepseek-ai/dsh"
+              ],
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "cwd": {
+              "type": "string"
+            },
+            "permission": {
+              "default": "allow_once",
+              "type": "string",
+              "enum": [
+                "reject",
+                "allow_once"
+              ]
+            },
+            "timeout_ms": {
+              "default": 300000,
+              "type": "number",
+              "minimum": 1000,
+              "maximum": 3600000
+            }
+          },
+          "additionalProperties": false
+        },
         "ralph_loop": {
           "type": "object",
           "propertyNames": {
@@ -29594,7 +29643,8 @@
               "type": "string",
               "enum": [
                 "exa",
-                "tavily"
+                "tavily",
+                "parallel"
               ]
             }
           },
@@ -29662,6 +29712,17 @@
               "properties": {
                 "enabled": {
                   "default": true,
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            },
+            "btw": {
+              "type": "object",
+              "properties": {
+                "session_prompt": {
+                  "default": true,
+                  "description": "Let /btw replace the session prompt slot. Set false when another TUI plugin also replaces the session prompt and two input bars appear; /btw is then unavailable in the TUI.",
                   "type": "boolean"
                 }
               },

@@ -4,13 +4,13 @@
 
 ## OVERVIEW
 
-Naming gotcha: despite the directory name, this is PRODUCTION init code. `create-plugin-module.ts` hosts `createPluginModule()` whose inner `serverPlugin` runs the real staged plugin init (installAgentSortShim → initConfigContext → … → dispose; full sequence documented in root AGENTS.md INITIALIZATION FLOW). `src/index.ts`, the build entry, is a thin re-export of `createPluginModule()`. It lives here because the factory takes a `Partial<PluginModuleDeps>` overrides bag (~30 injectable dependencies), letting tests swap any init stage without `mock.module()`. The other resident, `module-mock-lifecycle.ts`, is the repo-wide `bun:test` mock hygiene layer preloaded by root `test-setup.ts`. No barrel `index.ts`; consumers import file paths directly.
+Naming gotcha: despite the directory name, this is PRODUCTION init code. `create-plugin-module.ts` hosts `createPluginModule()` whose inner `serverPlugin` runs the real staged plugin init (raiseProcessListenersCap → installAgentSortShim → initConfigContext → … → dispose; full sequence documented in root AGENTS.md INITIALIZATION FLOW). `src/index.ts`, the build entry, is a thin re-export of `createPluginModule()`. It lives here because the factory takes a `Partial<PluginModuleDeps>` overrides bag (~30 injectable dependencies), letting tests swap any init stage without `mock.module()`. The other resident, `module-mock-lifecycle.ts`, is the repo-wide `bun:test` mock hygiene layer preloaded by root `test-setup.ts`. No barrel `index.ts`; consumers import file paths directly.
 
 ## KEY FILES
 
 | File | Role |
 |------|------|
-| `create-plugin-module.ts` | `createPluginModule(overrides)` → `PluginModule { id: "oh-my-openagent", server }`. Real init sequence + `PluginModuleDeps` DI record (defaults bound to the real implementations) |
+| `create-plugin-module.ts` | `createPluginModule(overrides)` → dual loader module `{ id: "oh-my-openagent", setup, server }`. `setup` satisfies the OpenCode V2 loader; `server` retains the real V1 init sequence + `PluginModuleDeps` DI record (defaults bound to the real implementations). |
 | `module-mock-lifecycle.ts` | Wraps `mock.module`/`mock.restore`: snapshots original exports per resolved specifier, tracks active mocks per owning test file, restores/replays on `mock.restore()`. Exports `installModuleMockLifecycle()` (called from root `test-setup.ts`) + `preserveModuleMocksForTestFile()`/`restoreModuleMocksForTestFile()` global hooks |
 | `create-plugin-module.test.ts` | DI-based init tests: i18n locale, server auth injection, runtime security-skill source (enabled/disabled), duplicate-plugin early exit |
 | `create-plugin-module-live-route.test.ts` | Live-server-route wiring: `initLiveServerRoute` args, `warmLiveServerProbe` fire-and-forget (never-resolving probe must not block init), `experimental.disable_live_parent_wake_routing` flag, duplicate-plugin skip |

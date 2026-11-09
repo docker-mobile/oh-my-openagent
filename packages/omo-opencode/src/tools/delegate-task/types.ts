@@ -1,3 +1,4 @@
+import type { PluginInput } from "@opencode-ai/plugin"
 import type { BackgroundManager } from "../../features/background-agent"
 import type { OhMyOpenCodeConfig } from "../../config"
 import type { CategoriesConfig, GitMasterConfig, BrowserAutomationProvider, AgentOverrides, SisyphusAgentConfig } from "../../config/schema"
@@ -51,7 +52,7 @@ export interface OmoAgentClient {
   }
 }
 
-export type OpencodeClient = OmoAgentClient
+export type OpencodeClient = OmoAgentClient & PluginInput["client"]
 
 export interface DelegateTaskArgs {
   description: string
@@ -127,6 +128,12 @@ export interface DelegateTaskToolOptions {
     dirs(): string[] | Promise<string[]>
   }
   getLoadedSkills?: () => Promise<LoadedSkill[]>
+  /**
+   * Disables the dispatch-side Prometheus planning-context injection (#6291).
+   * Wire from `disabled_hooks` containing "prometheus-md-only" so dispatch
+   * respects the same kill switch as the hook.
+   */
+  planningWarningInjectionDisabled?: boolean
 }
 
 import type { DelegatedModelConfig } from "../../shared/model-resolution-types"
@@ -140,6 +147,8 @@ export interface BuildSystemContentInput {
   planAgentPrepend?: string
   maxPromptTokens?: number
   model?: DelegatedModelConfig
+  /** Configured endpoint for the model's provider (opencode config `provider.<id>.options.baseURL`). */
+  providerBaseURL?: string
   agentName?: string
   availableCategories?: AvailableCategory[]
   availableSkills?: AvailableSkill[]

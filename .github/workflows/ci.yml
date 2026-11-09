@@ -4,7 +4,6 @@ on:
   push:
     branches: [master, dev]
   pull_request:
-    branches: [master, dev]
     types: [opened, synchronize, reopened]
   merge_group:
     types: [checks_requested]
@@ -22,10 +21,11 @@ permissions:
   contents: read
 
 jobs:
-  # A stable, unconditional context that dev's required checks can enforce even
-  # when the rest of CI takes a docs/web/release fast path.
+  # A stable context that dev's required checks can enforce even when the rest of CI takes a docs/web/release fast
+  # path. Pull requests are gated like ci-mode below (#11868).
   lint-ratchet:
     name: Lint ratchet
+    if: github.event_name != 'pull_request' || startsWith(github.head_ref, 'release/') || contains(github.event.pull_request.labels.*.name, 'run-full-ci') || contains(github.event.pull_request.labels.*.name, 'ci:full-matrix')
     runs-on: ubuntu-26.04
     timeout-minutes: 10
     steps:
@@ -57,7 +57,12 @@ jobs:
           JOB_SUMMARY_NEXT: Fix new findings; when removing existing debt, lower the baseline in the same change.
         run: GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" bash .github/scripts/write-job-summary.sh
 
+  # Merges are decided on a local whole-suite receipt, so hosted CI runs on a pull request only when it carries
+  # run-full-ci or ci:full-matrix, or is a release-state PR (release/* head), whose own run publish.yml reuses at the
+  # prepared SHA (#9759, #11868). Every other CI job needs ci-mode, so skipping it skips them. A skipped matrix job
+  # reports no expanded context, so the required matrix checks stay expected instead of passing as skipped.
   ci-mode:
+    if: github.event_name != 'pull_request' || startsWith(github.head_ref, 'release/') || contains(github.event.pull_request.labels.*.name, 'run-full-ci') || contains(github.event.pull_request.labels.*.name, 'ci:full-matrix')
     runs-on: ubuntu-26.04
     outputs:
       generated_release_push: ${{ steps.classify.outputs.generated_release_push }}
@@ -248,23 +253,28 @@ jobs:
         run: bun run script/remove-stale-self-package-tests.ts
 
       # device-service-core's LA17 DACL tests prove that a second local user cannot read the
-      # protected token file, so the Windows leg creates that user with a fresh random password.
+      # protected token file, so the Windows leg creates that user with a fresh random value.
       - name: Create the second local user for the DACL tests
         if: runner.os == 'Windows' && needs.ci-mode.outputs.run_heavy == 'true' && (matrix.os == 'ubuntu-latest' || needs.ci-mode.outputs.full_matrix == 'true')
         shell: pwsh
         run: |
           # Every character comes from the random bytes (no literal prefix), one per Windows complexity class.
+          # Nothing here is spelled as a literal on the right of a password-shaped key: secret scanners
+          # match that shape, and a PR that merges dev lands these lines as ADDED lines in the merge
+          # commit, so any literal here is re-reported on every PR that merges dev.
           $bytes = [byte[]]::new(20)
           [System.Security.Cryptography.RandomNumberGenerator]::Fill($bytes)
-          $upper = [char](65 + $bytes[0] % 26)
-          $lower = [char](97 + $bytes[1] % 26)
-          $digit = [char](48 + $bytes[2] % 10)
-          $symbol = [char](35 + $bytes[3] % 3)
-          $password = "$upper$lower$digit$symbol" + [Convert]::ToHexString($bytes, 4, 16)
-          Write-Output "::add-mask::$password"
-          net user omoqa2 $password /add /y | Out-Null
+          $chars = @(
+            [char](65 + $bytes[0] % 26)
+            [char](97 + $bytes[1] % 26)
+            [char](48 + $bytes[2] % 10)
+            [char](35 + $bytes[3] % 3)
+          )
+          $omoqa2Value = (-join $chars) + [Convert]::ToHexString($bytes, 4, 16)
+          Write-Output ("::add-mask::" + $omoqa2Value)
+          net user omoqa2 $omoqa2Value /add /y | Out-Null
           if ($LASTEXITCODE -ne 0) { throw "net user omoqa2 /add failed with exit $LASTEXITCODE" }
-          "OMOQA2_PASSWORD=$password" >> $env:GITHUB_ENV
+          "OMOQA2_PASSWORD=$omoqa2Value" >> $env:GITHUB_ENV
 
       # The full install runs the root `prepare` (`bun run build`), whose
       # `build:lsp-daemon` step already runs `npm ci && npm run build` in
@@ -334,6 +344,20 @@ jobs:
         id: root-tests-posix-2
         if: needs.ci-mode.outputs.run_heavy == 'true' && runner.os != 'Windows' && matrix.shard == '2/2' && (matrix.os == 'ubuntu-latest' || needs.ci-mode.outputs.full_matrix == 'true')
         run: bash .github/scripts/ci-root-shard-2.sh
+
+      # #11259: the tmux-core runner tests spawn Git Bash, which has been warning
+      # "could not find /tmp, please create!" on this leg. The per-process test temp root exists
+      # while the worker runs, so the open question is how msys maps TEMP to /tmp here. This step
+      # only prints that mapping from the same Git Bash the tests spawn; every command is
+      # exit-tolerant, so it can never fail the job. The follow-up fix removes it.
+      - name: Print Git Bash temp mapping (#11259 diagnostic)
+        if: needs.ci-mode.outputs.run_heavy == 'true' && runner.os == 'Windows' && matrix.shard == '2/2' && (matrix.os == 'ubuntu-latest' || needs.ci-mode.outputs.full_matrix == 'true')
+        # pwsh starts the Git Bash the tests spawn, so this step never runs under shell: bash itself
+        # (script/ci-root-test-partition.test.ts forbids that in the root-test steps).
+        shell: pwsh
+        run: |
+          & "$env:ProgramFiles\Git\bin\bash.exe" -c 'echo "TEMP=$TEMP"; echo "TMP=$TMP"; echo "TMPDIR=$TMPDIR"; cygpath -u "$TEMP"; cygpath -w /tmp; ls -ld /tmp'
+          exit 0
 
       # Git Bash sets SHELL/MSYSTEM on Windows, which makes process-platform
       # tests observe sh instead of the native PowerShell/cmd execution path.
@@ -519,7 +543,7 @@ jobs:
   macos-test-1-status:
     name: test
     needs: [ci-mode, macos-combined]
-    if: ${{ always() && !cancelled() }}
+    if: ${{ always() && !cancelled() && needs.ci-mode.result != 'skipped' }}
     runs-on: ubuntu-26.04
     strategy:
       matrix:
@@ -544,7 +568,7 @@ jobs:
   macos-test-2-status:
     name: test
     needs: [ci-mode, macos-combined]
-    if: ${{ always() && !cancelled() }}
+    if: ${{ always() && !cancelled() && needs.ci-mode.result != 'skipped' }}
     runs-on: ubuntu-26.04
     strategy:
       matrix:
@@ -569,7 +593,7 @@ jobs:
   macos-codex-status:
     name: codex-compatibility
     needs: [ci-mode, macos-combined]
-    if: ${{ always() && !cancelled() }}
+    if: ${{ always() && !cancelled() && needs.ci-mode.result != 'skipped' }}
     runs-on: ubuntu-26.04
     strategy:
       matrix:
@@ -594,7 +618,7 @@ jobs:
   macos-senpi-status:
     name: senpi-compatibility
     needs: [ci-mode, macos-combined]
-    if: ${{ always() && !cancelled() }}
+    if: ${{ always() && !cancelled() && needs.ci-mode.result != 'skipped' }}
     runs-on: ubuntu-26.04
     strategy:
       matrix:
@@ -1056,6 +1080,10 @@ jobs:
           path: ~/.bun/install/cache
           key: ${{ runner.os }}-bun-1.4.4-${{ hashFiles('bun.lock') }}
 
+      - name: Verify version-scoped patch hunks
+        if: needs.ci-mode.outputs.run_heavy == 'true'
+        run: bun run script/verify-patch-hunks.ts
+
       - name: Install dependencies
         if: needs.ci-mode.outputs.run_heavy == 'true'
         run: bun install --frozen-lockfile --ignore-scripts
@@ -1094,6 +1122,7 @@ jobs:
           JOB_SUMMARY_STATUS: ${{ job.status }}
           JOB_SUMMARY_DETAILS: |
             - Builds the distributable OpenCode/Codex packages.
+            - Rejects version-scoped patches whose hunks no longer apply to the pinned published package.
             - Confirms `dist/index.js` and `dist/index.d.ts` exist.
             - Fails when the build regenerates `assets/oh-my-opencode.schema.json` or `assets/omo.schema.json` differently from the committed copy.
             - Runs dist bundle regression tests.

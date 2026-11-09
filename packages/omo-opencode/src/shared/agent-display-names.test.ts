@@ -1,5 +1,6 @@
 import { describe, it, expect } from "bun:test"
 import { AGENT_DISPLAY_NAMES, getAgentConfigKey, getAgentDisplayName, getAgentListDisplayName, normalizeAgentForPrompt, normalizeAgentForPromptKey, stripAgentListSortPrefix } from "./agent-display-names"
+import { validateAgentOrder } from "./agent-ordering"
 
 describe("getAgentDisplayName", () => {
   it("returns display name for lowercase config key (new format)", () => {
@@ -58,6 +59,31 @@ describe("getAgentDisplayName", () => {
     expect(getAgentDisplayName("sisyphus", { sisyphus: { displayName: "Sisyphus - 主脑" } })).toBe("Sisyphus - 主脑")
     expect(getAgentDisplayName("hephaestus", { hephaestus: { displayName: "헤파이스토스" } })).toBe("헤파이스토스")
     expect(getAgentDisplayName("atlas", { atlas: { displayName: "アトラス" } })).toBe("アトラス")
+  })
+
+  it("normalizes decomposed-form (NFD) display-name overrides to NFC (#4170)", () => {
+    // given a Hangul name in decomposed form (jamo characters that the OpenCode
+    // TUI renders as mojibake when not normalized)
+    const decomposed = "헤파이스토스".normalize("NFD")
+    const composed = "헤파이스토스".normalize("NFC")
+    expect(decomposed).not.toBe(composed) // sanity: forms differ
+
+    // when getAgentDisplayName resolves the override
+    const result = getAgentDisplayName("hephaestus", { hephaestus: { displayName: decomposed } })
+
+    // then output is canonical NFC, so downstream TUI/HTTP sinks see consistent bytes
+    expect(result).toBe(composed)
+  })
+
+  it("strips zero-width characters from display-name overrides (#4170)", () => {
+    // given a display name with embedded ZWSP/word-joiner (legacy sort-bias chars)
+    const polluted = "Sisyphus​ - ⁠主脑"
+
+    // when getAgentDisplayName resolves the override
+    const result = getAgentDisplayName("sisyphus", { sisyphus: { displayName: polluted } })
+
+    // then invisible characters are stripped (they caused column-truncation regressions)
+    expect(result).toBe("Sisyphus - 主脑")
   })
 })
 
@@ -195,6 +221,8 @@ describe("AGENT_DISPLAY_NAMES", () => {
       explore: "explore",
       "multimodal-looker": "multimodal-looker",
       "council-member": "council-member",
+      plan: "plan",
+      build: "build",
     }
 
     // when checking the constant
@@ -211,5 +239,12 @@ describe("AGENT_DISPLAY_NAMES", () => {
       // then none should contain parentheses
       expect(httpHeaderUnsafe.test(displayName)).toBe(false)
     }
+  })
+
+  it("accepts OpenCode plan and build keys in agent_order", () => {
+    const result = validateAgentOrder(["plan", "build", "sisyphus"])
+
+    expect(result.invalid).toEqual([])
+    expect(result.order.slice(0, 3)).toEqual(["plan", "build", "sisyphus"])
   })
 })

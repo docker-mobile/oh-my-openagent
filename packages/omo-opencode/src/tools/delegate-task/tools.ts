@@ -1,7 +1,7 @@
 import { tool, type ToolDefinition } from "@opencode-ai/plugin"
 import type { DelegatedModelConfig, ToolContextWithMetadata, DelegateTaskToolOptions } from "./types"
 import { log } from "../../shared/logger"
-import { buildSystemContent } from "./prompt-builder"
+import { buildSystemContent, resolveProviderBaseURL } from "./prompt-builder"
 import {
   resolveSkillContent,
   resolveParentContext,
@@ -15,6 +15,8 @@ import {
 } from "./executor"
 import { prepareDelegateTaskArgs } from "./tool-argument-preparation"
 import { createDelegateTaskPresentation } from "./tool-description"
+import { isPrometheusAgent } from "../../hooks/prometheus-md-only/agent-matcher"
+import { injectPlanningContextIfMissing } from "../../hooks/prometheus-md-only/planning-context-injection"
 import type { AvailableSkill } from "../../agents/dynamic-agent-prompt-builder"
 import { mergeNativeSkillInfos, type NativeSkillEntry } from "../skill/native-skills"
 import type { SkillInfo } from "../skill/types"
@@ -74,7 +76,7 @@ const delegateTaskArgsSchema = {
   task_id: tool.schema
     .string()
     .optional()
-    .describe("Continuation session id (`ses_...`) from task metadata; not a background task id (`bg_...`)."),
+    .describe("Continuation session id (`ses_...`) from prior task metadata ONLY. NEVER invent or generate this value; omit it entirely to spawn a new subagent. Not a background task id (`bg_...`)."),
   command: tool.schema.string().optional().describe("The command that triggered this task"),
 }
 
@@ -86,7 +88,7 @@ export function createDelegateTask(options: DelegateTaskToolOptions): ToolDefini
     args: delegateTaskArgsSchema,
     async execute(args, toolContext) {
       const ctx = toolContext as ToolContextWithMetadata
-      const delegateTaskArgs = await prepareDelegateTaskArgs(args, ctx)
+      let delegateTaskArgs = await prepareDelegateTaskArgs(args, ctx)
 
       const runInBackground = delegateTaskArgs.run_in_background === true
 
@@ -120,6 +122,20 @@ export function createDelegateTask(options: DelegateTaskToolOptions): ToolDefini
 
       const parentContext = await resolveParentContext(ctx, options.client)
 
+      // #6291: the tool.execute.before hook injection can be dropped because
+      // OpenCode executes tools with its own original args reference, so the
+      // planning context is (re-)applied here on the dispatched prompt itself.
+      if (!options.planningWarningInjectionDisabled && isPrometheusAgent(parentContext.agent)) {
+        const guardedPrompt = injectPlanningContextIfMissing(delegateTaskArgs.prompt)
+        if (guardedPrompt !== delegateTaskArgs.prompt) {
+          delegateTaskArgs = { ...delegateTaskArgs, prompt: guardedPrompt }
+          log("[task] Injected prometheus planning context into delegated prompt", {
+            sessionID: ctx.sessionID,
+            agent: parentContext.agent,
+          })
+        }
+      }
+
       if (delegateTaskArgs.task_id) {
         if (runInBackground) {
           return executeBackgroundContinuation(delegateTaskArgs, ctx, options, parentContext, continuationSystemContent)
@@ -132,8 +148,10 @@ export function createDelegateTask(options: DelegateTaskToolOptions): ToolDefini
       }
 
       let systemDefaultModel: string | undefined
+      let openCodeConfigData: unknown
       try {
         const openCodeConfig = await options.client.config.get()
+        openCodeConfigData = openCodeConfig
         systemDefaultModel = (openCodeConfig as { data?: { model?: string } })?.data?.model
       } catch (error) {
         if (!(error instanceof Error)) throw error
@@ -157,6 +175,7 @@ export function createDelegateTask(options: DelegateTaskToolOptions): ToolDefini
       let isUnstableAgent = false
       let fallbackChain: import("../../shared/model-requirements").FallbackEntry[] | undefined
       let maxPromptTokens: number | undefined
+      let providerBaseURL: string | undefined
 
       if (delegateTaskArgs.category) {
         const resolution = await resolveCategoryExecution(delegateTaskArgs, modelOptions, inheritedModel, systemDefaultModel)
@@ -171,6 +190,7 @@ export function createDelegateTask(options: DelegateTaskToolOptions): ToolDefini
         isUnstableAgent = resolution.isUnstableAgent
         fallbackChain = resolution.fallbackChain
         maxPromptTokens = resolution.maxPromptTokens
+        providerBaseURL = resolveProviderBaseURL(openCodeConfigData, categoryModel?.providerID, categoryModel?.modelID)
 
         const isRunInBackgroundExplicitlyFalse = isExplicitSyncRun(delegateTaskArgs.run_in_background)
 
@@ -192,6 +212,7 @@ export function createDelegateTask(options: DelegateTaskToolOptions): ToolDefini
             agentName: agentToUse,
             maxPromptTokens,
             model: categoryModel,
+            providerBaseURL,
             availableCategories,
             availableSkills,
             nativeSkillInfos,
@@ -206,6 +227,7 @@ export function createDelegateTask(options: DelegateTaskToolOptions): ToolDefini
         agentToUse = resolution.agentToUse
         categoryModel = resolution.categoryModel
         fallbackChain = resolution.fallbackChain
+        providerBaseURL = resolveProviderBaseURL(openCodeConfigData, categoryModel?.providerID, categoryModel?.modelID)
       }
 
       const systemContent = buildSystemContent({
@@ -215,6 +237,7 @@ export function createDelegateTask(options: DelegateTaskToolOptions): ToolDefini
         agentName: agentToUse,
         maxPromptTokens,
         model: categoryModel,
+        providerBaseURL,
         availableCategories,
         availableSkills,
         nativeSkillInfos,

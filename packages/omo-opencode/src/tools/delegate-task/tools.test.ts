@@ -599,7 +599,7 @@ describe("sisyphus-task", () => {
       expect(requireCapturedLaunchInput(launchInput).agent).toBe("Sisyphus-Junior")
     }, { timeout: 10000 })
 
-    test("prefers category over subagent_type when both are provided", async () => {
+    test("throws error when both category and subagent_type are provided", async () => {
       //#given
       const { createDelegateTask } = require("./tools")
 
@@ -654,11 +654,10 @@ describe("sisyphus-task", () => {
         load_skills: [],
       }
 
-      //#when
-      await tool.execute(args, toolContext)
-
-      //#then - category takes precedence, subagent_type is overridden to sisyphus-junior
-      expect(requireCapturedLaunchInput(launchInput).agent).toBe("Sisyphus-Junior")
+      //#when / #then - providing both category and subagent_type is an error
+      await expect(tool.execute(args, toolContext)).rejects.toThrow(
+        "task() received both category and subagent_type"
+      )
     }, { timeout: 10000 })
 
     test("proceeds without error when systemDefaultModel is undefined", async () => {
@@ -1797,7 +1796,15 @@ describe("sisyphus-task", () => {
             promptCalled = true
             return { data: {} }
           },
-          messages: async () => ({ data: [{ info: { role: "assistant" }, parts: [{ type: "text", text: "Done" }] }] }),
+          messages: async () => ({
+            data: [
+              { info: { id: "msg_001", role: "user", time: { created: 1000 } } },
+              {
+                info: { id: "msg_002", role: "assistant", time: { created: 2000 }, finish: "stop" },
+                parts: [{ type: "text", text: "Done" }],
+              },
+            ]
+          }),
           status: async () => ({ data: { ses_explicit_false: { type: "idle" } } }),
         },
       }
@@ -2208,6 +2215,157 @@ describe("sisyphus-task", () => {
     expect(result).toContain("task-456")
   })
 })
+
+  describe("invented task_id falls back to new spawn (issue #6298)", () => {
+    test("#given a Grok-style invented UUID task_id with run_in_background=true #when executing #then spawns a new background task instead of resuming", async () => {
+      // given - over-eager tool callers (Grok family) fill the optional
+      // task_id field with a random UUID on brand-new spawns. The documented
+      // contract is that task_id is a continuation session id (`ses_...`);
+      // any other value must NOT route to the resume branch.
+      const { createDelegateTask } = require("./tools")
+      const managerCalls: string[] = []
+      const mockManager = {
+        launch: async () => {
+          managerCalls.push("launch")
+          return { id: "bg_new_spawn", sessionId: "ses_new_spawn", description: "probe quick", agent: "explore", status: "running" }
+        },
+        resume: async () => {
+          managerCalls.push("resume")
+          throw new Error("Task not found for session: 3f9d6c1e-8a4b-4c2d-9e7f-1a2b3c4d5e6f")
+        },
+      }
+      const mockClient = {
+        session: {
+          prompt: async () => ({ data: {} }),
+          promptAsync: async () => ({ data: {} }),
+          messages: async () => ({ data: [] }),
+        },
+        config: { get: async () => ({ data: { model: SYSTEM_DEFAULT_MODEL } }) },
+        app: { agents: async () => ({ data: [{ name: "explore", mode: "subagent" }] }) },
+      }
+      const tool = createDelegateTask({ manager: mockManager, client: mockClient })
+
+      // when
+      const result = await tool.execute(
+        {
+          description: "probe quick",
+          prompt: "Reply: quick-ok",
+          subagent_type: "explore",
+          run_in_background: true,
+          load_skills: [],
+          task_id: "3f9d6c1e-8a4b-4c2d-9e7f-1a2b3c4d5e6f",
+        },
+        { sessionID: "parent-session", messageID: "parent-message", agent: "sisyphus", abort: new AbortController().signal },
+      )
+
+      // then - new spawn happened; the invented id never reached resume
+      expect(managerCalls).toEqual(["launch"])
+      expect(result).not.toContain("Task not found")
+    })
+
+    test("#given a Grok-style invented UUID task_id with sync execution #when executing #then creates a new sync session instead of resuming", async () => {
+      // given
+      const { createDelegateTask } = require("./tools")
+      const managerCalls: string[] = []
+      const mockManager = {
+        launch: async () => {
+          managerCalls.push("launch")
+          return { id: "bg_unused" }
+        },
+        resume: async () => {
+          managerCalls.push("resume")
+          throw new Error("Task not found for session: 3f9d6c1e-8a4b-4c2d-9e7f-1a2b3c4d5e6f")
+        },
+      }
+      let createdSessionID: string | undefined
+      let promptedSessionID: string | undefined
+      const capturePrompt = (input: CapturedPromptInput & { path: { id: string } }) => {
+        promptedSessionID = input.path.id
+        return Promise.resolve({ data: {} })
+      }
+      const mockClient = {
+        session: {
+          get: async () => ({ data: { directory: "/project" } }),
+          create: async () => {
+            createdSessionID = "ses_fresh_sync"
+            return { data: { id: "ses_fresh_sync" } }
+          },
+          prompt: capturePrompt,
+          promptAsync: capturePrompt,
+          messages: async () => ({
+            data: [{ info: { role: "assistant" }, parts: [{ type: "text", text: "quick-ok-sync-spawn-sentinel" }] }],
+          }),
+          status: async () => ({ data: { ses_fresh_sync: { type: "idle" } } }),
+          abort: async () => ({ data: {} }),
+        },
+        config: { get: async () => ({ data: { model: SYSTEM_DEFAULT_MODEL } }) },
+        app: { agents: async () => ({ data: [] }) },
+      }
+      const tool = createDelegateTask({ manager: mockManager, client: mockClient })
+
+      // when
+      const result = await tool.execute(
+        {
+          description: "probe quick",
+          prompt: "Reply: quick-ok",
+          category: "quick",
+          run_in_background: false,
+          load_skills: [],
+          task_id: "3f9d6c1e-8a4b-4c2d-9e7f-1a2b3c4d5e6f",
+        },
+        { sessionID: "parent-session", messageID: "parent-message", agent: "sisyphus", abort: new AbortController().signal },
+      )
+
+      // then - fresh sync session was created and prompted; no resume attempt
+      expect(managerCalls).toHaveLength(0)
+      expect(createdSessionID).toBe("ses_fresh_sync")
+      expect(promptedSessionID).toBe("ses_fresh_sync")
+      expect(result).toContain("quick-ok-sync-spawn-sentinel")
+    })
+
+    test("#given a real ses_ continuation id #when executing with run_in_background=true #then still routes to background continuation", async () => {
+      // given - the fix must not break legitimate continuation routing
+      const { createDelegateTask } = require("./tools")
+      const managerCalls: string[] = []
+      const mockManager = {
+        resume: async () => {
+          managerCalls.push("resume")
+          return { id: "task-real", sessionId: "ses_real_continue", description: "Real continue", agent: "explore", status: "completed" }
+        },
+        launch: async () => {
+          managerCalls.push("launch")
+          return { id: "bg_unused" }
+        },
+      }
+      const mockClient = {
+        session: {
+          prompt: async () => ({ data: {} }),
+          promptAsync: async () => ({ data: {} }),
+          messages: async () => ({ data: [] }),
+        },
+        config: { get: async () => ({ data: { model: SYSTEM_DEFAULT_MODEL } }) },
+        app: { agents: async () => ({ data: [] }) },
+      }
+      const tool = createDelegateTask({ manager: mockManager, client: mockClient })
+
+      // when
+      const result = await tool.execute(
+        {
+          description: "Continue real",
+          prompt: "Continue",
+          subagent_type: "explore",
+          run_in_background: true,
+          load_skills: [],
+          task_id: "ses_real_continue",
+        },
+        { sessionID: "parent-session", messageID: "parent-message", agent: "sisyphus", abort: new AbortController().signal },
+      )
+
+      // then
+      expect(managerCalls).toEqual(["resume"])
+      expect(result).toContain("Background task continued")
+    })
+  })
 
   describe("sync mode new task (run_in_background=false)", () => {
     test("sync mode prompt error returns error message immediately", async () => {
@@ -3473,7 +3631,13 @@ describe("sisyphus-task", () => {
           },
           promptAsync: async () => ({ data: {} }),
           messages: async () => ({
-            data: [{ info: { role: "assistant" }, parts: [{ type: "text", text: "Done" }] }]
+            data: [
+              { info: { id: "msg_001", role: "user", time: { created: 1000 } } },
+              {
+                info: { id: "msg_002", role: "assistant", time: { created: 2000 }, finish: "stop" },
+                parts: [{ type: "text", text: "Done" }],
+              },
+            ]
           }),
           status: async () => ({ data: {} }),
         },
@@ -4897,11 +5061,152 @@ describe("buildSyncPromptTools (issue #5182)", () => {
     expect(storedTools!.glob).toBe(false)
     // hardcoded restriction (task: false for sisyphus-junior) still applies
     expect(storedTools!.task).toBe(false)
-    // unconditionally allowed tools remain unchanged
-    expect(storedTools!.call_omo_agent).toBe(true)
+    // Anthropic-backed delegated sessions cannot spawn nested OMO agents
+    expect(storedTools!.call_omo_agent).toBe(false)
     expect(storedTools!.question).toBe(false)
     // buildSyncPromptTools only processes denials, not allows,
     // so read:true from tools config does not appear in the result
     expect(storedTools!.read).toBeUndefined()
   })
+})
+
+describe("free/local prompt cap via provider baseURL (end-to-end)", () => {
+  const OVERSIZED_APPEND = "Category context payload line for truncation testing.\n".repeat(4000)
+
+  test("caps injected system content when the resolved custom provider baseURL is loopback", async () => {
+    // given - user category on custom provider 'omlx' whose configured endpoint is loopback
+    const { createDelegateTask } = require("./tools")
+
+    let promptBody: CapturedPromptBody = {}
+    const promptMock = async (input: CapturedPromptInput) => {
+      promptBody = input.body
+      return { data: {} }
+    }
+
+    const mockManager = { launch: async () => ({}) }
+    const mockClient = {
+      app: { agents: async () => ({ data: [] }) },
+      config: {
+        get: async () => ({
+          data: {
+            model: SYSTEM_DEFAULT_MODEL,
+            provider: {
+              omlx: { options: { baseURL: "http://127.0.0.1:8000/v1" } },
+            },
+          },
+        }),
+      },
+      session: {
+        get: async () => ({ data: { directory: "/project" } }),
+        create: async () => ({ data: { id: "ses_omlx_local_cap" } }),
+        prompt: promptMock,
+        promptAsync: promptMock,
+        messages: async () => ({
+          data: [{ info: { role: "assistant" }, parts: [{ type: "text", text: "Done" }] }],
+        }),
+        status: async () => ({ data: {} }),
+      },
+    }
+
+    const tool = createDelegateTask({
+      manager: mockManager,
+      client: mockClient,
+      userCategories: {
+        omlxlocal: { model: "omlx/qwen3", prompt_append: OVERSIZED_APPEND },
+      },
+      availableModelsOverride: new Set(["omlx/qwen3"]),
+    })
+
+    const toolContext = {
+      sessionID: "parent-session",
+      messageID: "parent-message",
+      agent: "sisyphus",
+      abort: new AbortController().signal,
+    }
+
+    // when
+    await tool.execute(
+      {
+        description: "Local cap check",
+        prompt: "Do something",
+        category: "omlxlocal",
+        run_in_background: false,
+        load_skills: [],
+      },
+      toolContext
+    )
+
+    // then - injected system content is truncated to the free/local budget
+    expect(promptBody.system).toBeDefined()
+    expect(String(promptBody.system).includes("[TRUNCATED]")).toBe(true)
+  }, { timeout: 20000 })
+
+  test("leaves injected system content uncapped when the resolved provider baseURL is remote", async () => {
+    // given - same category shape but the provider endpoint is a remote host
+    const { createDelegateTask } = require("./tools")
+
+    let promptBody: CapturedPromptBody = {}
+    const promptMock = async (input: CapturedPromptInput) => {
+      promptBody = input.body
+      return { data: {} }
+    }
+
+    const mockManager = { launch: async () => ({}) }
+    const mockClient = {
+      app: { agents: async () => ({ data: [] }) },
+      config: {
+        get: async () => ({
+          data: {
+            model: SYSTEM_DEFAULT_MODEL,
+            provider: {
+              omlx: { options: { baseURL: "https://api.omlx-cloud.example.com/v1" } },
+            },
+          },
+        }),
+      },
+      session: {
+        get: async () => ({ data: { directory: "/project" } }),
+        create: async () => ({ data: { id: "ses_omlx_remote_uncapped" } }),
+        prompt: promptMock,
+        promptAsync: promptMock,
+        messages: async () => ({
+          data: [{ info: { role: "assistant" }, parts: [{ type: "text", text: "Done" }] }],
+        }),
+        status: async () => ({ data: {} }),
+      },
+    }
+
+    const tool = createDelegateTask({
+      manager: mockManager,
+      client: mockClient,
+      userCategories: {
+        omlxlocal: { model: "omlx/qwen3", prompt_append: OVERSIZED_APPEND },
+      },
+      availableModelsOverride: new Set(["omlx/qwen3"]),
+    })
+
+    const toolContext = {
+      sessionID: "parent-session",
+      messageID: "parent-message",
+      agent: "sisyphus",
+      abort: new AbortController().signal,
+    }
+
+    // when
+    await tool.execute(
+      {
+        description: "Remote uncapped check",
+        prompt: "Do something",
+        category: "omlxlocal",
+        run_in_background: false,
+        load_skills: [],
+      },
+      toolContext
+    )
+
+    // then - cloud endpoints keep full injection, no truncation marker
+    expect(promptBody.system).toBeDefined()
+    expect(String(promptBody.system).includes("[TRUNCATED]")).toBe(false)
+    expect(String(promptBody.system).includes(OVERSIZED_APPEND)).toBe(true)
+  }, { timeout: 20000 })
 })

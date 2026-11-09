@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// omo-codex-install:adc0c9ae0db7b2199d87a87956f2a065f91ef403e2c0816a4fe17111125c47b1:6fec9dd74fa6bb69f9064c703c94e024377de335a2c86ac93c5bd141b1290e69
+// omo-codex-install:04adba6725cce14ff852ea4223a8ce39fd58970bfc3bb7fcbe6e38c21cb477e0:47d403858091617d2fcd5a7a6ca206c3ca78b48c8d923703e04225df36e1fb5a
 var __esm = (fn, res, err) => () => {
   if (fn)
     try {
@@ -10901,6 +10901,11 @@ function isNodeErrorWithCode2(error) {
 // packages/omo-codex/src/install/codex-cache-runtime-wrapper.ts
 import { join as join3 } from "node:path";
 var RUNTIME_WRAPPER_MARKER = "OMO_GENERATED_RUNTIME_WRAPPER";
+function hasRuntimeWrapperHeader(content) {
+  const markerLine = content.split(`
+`, 2)[1]?.trimEnd();
+  return markerLine === `# ${RUNTIME_WRAPPER_MARKER}` || markerLine === `rem ${RUNTIME_WRAPPER_MARKER}`;
+}
 function posixRuntimeWrapper(binName, cliPath, codexHome, binDir, nodeCliPath) {
   const ulwLoopBin = toPosixPath(join3(binDir, "omo-ulw-loop"));
   const nodeCli = escapePosixDoubleQuoted(toPosixPath(nodeCliPath));
@@ -11168,7 +11173,7 @@ async function removeGeneratedRuntimeWrapper(path) {
     if (!entry.isFile() && !entry.isSymbolicLink())
       return;
     const content = await readGeneratedWrapperContent(path);
-    if (content.includes(RUNTIME_WRAPPER_MARKER))
+    if (hasRuntimeWrapperHeader(content))
       await rm3(path, { force: true });
   } catch (error) {
     if (isNodeErrorWithCode(error) && error.code === "ENOENT")
@@ -11193,7 +11198,7 @@ async function existingNonRuntimeWrapper(path) {
     if (!stat.isFile())
       return true;
     const content = await readFile3(path, "utf8");
-    return !content.includes(RUNTIME_WRAPPER_MARKER);
+    return !hasRuntimeWrapperHeader(content);
   } catch (error) {
     if (isNodeErrorWithCode(error) && error.code === "ENOENT")
       return false;

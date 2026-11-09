@@ -49,15 +49,13 @@ export class ParentWakeFlushRunner {
     }
     const emptyAssistantTurnRetry = latestWake.allowEmptyAssistantTurnRetry === true
     const forceDispatchAfterActiveDefer = sessionActive && this.shouldForceDispatchAfterActiveDefer(latestWake)
+    const forceDispatchAfterSustainedDefer = latestWake.shouldReply && this.getQueuedAgeMs(latestWake) >= PENDING_PARENT_WAKE_MAX_ACTIVE_DEFER_MS
     if (sessionActive && !forceDispatchAfterActiveDefer) {
-      this.schedulePendingParentWakeFlush(sessionID)
-      log("[background-agent] Deferred parent wake because parent session is active:", {
-        sessionID,
-      })
-      return
-    }
-
-    if (!forceDispatchAfterActiveDefer && this.hasRecentParentSessionActivity(sessionID)) {
+      // Issue #4169: a pure deferral made completion notifications wait until the
+      // parent turn ended, so a live turn never saw finished subagent output.
+      // Admit the notification into the active parent's history as noReply so the
+      // running turn consumes it on its next step; reply obligations stay queued
+      // and are settled by the existing admitted-wake drop/dedupe paths.
       if (this.deferReplyWakeWhileUnsafe(sessionID, latestWake)) {
         return
       }
@@ -67,12 +65,43 @@ export class ParentWakeFlushRunner {
         forceNoReply: true,
         retainPendingWake: latestWake.shouldReply,
       })
-      log("[background-agent] Recorded admit-only parent wake because parent session activity is still fresh:", {
+      log("[background-agent] Admitted parent wake into active parent turn:", {
         sessionID,
       })
       if (latestWake.shouldReply) {
         this.schedulePendingParentWakeFlush(sessionID)
       }
+      return
+    }
+
+    if (!forceDispatchAfterActiveDefer && !forceDispatchAfterSustainedDefer && this.hasRecentParentSessionActivity(sessionID)) {
+      if (this.deferReplyWakeWhileUnsafe(sessionID, latestWake)) {
+        return
+      }
+      if (latestWake.shouldReply) {
+        // The parent session is still within the activity window. Sending a
+        // forceNoReply here would refresh the parent's last-activity timestamp,
+        // guaranteeing that the next hasRecentParentSessionActivity() check
+        // will also be true and creating an infinite re-flush loop.
+        //
+        // Instead, defer the entire flush past the activity window (5500 ms).
+        // When the timer fires, the window has expired (we didn't extend it),
+        // and the normal reply-producing path runs.
+        this.schedulePendingParentWakeFlush(sessionID, 5500)
+        log("[background-agent] Deferred reply-required parent wake because parent session activity is still fresh:", {
+          sessionID,
+        })
+        return
+      }
+      await this.sendParentWakePrompt(sessionID, latestWake, {
+        emptyAssistantTurnRetry: false,
+        toolWaitDecision: { defer: false, skipPromptGateToolStateCheck: true },
+        forceNoReply: true,
+        retainPendingWake: false,
+      })
+      log("[background-agent] Recorded admit-only parent wake because parent session activity is still fresh:", {
+        sessionID,
+      })
       return
     }
 
@@ -143,10 +172,16 @@ export class ParentWakeFlushRunner {
     await this.sendParentWakePrompt(sessionID, latestWake, {
       emptyAssistantTurnRetry,
       toolWaitDecision: finalToolWaitDecision,
-      ...(forceDispatchAfterActiveDefer ? { skipPromptGateStatusCheck: true } : {}),
+      ...(forceDispatchAfterActiveDefer || forceDispatchAfterSustainedDefer ? { skipPromptGateStatusCheck: true } : {}),
     })
     if (forceDispatchAfterActiveDefer) {
       log("[background-agent] Sent parent wake after active-session defer ceiling:", {
+        sessionID,
+        queuedAgeMs: this.getQueuedAgeMs(latestWake),
+      })
+    }
+    if (forceDispatchAfterSustainedDefer) {
+      log("[background-agent] Sent parent wake after sustained-defer ceiling (idle but streaming):", {
         sessionID,
         queuedAgeMs: this.getQueuedAgeMs(latestWake),
       })
@@ -188,9 +223,16 @@ export class ParentWakeFlushRunner {
   // A retained reply-required wake is only liveness insurance for a deposit the
   // parent never saw. Assistant output created after the noReply admission means
   // the live turn consumed the deposit — re-dispatching it would inject a
-  // duplicate notification and fork a concurrent assistant chain.
+  // duplicate notification and fork a concurrent assistant turn.
+  //
+  // Only a reply-required wake that was genuinely admitted as noReply can be
+  // dropped this way (its shouldReply flag is retained on the pending entry).
+  // An unadmitted reply wake stays queued no matter what the parent produced
+  // (#6546 round 5): the parent's own turn may have merely run an unrelated
+  // tool or produced admit-only output, in which case the allComplete reply is
+  // still owed and the ledger must keep it visible to the recovery sweeps.
   private async dropAdmittedWakeConsumedByParent(sessionID: string, latestWake: PendingParentWake): Promise<boolean> {
-    if (latestWake.noReplyAdmittedAt === undefined) {
+    if (!latestWake.shouldReply || latestWake.noReplyAdmittedAt === undefined) {
       return false
     }
     if (!(await this.deps.sessionInspector.hasAssistantOutputAfterAdmittedWake(sessionID, latestWake))) {
@@ -198,6 +240,7 @@ export class ParentWakeFlushRunner {
     }
     this.deps.pendingQueue.deleteWake(sessionID)
     this.deps.dispatchedTracker.clearWake(sessionID)
+    this.deps.notifierDeps.onAdmittedWakeConsumed?.(sessionID)
     log("[background-agent] Dropped retained parent wake after parent consumed admitted notification:", { sessionID })
     return true
   }
@@ -254,6 +297,15 @@ export class ParentWakeFlushRunner {
   }
 
   private shouldForceDispatchAfterActiveDefer(wake: PendingParentWake): boolean {
+    // A noReply admission already deposited the reminder into the live turn.
+    // Forcing a reply-producing wake while that session is still active forks a
+    // second assistant loop (duplicate [ALL BACKGROUND TASKS COMPLETE] parent
+    // message, cache-busting dual chain). Resume only after the session goes
+    // idle; dropAdmittedWakeConsumedByParent drops the follow-up if the live
+    // turn already consumed the deposit.
+    if (wake.noReplyAdmittedAt !== undefined) {
+      return false
+    }
     return wake.shouldReply && this.getQueuedAgeMs(wake) >= PENDING_PARENT_WAKE_MAX_ACTIVE_DEFER_MS
   }
 

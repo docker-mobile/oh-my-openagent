@@ -6,6 +6,7 @@ import { log } from "../../shared/logger"
 import { normalizeSDKResponse } from "../../shared"
 import { MIN_SESSION_GONE_POLLS } from "../../features/background-agent/session-existence"
 import { formatDeletedSyncSessionError, isSyncSessionDeleted } from "./sync-session-existence"
+import { latestAssistantText } from "./sync-session-latest-text"
 
 export { isSessionComplete } from "./sync-session-turns"
 
@@ -49,9 +50,20 @@ async function fetchSessionMessages(
   client: OpencodeClient,
   sessionID: string
 ): Promise<SessionMessage[]> {
-  const messagesResult = await client.session.messages({ path: { id: sessionID }, query: { limit: 100 } })
-  const rawData = (messagesResult as { data?: unknown })?.data ?? messagesResult
-  return Array.isArray(rawData) ? (rawData as SessionMessage[]) : []
+  const messagesResult = await client.session.messages({ path: { id: sessionID } })
+  const messages = normalizeSDKResponse(messagesResult, [] as SessionMessage[])
+
+  return messages
+    .map((message, index) => ({ message, index }))
+    .sort((a, b) => {
+      const aCreated = a.message.info?.time?.created
+      const bCreated = b.message.info?.time?.created
+      if (aCreated !== undefined && bCreated !== undefined && aCreated !== bCreated) {
+        return aCreated - bCreated
+      }
+      return a.index - b.index
+    })
+    .map(({ message }) => message)
 }
 
 const DEFAULT_MAX_ASSISTANT_TURNS = 300
@@ -272,7 +284,9 @@ export async function pollSyncSession(
         })
         abortSyncSession(client, input.sessionID, "max_turns_exceeded")
         if (input.toastManager && input.taskId) input.toastManager.removeTask(input.taskId)
-        return `Task aborted: subagent exceeded ${maxTurns} assistant turns without completing. This usually indicates an infinite tool-call loop. Session ID: ${input.sessionID}`
+        const abortLine = `Task aborted: subagent exceeded ${maxTurns} assistant turns without completing. This usually indicates an infinite tool-call loop. Session ID: ${input.sessionID}`
+        const latestText = latestAssistantText(messages)
+        return latestText ? `${abortLine}\n\nLatest assistant text before the abort:\n${latestText}` : abortLine
       }
     }
 

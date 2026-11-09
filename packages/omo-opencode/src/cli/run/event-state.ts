@@ -12,6 +12,10 @@ export interface EventState {
   lastEventTimestamp: number
   /** Count of assistant messages for the main session */
   messageCount: number
+  /** Whether the terminal root assistant message contains structured output */
+  hasStructuredOutput: boolean
+  /** Structured output from the terminal root assistant message */
+  structuredOutput: unknown
   /** Current agent name from the latest assistant message */
   currentAgent: string | null
   /** Current model ID from the latest assistant message */
@@ -23,6 +27,10 @@ export interface EventState {
   agentColorsByName: Record<string, string>
   /** Part type registry keyed by partID (text, reasoning, tool, ...) */
   partTypesById: Record<string, string>
+  /** Rendered text baseline per part ID; snapshots are diffed against it so interleaved tool results or sibling parts cannot re-print or splice earlier lines */
+  partTextById: Record<string, string>
+  /** Rendered reasoning baseline per part ID (same dedup contract as partTextById) */
+  reasoningTextById: Record<string, string>
   /** Whether a THINK block is currently open in output */
   inThinkBlock: boolean
   /** Tracks streamed reasoning text to avoid duplicates */
@@ -58,12 +66,16 @@ export function createEventState(): EventState {
     hasReceivedMeaningfulWork: false,
     lastEventTimestamp: Date.now(),
     messageCount: 0,
+    hasStructuredOutput: false,
+    structuredOutput: undefined,
     currentAgent: null,
     currentModel: null,
     currentVariant: null,
     currentMessageRole: null,
     agentColorsByName: {},
     partTypesById: {},
+    partTextById: {},
+    reasoningTextById: {},
     inThinkBlock: false,
     lastReasoningText: "",
     hasPrintedThinkingLine: false,

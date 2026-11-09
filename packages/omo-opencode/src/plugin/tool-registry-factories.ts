@@ -6,6 +6,7 @@ import {
   createTeamShutdownRequestTool,
 } from "../features/team-mode/tools/lifecycle"
 import { createTeamSendMessageTool } from "../features/team-mode/tools/messaging"
+import { createTeamReadMessagesTool } from "../features/team-mode/tools/read-messages"
 import { createTeamListTool, createTeamStatusTool } from "../features/team-mode/tools/query"
 import {
   createTeamTaskCreateTool,
@@ -17,6 +18,7 @@ import {
   createBackgroundTools,
   createCallOmoAgent,
   createDelegateTask,
+  createDshAgentTool,
   createGlobTools,
   createGrepTools,
   createHashlineEditTool,
@@ -44,6 +46,7 @@ export type ToolRegistryFactories = {
   createGlobTools: typeof createGlobTools
   createSessionManagerTools: typeof createSessionManagerTools
   createDelegateTask: typeof createDelegateTask
+  createDshAgentTool: typeof createDshAgentTool
   discoverCommandsSync: typeof discoverCommandsSync
   interactive_bash: typeof interactive_bash
   createTaskCreateTool: typeof createTaskCreateTool
@@ -57,6 +60,7 @@ export type ToolRegistryFactories = {
   createTeamRejectShutdownTool: typeof createTeamRejectShutdownTool
   createTeamShutdownRequestTool: typeof createTeamShutdownRequestTool
   createTeamSendMessageTool: typeof createTeamSendMessageTool
+  createTeamReadMessagesTool: typeof createTeamReadMessagesTool
   createTeamTaskCreateTool: typeof createTeamTaskCreateTool
   createTeamTaskGetTool: typeof createTeamTaskGetTool
   createTeamTaskListTool: typeof createTeamTaskListTool
@@ -76,6 +80,7 @@ export const defaultToolRegistryFactories: ToolRegistryFactories = {
   createGlobTools,
   createSessionManagerTools,
   createDelegateTask,
+  createDshAgentTool,
   discoverCommandsSync,
   interactive_bash,
   createTaskCreateTool,
@@ -89,6 +94,7 @@ export const defaultToolRegistryFactories: ToolRegistryFactories = {
   createTeamRejectShutdownTool,
   createTeamShutdownRequestTool,
   createTeamSendMessageTool,
+  createTeamReadMessagesTool,
   createTeamTaskCreateTool,
   createTeamTaskGetTool,
   createTeamTaskListTool,

@@ -15,6 +15,8 @@ export const TARGET_TOOLS = new Set([
   "context7_resolve-library-id",
   "context7_query-docs",
   "websearch_web_search_exa",
+  "websearch_web_search",
+  "websearch_web_fetch",
   "grep_app_searchgithub",
 ]);
 
@@ -31,7 +33,7 @@ You called a search/fetch tool directly without leveraging specialized agents.
 RECOMMENDED: Use task with explore/librarian agents for better results:
 
 \`\`\`
-// Parallel exploration - fire multiple agents simultaneously
+// Parallel read-only exploration - fire independent agents simultaneously
 task(subagent_type="explore", load_skills=[], prompt="Find all files matching pattern X")
 task(subagent_type="explore", load_skills=[], prompt="Search for implementation of Y")
 task(subagent_type="librarian", load_skills=[], prompt="Lookup documentation for Z")
@@ -42,9 +44,10 @@ task(subagent_type="librarian", load_skills=[], prompt="Lookup documentation for
 
 WHY:
 - Agents can perform deeper, more thorough searches
-- Background tasks run in parallel, saving time
+- Independent read-only background tasks can run in parallel, saving time
 - Specialized agents have domain expertise
 - Reduces context window usage in main session
 
-ALWAYS prefer: Multiple parallel task calls > Direct tool calls
+Prefer parallel task calls for independent read-only exploration.
+For mutation-capable work, serialize write agents unless each agent has an isolated worktree/branch and clearly scoped ownership.
 `;

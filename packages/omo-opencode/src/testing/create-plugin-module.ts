@@ -33,6 +33,7 @@ import { logLegacyPluginStartupWarning } from "../shared/log-legacy-plugin-start
 import { migrateLegacyWorkspaceDirectory } from "../shared/legacy-workspace-migration"
 import { sweepOmoFamiliesBestEffort } from "../shared/omo-process-sweep"
 import { injectServerAuthIntoClient } from "../shared/opencode-server-auth"
+import { PROCESS_LISTENERS_CAP_DEFAULT, raiseProcessListenersCap } from "../shared/raise-process-listeners-cap"
 import { recordPluginTelemetry } from "../shared/posthog"
 import {
   initLiveServerRoute,
@@ -53,6 +54,10 @@ type HooksWithRuntimeLifecycle = Hooks & {
   dispose?: () => Promise<void>
 }
 
+export type DualPluginModule = PluginModule & {
+  setup: (context: unknown) => void | Promise<void>
+}
+
 export type PluginModuleDeps = {
   initConfigContext: typeof initConfigContext
   installAgentSortShim: typeof installAgentSortShim
@@ -60,6 +65,7 @@ export type PluginModuleDeps = {
   log: typeof log
   logLegacyPluginStartupWarning: typeof logLegacyPluginStartupWarning
   migrateLegacyWorkspaceDirectory: typeof migrateLegacyWorkspaceDirectory
+  raiseProcessListenersCap: typeof raiseProcessListenersCap
   runOpenCodeStartupMigration: typeof runOpenCodeStartupMigration
   startOmoProcessSweep: () => Promise<void>
   detectDuplicateOmoPlugin: typeof detectDuplicateOmoPlugin
@@ -94,6 +100,7 @@ const defaultPluginModuleDeps: PluginModuleDeps = {
   log,
   logLegacyPluginStartupWarning,
   migrateLegacyWorkspaceDirectory,
+  raiseProcessListenersCap,
   runOpenCodeStartupMigration,
   startOmoProcessSweep: () => sweepOmoFamiliesBestEffort({ log }),
   detectDuplicateOmoPlugin,
@@ -158,10 +165,16 @@ function startupToastBody(input: {
   return undefined
 }
 
-export function createPluginModule(overrides: Partial<PluginModuleDeps> = {}): PluginModule {
+export function createPluginModule(overrides: Partial<PluginModuleDeps> = {}): DualPluginModule {
   const deps = { ...defaultPluginModuleDeps, ...overrides }
   let startupMigration: ReturnType<PluginModuleDeps["runOpenCodeStartupMigration"]> | undefined
   const serverPlugin: Plugin = async (input, _options): Promise<Hooks> => {
+    // Raise the process listener cap at the earliest startup point — before any
+    // manager/hook/tmux listener registers — so the MaxListenersExceededWarning
+    // does not fire on legitimate accumulation (#4334). Done here rather than at
+    // module import so merely importing the entry never mutates host-global
+    // `process` state.
+    deps.raiseProcessListenersCap(PROCESS_LISTENERS_CAP_DEFAULT)
     deps.installAgentSortShim()
     deps.initConfigContext("opencode", null)
     deps.log("[oh-my-openagent] ENTRY - plugin loading", {
@@ -243,7 +256,25 @@ export function createPluginModule(overrides: Partial<PluginModuleDeps> = {}): P
     let runtimeSkillSource: Awaited<ReturnType<PluginModuleDeps["createRuntimeSkillSourceServer"]>> | undefined
     if (runtimeSecuritySkills.length > 0) {
       try {
-        runtimeSkillSource = await deps.createRuntimeSkillSourceServer({ skills: runtimeSecuritySkills })
+        // Startup perf (A3): bound the runtime skill source handshake so a
+        // slow server cannot stall opencode's session boot. On timeout the
+        // server is skipped for this session (graceful degradation — the
+        // catch below logs and continues without config.skills.urls).
+        let skillSourceTimer: ReturnType<typeof setTimeout> | undefined
+        const skillSourceTimeout = new Promise<never>((_, reject) => {
+          skillSourceTimer = setTimeout(
+            () => reject(new Error("runtime skill source server did not become ready within 500ms")),
+            500,
+          )
+        })
+        try {
+          runtimeSkillSource = await Promise.race([
+            deps.createRuntimeSkillSourceServer({ skills: runtimeSecuritySkills }),
+            skillSourceTimeout,
+          ])
+        } finally {
+          clearTimeout(skillSourceTimer)
+        }
       } catch (error) {
         const detail = error instanceof Error ? error.message : String(error)
         console.warn(`[runtime-skills] bundled security skill source unavailable; continuing without config.skills.urls: ${detail}`)
@@ -352,6 +383,7 @@ export function createPluginModule(overrides: Partial<PluginModuleDeps> = {}): P
 
   return {
     id: "oh-my-openagent",
+    setup: () => {},
     server: serverPlugin,
   }
 }

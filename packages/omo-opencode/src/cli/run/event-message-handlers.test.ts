@@ -3,7 +3,7 @@
 import { describe, expect, it, spyOn } from "bun:test"
 import { unsafeTestValue } from "../../../../../test-support/unsafe-test-value"
 import { createEventState } from "./events"
-import { handleMessagePartUpdated, handleMessageUpdated } from "./event-handlers"
+import { handleMessagePartDelta, handleMessagePartUpdated, handleMessageUpdated } from "./event-handlers"
 import { createMockContext, joinWriteCalls } from "./event-handler-test-support.test"
 
 describe("handleMessagePartUpdated", () => {
@@ -148,6 +148,150 @@ describe("handleMessagePartUpdated", () => {
     stdoutSpy.mockRestore()
   })
 
+  it("does not reprint a text part snapshot after an interleaved tool result", () => {
+    //#given
+    const ctx = createMockContext("ses_main")
+    const state = createEventState()
+    const stdoutSpy = spyOn(process.stdout, "write").mockImplementation(() => true)
+
+    const partEvent = (part: Record<string, unknown>) =>
+      unsafeTestValue({
+        type: "message.part.updated",
+        properties: { part: { sessionID: "ses_main", messageID: "msg_1", ...part } },
+      })
+
+    //#when
+    handleMessagePartUpdated(ctx, partEvent({ id: "part_text", type: "text", text: "alpha\nbeta\n" }), state)
+    handleMessagePartUpdated(
+      ctx,
+      partEvent({ id: "part_tool", type: "tool", tool: "read", state: { status: "running", input: {} } }),
+      state,
+    )
+    handleMessagePartUpdated(
+      ctx,
+      partEvent({
+        id: "part_tool",
+        type: "tool",
+        tool: "read",
+        state: { status: "completed", input: {}, output: "file contents" },
+      }),
+      state,
+    )
+    handleMessagePartUpdated(
+      ctx,
+      partEvent({ id: "part_text", type: "text", text: "alpha\nbeta\ngamma\n", time: { end: 1 } }),
+      state,
+    )
+
+    //#then
+    const output = joinWriteCalls(stdoutSpy.mock.calls)
+    expect(output.split("alpha").length - 1).toBe(1)
+    expect(output.split("beta").length - 1).toBe(1)
+    expect(output.split("gamma").length - 1).toBe(1)
+    stdoutSpy.mockRestore()
+  })
+
+  it("renders a new text part whose snapshot is shorter than the previous part accumulator", () => {
+    //#given
+    const ctx = createMockContext("ses_main")
+    const state = createEventState()
+    const stdoutSpy = spyOn(process.stdout, "write").mockImplementation(() => true)
+
+    //#when
+    handleMessagePartUpdated(
+      ctx,
+      unsafeTestValue({
+        type: "message.part.updated",
+        properties: {
+          part: {
+            id: "part_1",
+            sessionID: "ses_main",
+            messageID: "msg_1",
+            type: "text",
+            text: "A".repeat(64),
+          },
+        },
+      }),
+      state,
+    )
+    handleMessagePartUpdated(
+      ctx,
+      unsafeTestValue({
+        type: "message.part.updated",
+        properties: {
+          part: {
+            id: "part_2",
+            sessionID: "ses_main",
+            messageID: "msg_1",
+            type: "text",
+            text: "second part body",
+          },
+        },
+      }),
+      state,
+    )
+
+    //#then
+    const output = joinWriteCalls(stdoutSpy.mock.calls)
+    expect(output).toContain("second part body")
+    stdoutSpy.mockRestore()
+  })
+
+  it("prints only the grown suffix when a text part snapshot extends its own previous text", () => {
+    //#given
+    const ctx = createMockContext("ses_main")
+    const state = createEventState()
+    const stdoutSpy = spyOn(process.stdout, "write").mockImplementation(() => true)
+
+    const textEvent = (text: string) =>
+      unsafeTestValue({
+        type: "message.part.updated",
+        properties: {
+          part: { id: "part_1", sessionID: "ses_main", messageID: "msg_1", type: "text", text },
+        },
+      })
+
+    //#when
+    handleMessagePartUpdated(ctx, textEvent("hello"), state)
+    handleMessagePartUpdated(ctx, textEvent("hello world"), state)
+
+    //#then
+    const output = joinWriteCalls(stdoutSpy.mock.calls)
+    expect(output.split("hello").length - 1).toBe(1)
+    expect(output.split("world").length - 1).toBe(1)
+    stdoutSpy.mockRestore()
+  })
+
+  it("does not duplicate text when deltas are followed by a full snapshot for the same part", () => {
+    //#given
+    const ctx = createMockContext("ses_main")
+    const state = createEventState()
+    const stdoutSpy = spyOn(process.stdout, "write").mockImplementation(() => true)
+
+    const deltaEvent = (delta: string) =>
+      unsafeTestValue({
+        type: "message.part.delta",
+        properties: { sessionID: "ses_main", messageID: "msg_1", partID: "part_1", field: "text", delta },
+      })
+    const snapshotEvent = (text: string) =>
+      unsafeTestValue({
+        type: "message.part.updated",
+        properties: {
+          part: { id: "part_1", sessionID: "ses_main", messageID: "msg_1", type: "text", text },
+        },
+      })
+
+    //#when
+    handleMessagePartDelta(ctx, deltaEvent("Hel"), state)
+    handleMessagePartDelta(ctx, deltaEvent("lo"), state)
+    handleMessagePartUpdated(ctx, snapshotEvent("Hello"), state)
+
+    //#then
+    const output = joinWriteCalls(stdoutSpy.mock.calls)
+    expect(output.split("Hello").length - 1).toBe(1)
+    stdoutSpy.mockRestore()
+  })
+
   it("prints completion metadata once when assistant text part is completed", () => {
     //#given
     const nowSpy = spyOn(Date, "now").mockReturnValue(3400)
@@ -221,6 +365,69 @@ describe("handleMessagePartUpdated", () => {
 })
 
 describe("handleMessageUpdated", () => {
+  it("captures structured output only from the root assistant message", () => {
+    //#given
+    const ctx = createMockContext("ses_main")
+    const state = createEventState()
+    const stdoutSpy = spyOn(process.stdout, "write").mockImplementation(() => true)
+
+    //#when
+    handleMessageUpdated(ctx, unsafeTestValue({
+      type: "message.updated",
+      properties: {
+        info: {
+          id: "msg_child",
+          sessionID: "ses_child",
+          role: "assistant",
+          structured: { status: "child" },
+        },
+      },
+    }), state)
+    handleMessageUpdated(ctx, unsafeTestValue({
+      type: "message.updated",
+      properties: {
+        info: {
+          id: "msg_root",
+          sessionID: "ses_main",
+          role: "assistant",
+          structured: { status: "completed" },
+        },
+      },
+    }), state)
+
+    //#then
+    expect(state.hasStructuredOutput).toBe(true)
+    expect(state.structuredOutput).toEqual({ status: "completed" })
+    stdoutSpy.mockRestore()
+  })
+
+  it("does not reuse structured output from an older assistant message", () => {
+    //#given
+    const ctx = createMockContext("ses_main")
+    const state = createEventState()
+    state.currentMessageId = "msg_old"
+    state.hasStructuredOutput = true
+    state.structuredOutput = { status: "stale" }
+    const stdoutSpy = spyOn(process.stdout, "write").mockImplementation(() => true)
+
+    //#when
+    handleMessageUpdated(ctx, unsafeTestValue({
+      type: "message.updated",
+      properties: {
+        info: {
+          id: "msg_new",
+          sessionID: "ses_main",
+          role: "assistant",
+        },
+      },
+    }), state)
+
+    //#then
+    expect(state.hasStructuredOutput).toBe(false)
+    expect(state.structuredOutput).toBeUndefined()
+    stdoutSpy.mockRestore()
+  })
+
   it("resets streamed text and reasoning state for a new assistant message", () => {
     //#given
     const nowSpy = spyOn(Date, "now").mockReturnValue(9000)
