@@ -17,6 +17,7 @@ export class R2UploadError extends Error {
     readonly status: number,
     readonly code: string = "UnknownError",
     readonly requestId: string | null = null,
+    readonly cfRay: string | null = null,
   ) {
     super(message)
     this.name = "R2UploadError"
@@ -27,6 +28,7 @@ type BodylessMethod = "HEAD" | "GET" | "DELETE"
 
 const EMPTY_SHA256 = createHash("sha256").digest("hex")
 const hmac = (key: Buffer | string, data: string) => createHmac("sha256", key).update(data).digest()
+const BODY_EXCERPT_CHARS = 200
 const encodeKey = (key: string) => key.split("/").map((part) => encodeURIComponent(part)).join("/")
 
 /** Replaces the secret before the access key, so an access key inside the secret cannot leave a fragment of it. */
@@ -84,10 +86,20 @@ async function toUploadError(credentials: R2Credentials, method: string, key: st
   const body = await response.text()
   const redact = credentialRedactor(credentials)
   const code = redact(/<Code>([^<]*)<\/Code>/.exec(body)?.[1] ?? "UnknownError")
-  const id = response.headers.get("x-amz-request-id") || /<RequestId>([^<]*)<\/RequestId>/.exec(body)?.[1] || response.headers.get("cf-ray") || null
+  const cfRay = response.headers.get("cf-ray")
+  const id = response.headers.get("x-amz-request-id") || /<RequestId>([^<]*)<\/RequestId>/.exec(body)?.[1] || cfRay || null
   const requestId = id === null ? null : redact(id)
-  const message = redact(`${method} ${key} -> HTTP ${response.status} ${code}: ${/<Message>([^<]*)<\/Message>/.exec(body)?.[1] ?? response.statusText}; requestId=${requestId ?? "(not provided)"}`)
-  return new R2UploadError(message, response.status, code, requestId)
+  // A non-XML failure (an edge 502 HTML page, a proxy error) carries no <Code>/<Message>, so the status text alone
+  // tells nothing. Keep a redacted, length-bounded single-line excerpt so the failure stays diagnosable.
+  const xmlMessage = /<Message>([^<]*)<\/Message>/.exec(body)?.[1]
+  const collapsed = body.replace(/\s+/g, " ").trim()
+  const excerpt = xmlMessage === undefined && collapsed !== ""
+    ? `; body=${redact(collapsed.slice(0, BODY_EXCERPT_CHARS))}`
+    : ""
+  const message = redact(
+    `${method} ${key} -> HTTP ${response.status} ${code}: ${xmlMessage ?? response.statusText}; requestId=${requestId ?? "(not provided)"}; cfRay=${cfRay ?? "(not provided)"}${excerpt}`,
+  )
+  return new R2UploadError(message, response.status, code, requestId, cfRay)
 }
 
 export async function deleteObject(credentials: R2Credentials, key: string): Promise<void> {
