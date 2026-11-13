@@ -78,7 +78,9 @@ describe("the canonical lock and record paths", () => {
   test("derive the cross-repo golden vector for the production origin", () => {
     // The desktop vendored lock module asserts the same vector; a drift on either side splits the lock.
     const paths = credentialLockPaths("https://api.omc.nga.hm", "/home/fixture")
-    const id = "71643f4acfe42d71eb5b691bc773d98f41e05a6589f10347e4146f4a81cebbd2"
+    // Pinned for api.omc.nga.hm; the domain rename moved it off the api.omo.dev vector, so both
+    // sides must be re-pinned together or this test asserts an id the code can never produce.
+    const id = "fad4f3de42c4302142441a9b296f0626fb45e6d31322f478d02e5a0311ac4b28"
     // The id is the cross-repo vector; the separators are the platform's own, as on the desktop side.
     const directory = join("/home/fixture", ".omc", "session-locks")
     expect(paths).toEqual({
