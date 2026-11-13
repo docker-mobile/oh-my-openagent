@@ -9,6 +9,7 @@ import { configureAccountKeysCommands } from "./account-keys/commands"
 import { configureServiceAuthCommands } from "./service-auth/commands"
 import { resolveInstallArgs, type InstallCommandOptions } from "./install-command-options"
 import { configureRuntimeCommands } from "./runtime-commands"
+import { renderBrandHeader } from "./brand-banner"
 import { runConfigMigrate } from "./config-migrate"
 import { availableInstallPlatforms } from "./native-dev-platform-flag"
 import type { InstallArgs } from "./types"
@@ -49,6 +50,7 @@ program
   .helpOption("-h, --help", "Display help for command")
   .addOption(new Option("--platform <platform>", `Install target platform: ${availableInstallPlatforms().join(", ")}`).choices(availableInstallPlatforms()).hideHelp())
   .enablePositionalOptions()
+  .addHelpText("beforeAll", () => renderBrandHeader().join("\n"))
 
 program
   .command("install")
