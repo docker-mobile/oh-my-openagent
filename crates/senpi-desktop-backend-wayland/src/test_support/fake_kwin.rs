@@ -154,7 +154,7 @@ impl Script {
             .call_method(
                 Some(service.as_str()),
                 path.as_str(),
-                Some("dev.omo.SenpiDesktop.KwinGeometry"),
+                Some("dev.omc.SenpiDesktop.KwinGeometry"),
                 "Windows",
                 &(reply,),
             )

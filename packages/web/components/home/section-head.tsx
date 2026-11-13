@@ -1,6 +1,6 @@
 import type { JSX, ReactNode } from "react"
 
-/** The status dot the current omo.dev eyebrows carry: teal for a keyword you type, amber for work in flight. */
+/** The status dot the current omc.nga.hm eyebrows carry: teal for a keyword you type, amber for work in flight. */
 export type HeadDot = "accent" | "busy"
 
 /** The numbered eyebrow, the two-tone headline (statement, then its consequence in --ink-soft) and the lede. */

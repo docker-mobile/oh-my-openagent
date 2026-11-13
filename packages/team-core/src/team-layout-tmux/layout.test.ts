@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, mock, test } from "bun:test"
 import { existsSync, mkdtempSync, rmSync, statSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { dirname, join } from "node:path"
-import { createPaneAuthDirectory } from "@oh-my-opencode/tmux-core"
+import { createPaneAuthDirectory } from "@oh-my-cybersecurity/tmux-core"
 
 import { canVisualize, createTeamLayout, removeTeamLayout, type TeamLayoutCleanupTarget, type TeamLayoutDeps } from "./layout"
 
@@ -200,10 +200,10 @@ describe("team-layout-tmux", () => {
     expect(literals.some((s) => s.includes("--session 's-m2'"))).toBe(true)
 
     const paneOptionCalls = commands.filter((args) => args[0] === "set-option" && args[1] === "-p")
-    expect(paneOptionCalls).toContainEqual(["set-option", "-p", "-t", "%1", "@omo_attach_server_url", "http://127.0.0.1:12345"])
-    expect(paneOptionCalls).toContainEqual(["set-option", "-p", "-t", "%1", "@omo_attach_session_id", "s-m1"])
-    expect(paneOptionCalls).toContainEqual(["set-option", "-p", "-t", "%2", "@omo_attach_server_url", "http://127.0.0.1:12345"])
-    expect(paneOptionCalls).toContainEqual(["set-option", "-p", "-t", "%2", "@omo_attach_session_id", "s-m2"])
+    expect(paneOptionCalls).toContainEqual(["set-option", "-p", "-t", "%1", "@omc_attach_server_url", "http://127.0.0.1:12345"])
+    expect(paneOptionCalls).toContainEqual(["set-option", "-p", "-t", "%1", "@omc_attach_session_id", "s-m1"])
+    expect(paneOptionCalls).toContainEqual(["set-option", "-p", "-t", "%2", "@omc_attach_server_url", "http://127.0.0.1:12345"])
+    expect(paneOptionCalls).toContainEqual(["set-option", "-p", "-t", "%2", "@omc_attach_session_id", "s-m2"])
   })
 
   test("#given a worktree path holding tmux format syntax #when panes are split #then -c gets every # doubled so tmux keeps the path literal (#10233)", async () => {
@@ -435,21 +435,21 @@ describe("team-layout-tmux", () => {
     expect(commands.some((args) => args[0] === "kill-session")).toBe(false)
   })
 
-  test("#given ownedSession=true, targetSessionId='omo-team-xyz' #when removeTeamLayout runs #then kill-session is called with -t omo-team-xyz (legacy behavior preserved)", async () => {
+  test("#given ownedSession=true, targetSessionId='omc-team-xyz' #when removeTeamLayout runs #then kill-session is called with -t omc-team-xyz (legacy behavior preserved)", async () => {
     // given
     const { removeTeamLayout } = await loadLayoutModule()
 
     // when
     await removeTeamLayout("run-cleanup", {
       ownedSession: true,
-      targetSessionId: "omo-team-xyz",
+      targetSessionId: "omc-team-xyz",
       focusWindowId: "@10",
       gridWindowId: "@11",
     }, tmuxMgr as never)
 
     // then
     const commands = getCommands()
-    expect(commands).toContainEqual(["kill-session", "-t", "omo-team-xyz"])
+    expect(commands).toContainEqual(["kill-session", "-t", "omc-team-xyz"])
   })
 
   test("#given ownedSession=false and the first kill-window fails #when removeTeamLayout runs #then the second kill-window still fires", async () => {

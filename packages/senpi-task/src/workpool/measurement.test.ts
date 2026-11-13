@@ -23,7 +23,7 @@ function report(extra: Partial<MeasurementReport> = {}, runs?: MeasurementRun[])
   const body = {
     schema_version: 1 as const, plan_sha256: digest, design: "AB/BA" as const, width: 2 as const,
     batch_sha256: batch.batch_sha256, source_sha256: batch.source_sha256, item_count: 12 as const,
-    senpi_items: 6 as const, omo_items: 6 as const, token_coverage: true, budget_exhausted: false,
+    senpi_items: 6 as const, omc_items: 6 as const, token_coverage: true, budget_exhausted: false,
     duplicate_dispatches: 0, uncertain_dispatches: 0,
     runs: runs ?? ["fresh", "keep_alive", "keep_alive", "fresh"].map(mode => run(mode as MeasurementRun["mode"])),
     ...extra,
@@ -34,11 +34,11 @@ function report(extra: Partial<MeasurementReport> = {}, runs?: MeasurementRun[])
 test("#given frozen batch #when fixture is loaded #then twelve pinned items split six/six with independent expected exports", () => {
   expect(batch.items).toHaveLength(12)
   expect(batch.items.filter(item => item.repo === "senpi")).toHaveLength(6)
-  expect(batch.items.filter(item => item.repo === "omo")).toHaveLength(6)
+  expect(batch.items.filter(item => item.repo === "omc")).toHaveLength(6)
   expect(batch.items.map(item => item.key)).toEqual([
     "senpi-reserved-agent-tool", "senpi-runtime-badge", "senpi-bridge-timeout", "senpi-stream-fn",
-    "senpi-resolve-tool-path", "senpi-experimental", "omo-once-only", "omo-execution-mode",
-    "omo-yield-tool", "omo-dag-directive", "omo-clamp-wait", "omo-runner-error",
+    "senpi-resolve-tool-path", "senpi-experimental", "omc-once-only", "omc-execution-mode",
+    "omc-yield-tool", "omc-dag-directive", "omc-clamp-wait", "omc-runner-error",
   ])
   expect(scoreYield({ export: "onceOnly" }, batch.items[6]?.expected)).toBe(true)
   expect(scoreYield({ export: "wrong" }, batch.items[6]?.expected)).toBe(false)

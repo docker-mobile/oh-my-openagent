@@ -133,7 +133,7 @@ describe("Docker QA harness", () => {
     // then
     expect(existsSync(path), ".devcontainer/qa.Dockerfile must exist").toBe(true)
     const raw = read(path)
-    expect(raw).toContain("FROM omo-dev")
+    expect(raw).toContain("FROM omc-dev")
     expect(raw).toContain("opencode-ai")
     expect(raw).toContain("@openai/codex")
   })

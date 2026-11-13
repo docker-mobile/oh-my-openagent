@@ -1,0 +1,297 @@
+import { mkdtempSync, readdirSync, readFileSync, rmSync } from "node:fs"
+import { tmpdir } from "node:os"
+import { dirname, join } from "node:path"
+import { runChild } from "./child-process.js"
+import { fetchNpmDistTagsSync } from "./npm-dist-tags.js"
+import { channelDistTagVersion, channelPackageSpec, packageManifest, packageRoot, readJson, releaseChannel, resolveSenpi, updateTarget } from "./package-paths.js"
+import { isPrintOnlyUpdate, updateUsageAnswer } from "./update-args.js"
+import { findHolders, heldTarget, isLockFailure, listWindowsProcesses, LOCK_RETRY_DELAYS_MS } from "./update-lock.js"
+
+export { isPrintOnlyUpdate }
+
+export function formatUpdateCommand(update) {
+  return `omc is updated via ${update.manager}: ${update.command}`
+}
+
+// npm 11+ ends a global install with an `install-scripts` warning for install scripts that no `allowScripts`
+// entry covers (#9281). npm 11 still runs them ("not yet covered"), npm 12 blocks them. The update never
+// passes `--allow-scripts` itself; it only explains the notice, because npm's own suggested command has no
+// package name. The notice is read from npm's own debug log, not from the child's output, so npm keeps the
+// terminal (colour, progress). The log carries the same `<id> warn install-scripts ...` lines the terminal does.
+const ALLOW_SCRIPTS_HEADER = /install scripts (blocked because they are not|not yet) covered by allowScripts/
+const NOTICE_PACKAGE_LINE = /^(?:npm|\d+) warn install-scripts +((?:@[^/\s@]+\/)?[^@\s]+)(?:@\S+)? \(/gm
+// Packages whose install scripts omc does not need; only these are described as safe to skip.
+// omc-ai itself is listed for its own postinstall (bin/senpi-patch.mjs): the launcher prepares the engine on
+// first launch (ensureEnginePrepared in engine-prepare.js), so omc works without it.
+const SKIPPABLE_SCRIPTS = ["omc-ai", "esbuild", "@google/genai", "protobufjs"]
+
+/**
+ * @param {string} log npm debug log text
+ * @returns {{ blocked: boolean, packages: string[] } | null} null when npm reported no allowScripts notice
+ */
+export function parseAllowScriptsNotice(log) {
+  const header = ALLOW_SCRIPTS_HEADER.exec(log)
+  if (!header) return null
+  const packages = [...new Set([...log.matchAll(NOTICE_PACKAGE_LINE)].map((match) => match[1]))]
+  return { blocked: header[1].startsWith("blocked"), packages }
+}
+
+/** The decision behind the guidance: which reported packages omc vouches for (`known`) and which it has not reviewed. */
+export function classifyAllowScriptsNotice(notice) {
+  return {
+    blocked: notice.blocked,
+    known: notice.packages.filter((name) => SKIPPABLE_SCRIPTS.includes(name)),
+    other: notice.packages.filter((name) => !SKIPPABLE_SCRIPTS.includes(name)),
+  }
+}
+
+/** Guidance lines; empty when the log named no package, so a notice header alone prints nothing. */
+export function formatAllowScriptsGuidance(update, notice) {
+  const { blocked, known, other } = classifyAllowScriptsNotice(notice)
+  if (known.length + other.length === 0) return []
+  const spec = update.argv[update.argv.length - 1]
+  const lines = []
+  if (known.length > 0) {
+    lines.push(blocked
+      ? `omc: npm blocked the install scripts of ${known.join(", ")}; omc works without them`
+      : `omc: npm ran the install scripts of ${known.join(", ")}; omc does not need them, so the notice is informational`)
+  }
+  if (other.length > 0) {
+    lines.push(`omc: npm ${blocked ? "blocked" : "ran"} the install scripts of ${other.join(", ")}; omc has not reviewed them`)
+  }
+  lines.push(`omc: if npm suggested a command without a package name, ignore it; to reinstall use: npm i -g ${spec}`)
+  return lines
+}
+
+function readNpmDebugLogs(dir) {
+  try {
+    return readdirSync(dir)
+      .filter((name) => /-debug-\d+\.log$/.test(name))
+      .sort()
+      .map((name) => readFileSync(join(dir, name), "utf8"))
+      .join("\n")
+  } catch {
+    // An unreadable log only means no guidance; it must never fail an update that already ran.
+    return ""
+  }
+}
+
+export function readInstalledVersion() {
+  let engine = "unknown"
+  try {
+    engine = readJson(join(resolveSenpi().packageRoot, "package.json")).version
+  } catch {
+    // The product version is still reportable when the engine tree cannot be resolved.
+  }
+  return { omc: packageManifest().version, engine }
+}
+
+export function formatVersionChange(before, after) {
+  return `omc ${before.omc} -> ${after.omc} (engine: senpi ${after.engine})`
+}
+
+/**
+ * Resolves the version the running build's channel dist-tag names (the lookup `omc doctor` uses for
+ * "Latest"), then prints and optionally runs the package-manager command that installs exactly that
+ * version. `--help`/`-h` print the usage and an unknown flag exits 2, both before the registry lookup,
+ * so neither can install anything (#9207). `--dry-run` and `--print` print the resolved command only.
+ * Already on the target, it says so and installs nothing. After a manager exit 0 it re-reads the installed version: one that did not
+ * reach the target exits non-zero with the retry command, because the manager's own success does not
+ * prove the install moved (#9198). An unreachable registry falls back to the unpinned channel spec.
+ * `run` defaults to `runChild` so tests inject a spawn without touching the child-process helper.
+ *
+ * On Windows a manager failure whose stderr says a file is held (EPERM/EBUSY, #10090) is retried with
+ * backoff. If the file stays held, the report names the file, the processes of this install that hold it
+ * and one action, and only an install that can no longer be read is reinstalled at the previous version; any readable version is kept.
+ *
+ * @typedef {{ omc: string, engine: string }} InstalledVersion
+ * @typedef {{ status: number | null, signal: string | null, stderr?: string }} ChildResult
+ * @typedef {{ stdio?: "inherit", windowsHide?: boolean, env?: NodeJS.ProcessEnv, captureStderr?: boolean, onBeforeSignalExit?: () => void }} RunOptions
+ * @typedef {import("./update-lock.js").ProcessEntry} ProcessEntry
+ * @typedef {{ manager: string, command: string, argv: string[], env?: Record<string, string> }} UpdateTarget
+ * @typedef {{
+ *   resolveUpdate?: (targetVersion?: string) => UpdateTarget,
+ *   fetchDistTags?: () => Record<string, unknown> | null,
+ *   log?: (line: string) => void,
+ *   error?: (line: string) => void,
+ *   run?: (command: string, args: string[], options?: RunOptions) => Promise<ChildResult>,
+ *   readInstalled?: () => InstalledVersion,
+ *   env?: NodeJS.ProcessEnv,
+ *   platform?: NodeJS.Platform,
+ *   sleep?: (ms: number) => Promise<void>,
+ *   listProcesses?: () => ProcessEntry[],
+ *   installDir?: string,
+ *   selfPids?: number[],
+ * }} SelfUpdateOptions
+ * @param {string[]} args
+ * @param {SelfUpdateOptions} [options]
+ * @returns {Promise<number>}
+ */
+export async function runSelfUpdate(args, options = {}) {
+  const resolveUpdate = options.resolveUpdate
+    ?? ((targetVersion) => updateTarget(undefined, undefined, undefined, undefined, undefined, targetVersion))
+  const fetchDistTags = options.fetchDistTags ?? fetchNpmDistTagsSync
+  const log = options.log ?? ((line) => console.log(line))
+  const error = options.error ?? ((line) => console.error(line))
+  const run = options.run ?? runChild
+  const readInstalled = options.readInstalled ?? readInstalledVersion
+  const env = options.env ?? process.env
+  const platform = options.platform ?? process.platform
+  const sleep = options.sleep ?? ((ms) => new Promise((resolve) => setTimeout(resolve, ms)))
+
+  const usage = updateUsageAnswer(args)
+  if (usage !== undefined) {
+    ;(usage.stream === "stderr" ? error : log)(usage.text)
+    return usage.exitCode
+  }
+
+  const before = readInstalled()
+  const channel = releaseChannel(before.omc)
+  const target = channelDistTagVersion(fetchDistTags(), before.omc)
+  const update = resolveUpdate(target)
+
+  if (target === undefined) {
+    log(`omc: could not confirm the ${channel} omc-ai version from the npm registry; installing the unpinned ${channelPackageSpec(before.omc)}`)
+  }
+  if (isPrintOnlyUpdate(args)) {
+    log(formatUpdateCommand(update))
+    return 0
+  }
+  if (target !== undefined && target === before.omc) {
+    // Already on the target, the update installs nothing, so a broken engine tree needs the reinstall named.
+    if (before.engine === "unknown") {
+      error(`omc ${before.omc} is up to date, but its engine files are missing or incomplete; reinstall with: ${update.command}`)
+      return 1
+    }
+    log(`omc ${before.omc} is up to date (omc-ai@${channel} is ${target})`)
+    return 0
+  }
+  log(formatUpdateCommand(update))
+
+  // npm keeps the inherited terminal; its debug log, pinned to a fresh directory, is where the notice is read.
+  let npmLogsDir
+  if (update.manager === "npm") {
+    try {
+      npmLogsDir = mkdtempSync(join(tmpdir(), "omc-npm-logs-"))
+    } catch {
+      // An unusable temp dir only costs the guidance: npm still runs exactly as it did without a logs dir.
+    }
+  }
+  const removeLogsDir = () => {
+    try {
+      rmSync(npmLogsDir, { recursive: true, force: true })
+    } catch {
+      // Cleanup (EBUSY/EPERM on Windows) must never change the exit code of an update that already ran.
+    }
+  }
+  const install = async (target) => {
+    const [command, ...argv] = target.argv
+    return run(command, argv, {
+      stdio: "inherit",
+      windowsHide: true,
+      env: { ...env, ...target.env, ...(npmLogsDir ? { npm_config_logs_dir: npmLogsDir } : {}) },
+      captureStderr: platform === "win32",
+      ...(npmLogsDir ? { onBeforeSignalExit: removeLogsDir } : {}),
+    })
+  }
+  const failed = (result) => Boolean(result.signal) || (result.status ?? 1) !== 0
+  const heldOnWindows = (result) => platform === "win32" && !result.signal && isLockFailure(result.stderr)
+
+  let result
+  let npmLog = ""
+  try {
+    for (let attempt = 0; ; attempt += 1) {
+      try {
+        result = await install(update)
+      } catch {
+        error(`omc: update failed; retry with: ${update.command}`)
+        return 1
+      }
+      if (!failed(result) || !heldOnWindows(result) || attempt >= LOCK_RETRY_DELAYS_MS.length) break
+      const delay = LOCK_RETRY_DELAYS_MS[attempt]
+      log(`omc: ${heldTarget(result.stderr) ?? "a package file"} is held by another process; retrying in ${delay / 1000}s (attempt ${attempt + 2} of ${LOCK_RETRY_DELAYS_MS.length + 1})`)
+      await sleep(delay)
+    }
+  } finally {
+    if (npmLogsDir) {
+      npmLog = readNpmDebugLogs(npmLogsDir)
+      // A failed npm exit points the user at a log in this directory, so only that case keeps it. A signal or a
+      // spawn error gives no such pointer (npm is killed or never started), so those are cleaned like a success.
+      const failedExit = result !== undefined && !result.signal && (result.status ?? 1) !== 0
+      if (!failedExit) removeLogsDir()
+    }
+  }
+
+  if (failed(result) && heldOnWindows(result)) {
+    await reportHeldInstall({ result, before, install, resolveUpdate, readInstalled, error, options, attempts: LOCK_RETRY_DELAYS_MS.length + 1 })
+    return 1
+  }
+  if (failed(result)) {
+    error(`omc: update failed; retry with: ${update.command}`)
+    return result.status ?? 1
+  }
+
+  const after = readInstalled()
+  if (target !== undefined && after.omc !== target) {
+    error(`omc is still ${after.omc}; ${target} is published`)
+    error(`omc: update failed; retry with: ${update.command}`)
+    return 1
+  }
+  log(formatVersionChange(before, after))
+  const notice = parseAllowScriptsNotice(npmLog)
+  if (notice) for (const line of formatAllowScriptsGuidance(update, notice)) log(line)
+  return 0
+}
+
+function readInstalledOrUndefined(readInstalled) {
+  try {
+    return readInstalled()
+  } catch {
+    return undefined
+  }
+}
+
+async function reportHeldInstall({ result, before, install, resolveUpdate, readInstalled, error, options, attempts }) {
+  const held = heldTarget(result.stderr)
+  const file = held ?? "a package file"
+  const listProcesses = options.listProcesses ?? listWindowsProcesses
+  const installDir = options.installDir ?? dirname(packageRoot)
+  const selfPids = options.selfPids ?? [process.pid, process.ppid]
+  const holders = findHolders(installDir, listProcesses(), selfPids, held)
+
+  error(`omc: update stopped: Windows would not let the package manager replace ${file}; it was still held after ${attempts} attempts.`)
+  if (holders.length > 0) {
+    error(`omc: held by ${holders.map((holder) => `${holder.name} (pid ${holder.pid})`).join(", ")}`)
+    const names = [...new Set(holders.map((holder) => holder.name))].join(", ")
+    error(`omc: Quit ${names} and run omc update again.`)
+  } else {
+    error("omc: No omc command-line process was found holding it. Another app (for example the OmC desktop app or an editor) or antivirus may be holding it: close it, or wait a minute, then run omc update again.")
+  }
+
+  const now = readInstalledOrUndefined(readInstalled)
+  if (now?.omc === before.omc) {
+    error(`omc: omc ${before.omc} is still installed.`)
+    return
+  }
+  // Any readable omc is a working install, even when the pinned target is unknown (registry down): the
+  // manager can fail moving an old dependency after the new omc-ai is in place, and reinstalling over it
+  // would undo a working update and hit the same held file. Only an unreadable install is restored.
+  if (now !== undefined) {
+    error(`omc: omc ${now.omc} is installed, but the package manager did not finish; run omc update again afterwards to complete it.`)
+    return
+  }
+  const previous = resolveUpdate(before.omc)
+  let restored
+  try {
+    restored = await install(previous)
+  } catch {
+    restored = { status: 1, signal: null }
+  }
+  const after = readInstalledOrUndefined(readInstalled)
+  if ((restored.status ?? 1) === 0 && !restored.signal && after?.omc === before.omc) {
+    error(`omc: restored omc ${before.omc}.`)
+    return
+  }
+  const when = holders.length > 0 ? "after quitting the holder" : "once the file is released"
+  error(`omc: the previous omc ${before.omc} could not be restored; ${when}, run: ${previous.command}`)
+}

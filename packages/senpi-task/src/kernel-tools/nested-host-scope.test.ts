@@ -28,7 +28,7 @@ describe("nested host scope rule", () => {
 
   test("#given an EMPTY allowlist (the most restrictive shape) #when checked #then every write-capable parent tool escalates", () => {
     expect(escalatingHostTools({ childToolNames: CHILD_TOOLS, toolAllowlist: [] })).toEqual(["bash", "edit", "write", "lsp_rename"])
-    // `tools: { write: false }` in omo.json resolves to exactly this pair.
+    // `tools: { write: false }` in omc.json resolves to exactly this pair.
     expect(escalatingHostTools({ childToolNames: ["fixture_write"], toolAllowlist: [], toolDenylist: ["write"] })).toContain("write")
   })
 

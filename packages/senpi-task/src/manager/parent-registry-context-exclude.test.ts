@@ -14,7 +14,7 @@ function spec(overrides: Partial<ManagedStartSpec> = {}): ManagedStartSpec {
   return {
     taskId: "st_child",
     cwd: "/tmp/project",
-    stateDir: "/tmp/project/.omo/task",
+    stateDir: "/tmp/project/.omc/task",
     prompt: "work",
     depth: 1,
     parentSessionId: "parent",
@@ -25,8 +25,8 @@ function spec(overrides: Partial<ManagedStartSpec> = {}): ManagedStartSpec {
 
 function registry(): ModelRegistry {
   const live = new ModelRegistry(ModelRuntime.createSync())
-  live.registerProvider("omo-mock", {
-    name: "omo mock",
+  live.registerProvider("omc-mock", {
+    name: "omc mock",
     baseUrl: "file://mock-provider",
     apiKey: "mock",
     api: "openai-completions",
@@ -43,13 +43,13 @@ describe("task children honor exclude_models on respawn and resume", () => {
     const provide = createParentRegistrySessionContext(registry, () => undefined, () => EXCLUDE)
 
     // when / then
-    expect(() => provide(spec({ model: "omo-mock/fable-1" }))).toThrow(RunnerError)
-    expect(() => createParentRegistrySessionContext(registry)(spec({ model: "omo-mock/fable-1" }))).not.toThrow()
+    expect(() => provide(spec({ model: "omc-mock/fable-1" }))).toThrow(RunnerError)
+    expect(() => createParentRegistrySessionContext(registry)(spec({ model: "omc-mock/fable-1" }))).not.toThrow()
   })
 
   test("#given a resumed child whose persisted model is excluded #when resumed #then it is refused", () => {
     // given
-    const resumed = spec({ resolvedModel: { source: "category", provider: "omo-mock", model_id: "fable-1", display: "omo-mock/fable-1" } })
+    const resumed = spec({ resolvedModel: { source: "category", provider: "omc-mock", model_id: "fable-1", display: "omc-mock/fable-1" } })
 
     // when
     const refused = resolveResumeContext(registry, resumed, EXCLUDE)
@@ -70,10 +70,10 @@ describe("task children honor exclude_models on respawn and resume", () => {
     }
     const runner = withoutExcludedFallbacks(createInProcessManagedRunner({ start: capture, resume: capture }), EXCLUDE)
     const persisted = spec({
-      model: "omo-mock/opus-1",
+      model: "omc-mock/opus-1",
       fallbackModels: [
-        { source: "category", provider: "omo-mock", model_id: "fable-1", display: "omo-mock/fable-1" },
-        { source: "category", provider: "omo-mock", model_id: "glm-1", display: "omo-mock/glm-1" },
+        { source: "category", provider: "omc-mock", model_id: "fable-1", display: "omc-mock/fable-1" },
+        { source: "category", provider: "omc-mock", model_id: "glm-1", display: "omc-mock/glm-1" },
       ],
     })
 
@@ -98,7 +98,7 @@ describe("task children honor exclude_models on respawn and resume", () => {
     })
 
     // when / then
-    await expect(admission({ model: "omo-mock/fable-1", cwd: "/tmp" } as Parameters<typeof admission>[0])).rejects.toBeInstanceOf(RunnerError)
+    await expect(admission({ model: "omc-mock/fable-1", cwd: "/tmp" } as Parameters<typeof admission>[0])).rejects.toBeInstanceOf(RunnerError)
     expect(probes).toBe(0)
   })
 })

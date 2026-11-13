@@ -1,5 +1,5 @@
 import { watch, type FSWatcher } from "node:fs"
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 import type { TaskRecordStore } from "../store"
 import { defaultControlFsEnv, listControlFiles, removeControlFile, type ControlFsEnv } from "./control-fs"
 import { controlDir, parseControlFileName } from "./control-paths"

@@ -6,7 +6,7 @@ import type { DagRoute } from "./types"
 export type DagExecutionModeSources = {
   readonly route: DagRoute
   readonly agents: Readonly<Record<string, AgentDefinition>>
-  // The narrow slice of the loaded omo.json the resolver reads. The full parsed OmoConfig
+  // The narrow slice of the loaded omc.json the resolver reads. The full parsed OmoConfig
   // satisfies this structurally; callers may pass partial fixtures in tests.
   readonly config: { readonly task?: { readonly default_execution_mode?: ConfiguredExecutionMode } }
   // Live read of the parent session's `auto` resolution (the manager's gate), undefined until it
@@ -15,10 +15,10 @@ export type DagExecutionModeSources = {
 }
 
 // DAG node dispatch resolves execution mode through the existing chain verbatim:
-// spec.execution_mode ?? agentDef.executionMode ?? omo.json task.default_execution_mode
+// spec.execution_mode ?? agentDef.executionMode ?? omc.json task.default_execution_mode
 // ?? "in-process". There is NO dag.default_execution_mode knob; the strict task schema
 // rejects unknown keys inside task.dag. Curated read-only agents are forced in-process,
-// mirroring the harness-side merge in omo-senpi's resolveTaskAgents.
+// mirroring the harness-side merge in omc-senpi's resolveTaskAgents.
 //
 // Returns undefined for an `auto` config the parent session has not resolved yet: the node's spec
 // then names no mode and the manager decides at spawn, awaiting that one resolution.

@@ -28,7 +28,7 @@ export interface ForeignMemoryRuntimeSettings {
 }
 
 /**
- * `discard_unreflected_journals` for an identity this process does not host (`omo doctor --fix`, the
+ * `discard_unreflected_journals` for an identity this process does not host (`omc doctor --fix`, the
  * host sweep's foreign identities; REVIEW-4 M-b). Only the global config is read, never another
  * project's layer, so the switch counts as on only when the global value is on AND the identity's own
  * global override does not turn it off. No readable config means off.

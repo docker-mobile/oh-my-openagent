@@ -7,7 +7,7 @@ import { altRoot, shardKey, type ShardIdentity } from "./shard-socket"
 export const OWNER = "01a0e28d-40e4-7402-bac7-8de6e76ad84c"
 export const OWNER_KEY = "6d410ba846ba1550"
 export const LONG_ROOT = `/${"r".repeat(119)}`
-export const LEGACY_OVERRIDES = { OMO_RPC_SOCKET: "/legacy/brand.sock", OMO_RPC_SOCKET_PATH: "/legacy/desktop.sock" }
+export const LEGACY_OVERRIDES = { OMC_RPC_SOCKET: "/legacy/brand.sock", OMC_RPC_SOCKET_PATH: "/legacy/desktop.sock" }
 
 const createdAgentDirs: string[] = []
 

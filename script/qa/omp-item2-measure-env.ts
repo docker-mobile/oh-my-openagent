@@ -1,7 +1,7 @@
 import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
-import { OmoTaskSettingsSchema } from "@oh-my-opencode/omo-config-core"
+import { OmoTaskSettingsSchema } from "@oh-my-cybersecurity/omc-config-core"
 import { createTaskLifecycle, NO_HOST_ENDPOINT } from "../../packages/senpi-task/src/lifecycle"
 import { createTaskManager } from "../../packages/senpi-task/src/manager/manager"
 import { TaskConcurrency } from "../../packages/senpi-task/src/manager/concurrency"
@@ -12,8 +12,8 @@ import { createTaskRecordStore } from "../../packages/senpi-task/src/store"
 import type { ResidencyRegistry } from "../../packages/senpi-task/src/lifecycle/port"
 
 const HOME = process.env.MEASURE_HOME ?? process.env.HOME ?? ""
-const HOME_AUTH = join(HOME, ".omo/agent/auth.json")
-const HOME_MODELS = join(HOME, ".omo/agent/models.json")
+const HOME_AUTH = join(HOME, ".omc/agent/auth.json")
+const HOME_MODELS = join(HOME, ".omc/agent/models.json")
 
 export async function openMeasureEnv() {
   const { ModelRegistry, ModelRuntime, createAgentSession } = await loadSenpiBarrel()

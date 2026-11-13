@@ -1,30 +1,30 @@
 export const CODEX_COMPONENT_NOTICE_REQUIREMENTS = [
   {
-    path: "packages/omo-codex/plugin/components/comment-checker",
+    path: "packages/omc-codex/plugin/components/comment-checker",
     requiredTerms: ["pi-comment-checker", "@code-yeongyu/comment-checker"],
   },
   {
-    path: "packages/omo-codex/plugin/components/lsp",
+    path: "packages/omc-codex/plugin/components/lsp",
     requiredTerms: ["pi-lsp-client"],
   },
   {
-    path: "packages/omo-codex/plugin/components/rules",
+    path: "packages/omc-codex/plugin/components/rules",
     requiredTerms: ["pi-rules", "picomatch"],
   },
   {
-    path: "packages/omo-codex/plugin/components/ulw-execute-continuation",
+    path: "packages/omc-codex/plugin/components/ulw-execute-continuation",
     requiredTerms: [],
   },
   {
-    path: "packages/omo-codex/plugin/components/telemetry",
-    requiredTerms: ["posthog-node", "@oh-my-opencode/telemetry-core"],
+    path: "packages/omc-codex/plugin/components/telemetry",
+    requiredTerms: ["posthog-node", "@oh-my-cybersecurity/telemetry-core"],
   },
   {
-    path: "packages/omo-codex/plugin/components/ultrawork",
+    path: "packages/omc-codex/plugin/components/ultrawork",
     requiredTerms: [],
   },
   {
-    path: "packages/omo-codex/plugin/components/ulw-loop",
+    path: "packages/omc-codex/plugin/components/ulw-loop",
     requiredTerms: [],
   },
 ]

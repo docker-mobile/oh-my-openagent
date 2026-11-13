@@ -50,9 +50,9 @@ export function resolveDaemonLaunchSpecPath(pluginRoot: string): string {
  * Parse a daemon launch spec from disk.
  *
  * Trust rules match senpi's CLI: reject group/world-writable files and `..`
- * escapes in extension paths. omo.json must not override `core`; only
+ * escapes in extension paths. omc.json must not override `core`; only
  * `tunables.idleExitMs` (via `task.host_idle_exit_ms`) and `coldStart`
- * (via `omo daemon run --persistent`) may be overlaid by later callers.
+ * (via `omc daemon run --persistent`) may be overlaid by later callers.
  */
 export function readDaemonLaunchSpec(path: string): DaemonLaunchSpec {
   const stat = statSpecFile(path)

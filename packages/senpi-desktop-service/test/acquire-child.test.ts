@@ -1,4 +1,4 @@
-import type { AcquireDesktopEngineOptions, AcquiredDesktopEngine } from "@oh-my-opencode/senpi-desktop-engine";
+import type { AcquireDesktopEngineOptions, AcquiredDesktopEngine } from "@oh-my-cybersecurity/senpi-desktop-engine";
 import { afterEach, describe, expect, it } from "vitest";
 import { acquiringEngineChildFactory, type ChildFactory, DesktopEngineUnavailableError } from "../src/service/child";
 import { DesktopService } from "../src/service/service";

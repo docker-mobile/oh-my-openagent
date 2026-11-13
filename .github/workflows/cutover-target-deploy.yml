@@ -27,7 +27,7 @@ concurrency:
 
 jobs:
   deploy:
-    if: github.repository == 'code-yeongyu/oh-my-openagent'
+    if: github.repository == 'code-yeongyu/oh-my-cybersecurity'
     # Pin until this release/deploy path is proven on Ubuntu 26.04: #9931.
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -40,7 +40,7 @@ jobs:
         with:
           bun-version: "1.4.4"
 
-      - name: Build oh-my-openagent-web (no token in this step)
+      - name: Build oh-my-cybersecurity-web (no token in this step)
         if: inputs.worker == 'web'
         working-directory: packages/web
         env:
@@ -56,20 +56,20 @@ jobs:
         working-directory: packages/web
         env:
           ACCEPT_MISSING_ASSET_HISTORY: ${{ inputs.missing_history_reason }}
-        run: bun scripts/retain-static-assets.mjs .open-next/assets https://omo.dev 1800 --bootstrap-current
+        run: bun scripts/retain-static-assets.mjs .open-next/assets https://omc.nga.hm 1800 --bootstrap-current
 
-      - name: Deploy oh-my-openagent-web
+      - name: Deploy oh-my-cybersecurity-web
         if: inputs.worker == 'web'
         working-directory: packages/web
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CF_DEST_API_TOKEN }}
         run: bunx opennextjs-cloudflare deploy -- --no-x-provision
 
-      - name: Smoke oh-my-openagent-web (a fresh script answers 404/5xx until it propagates; waited up to 5 min)
+      - name: Smoke oh-my-cybersecurity-web (a fresh script answers 404/5xx until it propagates; waited up to 5 min)
         if: inputs.worker == 'web'
         run: |
           set -euo pipefail
-          url=https://oh-my-openagent-web.sisyphus-labs.workers.dev/
+          url=https://oh-my-cybersecurity-web.sisyphus-labs.workers.dev/
           deadline=$(( $(date +%s) + 300 )); wait=2
           while :; do
             code=$(curl -sS --max-time 20 -o /dev/null -w '%{http_code}' "$url" || true)
@@ -80,7 +80,7 @@ jobs:
           done
           case "$code" in 200|307|308) ;; *) exit 1 ;; esac
 
-      - name: Install omo-get (no token in this step)
+      - name: Install omc-get (no token in this step)
         if: inputs.worker == 'get'
         working-directory: packages/get-worker
         run: bun install --frozen-lockfile
@@ -90,14 +90,14 @@ jobs:
         working-directory: packages/get-worker
         run: bash scripts/check-migrations-applied.sh migrations
 
-      - name: Deploy omo-get
+      - name: Deploy omc-get
         if: inputs.worker == 'get'
         working-directory: packages/get-worker
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CF_DEST_API_TOKEN }}
         run: bunx wrangler deploy --no-x-provision
 
-      - name: Smoke omo-get (waits up to 5 min for the fresh script, then checks R2 and D1)
+      - name: Smoke omc-get (waits up to 5 min for the fresh script, then checks R2 and D1)
         if: inputs.worker == 'get'
         run: |
           set -euo pipefail
@@ -112,7 +112,7 @@ jobs:
           done
           test "$code" = 200
           # /channels/latest falls back to npm with a 200 if R2 fails; only an r2 source proves the binding.
-          curl -fsS --max-time 20 -D - -o /dev/null "$base/channels/latest" | tr -d '\r' | grep -qi '^x-omo-source: r2$'
+          curl -fsS --max-time 20 -D - -o /dev/null "$base/channels/latest" | tr -d '\r' | grep -qi '^x-omc-source: r2$'
           # D1 is read without a fallback; it answers 200 once the cutover copy has filled the target.
           curl -fsS --max-time 20 "$base/stats/downloads" >/dev/null
 
@@ -124,7 +124,7 @@ jobs:
           JOB_SUMMARY_TITLE: Cutover target deploy (${{ inputs.worker }})
           JOB_SUMMARY_STATUS: ${{ job.status }}
           JOB_SUMMARY_DETAILS: |
-            - Deploys the `${{ inputs.worker }}` Worker to the Sisyphus Labs account from its default config (its omo.dev routes or custom domain included; omo-get refuses a pending D1 migration).
+            - Deploys the `${{ inputs.worker }}` Worker to the Sisyphus Labs account from its default config (its omc.nga.hm routes or custom domain included; omc-get refuses a pending D1 migration).
             - The smoke waits up to 5 min for the fresh workers.dev script, then checks the Worker answers (web) or its R2 and D1 bindings (get).
           JOB_SUMMARY_NEXT: A smoke that stops at 404 or 5xx after 5 min means the script is not serving; any other wrong answer is a real fault in the deployed Worker or its bindings.
         run: |

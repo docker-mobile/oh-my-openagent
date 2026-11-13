@@ -73,7 +73,7 @@ const deadEndpoint = async (stateDir: string): Promise<void> => {
 }
 
 /** The cause word the not-running log line starts with (after the fixed prefix). */
-const causeOf = (line: string | undefined): string | undefined => /^OmO device service: ([a-z_]+),/.exec(line ?? "")?.[1]
+const causeOf = (line: string | undefined): string | undefined => /^OmC device service: ([a-z_]+),/.exec(line ?? "")?.[1]
 
 describe.skipIf(process.platform === "win32")("a relayd that died and left its endpoint file behind", () => {
   test("the hand-off reads it as no relayd running, logs it, and never throws", async () => {

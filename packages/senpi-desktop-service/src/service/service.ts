@@ -1,4 +1,4 @@
-import { DesktopEngineAbiMismatchError } from "@oh-my-opencode/senpi-desktop-engine";
+import { DesktopEngineAbiMismatchError } from "@oh-my-cybersecurity/senpi-desktop-engine";
 import {
 	type AuditEvent,
 	type DesktopCapabilities,
@@ -6,7 +6,7 @@ import {
 	type EngineMethod,
 	PROTOCOL_VERSION,
 	type StopPathStatus,
-} from "@oh-my-opencode/senpi-desktop-protocol";
+} from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import { type ChildFactory, engineChildFactory } from "./child";
 import { ControlGrants } from "./control-grants";
 import { deadline } from "./deadline";

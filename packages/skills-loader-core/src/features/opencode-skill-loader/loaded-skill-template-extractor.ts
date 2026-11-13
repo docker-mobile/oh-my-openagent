@@ -1,4 +1,4 @@
-import { parseFrontmatter } from "@oh-my-opencode/utils"
+import { parseFrontmatter } from "@oh-my-cybersecurity/utils"
 import type { LoadedSkill } from "./types"
 import { readSkillFileChecked } from "./checked-skill-read"
 import { skillProvenance } from "./skill-provenance"

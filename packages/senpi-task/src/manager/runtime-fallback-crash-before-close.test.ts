@@ -1,6 +1,6 @@
 import { afterEach, expect, test } from "bun:test"
 
-import { createManagerResidencyRegistry } from "../../../omo-senpi/src/components/task/residency-registry"
+import { createManagerResidencyRegistry } from "../../../omc-senpi/src/components/task/residency-registry"
 import { createTaskLifecycle } from "../lifecycle/create"
 import { hostLifecycleDeps } from "../lifecycle/__fixtures__/host-session-fakes"
 import { hostRunnerHarness } from "../runners/rpc-host.test-support"

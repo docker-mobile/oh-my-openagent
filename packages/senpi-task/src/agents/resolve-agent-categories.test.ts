@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test"
-import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
+import type { OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import { CODE_REVIEWER_AGENT } from "./builtin/code-reviewer"
 import { GATE_REVIEWER_AGENT } from "./builtin/gate-reviewer"
@@ -144,7 +144,7 @@ describe("resolveAgent category stage", () => {
     expect(result.resolved_model?.reasoning).toBe("medium")
   })
 
-  test("#given an omo.json deep category model override #when the agent resolves #then the user model reaches the agent", () => {
+  test("#given an omc.json deep category model override #when the agent resolves #then the user model reaches the agent", () => {
     // given
     const agents = categorizedAgent(["deep", "unspecified-high"])
     const models = registry([model("openai", "gpt-5.6-terra")])
@@ -215,9 +215,9 @@ describe("resolveAgent category stage", () => {
 
     // then
     expect(declared).toEqual({
-      "omo-native-code-reviewer": ["unspecified-high"],
-      "omo-native-qa-executor": ["deep-low", "unspecified-low"],
-      "omo-native-gate-reviewer": ["deep-high", "unspecified-high"],
+      "omc-native-code-reviewer": ["unspecified-high"],
+      "omc-native-qa-executor": ["deep-low", "unspecified-low"],
+      "omc-native-gate-reviewer": ["deep-high", "unspecified-high"],
     })
   })
 

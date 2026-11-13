@@ -24,7 +24,7 @@ export async function preflight(options: RunOptions): Promise<ScenarioResult> {
   const screencapture = await command("/usr/sbin/screencapture", ["-x", probe])
     .then(() => statSync(probe).size > 0).catch(() => false)
   const launcher = await launcherPermissions()
-  // Even preflight drives the packaged OmO component in an isolated real Senpi process.
+  // Even preflight drives the packaged OmC component in an isolated real Senpi process.
   return withSession(options, {}, async (session) => {
     const result = await session.call({ action: "capabilities" })
     const capabilities = recordOf(result.details.value)

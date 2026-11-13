@@ -11,7 +11,7 @@ import { HOST_SESSION_REATTACH_TAG, type HostSessionReattach } from "./reattach"
 import { childOpenInput } from "./session-client.test-support"
 import { sessionClientHarness } from "./session-client.test-support"
 
-// omo#8563: a lost connection ended every host-session child as crashed(transport_gone) while its
+// omc#8563: a lost connection ended every host-session child as crashed(transport_gone) while its
 // session kept running on the daemon (or sat intact in its JSONL after the daemon died). The
 // handle now hands the loss to a reattach port: the runner re-ensures the daemon and reopens the
 // same session path, the handle adopts the new connection, and only an in-flight turn that the

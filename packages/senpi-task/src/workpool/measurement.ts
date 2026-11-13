@@ -40,7 +40,7 @@ export type MeasurementReport = {
   readonly source_sha256: string
   readonly item_count: 12
   readonly senpi_items: 6
-  readonly omo_items: 6
+  readonly omc_items: 6
   readonly token_coverage: boolean
   readonly budget_exhausted: boolean
   readonly duplicate_dispatches: number
@@ -100,7 +100,7 @@ export function recommendDefault(report: MeasurementReport): MeasurementMode {
 }
 export function comparable(report: Omit<MeasurementReport, "status">): boolean {
   const first = report.runs[0]
-  return report.design === "AB/BA" && report.width === 2 && report.item_count === 12 && report.senpi_items === 6 && report.omo_items === 6
+  return report.design === "AB/BA" && report.width === 2 && report.item_count === 12 && report.senpi_items === 6 && report.omc_items === 6
     && report.token_coverage && !report.budget_exhausted && report.duplicate_dispatches === 0 && report.uncertain_dispatches === 0
     && report.runs.length === 4 && report.runs.map(run => run.mode).join(",") === MEASUREMENT_MODES.join(",")
     && first !== undefined && report.runs.every(run => run.provider === first.provider && run.model === first.model

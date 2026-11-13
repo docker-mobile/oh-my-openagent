@@ -5,7 +5,7 @@
  * Keys are raw session ids and never leave the process; only the W3C value reaches a child.
  */
 
-const REGISTRY = Symbol.for("omo.telemetry.turn-traceparent.v1")
+const REGISTRY = Symbol.for("omc.telemetry.turn-traceparent.v1")
 const TRACEPARENT = /^00-(?!0{32})[0-9a-f]{32}-(?!0{16})[0-9a-f]{16}-[0-9a-f]{2}$/u
 
 function registry(): Map<string, string> {

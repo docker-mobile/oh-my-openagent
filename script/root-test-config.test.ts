@@ -34,11 +34,11 @@ describe("root test Bun config", () => {
     }
   })
 
-  test("#given the dedicated Senpi compatibility job #when root tests run #then omo-senpi is excluded", () => {
+  test("#given the dedicated Senpi compatibility job #when root tests run #then omc-senpi is excluded", () => {
     expect(existsSync(rootConfigPath)).toBe(true)
     if (!existsSync(rootConfigPath)) return
 
-    expect(quotedPatterns(readFileSync(rootConfigPath, "utf8"))).toContain("packages/omo-senpi/**")
+    expect(quotedPatterns(readFileSync(rootConfigPath, "utf8"))).toContain("packages/omc-senpi/**")
   })
 
   test("#given bun 1.3.x test argv #when CI selects the dedicated config #then --config= is passed before test", () => {
@@ -56,7 +56,7 @@ describe("root test Bun config", () => {
     const output = spawnBun([
       "--config=bunfig.root.toml",
       "test",
-      "packages/omo-senpi/src/components/memory/status.test.ts",
+      "packages/omc-senpi/src/components/memory/status.test.ts",
     ])
     expect(output).toContain("filters did not match any test files")
   })

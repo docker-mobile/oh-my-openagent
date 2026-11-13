@@ -2,7 +2,7 @@ import { afterAll, describe, expect, test } from "bun:test";
 import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { parseFrontmatter } from "@oh-my-opencode/utils";
+import { parseFrontmatter } from "@oh-my-cybersecurity/utils";
 import { isSkillMarkdownSourcePath, materializeFrontendRefs } from "./scripts/materialize-frontend-refs.mjs";
 import { brandStems, designpowersThirdPartyRelativePaths, tasteSkillArtifactFiles, thirdPartyRelativePaths, uiUxDbScripts, upstreamsRoot } from "./scripts/frontend-refs-manifest.mjs";
 
@@ -15,7 +15,7 @@ describe("materialize-frontend-refs", () => {
 	// Materialize into a private root: the checkout's shipped references are read concurrently by
 	// other test files (script/package-layout.test.ts packs them), so this suite must never
 	// delete and rewrite them.
-	const materializeRoot = mkdtempSync(join(tmpdir(), "omo-frontend-refs-"));
+	const materializeRoot = mkdtempSync(join(tmpdir(), "omc-frontend-refs-"));
 	afterAll(() => rmSync(materializeRoot, { recursive: true, force: true }));
 	const result = materializeFrontendRefs({ strict: false, targetRoot: materializeRoot });
 

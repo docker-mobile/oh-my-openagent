@@ -41,7 +41,7 @@ Every PR must run ast-grep checks for forbidden adapter coupling, `as any`, raw
 searches must be added for the logic being extracted.
 
 Every PR must run Codex fresh environment QA through an isolated `CODEX_HOME`
-install and verify the `omo@sisyphuslabs` marketplace identity appears in the
+install and verify the `omc@sisyphuslabs` marketplace identity appears in the
 generated config.
 
 Every PR must run opencode-qa HTTP/SSE checks with the isolated server smoke and
@@ -52,7 +52,7 @@ Publish pipeline PRs must additionally run `bun test script/`, `bun pm pack
 --dry-run --ignore-scripts`, a full local LazyCodex marketplace sync, and a
 `--previous-payload` tarball-layout sync simulation. The evidence must include
 the packed `install-dist` and `plugin/skills` entries, the copied
-`plugins/omo/components/*/dist/cli.js` files, and cleanup receipts for every
+`plugins/omc/components/*/dist/cli.js` files, and cleanup receipts for every
 temporary pack directory, extracted package root, and marketplace repository.
 
 Before merge, every PR must pass local verification, GitHub CI, review-work, and

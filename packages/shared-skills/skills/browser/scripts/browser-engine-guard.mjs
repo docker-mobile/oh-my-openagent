@@ -1,8 +1,8 @@
 import { readFile } from "node:fs/promises"
 
-export const BROWSER_ENGINE_ENV = "OMO_BROWSER_ENGINE"
+export const BROWSER_ENGINE_ENV = "OMC_BROWSER_ENGINE"
 
-const TOOLKIT_TOOL = "omo_desktop_toolkit"
+const TOOLKIT_TOOL = "omc_desktop_toolkit"
 const BUILTIN_UNAVAILABLE = {
   unavailable: "this app does not offer its built-in browser to this session",
   timeout: "the app did not answer the request for its built-in browser",
@@ -14,8 +14,8 @@ export class BuiltinBrowserUnavailableError extends Error {
     const unavailable = Object.hasOwn(BUILTIN_UNAVAILABLE, reason)
     super(
       unavailable
-        ? `OmO's built-in browser is not available here: ${BUILTIN_UNAVAILABLE[reason]}. Every other browser works as usual: connectBrowserSkill() for the user's own browser, connectPipe() for a browser of your own.`
-        : `OmO's built-in browser was refused: ${reason === "user_stopped" ? "the user stopped browser work" : `the app refused it (${reason})`}. Stop browser work and report the refusal; do not open another browser.`,
+        ? `OmC's built-in browser is not available here: ${BUILTIN_UNAVAILABLE[reason]}. Every other browser works as usual: connectBrowserSkill() for the user's own browser, connectPipe() for a browser of your own.`
+        : `OmC's built-in browser was refused: ${reason === "user_stopped" ? "the user stopped browser work" : `the app refused it (${reason})`}. Stop browser work and report the refusal; do not open another browser.`,
     )
     this.name = "BuiltinBrowserUnavailableError"
     this.code = "browser_builtin_unavailable"
@@ -24,7 +24,7 @@ export class BuiltinBrowserUnavailableError extends Error {
 }
 
 /**
- * Inside OmO Desktop (`OMO_BROWSER_ENGINE` set) the library is the terminal's own, unchanged, plus
+ * Inside OmC Desktop (`OMC_BROWSER_ENGINE` set) the library is the terminal's own, unchanged, plus
  * `connectBuiltinBrowser()`: the app's built-in browser for this thread, the tab the user sees beside the chat.
  */
 export function guardOmowright(raw, { env = process.env, host } = {}) {

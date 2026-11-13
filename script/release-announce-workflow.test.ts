@@ -164,7 +164,7 @@ test.each([
   }).passthrough() }).passthrough() }).parse(Bun.YAML.parse(readFileSync(".github/workflows/publish.yml", "utf8")))
   const run = publisher.jobs.release.steps.find((step) => step.id === "github-release")?.run
   if (!run) throw new Error("Missing GitHub release creation step")
-  const directory = mkdtempSync(join(tmpdir(), "omo-release-announce-"))
+  const directory = mkdtempSync(join(tmpdir(), "omc-release-announce-"))
   const outputFile = join(directory, "output")
   const callsFile = join(directory, "calls")
   const summaryFile = join(directory, "summary")

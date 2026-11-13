@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 
-import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
+import type { OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import { BUILTIN_AGENTS, resolveAgent } from "./agents"
 import { resolveAvailableCategoryNames, resolveCategory } from "./category"

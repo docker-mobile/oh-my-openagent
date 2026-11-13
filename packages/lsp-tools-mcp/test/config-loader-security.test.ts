@@ -21,9 +21,9 @@ describe("config loader security", () => {
 		const previousUser = process.env["LSP_TOOLS_MCP_USER_CONFIG"];
 		const root = mkdtempSync(join(tmpdir(), "lsp-tools-project-path-list-"));
 		tempDirectories.push(root);
-			const omoConfig = join(root, ".omo", "lsp.json");
+			const omoConfig = join(root, ".omc", "lsp.json");
 		const userConfig = join(root, "user.json");
-		mkdirSync(join(root, ".omo"), { recursive: true });
+		mkdirSync(join(root, ".omc"), { recursive: true });
 		writeFileSync(
 			omoConfig,
 			JSON.stringify({
@@ -33,7 +33,7 @@ describe("config loader security", () => {
 			}),
 		);
 		writeFileSync(userConfig, JSON.stringify({ lsp: {} }));
-			process.env["LSP_TOOLS_MCP_PROJECT_CONFIG"] = [join(".opencode", "lsp.json"), join(".omo", "lsp.json")].join(
+			process.env["LSP_TOOLS_MCP_PROJECT_CONFIG"] = [join(".opencode", "lsp.json"), join(".omc", "lsp.json")].join(
 				delimiter,
 			);
 		process.env["LSP_TOOLS_MCP_USER_CONFIG"] = userConfig;

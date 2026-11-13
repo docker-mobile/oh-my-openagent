@@ -4,24 +4,24 @@ import type { DaemonLaunchSpec } from "../launch-spec"
 /**
  * The ONE expectation fixture for `daemonLaunchOptions`.
  *
- * `omo daemon run` (packages/omo-native) and a child-triggered `ensureTaskDaemon` must produce a
+ * `omc daemon run` (packages/omc-native) and a child-triggered `ensureTaskDaemon` must produce a
  * byte-identical daemon launch, so both test suites import THIS module instead of writing their own
  * expected argv. A change here is a change to the daemon's launch contract and fails both suites.
  *
- * The spec below mirrors `packages/omo-senpi/plugin/daemon-launch-spec.json`; the launch-spec suite
+ * The spec below mirrors `packages/omc-senpi/plugin/daemon-launch-spec.json`; the launch-spec suite
  * proves the shipped file parses, this fixture proves what the shipped shape turns into.
  */
-const SPEC_DIR = resolve("/opt/omo/plugin")
+const SPEC_DIR = resolve("/opt/omc/plugin")
 
 export const DAEMON_LAUNCH_SPEC_FIXTURE: DaemonLaunchSpec = {
   spec_version: 1,
   core: {
     session_runtime: "in-process",
     multi_session: true,
-    extensions: [".", "./extensions/omo-member.js"],
+    extensions: [".", "./extensions/omc-member.js"],
   },
   tunables: { idleExitMs: 900_000, coldStart: "transient" },
-  env: { OMO_NATIVE: "1" },
+  env: { OMC_NATIVE: "1" },
 }
 
 /**
@@ -32,15 +32,15 @@ export const DAEMON_LAUNCH_PARENT_ENV_FIXTURE: Readonly<Record<string, string | 
   PATH: "/usr/bin",
   // A value the daemon's env must NOT carry: the spec is the whole producer, never a parent copy.
   ANTHROPIC_API_KEY: "fixture-not-a-real-key",
-  OMO_SENPI_TASK_RPC_CHILD: "1",
-  OMO_SENPI_TASK_DEPTH: "1",
-  OMO_SENPI_TASK_ROOT_SESSION_ID: "root-session",
+  OMC_SENPI_TASK_RPC_CHILD: "1",
+  OMC_SENPI_TASK_DEPTH: "1",
+  OMC_SENPI_TASK_ROOT_SESSION_ID: "root-session",
   SENPI_CODING_AGENT_SESSION_DIR: "/tmp/parent-session",
   SENPI_TASK_MEMBER: "11111111-1111-4111-8111-111111111111::builder",
   SENPI_TASK_MEMBER_TASK_ID: "t-1",
   SENPI_TASK_TEAM_CONFIG: "{}",
-  OMO_WORKPOOL_STATE_DIR: "/tmp/workpool",
-  OMO_WORKPOOL_TASK_ID: "t-2",
+  OMC_WORKPOOL_STATE_DIR: "/tmp/workpool",
+  OMC_WORKPOOL_TASK_ID: "t-2",
   SENPI_RPC_SESSION_IDLE_EVICTION_MS: "60000",
 }
 
@@ -56,19 +56,19 @@ export const DAEMON_LAUNCH_FIXTURE = {
       "--extension",
       SPEC_DIR,
       "--extension",
-      join(SPEC_DIR, "extensions", "omo-member.js"),
+      join(SPEC_DIR, "extensions", "omc-member.js"),
     ],
     env: {
-      OMO_NATIVE: "1",
-      OMO_SENPI_TASK_RPC_CHILD: null,
-      OMO_SENPI_TASK_DEPTH: null,
-      OMO_SENPI_TASK_ROOT_SESSION_ID: null,
+      OMC_NATIVE: "1",
+      OMC_SENPI_TASK_RPC_CHILD: null,
+      OMC_SENPI_TASK_DEPTH: null,
+      OMC_SENPI_TASK_ROOT_SESSION_ID: null,
       SENPI_CODING_AGENT_SESSION_DIR: null,
       SENPI_TASK_MEMBER: null,
       SENPI_TASK_MEMBER_TASK_ID: null,
       SENPI_TASK_TEAM_CONFIG: null,
-      OMO_WORKPOOL_STATE_DIR: null,
-      OMO_WORKPOOL_TASK_ID: null,
+      OMC_WORKPOOL_STATE_DIR: null,
+      OMC_WORKPOOL_TASK_ID: null,
       SENPI_RPC_SESSION_IDLE_EVICTION_MS: "900000",
     },
     policy: { coldStart: "transient", idleExitMs: 900_000 },

@@ -1,4 +1,4 @@
-import type { ComputerSessionSnapshot } from "@oh-my-opencode/senpi-desktop-protocol";
+import type { ComputerSessionSnapshot } from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import { type ExecuteTool, runComputerCode } from "../src/run/runtime";
 import { DesktopService } from "../src/service/service";
 import { fakeEngineFactory, type SpawnLog } from "./harness";

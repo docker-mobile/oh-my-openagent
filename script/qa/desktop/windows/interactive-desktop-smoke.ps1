@@ -12,7 +12,7 @@ if ($FormHost) {
 	# Child: host the form and report its handle, the button center, and clicks on stdout.
 	Add-Type -AssemblyName System.Windows.Forms, System.Drawing
 	$form = New-Object System.Windows.Forms.Form -Property @{
-		Text = 'omo-interactive-desktop-smoke'; TopMost = $true; StartPosition = 'CenterScreen'; Width = 360; Height = 220
+		Text = 'omc-interactive-desktop-smoke'; TopMost = $true; StartPosition = 'CenterScreen'; Width = 360; Height = 220
 	}
 	$button = New-Object System.Windows.Forms.Button -Property @{ Name = 'smokeButton'; Text = 'Click me'; Left = 20; Top = 20; Width = 140; Height = 50 }
 	$label = New-Object System.Windows.Forms.Label -Property @{ Name = 'smokeLabel'; Text = 'waiting'; Left = 20; Top = 100; Width = 200 }

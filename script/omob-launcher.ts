@@ -1,7 +1,7 @@
 import { spawnSync } from "node:child_process"
 import { existsSync, mkdirSync, renameSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
-import { versionLines, type OmoBuildInfo } from "../packages/omo-native/build-info"
+import { versionLines, type OmoBuildInfo } from "../packages/omc-native/build-info"
 import type { OmobOptions } from "./build-omob"
 import { readProvenanceMarker } from "./omob-provenance"
 
@@ -22,7 +22,7 @@ export function installOmobLauncher(options: OmobOptions): string {
 	if (process.platform === "win32") throw new Error("the omob auto-update launcher requires a POSIX shell")
 	const quote = (value: string): string => `'${value.replaceAll("'", "'\\''")}'`
 	const binDir = join(options.cacheDir, "bin")
-	const args = [join(options.cacheDir, "omo", "script", "build-omob.ts"), "--if-changed", "--binary-only", "--cache-dir", options.cacheDir, "--install-dir", binDir, "--name", options.name, "--target", options.target, "--keep", String(options.keep)]
+	const args = [join(options.cacheDir, "omc", "script", "build-omob.ts"), "--if-changed", "--binary-only", "--cache-dir", options.cacheDir, "--install-dir", binDir, "--name", options.name, "--target", options.target, "--keep", String(options.keep)]
 	const destination = join(options.installDir, options.name)
 	const temporary = `${destination}.tmp-${process.pid}`
 	mkdirSync(options.installDir, { recursive: true })

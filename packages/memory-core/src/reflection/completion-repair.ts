@@ -135,7 +135,7 @@ export async function squashWithoutPaths(
     else await must(run, ["rm", "-rf", "-q", "--ignore-unmatch", "--", path])
   }
   if ((await run(["diff", "--cached", "--quiet", baseSha, "--"])).code !== 0) {
-    const [name = "reflection", email = "reflection@omo.local", subject = "reflection"] = identity
+    const [name = "reflection", email = "reflection@omc.local", subject = "reflection"] = identity
     // The agent's subject is copied forward, so it gets the same redaction as every other recorded text.
     const message = [`${redactSecretLikeMaterial(subject)} (kept valid entries)`, "", ...record.map(trailerLine)].join("\n")
     await must(run, [

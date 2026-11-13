@@ -4,7 +4,7 @@ import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { PROBE_REQUEST_EVENT, withProbeRequestExtension } from "./probe-request"
 
-test("a probe-only RPC extension announces the actual request once, including without omo loaded", async () => {
+test("a probe-only RPC extension announces the actual request once, including without omc loaded", async () => {
   const stateDir = mkdtempSync(join(tmpdir(), "request-extension-"))
   try {
     const spec = { task_id: "probe", cwd: stateDir, state_dir: stateDir, prompt: "test" }

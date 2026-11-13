@@ -12,7 +12,7 @@ import { probeUntil } from "../locks/process-liveness.test-support"
 import { runMemoryTool, type MemoryToolLock } from "./memory"
 import { removeTree } from "../../../../test-support/remove-tree"
 
-// omo #10199 delta review MEDIUM: a real memory write whose post-commit hook leaves a child holding
+// omc #10199 delta review MEDIUM: a real memory write whose post-commit hook leaves a child holding
 // git's pipe must return and release the writer lock, so the next write gets it. Before the exit
 // drain, the write never settled and kept the lock while the child lived.
 
@@ -65,7 +65,7 @@ async function trackHolders(holderPids: string, count: number): Promise<void> {
   }
 }
 
-describe("a memory write whose post-commit hook leaves a child holding git's pipe (omo #10199)", () => {
+describe("a memory write whose post-commit hook leaves a child holding git's pipe (omc #10199)", () => {
   test.skipIf(process.platform === "win32")("#given the hook child still holds the pipe #when a memory write commits #then it returns, releases the writer lock, and the next write gets the lock", async () => {
     // #given
     const setup = await memoryRepoWithPipeHoldingHook()

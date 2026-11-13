@@ -32,11 +32,11 @@ describe("selectPackageExtensionPaths", () => {
   test("#given loaded package extensions and argv directories #when selecting #then only uncovered package paths survive in load order", () => {
     const select = Reflect.get(parentExtensions, "selectPackageExtensionPaths")
     expect(select).toBeFunction()
-    const argv = ["/installed/omo/plugin", "/installed/provider/explicit.ts"]
+    const argv = ["/installed/omc/plugin", "/installed/provider/explicit.ts"]
     const loaded = [
       "<builtin:foo>",
       "<inline:bar>",
-      "/installed/omo/plugin/extensions/omo.js",
+      "/installed/omc/plugin/extensions/omc.js",
       "/agent/extensions/local.ts",
       "/project/.senpi/extensions/local.ts",
       "/installed/provider/explicit.ts",
@@ -44,14 +44,14 @@ describe("selectPackageExtensionPaths", () => {
       "/installed/provider-extra/extensions/not-a-package.ts",
       "/installed/commandcode/extensions/index.ts",
       "/installed/provider/extensions/zcode.ts",
-      "/installed/omo/plugin-extra/provider.ts",
+      "/installed/omc/plugin-extra/provider.ts",
     ]
-    expect(select(argv, loaded, ["/installed/omo", "/installed/provider/", "/installed/commandcode"])).toEqual([
+    expect(select(argv, loaded, ["/installed/omc", "/installed/provider/", "/installed/commandcode"])).toEqual([
       "/installed/provider/extensions/zcode.ts",
       "/installed/commandcode/extensions/index.ts",
-      "/installed/omo/plugin-extra/provider.ts",
+      "/installed/omc/plugin-extra/provider.ts",
     ])
-    expect(argv).toEqual(["/installed/omo/plugin", "/installed/provider/explicit.ts"])
+    expect(argv).toEqual(["/installed/omc/plugin", "/installed/provider/explicit.ts"])
   })
 
   test("#given absent loaded paths or installed roots #when selecting #then no package paths are forwarded", () => {

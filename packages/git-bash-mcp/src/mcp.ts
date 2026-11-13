@@ -1,14 +1,14 @@
 import type { Readable, Writable } from "node:stream";
-import { errorResponse, isPlainRecord, jsonRpcId, runJsonRpcStdioServer, successResponse } from "@oh-my-opencode/mcp-stdio-core";
-import type { JsonRpcResponse, McpLifecycleLog, ParentWatchdogConfig } from "@oh-my-opencode/mcp-stdio-core";
+import { errorResponse, isPlainRecord, jsonRpcId, runJsonRpcStdioServer, successResponse } from "@oh-my-cybersecurity/mcp-stdio-core";
+import type { JsonRpcResponse, McpLifecycleLog, ParentWatchdogConfig } from "@oh-my-cybersecurity/mcp-stdio-core";
 import { resolveGitBash, resolveGitBashForCurrentProcess, type GitBashResolution } from "./git-bash-resolver";
 import { runGitBashCommand, type GitBashRunResult, type RunGitBashCommand } from "./runner";
 
 const DEFAULT_TIMEOUT_MS = 120_000;
 const MAX_TIMEOUT_MS = 30 * 60_000;
 const EXEC_COMMAND_TIMEOUT_ENV_KEYS = [
-  "OMO_CODEX_GIT_BASH_TIMEOUT_MS",
-  "OMO_CODEX_EXEC_COMMAND_TIMEOUT_MS",
+  "OMC_CODEX_GIT_BASH_TIMEOUT_MS",
+  "OMC_CODEX_EXEC_COMMAND_TIMEOUT_MS",
   "CODEX_EXEC_COMMAND_TIMEOUT_MS",
   "EXEC_COMMAND_TIMEOUT_MS",
 ] as const;

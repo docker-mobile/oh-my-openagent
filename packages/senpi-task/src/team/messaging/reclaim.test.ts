@@ -3,7 +3,7 @@ import { utimes } from "node:fs/promises"
 import { join } from "node:path"
 import { afterEach, describe, expect, test } from "bun:test"
 
-import { reserveMessageForDelivery, sendMessage } from "@oh-my-opencode/team-core/team-mailbox"
+import { reserveMessageForDelivery, sendMessage } from "@oh-my-cybersecurity/team-core/team-mailbox"
 
 import { resolveTeamMemberInboxDir, teamStorageBaseDir } from "../storage"
 import { toTeamCoreConfig } from "../runtime-config"

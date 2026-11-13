@@ -12,16 +12,16 @@ export const verdictsPath = join(parityDir, "biome-verdicts.json");
 export const BIOME = "@biomejs/biome@2.5.14";
 
 export const PORTS: Readonly<Record<string, { readonly corpus: string; readonly rules: Record<string, Record<string, string>> }>> = {
-  "omo/no-enum": { corpus: "no-enum", rules: { style: { noEnum: "error" } } },
-  "omo/no-implicit-any-let": { corpus: "no-implicit-any-let", rules: { suspicious: { noImplicitAnyLet: "error" } } },
-  "omo/no-string-case-mismatch": { corpus: "no-string-case-mismatch", rules: { correctness: { noStringCaseMismatch: "error" } } },
+  "omc/no-enum": { corpus: "no-enum", rules: { style: { noEnum: "error" } } },
+  "omc/no-implicit-any-let": { corpus: "no-implicit-any-let", rules: { suspicious: { noImplicitAnyLet: "error" } } },
+  "omc/no-string-case-mismatch": { corpus: "no-string-case-mismatch", rules: { correctness: { noStringCaseMismatch: "error" } } },
 };
 
 const linesIn = (text: string, pattern: RegExp): number[] =>
   [...new Set([...text.matchAll(pattern)].map((match) => Number(match[1])))].sort((left, right) => left - right);
 
 const biomeLines = (corpus: string, rules: Record<string, Record<string, string>>): number[] => {
-  const dir = mkdtempSync(join(tmpdir(), "omo-biome-parity-"));
+  const dir = mkdtempSync(join(tmpdir(), "omc-biome-parity-"));
   try {
     copyFileSync(join(parityDir, `${corpus}.corpus`), join(dir, "corpus.ts"));
     writeFileSync(
@@ -39,7 +39,7 @@ const biomeLines = (corpus: string, rules: Record<string, Record<string, string>
 
 // Lines the repo's root oxlint config flags for `rule` when the corpus is linted as a .ts file.
 export const oxlintLines = (rule: string, corpus: string): number[] => {
-  const dir = mkdtempSync(join(tmpdir(), "omo-oxlint-parity-"));
+  const dir = mkdtempSync(join(tmpdir(), "omc-oxlint-parity-"));
   try {
     const file = join(dir, "corpus.ts");
     copyFileSync(join(parityDir, `${corpus}.corpus`), file);

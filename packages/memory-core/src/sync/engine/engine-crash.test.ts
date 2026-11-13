@@ -91,7 +91,7 @@ test("an agent commit landing between `rendered` and `committed` does not fool r
   expect([await b.read("x.md"), await b.read("agent.md")]).toEqual(["x\n", "agent\n"])
 }, GIT_TEST_TIMEOUT)
 
-test("a cycle cut short by a stranded index lock after its sync commit landed leaves a clean index once the lock is gone (omo #10637)", async () => {
+test("a cycle cut short by a stranded index lock after its sync commit landed leaves a clean index once the lock is gone (omc #10637)", async () => {
   const { server, a } = await world()
   const b = await makeDevice(server, "b")
   devices.push(b)

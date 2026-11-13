@@ -35,9 +35,9 @@ export async function chooseBaseDir(
   io: BaseDirIO = filesystem,
 ): Promise<BaseDirSelection> {
   const segment = `t${createHash("sha1").update(repoRoot + id).digest("hex").slice(0, 10)}`
-  const homeBase = join(homeDir, ".omo", "wt", segment)
+  const homeBase = join(homeDir, ".omc", "wt", segment)
   const repoDevice = (await io.stat(repoRoot)).dev
-  let homeParent = join(homeDir, ".omo")
+  let homeParent = join(homeDir, ".omc")
   let homeDevice: number
   for (;;) {
     try {
@@ -73,7 +73,7 @@ export async function chooseBaseDir(
     if ((await io.stat(parent)).dev !== referenceDevice) break
     volumeRoot = parent
   }
-  const volumeBase = join(volumeRoot, ".omo-wt")
+  const volumeBase = join(volumeRoot, ".omc-wt")
   // Hard boundary: whatever the walk produced, the sandbox must never live
   // inside the repository being isolated.
   const repository = resolve(repoRoot)

@@ -19,9 +19,9 @@ const SRC = join(import.meta.dir, "..", "..", "src", "local-api");
 const DOCS = join(import.meta.dir, "..", "..", "docs", "local-api.md");
 
 describe("LA18 owner.shutdown_for_upgrade only from an installer after its proof; the vocabulary gate", () => {
-  test("a desktop or omo client is refused forbidden; an installer before its proof is refused unauthenticated", async () => {
+  test("a desktop or omc client is refused forbidden; an installer before its proof is refused unauthenticated", async () => {
     const owner = await startOwner();
-    const app = await connectClient(owner, desktop("/home/user/.config/omo"));
+    const app = await connectClient(owner, desktop("/home/user/.config/omc"));
     const cli = await connectClient(owner, OMO);
     for (const client of [app, cli])
       expect(
@@ -43,7 +43,7 @@ describe("LA18 owner.shutdown_for_upgrade only from an installer after its proof
 
   test("an installer after its proof stops the owner: every client is closed and the endpoint stops listening", async () => {
     const owner = await startOwner();
-    const app = await connectClient(owner, desktop("/home/user/.config/omo"));
+    const app = await connectClient(owner, desktop("/home/user/.config/omc"));
     const installer = await connectClient(owner, INSTALLER);
     expect(
       await installer.request("owner.shutdown_for_upgrade", { target_version: "1.5.0" }),

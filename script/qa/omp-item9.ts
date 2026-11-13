@@ -7,7 +7,7 @@ import { coldReviveHarness } from "../../packages/senpi-task/src/lifecycle/__fix
 import { cleanupProjects } from "../../packages/senpi-task/src/manager/__fixtures__/manager-fakes"
 import { idleReplacementCycles } from "../../packages/senpi-task/src/lifecycle/__fixtures__/idle-replacement-cycles"
 import { acknowledgedResidentContinuation, generationAcrossContinuations } from "../../packages/senpi-task/src/lifecycle/__fixtures__/resident-continuation"
-import { OmoTaskSettingsSchema, OmoTaskSettingsLayerSchema } from "@oh-my-opencode/omo-config-core"
+import { OmoTaskSettingsSchema, OmoTaskSettingsLayerSchema } from "@oh-my-cybersecurity/omc-config-core"
 
 const args = process.argv.slice(2)
 const scenario = args[args.indexOf("--case") + 1]

@@ -25,9 +25,9 @@ describe("public client package surface", () => {
 		const exported = Object.keys(await import("../src/client.js")).sort();
 		expect(exported).toEqual([
 			"InvalidRuntimeOverrideError",
-			"OMO_LSP_DAEMON_CLI",
-			"OMO_LSP_DAEMON_DIR",
-			"OMO_LSP_DAEMON_VERSION",
+			"OMC_LSP_DAEMON_CLI",
+			"OMC_LSP_DAEMON_DIR",
+			"OMC_LSP_DAEMON_VERSION",
 			"callDiagnosticsViaDaemon",
 			"callFormatViaDaemon",
 			"callToolViaDaemon",

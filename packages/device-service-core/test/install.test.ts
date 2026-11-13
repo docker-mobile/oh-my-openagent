@@ -49,7 +49,7 @@ describe("installing the device service", () => {
     const { options, runs } = setup("9.0.0")
     const outcome = await installDeviceService(options)
     expect(outcome).toMatchObject({ ok: false, state: "update_required" })
-    expect(outcome.ok ? "" : outcome.action).toContain("Update OmO")
+    expect(outcome.ok ? "" : outcome.action).toContain("Update OmC")
     expect(runs).toEqual([])
   })
 

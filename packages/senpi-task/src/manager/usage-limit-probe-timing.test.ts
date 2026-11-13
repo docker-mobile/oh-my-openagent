@@ -24,7 +24,7 @@ test("the probe budget excludes spawn and context preparation and starts at the 
   expect(scheduled).toHaveLength(0)
   fake.emit({ type: "turn_start" })
   expect(scheduled).toHaveLength(0)
-  fake.emit({ type: "extension_event", name: "omo.task.provider_request_started" } as never)
+  fake.emit({ type: "extension_event", name: "omc.task.provider_request_started" } as never)
   fake.emit({ type: "turn_start" })
   expect(scheduled).toHaveLength(1)
   expect(scheduled[0]?.delay).toBe(60_000)
@@ -44,7 +44,7 @@ test("a timed-out probe is explicitly non-limit evidence even when the original 
     model: "test/sibling", timeoutMs: 60_000, onAnswered: () => {},
     scheduleTimeout: (run) => { expire = run; return { cancel: () => {} } },
   })
-  fake.emit({ type: "extension_event", name: "omo.task.provider_request_started" } as never)
+  fake.emit({ type: "extension_event", name: "omc.task.provider_request_started" } as never)
   expect(expire).toBeDefined()
   expire?.()
   expect(await outcome).toMatchObject({ status: "error", failure: { kind: "child-unresponsive" } })

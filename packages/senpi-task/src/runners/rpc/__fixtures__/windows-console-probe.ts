@@ -77,13 +77,13 @@ async function runCase(mode: ProbeMode, root: string): Promise<ProbeCase> {
     {
       env: {
         ...process.env,
-        OMO_PROBE_BUN: process.execPath,
-        OMO_PROBE_SCRIPT: SCRIPT_PATH,
-        OMO_PROBE_MODE: mode,
-        OMO_PROBE_ROOT: root,
-        OMO_PROBE_READY_FILE: readyPath,
-        OMO_PROBE_STOP_FILE: stopPath,
-        OMO_PROBE_ERROR_FILE: errorPath,
+        OMC_PROBE_BUN: process.execPath,
+        OMC_PROBE_SCRIPT: SCRIPT_PATH,
+        OMC_PROBE_MODE: mode,
+        OMC_PROBE_ROOT: root,
+        OMC_PROBE_READY_FILE: readyPath,
+        OMC_PROBE_STOP_FILE: stopPath,
+        OMC_PROBE_ERROR_FILE: errorPath,
         SENPI_CODING_AGENT_DIR: join(root, "agent"),
         SENPI_CODING_AGENT_SESSION_DIR: join(root, "parent-session"),
       },
@@ -142,8 +142,8 @@ async function runCase(mode: ProbeMode, root: string): Promise<ProbeCase> {
 }
 
 async function runParent(mode: ProbeMode, root: string): Promise<void> {
-  const readyPath = process.env.OMO_PROBE_READY_FILE
-  const stopPath = process.env.OMO_PROBE_STOP_FILE
+  const readyPath = process.env.OMC_PROBE_READY_FILE
+  const stopPath = process.env.OMC_PROBE_STOP_FILE
   if (readyPath === undefined || stopPath === undefined) {
     throw new Error("console probe parent requires ready and stop file paths")
   }
@@ -182,7 +182,7 @@ async function runParent(mode: ProbeMode, root: string): Promise<void> {
     cwd: root,
     state_dir: join(root, "state"),
     prompt: "hold",
-    model: "omo-mock/mock-1",
+    model: "omc-mock/mock-1",
   })
   const catalog = await catalogProbe.inspection
 
@@ -213,7 +213,7 @@ async function runProbe(): Promise<void> {
     return
   }
 
-  const root = realpathSync.native(mkdtempSync(join(tmpdir(), "omo-rpc-window-probe-")))
+  const root = realpathSync.native(mkdtempSync(join(tmpdir(), "omc-rpc-window-probe-")))
   mkdirSync(join(root, "agent"), { recursive: true })
   const credentialsBefore = credentialDigests(CREDENTIAL_FILES)
   let probeResult: {

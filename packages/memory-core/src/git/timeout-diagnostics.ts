@@ -4,11 +4,11 @@ import { tmpdir } from "node:os"
 import { closeSync, mkdirSync, openSync, readFileSync, unlinkSync, writeFileSync } from "../fs/resilient"
 import { join } from "node:path"
 
-// Opt-in evidence for a git that outlives its timeout (omo #10821): on Windows CI one `git add` stalls
+// Opt-in evidence for a git that outlives its timeout (omc #10821): on Windows CI one `git add` stalls
 // past 30 s and its repository stays locked long after the kill, and no run has reproduced it on
 // demand. When this variable names a directory, the timeout records the live process table (with
 // the stalled git's thread wait states on Windows) before git is signalled. Unset, nothing runs.
-export const GIT_TIMEOUT_DIAGNOSTICS_ENV = "OMO_GIT_TIMEOUT_DIAGNOSTICS_DIR"
+export const GIT_TIMEOUT_DIAGNOSTICS_ENV = "OMC_GIT_TIMEOUT_DIAGNOSTICS_DIR"
 
 // The snapshot is synchronous and blocks this process for at most this long before git is signalled.
 // That cost exists only in diagnostics mode and only on an actual timeout, where the evidence matters more.
@@ -26,10 +26,10 @@ function snapshotCommand(pid: number): readonly [string, readonly string[]] {
 
 // The table goes to a temp file, never a pipe: spawnSync caps a pipe at maxBuffer (1 MiB by default),
 // and a host running thousands of processes overflows any fixed cap, which lost the whole table to
-// ENOBUFS (omo #12801). A file has no such cap, so both platforms write their output to one.
+// ENOBUFS (omc #12801). A file has no such cap, so both platforms write their output to one.
 function processSnapshot(pid: number): string {
   const [file, args] = snapshotCommand(pid)
-  const output = join(tmpdir(), `omo-git-timeout-snapshot-${process.pid}-${randomUUID()}.txt`)
+  const output = join(tmpdir(), `omc-git-timeout-snapshot-${process.pid}-${randomUUID()}.txt`)
   let fd: number | undefined
   try {
     fd = openSync(output, "wx", 0o600)

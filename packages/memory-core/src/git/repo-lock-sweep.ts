@@ -12,10 +12,10 @@ import { PRODUCTION_LOCK_SCANS, type GitLockScans } from "./lock-scans"
 
 // Settle window between observing an idle lock candidate and re-checking it. The crash-
 // consistency fixture child shortens its OWN process's window through the
-// OMO_TEST_GIT_LOCK_SETTLE_MS env escape hatch, applied once at module init; production callers
+// OMC_TEST_GIT_LOCK_SETTLE_MS env escape hatch, applied once at module init; production callers
 // never set it, and the override stays process-local.
 function envSettleOverride(): number | undefined {
-  const raw = process.env.OMO_TEST_GIT_LOCK_SETTLE_MS
+  const raw = process.env.OMC_TEST_GIT_LOCK_SETTLE_MS
   if (raw === undefined) return undefined
   const parsed = Number.parseInt(raw, 10)
   return Number.isInteger(parsed) && parsed >= 0 ? parsed : undefined
@@ -48,7 +48,7 @@ const KEPT_REASON_TEXT: Record<KeptGitLockReason, string> = {
 }
 
 // A stranded git-internal lock is reported, never removed, unless every gate proves it is debris:
-// the file may belong to a LIVE writer whose fd is already closed (omo #10199 review HIGH 1).
+// the file may belong to a LIVE writer whose fd is already closed (omc #10199 review HIGH 1).
 export class StrandedGitLockError extends GitError {
   readonly paths: readonly string[]
 
@@ -115,7 +115,7 @@ export function writerLockPathForRepo(repoDir: string): string | null {
   return locksDir === null ? null : memoryWriterLockPath(locksDir)
 }
 
-// The sweep's contract changed with omo #10199 review HIGH 1: a git process killed
+// The sweep's contract changed with omc #10199 review HIGH 1: a git process killed
 // mid-transaction strands lock files it can never remove, but so does a LIVE writer in the
 // windows where git already closed the lock fd (commit's prepare_index, the files ref backend's
 // post-write close). Open handles and age can never distinguish the two, so reclamation is tied
@@ -127,7 +127,7 @@ export function writerLockPathForRepo(repoDir: string): string | null {
 // now, and (2) the lock protocol proved the previous owner dead when this process took it over,
 // re-verified here so a pid recycled since the takeover cannot pass.
 // The proof is bound to THIS acquisition: the current writer record's nonce must be the one the
-// takeover published (omo #10199 r5 MEDIUM 3), so a released takeover or another lock's proof
+// takeover published (omc #10199 r5 MEDIUM 3), so a released takeover or another lock's proof
 // never authorizes anything.
 // Returns the proven-dead previous owner that authorizes this sweep, or null.
 async function authorizedPreviousOwner(repoDir: string): Promise<LockRecord | null> {
@@ -152,14 +152,14 @@ export async function sweepStrandedGitLockFiles(dir: string, settleMs = GIT_LOCK
 
   await new Promise((resolveSleep) => setTimeout(resolveSleep, settleMs))
   // A live owner of a stranded lock stays alive from before the sweep until it removes the lock,
-  // so one check after the settle window sees it (omo #10199 r5 HIGH 1: never break a lock while
+  // so one check after the settle window sees it (omc #10199 r5 HIGH 1: never break a lock while
   // ANY process - the dead owner's orphaned git child included - is working in the repository).
   const users = await scans.findRepoUsers(dir)
   if (users !== null && users.length > 0) return keepAll(present, "repo-in-use")
   const holders = new Map<string, readonly number[] | null>()
   for (const candidate of present.keys()) holders.set(candidate, await scans.findHolders(candidate))
 
-  // omo #10322: the kernel answers what /proc cannot. Busy means a memory-core git process is alive
+  // omc #10322: the kernel answers what /proc cannot. Busy means a memory-core git process is alive
   // in this repo. Idle stands in for an unanswerable scan only when the dead owner ran its git under
   // this lock (an older writer's orphaned git would not hold it). The exclusive hold spans only the
   // final stat and unlink, so no memory-core git can start in between.

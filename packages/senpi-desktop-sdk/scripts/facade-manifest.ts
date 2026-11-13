@@ -2,7 +2,7 @@
 // `Interface.method`, its parameters and return type as written, and its `@tier`, `@policy` and `@wire` tags.
 // The parser accepts only the shapes facade.ts uses (interface bodies of doc comments, properties and method
 // signatures) and throws on anything else, so an unsupported edit fails generation instead of dropping a method.
-import { ENGINE_METHODS, ENGINE_NOTIFICATIONS } from "@oh-my-opencode/senpi-desktop-protocol";
+import { ENGINE_METHODS, ENGINE_NOTIFICATIONS } from "@oh-my-cybersecurity/senpi-desktop-protocol";
 
 const FACADE_SOURCE = "packages/senpi-desktop-sdk/src/facade.ts";
 

@@ -12,7 +12,7 @@ afterEach(() => {
 })
 
 function sandbox(): { root: string; bin: string } {
-  const root = mkdtempSync(join(tmpdir(), "omo-install-preamble-"))
+  const root = mkdtempSync(join(tmpdir(), "omc-install-preamble-"))
   roots.push(root)
   const bin = join(root, "bin")
   mkdirSync(bin)
@@ -37,7 +37,7 @@ describe("install.sh POSIX preamble", () => {
 
       expect(result.status).toBe(1)
       expect(result.stdout).toBe("")
-      expect(result.stderr).toBe("omo installer: bash is required; run with: curl -fsSL https://get.omo.dev/install.sh | bash\n")
+      expect(result.stderr).toBe("omc installer: bash is required; run with: curl -fsSL https://get.omc.nga.hm/install.sh | bash\n")
       expect(result.stderr).not.toContain("syntax error")
     })
   }
@@ -61,14 +61,14 @@ describe("install.sh POSIX preamble", () => {
     })
 
     expect(result.status).toBe(0)
-    expect(readFileSync(captured, "utf8")).toStartWith("#!/usr/bin/env bash\n# OmO native installer")
+    expect(readFileSync(captured, "utf8")).toStartWith("#!/usr/bin/env bash\n# OmC native installer")
     expect(readFileSync(captured, "utf8")).toEndWith('if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then main "$@"; fi\n')
     expect(readFileSync(args, "utf8")).toBe("alpha\nbeta\n")
   })
 
   test("Bash still parses the wrapper and complete installer body", () => {
     const wrapper = spawnSync("/bin/bash", ["-n"], { input: script, encoding: "utf8" })
-    const body = script.split("<<'OMO_INSTALL_BASH'\n", 2)[1]?.split("\nOMO_INSTALL_BASH\n", 1)[0]
+    const body = script.split("<<'OMC_INSTALL_BASH'\n", 2)[1]?.split("\nOMO_INSTALL_BASH\n", 1)[0]
     expect(body).toBeDefined()
     const installer = spawnSync("/bin/bash", ["-n"], { input: body, encoding: "utf8" })
     expect(wrapper.status).toBe(0)

@@ -2,7 +2,7 @@
 // verify-lsp.ts <file> [--timeout=ms] — perform a real LSP diagnostics roundtrip
 // for <file> through the lsp-tools-mcp engine and report ok/fail with error text.
 // The engine source is located by walking up from this script and the cwd, so
-// run it inside the omo repo/worktree (where packages/lsp-tools-mcp/src exists).
+// run it inside the omc repo/worktree (where packages/lsp-tools-mcp/src exists).
 
 import { existsSync, statSync } from "node:fs"
 import { dirname, isAbsolute, join, resolve } from "node:path"
@@ -76,7 +76,7 @@ async function loadModule<T>(relativeTarget: string): Promise<T> {
 
 class EngineNotFoundError extends Error {
 	constructor(public readonly target: string) {
-		super(`lsp-tools-mcp engine not found (looked for ${target}). Run verify-lsp.ts inside the omo repo/worktree.`)
+		super(`lsp-tools-mcp engine not found (looked for ${target}). Run verify-lsp.ts inside the omc repo/worktree.`)
 		this.name = "EngineNotFoundError"
 	}
 }

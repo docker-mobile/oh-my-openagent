@@ -1,4 +1,4 @@
-// The pairing ceremony's pending-approval routes and the sync switches (omo-service contract
+// The pairing ceremony's pending-approval routes and the sync switches (omc-service contract
 // 1.17.0, sync-design section 8.1). Rows are untrusted: the ceremony recomputes the commitment and
 // both devices compare the code before anything is signed.
 

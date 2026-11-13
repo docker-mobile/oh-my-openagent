@@ -3,7 +3,7 @@ import type { Mode, OpenMode, PathLike } from "node:fs"
 import { mkdtemp, open, readdir, readFile, rename, rm, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
-import { getProcessStartIdentity } from "@oh-my-opencode/memory-core/process-identity"
+import { getProcessStartIdentity } from "@oh-my-cybersecurity/memory-core/process-identity"
 
 async function createTempDirectory(prefix: string): Promise<string> {
   return await mkdtemp(join(tmpdir(), prefix))

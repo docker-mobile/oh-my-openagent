@@ -8,7 +8,7 @@ import { AST_GREP_BIN_DIR_ENV_KEY } from "./install-script"
 import { SG_PATH_ENV_KEY, type SgResolverOptions } from "./types"
 
 function tempDir(name: string): string {
-  return join(tmpdir(), `omo-${name}-${crypto.randomUUID()}`)
+  return join(tmpdir(), `omc-${name}-${crypto.randomUUID()}`)
 }
 
 function writeStubBinary(filePath: string, body: string): string {
@@ -104,7 +104,7 @@ describe("resolveSgBinarySync tier order", () => {
 
     // then
     expect(result.found ? result.path : null).toBe(runtimePath)
-    expect(result.found ? result.tier : null).toBe("omo-runtime")
+    expect(result.found ? result.tier : null).toBe("omc-runtime")
 
     rmSync(root, { force: true, recursive: true })
   })
@@ -112,7 +112,7 @@ describe("resolveSgBinarySync tier order", () => {
   it("#given no CODEX_HOME #when the home OMO runtime holds sg #then the slug directory resolves it", () => {
     // given
     const root = tempDir("tier-home")
-    const runtimePath = astGrepStub(join(root, ".omo", "runtime", "ast-grep", "darwin-arm64", "sg"))
+    const runtimePath = astGrepStub(join(root, ".omc", "runtime", "ast-grep", "darwin-arm64", "sg"))
     const recorder = recordingProbe({ [runtimePath]: "ast-grep 0.43.0" })
 
     // when
@@ -127,7 +127,7 @@ describe("resolveSgBinarySync tier order", () => {
 
     // then
     expect(result.found ? result.path : null).toBe(runtimePath)
-    expect(result.found ? result.tier : null).toBe("omo-runtime")
+    expect(result.found ? result.tier : null).toBe("omc-runtime")
 
     rmSync(root, { force: true, recursive: true })
   })
@@ -500,7 +500,7 @@ describe("resolveSgBinarySync failure", () => {
     const hintText = result.error.hints.join("\n")
     expect(hintText).toContain("npm install -g @ast-grep/cli")
     expect(hintText).toContain("cargo install ast-grep --locked")
-    expect(hintText.toLowerCase()).toContain("omo")
+    expect(hintText.toLowerCase()).toContain("omc")
   })
 
   it("#given nothing resolves on win32 #when resolving #then the hints cover scoop, winget, chocolatey and npm", () => {

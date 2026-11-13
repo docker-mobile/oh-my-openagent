@@ -1,9 +1,9 @@
 {
-  "name": "@oh-my-opencode/mcp-client-core",
+  "name": "@oh-my-cybersecurity/mcp-client-core",
   "version": "0.1.0",
   "type": "module",
   "private": true,
-  "description": "Harness-neutral MCP client lifecycle and OAuth primitives for oh-my-opencode adapters.",
+  "description": "Harness-neutral MCP client lifecycle and OAuth primitives for oh-my-cybersecurity adapters.",
   "exports": {
     ".": {
       "types": "./src/index.ts",
@@ -33,8 +33,8 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
-    "@oh-my-opencode/claude-code-compat-core": "workspace:*",
-    "@oh-my-opencode/utils": "workspace:*",
+    "@oh-my-cybersecurity/claude-code-compat-core": "workspace:*",
+    "@oh-my-cybersecurity/utils": "workspace:*",
     "proper-lockfile": "4.1.2",
     "zod": "^4.6.5"
   },

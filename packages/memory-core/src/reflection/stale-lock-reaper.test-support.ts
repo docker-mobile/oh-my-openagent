@@ -18,7 +18,7 @@ export const HOST = "reaper-host"
 export const RUN = "reflection-run-64"
 
 export function reaperIdentity(id = "agent-a"): MemoryIdentityPaths {
-  const root = realpathSync.native(mkdtempSync(join(tmpdir(), "omo-stale-lock-reaper-")))
+  const root = realpathSync.native(mkdtempSync(join(tmpdir(), "omc-stale-lock-reaper-")))
   roots.push(root)
   const paths = buildIdentityPaths(root, id)
   mkdirSync(paths.repo, { recursive: true })

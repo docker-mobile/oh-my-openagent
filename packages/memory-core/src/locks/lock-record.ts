@@ -12,7 +12,7 @@ export type LockRecord = {
   readonly created_at: string
   readonly purpose: string
   readonly run_id?: string
-  // This process runs its memory-core git under the kernel git-activity lock (omo #10322), so an
+  // This process runs its memory-core git under the kernel git-activity lock (omc #10322), so an
   // idle activity lock proves none of its git processes outlived it.
   readonly git_activity_lock?: true
 }

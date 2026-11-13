@@ -2,7 +2,7 @@ import { runTmuxCommand } from "../runner"
 import { isInsideTmux } from "./environment"
 import { killTmuxSessionIfExists } from "./session-kill"
 
-const STALE_SESSION_PATTERN = /^omo-agents-(\d+)(?:-([A-Za-z0-9]+))?$/
+const STALE_SESSION_PATTERN = /^omc-agents-(\d+)(?:-([A-Za-z0-9]+))?$/
 
 function getErrorMessage(error: unknown): string {
 	if (error instanceof Error) {

@@ -1,7 +1,7 @@
 import { existsSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 
-import { OmoTaskSettingsSchema } from "@oh-my-opencode/omo-config-core"
+import { OmoTaskSettingsSchema } from "@oh-my-cybersecurity/omc-config-core"
 
 import { createTaskRecordStore } from "../../store"
 import { resolveContext } from "../context"

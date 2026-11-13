@@ -1,7 +1,7 @@
 import { chmodSync } from "node:fs";
 import { createServer, type Server, type Socket } from "node:net";
 
-import { disposeDefaultLspManager, getLspManager } from "@oh-my-opencode/lsp-core/lsp/manager";
+import { disposeDefaultLspManager, getLspManager } from "@oh-my-cybersecurity/lsp-core/lsp/manager";
 import { pingDaemon } from "./ensure-daemon.js";
 import { setPrivateFileMode } from "./ipc-protocol.js";
 import {

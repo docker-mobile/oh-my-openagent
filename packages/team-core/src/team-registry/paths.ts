@@ -58,7 +58,7 @@ function resolveContainedPath(baseDir: string, pathSegments: readonly string[]):
 }
 
 export function resolveBaseDir(config: TeamModeConfig): string {
-  return expandHomeDirectory(config.base_dir ?? path.join(homedir(), ".omo"))
+  return expandHomeDirectory(config.base_dir ?? path.join(homedir(), ".omc"))
 }
 
 function expandHomeDirectory(directoryPath: string): string {
@@ -80,7 +80,7 @@ export function getTeamSpecPath(
   projectRoot?: string,
 ): string {
   const teamSpecRoot = scope === "project"
-    ? path.join(projectRoot ?? "", ".omo", "teams")
+    ? path.join(projectRoot ?? "", ".omc", "teams")
     : path.join(baseDir, "teams")
 
   return resolveContainedPath(teamSpecRoot, [teamName, "config.json"])
@@ -145,7 +145,7 @@ export async function discoverTeamSpecs(
   deps: Pick<PathDeps, "log"> = defaultPathDeps,
 ): Promise<Array<{ name: string; scope: "project" | "user"; path: string }>> {
   const baseDir = resolveBaseDir(config)
-  const projectTeamsDir = path.resolve(projectRoot, ".omo", "teams")
+  const projectTeamsDir = path.resolve(projectRoot, ".omc", "teams")
   const userTeamsDir = path.resolve(baseDir, "teams")
 
   const [projectTeamSpecs, userTeamSpecs] = await Promise.all([

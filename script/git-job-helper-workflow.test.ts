@@ -1,6 +1,6 @@
 /// <reference types="bun-types" />
 
-// Release contract (omo#10391): the git job helper is built on the two Windows hosts only (unsigned, static CRT, its
+// Release contract (omc#10391): the git job helper is built on the two Windows hosts only (unsigned, static CRT, its
 // own cargo call), carried in the desktop-engine artifact, and staged into the compiled payload so its sha256 lands in
 // the runtime manifest.
 
@@ -35,28 +35,28 @@ describe("git job helper release build", () => {
 
     expect(step).toContain("if: startsWith(matrix.host, 'win32-')\n")
     expect(step).toContain("RUSTFLAGS: -C target-feature=+crt-static")
-    expect(run).toContain('cargo build --release -p omo-git-job-helper --locked --target "$RUST_TARGET"')
+    expect(run).toContain('cargo build --release -p omc-git-job-helper --locked --target "$RUST_TARGET"')
     for (const name of ["CSC_LINK", "APPLE_API_KEY", "macos-sign-and-notarize.sh"]) expect(step).not.toContain(name)
   })
 
   posixBashTest("stages the build under a host directory and refuses bytes whose selftest does not pass", () => {
     const run = runBlock(engine, buildMarker, afterBuildMarker)
     const attempt = (selftest: string): { status: number | null; staged: string } => {
-      const root = scratch("omo-git-job-helper-build-")
+      const root = scratch("omc-git-job-helper-build-")
       try {
         const bin = join(root, "bin")
         mkdirSync(bin)
         const built = join(root, "built-helper")
         writeFileSync(built, `#!/bin/bash\n${selftest}\n`)
         chmodSync(built, 0o755)
-        writeFileSync(join(bin, "cargo"), `#!/bin/bash\nmkdir -p "target/$RUST_TARGET/release"\ncp "${built}" "target/$RUST_TARGET/release/omo-git-job-helper.exe"\n`)
+        writeFileSync(join(bin, "cargo"), `#!/bin/bash\nmkdir -p "target/$RUST_TARGET/release"\ncp "${built}" "target/$RUST_TARGET/release/omc-git-job-helper.exe"\n`)
         chmodSync(join(bin, "cargo"), 0o755)
         const result = spawnSync("bash", ["-e", "-c", run], {
           cwd: root,
           env: { ...process.env, PATH: `${bin}:${process.env.PATH ?? ""}`, HOST: "win32-arm64", RUST_TARGET: "aarch64-pc-windows-msvc" },
           encoding: "utf8",
         })
-        const staged = join(root, ".omo", "desktop-engine-assets", "git-job-helper-win32-arm64", "omo-git-job-helper.exe")
+        const staged = join(root, ".omc", "desktop-engine-assets", "git-job-helper-win32-arm64", "omc-git-job-helper.exe")
         return { status: result.status, staged: existsSync(staged) ? readFileSync(staged, "utf8") : "" }
       } finally {
         rmSync(root, { recursive: true, force: true })
@@ -71,7 +71,7 @@ describe("git job helper release build", () => {
 
   test("uploads the helper in the desktop-engine artifact under its host directory", () => {
     const upload = sliceWorkflowSection(engine, "      - name: Upload desktop engine artifact\n", "      - name: Write job summary\n")
-    expect(upload).toContain(".omo/desktop-engine-assets/git-job-helper-*/omo-git-job-helper*\n")
+    expect(upload).toContain(".omc/desktop-engine-assets/git-job-helper-*/omc-git-job-helper*\n")
   })
 })
 
@@ -79,7 +79,7 @@ describe("git job helper transport into the compiled payload", () => {
   posixBashTest("resolves the helper for the Windows targets and nothing elsewhere", () => {
     const run = runBlock(platformBuild, resolveMarker, stageMarker)
     const resolve = (platform: string): string => {
-      const root = scratch("omo-git-job-helper-resolve-")
+      const root = scratch("omc-git-job-helper-resolve-")
       try {
         const output = join(root, "output")
         const result = spawnSync("bash", ["-e", "-c", run], {
@@ -97,8 +97,8 @@ describe("git job helper transport into the compiled payload", () => {
 
     expect(resolve("windows-x64-baseline")).toBe([
       "host=win32-x64",
-      "asset=git-job-helper-win32-x64/omo-git-job-helper.exe",
-      "source=target/x86_64-pc-windows-msvc/release/omo-git-job-helper.exe",
+      "asset=git-job-helper-win32-x64/omc-git-job-helper.exe",
+      "source=target/x86_64-pc-windows-msvc/release/omc-git-job-helper.exe",
       "",
     ].join("\n"))
     expect(resolve("darwin-arm64")).toBe("host=\nasset=\nsource=\n")
@@ -106,18 +106,18 @@ describe("git job helper transport into the compiled payload", () => {
   }, 60_000)
 
   posixBashTest("copies the downloaded helper into its Rust source path, and fails when the promised helper is absent", () => {
-    const root = scratch("omo-git-job-helper-stage-")
+    const root = scratch("omc-git-job-helper-stage-")
     try {
       const run = runBlock(platformBuild, stageMarker, afterStageMarker)
-      const asset = "git-job-helper-win32-arm64/omo-git-job-helper.exe"
-      const source = "target/aarch64-pc-windows-msvc/release/omo-git-job-helper.exe"
+      const asset = "git-job-helper-win32-arm64/omc-git-job-helper.exe"
+      const source = "target/aarch64-pc-windows-msvc/release/omc-git-job-helper.exe"
       const env = { ...process.env, HELPER_ASSET: asset, HELPER_SOURCE: source }
 
       expect(spawnSync("bash", ["-e", "-c", run], { cwd: root, env, encoding: "utf8" }).status).not.toBe(0)
       expect(existsSync(join(root, source))).toBe(false)
 
-      mkdirSync(join(root, ".omo", "desktop-engine-assets", "git-job-helper-win32-arm64"), { recursive: true })
-      writeFileSync(join(root, ".omo", "desktop-engine-assets", asset), "release helper")
+      mkdirSync(join(root, ".omc", "desktop-engine-assets", "git-job-helper-win32-arm64"), { recursive: true })
+      writeFileSync(join(root, ".omc", "desktop-engine-assets", asset), "release helper")
       const staged = spawnSync("bash", ["-e", "-c", run], { cwd: root, env, encoding: "utf8" })
       expect(staged.status, staged.stderr).toBe(0)
       expect(readFileSync(join(root, source), "utf8")).toBe("release helper")
@@ -129,7 +129,7 @@ describe("git job helper transport into the compiled payload", () => {
   test("the native binary parity job builds the helper for its Windows binary only, with the release CRT linkage", () => {
     const run = runBlock(parity, "      - name: Build the desktop engine the binary embeds\n", "      - name: Build the standalone binary and the npm launcher payload\n")
     const gate = run.indexOf('if [[ "${{ matrix.target }}" == windows-* ]]; then')
-    const helper = run.indexOf('RUSTFLAGS="-C target-feature=+crt-static" cargo build --release -p omo-git-job-helper --locked --target ${{ matrix.rust-target }}')
+    const helper = run.indexOf('RUSTFLAGS="-C target-feature=+crt-static" cargo build --release -p omc-git-job-helper --locked --target ${{ matrix.rust-target }}')
 
     expect(gate).toBeGreaterThanOrEqual(0)
     // Static CRT, as publish-platform builds the released bytes: the parity binary embeds the same helper.

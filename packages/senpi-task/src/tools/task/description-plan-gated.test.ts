@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 
-import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
+import type { OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { AgentDefinition } from "../../agents"
 import { buildTaskToolDescription } from "./description"
@@ -26,7 +26,7 @@ describe("buildTaskToolDescription plan-gated agents", () => {
     expect(description).toContain("ulw-plan")
     expect(description).toContain("ulw-execute")
     expect(description).toContain("user explicitly request")
-    expect(description).toContain(".omo/plans")
+    expect(description).toContain(".omc/plans")
     expect(description).toContain("plan-consultant")
     expect(description).toContain("plan-reviewer")
   })

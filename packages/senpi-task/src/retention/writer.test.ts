@@ -4,7 +4,7 @@ import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { afterEach, describe, expect, test } from "bun:test"
 
-import type { OmoTaskTranscriptRetention } from "@oh-my-opencode/omo-config-core"
+import type { OmoTaskTranscriptRetention } from "@oh-my-cybersecurity/omc-config-core"
 
 import { createTaskRecordStore } from "../store"
 import type { RetainTranscriptMark, TaskStatus } from "../state"
@@ -72,7 +72,7 @@ function seedTerminalTask(
 function writerFor(root: string, store: ReturnType<typeof createTaskRecordStore>, settings: OmoTaskTranscriptRetention, overrides: { now?: () => number; archiveId?: () => string } = {}) {
   return createTranscriptArchiveWriter({
     stateDir: store.stateDir,
-    archiveDir: join(root, "agent", "sessions", "--omo-senpi-task-archive--"),
+    archiveDir: join(root, "agent", "sessions", "--omc-senpi-task-archive--"),
     settings,
     now: overrides.now ?? (() => Date.parse("2026-09-11T00:00:00.000Z")),
     ...(overrides.archiveId !== undefined ? { archiveId: overrides.archiveId } : {}),
@@ -89,7 +89,7 @@ describe("createTranscriptArchiveWriter", () => {
   test("#given a selected terminal task #when archiving #then a 0600 manifest jsonl plus a 0600 compressed sidecar land under the archive dir", () => {
     const root = tempRoot()
     const { store, taskId } = seedTerminalTask(root, { retain_transcript: true })
-    const archiveDir = join(root, "agent", "sessions", "--omo-senpi-task-archive--")
+    const archiveDir = join(root, "agent", "sessions", "--omc-senpi-task-archive--")
     const writer = writerFor(root, store, retentionSettings(), { archiveId: () => "11111111-2222-4333-8444-555555555555" })
 
     writer.archiveRecord(loadedRecord(store, taskId))
@@ -134,7 +134,7 @@ describe("createTranscriptArchiveWriter", () => {
     const writer = writerFor(root, store, retentionSettings(), { archiveId: () => "11111111-2222-4333-8444-555555555555" })
 
     writer.archiveRecord(loadedRecord(store, taskId))
-    const archiveDir = join(root, "agent", "sessions", "--omo-senpi-task-archive--")
+    const archiveDir = join(root, "agent", "sessions", "--omc-senpi-task-archive--")
     const first = readdirSync(archiveDir).toSorted().map((file) => readFileSync(join(archiveDir, file)))
 
     writer.archiveRecord(loadedRecord(store, taskId))
@@ -147,7 +147,7 @@ describe("createTranscriptArchiveWriter", () => {
   test("#given a metadata-only mark #when archiving #then only the manifest is written and it holds audit facts but no content", () => {
     const root = tempRoot()
     const { store, taskId } = seedTerminalTask(root, { retain_transcript: "metadata" })
-    const archiveDir = join(root, "agent", "sessions", "--omo-senpi-task-archive--")
+    const archiveDir = join(root, "agent", "sessions", "--omc-senpi-task-archive--")
     writerFor(root, store, retentionSettings(), { archiveId: () => "11111111-2222-4333-8444-555555555555" }).archiveRecord(loadedRecord(store, taskId))
 
     expect(readdirSync(archiveDir)).toEqual([archiveFileName("2026-09-10T00:10:00.000Z", taskId)])
@@ -166,7 +166,7 @@ describe("createTranscriptArchiveWriter", () => {
   test("#given a protected cwd under metadata_only_paths #when archiving a category-selected task #then only the metadata manifest is written", () => {
     const root = tempRoot()
     const { store, taskId } = seedTerminalTask(root, { category: "deep", status: "error" })
-    const archiveDir = join(root, "agent", "sessions", "--omo-senpi-task-archive--")
+    const archiveDir = join(root, "agent", "sessions", "--omc-senpi-task-archive--")
     // The seeded record's cwd is the temp root itself: protect exactly it.
     const writer = writerFor(root, store, retentionSettings({ metadata_only_paths: [root] }))
     writer.archiveRecord(loadedRecord(store, taskId))
@@ -180,7 +180,7 @@ describe("createTranscriptArchiveWriter", () => {
   test("#given an unselected terminal task #when archiving #then no archive file is created", () => {
     const root = tempRoot()
     const { store, taskId } = seedTerminalTask(root, { category: "explore" })
-    const archiveDir = join(root, "agent", "sessions", "--omo-senpi-task-archive--")
+    const archiveDir = join(root, "agent", "sessions", "--omc-senpi-task-archive--")
     writerFor(root, store, retentionSettings()).archiveRecord(loadedRecord(store, taskId))
     expect(existsSync(archiveDir)).toBe(false)
   })
@@ -188,14 +188,14 @@ describe("createTranscriptArchiveWriter", () => {
   test("#given retention disabled #when archiving #then nothing happens", () => {
     const root = tempRoot()
     const { store, taskId } = seedTerminalTask(root)
-    const archiveDir = join(root, "agent", "sessions", "--omo-senpi-task-archive--")
+    const archiveDir = join(root, "agent", "sessions", "--omc-senpi-task-archive--")
     writerFor(root, store, retentionSettings({ enabled: false })).archiveRecord(loadedRecord(store, taskId))
     expect(existsSync(archiveDir)).toBe(false)
   })
 
   test("#given archive artifacts past their ttl #when expiring #then expired manifests and sidecars are removed together and fresh ones kept", () => {
     const root = tempRoot()
-    const archiveDir = join(root, "agent", "sessions", "--omo-senpi-task-archive--")
+    const archiveDir = join(root, "agent", "sessions", "--omc-senpi-task-archive--")
     mkdirSync(archiveDir, { recursive: true })
     const files = ["old.jsonl", "old.jsonl.gz", "fresh.jsonl", "fresh.jsonl.gz", "unrelated.txt"]
     for (const file of files) writeFileSync(join(archiveDir, file), "{}\n")

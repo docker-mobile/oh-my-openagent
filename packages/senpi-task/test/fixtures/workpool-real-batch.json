@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "senpi_commit": "c31a9c7e6e00690e06eeb13e885694a8f1885c2b",
-  "omo_commit": "c5b76f541ca2c5afc380712cb8cc556431368aa0",
+  "omc_commit": "c5b76f541ca2c5afc380712cb8cc556431368aa0",
   "prompt": "Analyze each assigned workpool item. The item input is JSON with path, file_sha256, question, and source (the exact pinned file bytes). Answer only from those source bytes. Yield workpool results as {key, data:{export:<identifier>}} for the exported name the question asks for. If you cannot answer, yield {key, error:{code,message}}. Do not spawn tasks or use other tools.",
   "prompt_sha256": "e0a142ac40b68269a0f7a46a610c1fd66a40b9675fab75e514e18db487f96a76",
   "width": 2,
@@ -12,12 +12,12 @@
     "senpi-stream-fn",
     "senpi-resolve-tool-path",
     "senpi-experimental",
-    "omo-once-only",
-    "omo-execution-mode",
-    "omo-yield-tool",
-    "omo-dag-directive",
-    "omo-clamp-wait",
-    "omo-runner-error"
+    "omc-once-only",
+    "omc-execution-mode",
+    "omc-yield-tool",
+    "omc-dag-directive",
+    "omc-clamp-wait",
+    "omc-runner-error"
   ],
   "items": [
     {
@@ -123,8 +123,8 @@
       "input_sha256": "5c0d2f88dc7d656d72ec9d2e3b3947a4eb0b732d2b7416a995fc36c023372912"
     },
     {
-      "key": "omo-once-only",
-      "repo": "omo",
+      "key": "omc-once-only",
+      "repo": "omc",
       "path": "packages/senpi-task/src/manager/once-only.ts",
       "file_sha256": "fca89009d38145420bbc4fe9b2b2b96b59f0b99f1be224777f8d496c760cad88",
       "question": "Which exported function wraps a release callback so it runs at most once?",
@@ -140,8 +140,8 @@
       "input_sha256": "f097ed3651a856864888fe41a6b10ec3b2bb4c67d180d26eae2f57b82c1c40f6"
     },
     {
-      "key": "omo-execution-mode",
-      "repo": "omo",
+      "key": "omc-execution-mode",
+      "repo": "omc",
       "path": "packages/senpi-task/src/manager/execution-mode.ts",
       "file_sha256": "1a15336a952b25f0b8a6838a6580f8c3279a8ff5b302e54e8a9e40c32b6a35de",
       "question": "Which exported function resolves in-process versus process execution mode?",
@@ -152,13 +152,13 @@
         "path": "packages/senpi-task/src/manager/execution-mode.ts",
         "file_sha256": "1a15336a952b25f0b8a6838a6580f8c3279a8ff5b302e54e8a9e40c32b6a35de",
         "question": "Which exported function resolves in-process versus process execution mode?",
-        "source": "export type ExecutionMode = \"in-process\" | \"process\"\n\nexport type ExecutionModeSources = {\n  readonly specMode?: ExecutionMode\n  readonly agentMode?: ExecutionMode\n  readonly configMode?: ExecutionMode\n}\n\n// Precedence: spec.execution_mode ?? agentDef.executionMode ?? omo.json task.default_execution_mode\n// ?? \"in-process\".\nexport function resolveExecutionMode(sources: ExecutionModeSources): ExecutionMode {\n  return sources.specMode ?? sources.agentMode ?? sources.configMode ?? \"in-process\"\n}\n"
+        "source": "export type ExecutionMode = \"in-process\" | \"process\"\n\nexport type ExecutionModeSources = {\n  readonly specMode?: ExecutionMode\n  readonly agentMode?: ExecutionMode\n  readonly configMode?: ExecutionMode\n}\n\n// Precedence: spec.execution_mode ?? agentDef.executionMode ?? omc.json task.default_execution_mode\n// ?? \"in-process\".\nexport function resolveExecutionMode(sources: ExecutionModeSources): ExecutionMode {\n  return sources.specMode ?? sources.agentMode ?? sources.configMode ?? \"in-process\"\n}\n"
       },
       "input_sha256": "c465e9ec3b8d54dfce6dcfaecbd2ab9a81faaaf288be0184002609cff5476c53"
     },
     {
-      "key": "omo-yield-tool",
-      "repo": "omo",
+      "key": "omc-yield-tool",
+      "repo": "omc",
       "path": "packages/senpi-task/src/workpool/worker-tool-identity.ts",
       "file_sha256": "dc51ed10358a85fe0ff2a99737f3dede7ffeb9741d25c576ae1ed9a964de3bfc",
       "question": "Which exported function marks a tool definition as the engine-owned workpool yield wrapper?",
@@ -174,8 +174,8 @@
       "input_sha256": "e3b90989c2cd2cb32aaaddf8022948a764014052dea8f8f9ffc37d0f56e98708"
     },
     {
-      "key": "omo-dag-directive",
-      "repo": "omo",
+      "key": "omc-dag-directive",
+      "repo": "omc",
       "path": "packages/senpi-task/src/completion/dag-verification-directive.ts",
       "file_sha256": "7044a3b9634b3da6e437187cee08468c77cfd6cc6c0e3ae132d3b9502512ebaf",
       "question": "Which exported constant is appended to DAG completion payloads?",
@@ -191,8 +191,8 @@
       "input_sha256": "94af7783fd4c31a08db376f5c47e1b5dd8b3e50c6e1db05770d16f0496b766ab"
     },
     {
-      "key": "omo-clamp-wait",
-      "repo": "omo",
+      "key": "omc-clamp-wait",
+      "repo": "omc",
       "path": "packages/senpi-task/src/tools/control/clamp.ts",
       "file_sha256": "32c48e375bc19dc37c50bfa96cde4636609efb25524bf1e7afa6815d344c4b61",
       "question": "Which exported function clamps a wait timeout into configured bounds?",
@@ -203,13 +203,13 @@
         "path": "packages/senpi-task/src/tools/control/clamp.ts",
         "file_sha256": "32c48e375bc19dc37c50bfa96cde4636609efb25524bf1e7afa6815d344c4b61",
         "question": "Which exported function clamps a wait timeout into configured bounds?",
-        "source": "import type { OmoTaskSettings } from \"@oh-my-opencode/omo-config-core\"\n\nexport type WaitBounds = OmoTaskSettings[\"wait\"]\n\n// Codex wait contract (config min/default/max): an omitted timeout falls back to default_ms; any\n// supplied value is clamped into [min_ms, max_ms]. Boundary intent (defaults 5000/60000/600000):\n// 4999 -> 5000, 999999 -> 600000.\nexport function clampWaitTimeout(requested: number | undefined, bounds: WaitBounds): number {\n  if (requested === undefined) return bounds.default_ms\n  if (requested < bounds.min_ms) return bounds.min_ms\n  if (requested > bounds.max_ms) return bounds.max_ms\n  return requested\n}\n"
+        "source": "import type { OmoTaskSettings } from \"@oh-my-cybersecurity/omc-config-core\"\n\nexport type WaitBounds = OmoTaskSettings[\"wait\"]\n\n// Codex wait contract (config min/default/max): an omitted timeout falls back to default_ms; any\n// supplied value is clamped into [min_ms, max_ms]. Boundary intent (defaults 5000/60000/600000):\n// 4999 -> 5000, 999999 -> 600000.\nexport function clampWaitTimeout(requested: number | undefined, bounds: WaitBounds): number {\n  if (requested === undefined) return bounds.default_ms\n  if (requested < bounds.min_ms) return bounds.min_ms\n  if (requested > bounds.max_ms) return bounds.max_ms\n  return requested\n}\n"
       },
       "input_sha256": "4ca5b0540a15fadec78dfc603663a4e52336a06c6f53c7635fd3400c91a3398b"
     },
     {
-      "key": "omo-runner-error",
-      "repo": "omo",
+      "key": "omc-runner-error",
+      "repo": "omc",
       "path": "packages/senpi-task/src/runners/in-process/runner-error.ts",
       "file_sha256": "789f7b7d6b14486c005f8a045387c7a3ab0265f3a07591f08f671e989054e831",
       "question": "Which exported class identifies in-process runner failures?",

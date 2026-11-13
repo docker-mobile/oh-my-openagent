@@ -1,11 +1,11 @@
 ---
 name: codex-qa
-description: "QA the omo Codex Light edition (lazycodex / packages/omo-codex) itself, in strict isolation so ONLY our plugin is exercised, never the user's real ~/.codex. The first-party method drives the real `codex app-server` against an isolated CODEX_HOME plus a LOCAL mock model (no real API call), and proves a plugin hook fired by asserting hook/started + hook/completed notifications. Also: isolated install verification, per-component hook probes, a tmux TUI smoke, and runtime log observation (RUST_LOG / logs SQLite / /debug-config). Ships tested helper scripts each with a --self-test. Use whenever someone changes anything under packages/omo-codex or wants to QA, smoke-test, verify, or debug the Codex plugin, its hooks/components, the installer/config.toml, the app-server flow, or the Codex TUI. Triggers: codex qa, qa codex, codex-qa, test codex plugin, verify codex hook, codex app-server, lazycodex qa, isolated CODEX_HOME, prove codex hook fired, codex tui test."
+description: "QA the omc Codex Light edition (lazycodex / packages/omc-codex) itself, in strict isolation so ONLY our plugin is exercised, never the user's real ~/.codex. The first-party method drives the real `codex app-server` against an isolated CODEX_HOME plus a LOCAL mock model (no real API call), and proves a plugin hook fired by asserting hook/started + hook/completed notifications. Also: isolated install verification, per-component hook probes, a tmux TUI smoke, and runtime log observation (RUST_LOG / logs SQLite / /debug-config). Ships tested helper scripts each with a --self-test. Use whenever someone changes anything under packages/omc-codex or wants to QA, smoke-test, verify, or debug the Codex plugin, its hooks/components, the installer/config.toml, the app-server flow, or the Codex TUI. Triggers: codex qa, qa codex, codex-qa, test codex plugin, verify codex hook, codex app-server, lazycodex qa, isolated CODEX_HOME, prove codex hook fired, codex tui test."
 ---
 
 # Codex QA
 
-QA the omo Codex Light edition (`packages/omo-codex/`, shipped as lazycodex). We
+QA the omc Codex Light edition (`packages/omc-codex/`, shipped as lazycodex). We
 exercise OUR plugin in a REAL Codex while touching nothing of the user's setup:
 an isolated `CODEX_HOME` + a local mock model means no real API call and the real
 `~/.codex` is never read or written. Each helper script ships a `--self-test`
@@ -33,7 +33,7 @@ Verified against `codex-cli 0.140.0` (node, jq, tmux, bun on macOS). Confirm wit
   stream (`hook/started` / `hook/completed`), not log scraping. See
   [references/app-server.md](references/app-server.md).
 - **The captured JSON / pane IS the evidence** — write it under
-  `.omo/evidence/<YYYYMMDD>-<slug>/` (no evidence file == the QA did not happen).
+  `.omc/evidence/<YYYYMMDD>-<slug>/` (no evidence file == the QA did not happen).
   That directory is gitignored: the files stay local, the PR body carries the
   summary and decisive excerpts, and nothing under it is ever committed.
 
@@ -53,7 +53,7 @@ Windows.
 ### Optional LSP freshness budget
 
 The shipped LSP MCP manifest forwards
-`OMO_LSP_DIAGNOSTICS_FRESHNESS_TIMEOUT_MS` through `env_vars`. For diagnostics
+`OMC_LSP_DIAGNOSTICS_FRESHNESS_TIMEOUT_MS` through `env_vars`. For diagnostics
 QA, set it in the isolated app-server environment before starting a fresh
 QA-owned daemon and record the value actually received by the child.
 Compare the unset 3,000 ms default with a value such as `6000`; valid values
@@ -79,12 +79,12 @@ picked up a changed export. See the repository's
 | Script | `--self-test` asserts |
 |---|---|
 | `scripts/lib/common.sh --self-check` | deps present; isolated `CODEX_HOME` is created inside a sandbox and auto-removed on exit; mock model serves the Responses SSE; real `~/.codex` unchanged |
-| `scripts/app-server-drive.sh` | `--self-test`: a bare turn completes and the mock assistant text comes back. `--plugin`: installs local omo, drives a turn, and asserts `hook/completed` for `sessionStart,userPromptSubmit` |
-| `scripts/install-verify.sh` | local omo installs into the isolated home; `config.toml` enables `omo@sisyphuslabs`; component bins + agent TOMLs linked in the sandbox; real `~/.codex` unchanged |
+| `scripts/app-server-drive.sh` | `--self-test`: a bare turn completes and the mock assistant text comes back. `--plugin`: installs local omc, drives a turn, and asserts `hook/completed` for `sessionStart,userPromptSubmit` |
+| `scripts/install-verify.sh` | local omc installs into the isolated home; `config.toml` enables `omc@sisyphuslabs`; component bins + agent TOMLs linked in the sandbox; real `~/.codex` unchanged |
 | `scripts/hook-unit-probe.sh` | the `ultrawork` component injects `<ultrawork-mode>` on an `ulw` UserPromptSubmit (also a manual `--component/--event` mode) |
 | `scripts/tui-smoke.sh` | the real codex TUI boots in the isolated home, renders, and survives (no early exit); captures the pane |
 
-To tell a dev dogfood build apart from a published one on a REAL `~/.codex` (NOT the isolated QA home), the repo ships `bun run install:codex-dev`, which stamps the plugin version as `dev` — visible as the `(OmO dev)` hook-status prefix every turn and as a `[DEV]` badge in `omo get-local-version`. Use it to confirm which build is loaded during manual dogfooding; it writes to the real home, so it is NEVER part of the isolated QA flow above.
+To tell a dev dogfood build apart from a published one on a REAL `~/.codex` (NOT the isolated QA home), the repo ships `bun run install:codex-dev`, which stamps the plugin version as `dev` — visible as the `(OmC dev)` hook-status prefix every turn and as a `[DEV]` badge in `omc get-local-version`. Use it to confirm which build is loaded during manual dogfooding; it writes to the real home, so it is NEVER part of the isolated QA flow above.
 
 When TUI visual QA evidence is needed, follow
 `docs/reference/web-terminal-visual-qa.md`: render the TUI through the real
@@ -94,7 +94,7 @@ color and CJK width:
 ```bash
 node script/qa/web-terminal-visual-qa.mjs --title "Codex TUI QA" \
   --command "codex" --input "{Enter}" \
-  --evidence-dir .omo/evidence/<slug>/codex-web-terminal
+  --evidence-dir .omc/evidence/<slug>/codex-web-terminal
 ```
 
 The helper runs a real pty, renders it in xterm.js under Chrome, and writes
@@ -105,10 +105,10 @@ assertion-grade hook behavior.
 
 ## Match QA to your change scope
 
-- **Component / hook logic** (`packages/omo-codex/plugin/components/*`):
+- **Component / hook logic** (`packages/omc-codex/plugin/components/*`):
   `hook-unit-probe.sh` for the exact stdout, THEN `app-server-drive.sh --plugin`
   to prove the live wiring. See [components-hooks.md](references/components-hooks.md).
-- **Installer / config.toml** (`packages/omo-codex/src/install/*`):
+- **Installer / config.toml** (`packages/omc-codex/src/install/*`):
   `install-verify.sh`.
 - **Anything that affects a live session** (hooks, agents, MCP wiring):
   `app-server-drive.sh --plugin`, and `tui-smoke.sh --plugin` if the TUI path
@@ -117,7 +117,7 @@ assertion-grade hook behavior.
 ## Capturing evidence
 
 ```bash
-ev=".omo/evidence/$(date +%Y%m%d)-codex-qa-<slug>"; mkdir -p "$ev"
+ev=".omc/evidence/$(date +%Y%m%d)-codex-qa-<slug>"; mkdir -p "$ev"
 bash scripts/app-server-drive.sh --plugin > "$ev/app-server-drive.json" 2>&1
 bash scripts/install-verify.sh --self-test > "$ev/install-verify.txt" 2>&1
 ```

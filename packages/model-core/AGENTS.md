@@ -4,7 +4,7 @@
 
 ## OVERVIEW
 
-Harness-neutral model resolution core (`@oh-my-opencode/model-core`). Resolves which model an agent or category should use via a prioritized pipeline: override, category default, user fallback, hardcoded fallback chain, system default. Consumed by `omo-opencode` (Ultimate adapter shims), `delegate-core` (task delegation), `claude-code-compat-core` (Claude Code model normalization), `skills-loader-core` (model sanitization), and `prompts-core` (variant resolution). The `ProviderCache` interface is the dependency-injection seam for connected-provider and model-metadata lookups.
+Harness-neutral model resolution core (`@oh-my-cybersecurity/model-core`). Resolves which model an agent or category should use via a prioritized pipeline: override, category default, user fallback, hardcoded fallback chain, system default. Consumed by `omc-opencode` (Ultimate adapter shims), `delegate-core` (task delegation), `claude-code-compat-core` (Claude Code model normalization), `skills-loader-core` (model sanitization), and `prompts-core` (variant resolution). The `ProviderCache` interface is the dependency-injection seam for connected-provider and model-metadata lookups.
 
 ## KEY FILES
 
@@ -38,13 +38,16 @@ resolveModelPipeline(request, providerCache)
 
 ## NOTES
 
-- **ProviderCache is injected**, not imported. `omo-opencode` implements it with runtime cache state; `model-core` stays pure.
+- **ProviderCache is injected**, not imported. `omc-opencode` implements it with runtime cache state; `model-core` stays pure.
 - **Two resolution APIs:** `resolveModel()` for simple 3-tier fallback; `resolveModelWithFallback()` for full pipeline with `ExtendedModelResolutionInput`.
 - **`connected-providers-cache.ts`** exports no-op defaults. Adapters override via the `ProviderCache` parameter.
-- **40 source files** (73 TS incl. co-located tests). Barrel `index.ts` re-exports ~27 public modules. Tests co-located as `*.test.ts`.
+- **40 source files** (84 TS files under `src/`, 43 non-test). Barrel `index.ts` re-exports ~27 public modules. Tests co-located as `*.test.ts`.
 - **Capability lookup is suffix-tolerant.** Each model ID expands to up to 4 candidate forms (full, provider-prefix-stripped, variant-suffix-stripped, both), tried most-specific first, so `:high` / `(high)` requests still hit a provider's bare model entry.
 - **Snapshot lookup prefers provider-specific keys.** `anthropic/claude-opus-4.8` wins over a bare `claude-opus-4.8` entry when both exist.
 - **Metadata beats family caps.** In `resolveCompatibleModelSettings()`, family `reasoningEffortAliases` are applied first, then explicit `capabilities.*` metadata, then heuristic family caps; an unknown family drops the value with `unknown-model-family`.
 - **Deprecated routing is tested contract:** deprecated Haiku / GPT-nano entries must NOT route through the `opencode` provider (`model-requirements-deprecated-routing.test.ts`).
 - **Error classification is specific by design:** provider "forbidden" (retryable) is distinguished from unrelated filesystem/access "forbidden"; do not broaden substring matching in `model-error-classifier.ts`.
+- **`latest-models.ts`** (subpath `@oh-my-cybersecurity/model-core/latest-models`) is the single home of "the current member of each model family"; a bump is one edit, and `script/latest-model-ids-audit.test.ts` rejects a literal copy anywhere else. Deliberately older rungs (e.g. `claude-opus-4-6`, `gpt-5.6-sol`) stay literal.
+- **Harness-neutral guard:** zero adapter imports, enforced by `script/shared-core-extraction-guard.test.ts` (package list: `script/core-package-paths.ts`).
+- **QA:** `bun run typecheck` + `bun test` in-package; `bun run build:model-capabilities` (repo root) refreshes the models.dev cache it consumes.
 - Parent: [`packages/AGENTS.md`](../AGENTS.md)

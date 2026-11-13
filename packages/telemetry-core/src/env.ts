@@ -33,7 +33,7 @@ function isSendOptOutFlag(value: string | undefined): boolean {
 
 export function shouldDisableTelemetry(input: ShouldDisableTelemetryInput): boolean {
   const env = input.env ?? process.env
-  const globalPrefix = input.globalEnvPrefix ?? "OMO"
+  const globalPrefix = input.globalEnvPrefix ?? "OMC"
   const prefixes = Array.from(new Set([globalPrefix, input.productEnvPrefix]))
 
   if (isDisableFlag(env["DO_NOT_TRACK"]) || isDisableFlag(env[`${globalPrefix}_DISABLE_TELEMETRY`])) {

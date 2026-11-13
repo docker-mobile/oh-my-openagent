@@ -58,7 +58,7 @@ export async function verifyPublisher(pkg, token, options = {}) {
     log(`OK ${pkg}`)
   } catch (error) {
     if (error.configuration) {
-      log(`Configure https://www.npmjs.com/package/${pkg}/access - Provider: GitHub Actions; Organization: code-yeongyu; Repository: oh-my-openagent; Workflow filename: publish.yml. See docs/reference/omo-ai-publishing.md.`)
+      log(`Configure https://www.npmjs.com/package/${pkg}/access - Provider: GitHub Actions; Organization: code-yeongyu; Repository: oh-my-cybersecurity; Workflow filename: publish.yml. See docs/reference/omc-ai-publishing.md.`)
     }
     throw error
   }

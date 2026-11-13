@@ -1,8 +1,8 @@
 import { expect, test } from "bun:test"
 import { existsSync, readFileSync } from "node:fs"
 import { join, relative, resolve, sep } from "node:path"
-import { getSkillOutputManifest as senpiSkillManifest } from "../packages/omo-senpi/plugin/scripts/sync-skills.mjs"
-import { getSkillOutputManifest as codexSkillManifest } from "../packages/omo-codex/plugin/scripts/sync-skills.mjs"
+import { getSkillOutputManifest as senpiSkillManifest } from "../packages/omc-senpi/plugin/scripts/sync-skills.mjs"
+import { getSkillOutputManifest as codexSkillManifest } from "../packages/omc-codex/plugin/scripts/sync-skills.mjs"
 
 const SKILL_NAME = "browser"
 const repoRoot = resolve(import.meta.dir, "..")
@@ -42,7 +42,7 @@ test("browser skill reference docs declare no skill name", () => {
 })
 
 test("browser skill bundles no nested dependency tree", () => {
-  // script/verify-omo-ai-payload.mjs rejects nested node_modules and caps the unpacked payload,
+  // script/verify-omc-ai-payload.mjs rejects nested node_modules and caps the unpacked payload,
   // so the skill's own scripts must stay dependency-free.
   const nested = skillFiles().filter((file) => file.split(sep).includes("node_modules"))
 

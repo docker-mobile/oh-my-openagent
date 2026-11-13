@@ -5,8 +5,8 @@ import type {
 	ComputerSessionSnapshot,
 	EngineMethod,
 	RpcPort,
-} from "@oh-my-opencode/senpi-desktop-protocol";
-import { type Computer, ComputerError, connect } from "@oh-my-opencode/senpi-desktop-sdk";
+} from "@oh-my-cybersecurity/senpi-desktop-protocol";
+import { type Computer, ComputerError, connect } from "@oh-my-cybersecurity/senpi-desktop-sdk";
 import { DesktopServiceError } from "../service/rpc-client";
 
 /** Why a computer run failed inside the runtime; engine failures surface as `DesktopEngineRpcError`. */

@@ -1,16 +1,16 @@
 # auth.json at-rest encryption
 
-`auth.json` holds the API keys omo (omo-ai, the native edition) uses to call
+`auth.json` holds the API keys omc (omc-ai, the native edition) uses to call
 provider APIs. On disk it lives at `<agentDir>/auth.json` and is the only file
-with raw credentials that omo writes outside its SQLite state. This document
-describes how omo protects the file when at-rest encryption is on, and the
+with raw credentials that omc writes outside its SQLite state. This document
+describes how omc protects the file when at-rest encryption is on, and the
 trade-offs of each mode.
 
 ## Modes
 
-Set `security.auth_at_rest` in `omo.json` to one of:
+Set `security.auth_at_rest` in `omc.json` to one of:
 
-| Mode         | Default | Encrypted? | What you must do per `omo` invocation |
+| Mode         | Default | Encrypted? | What you must do per `omc` invocation |
 |--------------|---------|------------|----------------------------------------|
 | `plain`      | yes     | no         | nothing                                |
 | `passphrase` | opt-in  | yes        | provide the passphrase (env or prompt) |
@@ -30,25 +30,25 @@ next save replaces it.
 
 - **Plain users**: nothing changes. The launcher reads and writes the same
   JSON, mode `0600`. The on-disk file contains the keys.
-- **Passphrase users**: you must provide the passphrase each `omo`
-  invocation. The launcher reads `OMO_AUTH_PASSPHRASE` from the environment
+- **Passphrase users**: you must provide the passphrase each `omc`
+  invocation. The launcher reads `OMC_AUTH_PASSPHRASE` from the environment
   first, then prompts (TTY only) if that is unset. The passphrase is held in
-  process memory; it is never persisted by omo. A process without the
+  process memory; it is never persisted by omc. A process without the
   passphrase cannot decrypt `auth.json`.
-- **SSH-key users**: omo derives the key from `~/.ssh/id_ed25519` (default;
+- **SSH-key users**: omc derives the key from `~/.ssh/id_ed25519` (default;
   override via `security.ssh_key_path`). No second secret is required. If the
   file is missing, the read fails closed.
 
 ## Migration
 
 Reading a plaintext `auth.json` while the configured mode is `passphrase` or
-`ssh-key` succeeds: omo hands the entries back as if they were still plain.
+`ssh-key` succeeds: omc hands the entries back as if they were still plain.
 The next `writeAuthStore` produces an encrypted envelope. No copy step is
 required; the `.bak-<ts>` is the only side effect. The launcher surfaces the
-upgrade in the `omo setup` summary and `omo doctor`.
+upgrade in the `omc setup` summary and `omc doctor`.
 
-`omo setup` lists the current mode under the credential stage and notes any
-unencrypted legacy credentials. `omo doctor` prints one `INFO auth-at-rest`
+`omc setup` lists the current mode under the credential stage and notes any
+unencrypted legacy credentials. `omc doctor` prints one `INFO auth-at-rest`
 line naming the in-effect mode.
 
 ## First-run prompt
@@ -57,12 +57,12 @@ When `auth.json` already contains entries, the configured mode is `plain`,
 and stdin is a TTY, the launcher prints:
 
 ```
-omo: auth.json is plain. encrypt at rest with ssh-key? [y/N]
+omc: auth.json is plain. encrypt at rest with ssh-key? [y/N]
 ```
 
 The recommended default is `ssh-key` when `~/.ssh/id_ed25519` (or another
 candidate) is on disk, `passphrase` otherwise. Pressing `y` writes the choice
-to `~/.omo/state/auth-at-rest-mode.json` (mode `0600`); the launch then
+to `~/.omc/state/auth-at-rest-mode.json` (mode `0600`); the launch then
 proceeds without blocking.
 
 The prompt is non-blocking: pressing Enter leaves the user on `plain` and
@@ -73,15 +73,15 @@ set.
 
 - Wrong passphrase: the read returns `{ entries: undefined, error }`. The
   launcher refuses to spawn the engine with a clear `auth.json is encrypted,
-  could not decrypt: <reason>` message; `omo setup` reports the same in its
-  summary lines so the user can set the right `OMO_AUTH_PASSPHRASE`.
+  could not decrypt: <reason>` message; `omc setup` reports the same in its
+  summary lines so the user can set the right `OMC_AUTH_PASSPHRASE`.
 - Wrong or moved ssh key: the read fails closed the same way. The user can
-  add `security.ssh_key_path` in `omo.json` to point at the new location.
+  add `security.ssh_key_path` in `omc.json` to point at the new location.
 - Tampered envelope: AES-GCM detects any modification via the auth tag; the
   read rejects with the same closed failure as a wrong key.
 - Missing state file under the configured mode: a hand-edited or removed
-  `~/.omo/state/auth-at-rest-mode.json` falls back to the configured
-  `security.auth_at_rest` in `omo.json`, then `plain`.
+  `~/.omc/state/auth-at-rest-mode.json` falls back to the configured
+  `security.auth_at_rest` in `omc.json`, then `plain`.
 
 ## What is NOT in scope for PR-E
 

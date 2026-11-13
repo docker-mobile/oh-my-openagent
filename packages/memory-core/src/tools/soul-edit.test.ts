@@ -21,7 +21,7 @@ afterEach(async () => {
   await Promise.all(roots.splice(0).map((root) => removeTree(root, { maxRetries: 10, retryDelay: 200 })))
 })
 async function fixture(): Promise<{ repo: GitMemoryRepo; lock: MemoryToolLock }> {
-  const root = realpathSync.native(await mkdtemp(join(tmpdir(), "omo-memory-soul-edit-")))
+  const root = realpathSync.native(await mkdtemp(join(tmpdir(), "omc-memory-soul-edit-")))
   roots.push(root)
   const repo = new GitMemoryRepo({ dir: join(root, "repo"), agentId: AUTHOR.agentId })
   await repo.init({ authorName: AUTHOR.authorName })

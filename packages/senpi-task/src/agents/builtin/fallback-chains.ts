@@ -1,6 +1,6 @@
-import { FABLE_55_LAUNCH, launchRungs } from "@oh-my-opencode/model-core"
-import type { DelegateFallbackEntry } from "@oh-my-opencode/delegate-core"
-import { LATEST_MODEL_BY_FAMILY } from "@oh-my-opencode/model-core/latest-models"
+import { FABLE_55_LAUNCH, launchRungs } from "@oh-my-cybersecurity/model-core"
+import type { DelegateFallbackEntry } from "@oh-my-cybersecurity/delegate-core"
+import { LATEST_MODEL_BY_FAMILY } from "@oh-my-cybersecurity/model-core/latest-models"
 
 // Source of truth mirrored from packages/model-core/src/agent-model-requirements.ts.
 // Key rename: the two curated agents carry their canonical ids here (plan-consultant, plan-reviewer);
@@ -14,7 +14,7 @@ import { LATEST_MODEL_BY_FAMILY } from "@oh-my-opencode/model-core/latest-models
 // rung (#8734; see the category chains). model-core lists "openai" first, OpenCode's single OpenAI id.
 // The ulw reviewer agents are absent by design: they resolve their model through the `categories`
 // field on their definition (see resolve-agent-categories.ts), not through a hand-mirrored chain.
-// Parity with the mirror source is enforced by omo-senpi's builtin-agent-chain-parity test (#8259).
+// Parity with the mirror source is enforced by omc-senpi's builtin-agent-chain-parity test (#8259).
 export const AGENT_FALLBACK_CHAINS: Readonly<Record<string, readonly DelegateFallbackEntry[]>> = {
   explore: [
     { providers: ["kimi-coding", "kimi-for-coding"], model: "kimi-for-coding-highspeed", variant: "off" },

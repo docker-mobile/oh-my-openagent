@@ -32,7 +32,7 @@ export function escapeTmuxFormat(value: string): string {
 
 export function buildSubagentPaneTitle(description: string): string {
   const shown = withoutNul(description).slice(0, PANE_TITLE_DESCRIPTION_LIMIT)
-  return `omo-subagent-${escapeTmuxFormat(shown)}`
+  return `omc-subagent-${escapeTmuxFormat(shown)}`
 }
 
 export function buildTmuxPlaceholderCommand(description: string): string {

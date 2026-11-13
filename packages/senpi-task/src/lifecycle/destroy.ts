@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import type { TaskRecord } from "../state"
 import { delay, nowIso, type LifecycleContext } from "./context"
@@ -83,7 +83,7 @@ export async function destroyResidentTask(
       }
       // A daemon child whose stop could not reach its host (the transport was down, or crash recovery
       // gave up) may still hold its session there: the cancel ends it once the host answers.
-      // A close the host answered over the handle's own connection already ended the session (omo#11765).
+      // A close the host answered over the handle's own connection already ended the session (omc#11765).
       if (handle.kind !== "in-process" && (cause === "cancel" || cause === "cancel_without_abort") && handle.hostEndAnswered?.() !== true) {
         await closeParkedSession(context, taskId)
       }
@@ -208,7 +208,7 @@ function forgetConsumedPid(context: LifecycleContext, taskId: string, pid: numbe
 }
 
 // A cancelled child this process holds no handle for (it parked, or its connection was let go) may
-// still run on its host and keep committing: the cancel ends that session there (omo#9403). An end that
+// still run on its host and keep committing: the cancel ends that session there (omc#9403). An end that
 // is not confirmed leaves the session on the record, where the TTL sweep retries it.
 async function closeParkedSession(context: LifecycleContext, taskId: string): Promise<void> {
   const record = context.store.load(taskId)

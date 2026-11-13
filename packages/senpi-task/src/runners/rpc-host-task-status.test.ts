@@ -4,7 +4,7 @@ import type { FakeHost } from "./rpc-host/__fixtures__/fake-host"
 import { startHostWorld, type HostWorld, type ParentSession } from "./rpc-host/__fixtures__/host-world"
 
 /**
- * omo#10778: the host learns that a daemon-hosted task is finished the moment its record turns
+ * omc#10778: the host learns that a daemon-hosted task is finished the moment its record turns
  * terminal, not only when the parent detaches it cleanly - a parent that crashes before the detach
  * must not leave a finished session that a successor host reopens unattended. A transport reattach
  * starts no new run, so it never flips a finished session back to running.

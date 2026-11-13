@@ -78,7 +78,7 @@ describe("release and platform publish workflows", () => {
       readFileSync(new URL("../package.json", import.meta.url), "utf8"),
     )
     const buildBinariesPlatforms = PLATFORMS.map((entry) => entry.platform).sort()
-    const platformPrefix = "oh-my-opencode-"
+    const platformPrefix = "oh-my-cybersecurity-"
 
     const optionalDependencyPlatforms = Object.keys(rootManifest.optionalDependencies ?? {})
       .filter((name) => name.startsWith(platformPrefix))
@@ -143,8 +143,8 @@ describe("release binary asset lane in the platform publish workflow", () => {
     expect(stage.index).toBeLessThan(compile.index)
     expect(download.value.if).toBe("steps.desktop-engine-target.outputs.host != ''")
     expect(stage.value.if).toBe(download.value.if)
-    expect(stage.value.run).toContain('cp ".omo/desktop-engine-assets/$ENGINE_ASSET" "$ENGINE_SOURCE"')
-    expect(compile.value.run).toContain("script/build-omo-binary.ts")
+    expect(stage.value.run).toContain('cp ".omc/desktop-engine-assets/$ENGINE_ASSET" "$ENGINE_SOURCE"')
+    expect(compile.value.run).toContain("script/build-omc-binary.ts")
     expect(build.steps.some((candidate) => candidate.run?.includes("cargo build"))).toBe(false)
     expect(engine.strategy.matrix.include.map((entry) => entry.host)).toEqual([...DESKTOP_ENGINE_RELEASE_HOSTS])
     for (const target of DESKTOP_ENGINE_TARGETS) {
@@ -185,13 +185,13 @@ describe("release binary asset lane in the platform publish workflow", () => {
 
   test("copies the canonical release artifact into the exact target-specific Rust source", () => {
     // Given the x64 Darwin cross-target and an artifact downloaded without a Rust target layout.
-    const root = mkdtempSync(join(tmpdir(), "omo-engine-stage-"))
+    const root = mkdtempSync(join(tmpdir(), "omc-engine-stage-"))
     try {
       const workflow = readFileSync(publishPlatformWorkflowPath, "utf8")
       const stage = runBlock(workflow, "      - name: Stage target-specific Rust engine for compiled payload\n", "      - name: Download keychain helper\n")
       const source = "target/x86_64-apple-darwin/release/senpi-desktop-engine"
       const asset = "senpi-desktop-engine-darwin-x64"
-      const download = join(root, ".omo", "desktop-engine-assets")
+      const download = join(root, ".omc", "desktop-engine-assets")
       mkdirSync(download, { recursive: true })
       writeFileSync(join(download, asset), "x64 cross-target binary")
 
@@ -210,8 +210,8 @@ describe("release binary asset lane in the platform publish workflow", () => {
   }, SUBPROCESS_TEST_TIMEOUT_MS)
 
   test("rebuilds a baseline binary when its shared engine asset is absent", () => {
-    // Given an existing omo baseline binary but no Darwin x64 engine release asset.
-    const root = mkdtempSync(join(tmpdir(), "omo-engine-release-check-"))
+    // Given an existing omc baseline binary but no Darwin x64 engine release asset.
+    const root = mkdtempSync(join(tmpdir(), "omc-engine-release-check-"))
     try {
       const workflow = readFileSync(publishPlatformWorkflowPath, "utf8")
       const check = runBlock(workflow, "      - name: Check release assets\n", "      - name: Resolve desktop engine availability\n")
@@ -225,19 +225,19 @@ describe("release binary asset lane in the platform publish workflow", () => {
         ...process.env,
         PATH: `${root}:${process.env.PATH ?? ""}`,
         VERSION: "5.0.0",
-        OMO_AI_VERSION: "5.0.0",
+        OMC_AI_VERSION: "5.0.0",
         ASSET_NAMES_FILE: names,
         GITHUB_OUTPUT: output,
       }
 
       // When only the executable exists, the real workflow shell must request a build.
-      writeFileSync(names, "omo-darwin-x64-baseline\n")
+      writeFileSync(names, "omc-darwin-x64-baseline\n")
       const missing = spawnSync("bash", ["-e", "-c", check], { cwd: new URL("..", import.meta.url), env, encoding: "utf8", timeout: SUBPROCESS_SPAWN_TIMEOUT_MS })
       expect(missing.status, missing.stderr).toBe(0)
       expect(readFileSync(output, "utf8")).toContain("binary_exists=false")
 
       // When the shared engine is also present, the release bytes are reused.
-      writeFileSync(names, "omo-darwin-x64-baseline\nsenpi-desktop-engine-darwin-x64\n")
+      writeFileSync(names, "omc-darwin-x64-baseline\nsenpi-desktop-engine-darwin-x64\n")
       writeFileSync(output, "")
       const complete = spawnSync("bash", ["-e", "-c", check], { cwd: new URL("..", import.meta.url), env, encoding: "utf8", timeout: SUBPROCESS_SPAWN_TIMEOUT_MS })
       expect(complete.status, complete.stderr).toBe(0)
@@ -249,13 +249,13 @@ describe("release binary asset lane in the platform publish workflow", () => {
 
   test("verifies precisely twelve launchers, the keychain helper, the capability file and six engines on reruns without publishing", () => {
     // Given a synthetic release with canonical names and independently computed hashes.
-    const root = mkdtempSync(join(tmpdir(), "omo-engine-assets-"))
+    const root = mkdtempSync(join(tmpdir(), "omc-engine-assets-"))
     try {
       const assets = join(root, "assets")
       mkdirSync(assets)
       const binaries = [
-        ...PLATFORMS.map(({ platform }) => `omo-${platform}${platform.startsWith("windows-") ? ".exe" : ""}`),
-        "omo-keychain-darwin-universal",
+        ...PLATFORMS.map(({ platform }) => `omc-${platform}${platform.startsWith("windows-") ? ".exe" : ""}`),
+        "omc-keychain-darwin-universal",
       ]
       const engines = DESKTOP_ENGINE_RELEASE_HOSTS.map((host) => desktopEngineReleaseAssetName(host))
       if (engines.some((asset) => asset === null)) throw new Error("release host without asset name")
@@ -266,8 +266,8 @@ describe("release binary asset lane in the platform publish workflow", () => {
       }
       // The capability file is required with its exact contract bytes (RULING-77, #11613).
       const capabilities = '{"keychainHandoff":1}\n'
-      writeFileSync(join(assets, "omo-runtime-capabilities.json"), capabilities)
-      const capabilitiesLine = `${createHash("sha256").update(capabilities).digest("hex")}  omo-runtime-capabilities.json`
+      writeFileSync(join(assets, "omc-runtime-capabilities.json"), capabilities)
+      const capabilitiesLine = `${createHash("sha256").update(capabilities).digest("hex")}  omc-runtime-capabilities.json`
       writeFileSync(join(assets, "SHA256SUMS"), `${[...binaries.map(checksum), capabilitiesLine].join("\n")}\n`)
       writeFileSync(join(assets, "senpi-desktop-engine-checksums.txt"), `${engines.map((name) => checksum(name ?? "")).join("\n")}\n`)
       const gh = join(root, "gh")
@@ -295,9 +295,9 @@ describe("release binary asset lane in the platform publish workflow", () => {
       expect(complete.stdout).toContain("Verified 22 release assets")
 
       // When the keychain helper asset is absent, the release cannot go green either.
-      unlinkSync(join(assets, "omo-keychain-darwin-universal"))
+      unlinkSync(join(assets, "omc-keychain-darwin-universal"))
       expect(execute().status).not.toBe(0)
-      checksum("omo-keychain-darwin-universal")
+      checksum("omc-keychain-darwin-universal")
 
       // When the engine asset is absent, a skip_platform rerun cannot go green.
       unlinkSync(join(assets, "senpi-desktop-engine-darwin-x64"))

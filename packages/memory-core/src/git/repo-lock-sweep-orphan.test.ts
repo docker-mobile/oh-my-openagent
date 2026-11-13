@@ -13,7 +13,7 @@ import { acquireLock, createLockRecord, memoryWriterLockPath, releaseLock } from
 import { pidAlive, probeUntil } from "../locks/process-liveness.test-support"
 import { StrandedGitLockError, sweepStrandedGitLockFiles, withStrandedGitLockRecovery } from "./repo-lock-sweep"
 
-// omo #10199 review round 5, HIGH 1: the dead-owner proof covers the Node process that held the
+// omc #10199 review round 5, HIGH 1: the dead-owner proof covers the Node process that held the
 // memory-write lock, never the `git` child that actually created index.lock. SIGKILL the owner
 // and git runs on as an orphan - here parked in its commit-msg hook, where git has already
 // written index.lock and CLOSED its fd, so no open-file check can see it. The owner IS proven
@@ -41,7 +41,7 @@ async function orphanedCommitParkedInCommitMsg(): Promise<OrphanFixture> {
   await mkdir(paths.locks, { recursive: true })
   await git(paths.repo, ["init", "-b", "main"])
   disableFixtureAutoMaintenance(paths.repo)
-  for (const [key, value] of [["commit.gpgsign", "false"], ["user.name", "Orphan Owner"], ["user.email", "orphan@omo.local"]] as const) {
+  for (const [key, value] of [["commit.gpgsign", "false"], ["user.name", "Orphan Owner"], ["user.email", "orphan@omc.local"]] as const) {
     await git(paths.repo, ["config", key, value])
   }
   await writeFile(join(paths.repo, "notes.md"), "first\n", "utf8")
@@ -100,7 +100,7 @@ async function expectOrphanCommitLanded(repoDir: string): Promise<void> {
   await assertRepoIntegrity(repoDir)
 }
 
-describe("stranded git lock sweep vs an ORPHANED live git child of a proven-dead owner (omo #10199 r5 HIGH 1)", () => {
+describe("stranded git lock sweep vs an ORPHANED live git child of a proven-dead owner (omc #10199 r5 HIGH 1)", () => {
   test.skipIf(process.platform === "win32")("#given the writer lock taken over from a SIGKILLed owner whose git commit still runs #when the sweep runs #then the orphan's lock survives as repo-in-use and its commit lands", async () => {
     // #given
     const fixture = await orphanedCommitParkedInCommitMsg()
@@ -145,7 +145,7 @@ describe("stranded git lock sweep vs an ORPHANED live git child of a proven-dead
   }, 30_000)
 })
 
-describe("StrandedGitLockError names the reason each lock was kept (omo #10199 r5 LOW 6)", () => {
+describe("StrandedGitLockError names the reason each lock was kept (omc #10199 r5 LOW 6)", () => {
   test("#given one lock per kept reason #then each gets its own explanation", () => {
     const error = new StrandedGitLockError([
       { path: "/r/.git/index.lock", reason: "owner-not-proven-dead" },

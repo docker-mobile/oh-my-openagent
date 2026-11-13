@@ -16,7 +16,7 @@ afterEach(() => {
 describe("inferExtensionFromDirectory", () => {
 	test("#given uppercase TypeScript files #when inferring extension #then counts them as lowercase extensions", () => {
 		// given
-		const root = mkdtempSync(join(tmpdir(), "omo-lsp-infer-"));
+		const root = mkdtempSync(join(tmpdir(), "omc-lsp-infer-"));
 		tempDirectories.push(root);
 		mkdirSync(join(root, "src"), { recursive: true });
 		writeFileSync(join(root, "src", "APP.TS"), "export const app = 1;\n");

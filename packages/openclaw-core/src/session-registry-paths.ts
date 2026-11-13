@@ -1,5 +1,5 @@
 import { join } from "node:path"
-import { resolveXdgDataDir } from "@oh-my-opencode/utils"
+import { resolveXdgDataDir } from "@oh-my-cybersecurity/utils"
 
 export const SECURE_FILE_MODE = 0o600
 export const MAX_AGE_MS = 24 * 60 * 60 * 1000

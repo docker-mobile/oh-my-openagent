@@ -1,17 +1,17 @@
 name: Engine trust helper
 
-# The Windows native fact helper of the engine CA importer (omo#10762, design 9.2): real Crypt32 on
+# The Windows native fact helper of the engine CA importer (omc#10762, design 9.2): real Crypt32 on
 # in-memory stores in the crate's tests, then the release helper's real output through the TypeScript
 # decoder and selectEngineTrust. Synthetic certificates only; no trust store is modified.
 on:
   pull_request:
     branches: [master, dev]
     paths:
-      - "crates/omo-engine-trust-helper/**"
-      - "packages/omo-native/engine-trust-policy.ts"
-      - "packages/omo-native/windows-trust-helper.ts"
-      - "packages/omo-native/test/windows-trust-helper*.ts"
-      - "packages/omo-native/test/trust-certificate-fixtures.ts"
+      - "crates/omc-engine-trust-helper/**"
+      - "packages/omc-native/engine-trust-policy.ts"
+      - "packages/omc-native/windows-trust-helper.ts"
+      - "packages/omc-native/test/windows-trust-helper*.ts"
+      - "packages/omc-native/test/trust-certificate-fixtures.ts"
       - "Cargo.toml"
       - "Cargo.lock"
       - "rust-toolchain.toml"
@@ -19,11 +19,11 @@ on:
   push:
     branches: [master, dev]
     paths:
-      - "crates/omo-engine-trust-helper/**"
-      - "packages/omo-native/engine-trust-policy.ts"
-      - "packages/omo-native/windows-trust-helper.ts"
-      - "packages/omo-native/test/windows-trust-helper*.ts"
-      - "packages/omo-native/test/trust-certificate-fixtures.ts"
+      - "crates/omc-engine-trust-helper/**"
+      - "packages/omc-native/engine-trust-policy.ts"
+      - "packages/omc-native/windows-trust-helper.ts"
+      - "packages/omc-native/test/windows-trust-helper*.ts"
+      - "packages/omc-native/test/trust-certificate-fixtures.ts"
       - "Cargo.toml"
       - "Cargo.lock"
       - "rust-toolchain.toml"
@@ -68,26 +68,26 @@ jobs:
 
       - name: Clippy
         shell: bash
-        run: cargo clippy -p omo-engine-trust-helper --all-targets --locked -- -D warnings
+        run: cargo clippy -p omc-engine-trust-helper --all-targets --locked -- -D warnings
 
       # Git Bash puts the OpenSSL CLI on PATH for the synthetic certificates.
       - name: Crypt32 adapter tests
         shell: bash
-        run: openssl version && cargo test -p omo-engine-trust-helper --locked -- --nocapture
+        run: openssl version && cargo test -p omc-engine-trust-helper --locked -- --nocapture
 
       - name: Build release helper
         shell: bash
-        run: cargo build --release -p omo-engine-trust-helper --locked --target "${{ matrix.rust_target }}"
+        run: cargo build --release -p omc-engine-trust-helper --locked --target "${{ matrix.rust_target }}"
 
       - name: Install JavaScript dependencies
         run: bun install --frozen-lockfile --ignore-scripts
 
       - name: Helper output through the decoder and the policy
         shell: bash
-        working-directory: packages/omo-native
+        working-directory: packages/omc-native
         env:
-          OMO_ENGINE_TRUST_HELPER_TARGET_DIR: ${{ github.workspace }}\target\${{ matrix.rust_target }}\release
-          OMO_ENGINE_TRUST_HELPER_REQUIRED: "1"
+          OMC_ENGINE_TRUST_HELPER_TARGET_DIR: ${{ github.workspace }}\target\${{ matrix.rust_target }}\release
+          OMC_ENGINE_TRUST_HELPER_REQUIRED: "1"
         run: bun test --timeout 60000 test/windows-trust-helper.test.ts test/windows-trust-helper.windows.test.ts
 
       - name: Write job summary
@@ -98,6 +98,6 @@ jobs:
           JOB_SUMMARY_STATUS: ${{ job.status }}
           JOB_SUMMARY_DETAILS: |
             - Clippy (-D warnings) and the Crypt32 adapter tests on in-memory stores with synthetic certificates.
-            - Release build of omo-engine-trust-helper, then its real output through the decoder and selectEngineTrust.
+            - Release build of omc-engine-trust-helper, then its real output through the decoder and selectEngineTrust.
           JOB_SUMMARY_NEXT: Start with the first failing adapter test; each one names the Crypt32 behaviour it pins.
         run: GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" bash .github/scripts/write-job-summary.sh

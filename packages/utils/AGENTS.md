@@ -4,7 +4,7 @@
 
 ## OVERVIEW
 
-Harness-neutral pure-TypeScript core package (`@oh-my-opencode/utils`). Consumed by both adapters (`packages/omo-opencode`, `packages/omo-codex`) and the other Core packages. Barrel-exports runtime shims, config tooling, file utilities, prompt gating, git parsing, and migration maps.
+Harness-neutral pure-TypeScript core package (`@oh-my-cybersecurity/utils`). Consumed by both adapters (`packages/omc-opencode`, `packages/omc-codex`) and the other Core packages. Barrel-exports runtime shims, config tooling, file utilities, prompt gating, git parsing, and migration maps.
 
 ## CATEGORY MAP
 
@@ -34,3 +34,7 @@ Harness-neutral pure-TypeScript core package (`@oh-my-opencode/utils`). Consumed
 - **Side effects:** `package.json` `sideEffects` pins `src/prompt-async-gate/queue.ts`; tree-shaking must keep the queue module.
 - **Process-sweep invariant:** the LSP daemon *server* shape (`cli.js daemon`, no `mcp`) is NEVER a proxy candidate — only the proxy shape is swept (`process-sweep/lsp-proxy-family.ts`, pinned by tests).
 - **Prompt-async-gate is critical infrastructure:** every internal prompt dispatch across the plugin must route through `dispatchInternalPrompt()` to prevent duplicate injections and race conditions. See the root [`AGENTS.md`](../../AGENTS.md) "Internal message injection is dangerous" section.
+- **DI ports keep IO injectable:** `ResolverDeps`, `LspDaemonAttestationDeps`, `PromptAsyncClient`, `XdgOsProvider` — no hard-wired harness state.
+- **Migration maps are frozen:** `migration/agent-category.ts` is `@deprecated LEGACY MIGRATION ONLY` ("DO NOT add new entries here. New agents should use: category-based config"); same policy for the other maps in `migration/`.
+- **Harness-neutral guard:** zero `@opencode-ai/` / adapter imports and no raw `session.prompt(` literals, enforced by `script/shared-core-extraction-guard.test.ts` (package list: `script/core-package-paths.ts`).
+- **QA:** `bun run typecheck` + `bun test` in-package (161 TS files, 100 non-test).

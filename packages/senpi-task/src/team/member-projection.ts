@@ -1,5 +1,5 @@
-import type { RuntimeState } from "@oh-my-opencode/team-core/types"
-import { transitionRuntimeState } from "@oh-my-opencode/team-core/team-state-store"
+import type { RuntimeState } from "@oh-my-cybersecurity/team-core/types"
+import { transitionRuntimeState } from "@oh-my-cybersecurity/team-core/team-state-store"
 
 import type { TaskStatus } from "../state"
 import { readMemberTaskMap } from "./member-map"

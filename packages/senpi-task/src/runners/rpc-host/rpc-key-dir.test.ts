@@ -9,7 +9,7 @@ import { authenticateRpcHost } from "./socket-auth"
 const modeOf = (path: string): number => lstatSync(path).mode & 0o7777
 
 function agentDir(): string {
-  const root = mkdtempSync(join(tmpdir(), "omo-12194-"))
+  const root = mkdtempSync(join(tmpdir(), "omc-12194-"))
   chmodSync(root, 0o700)
   return root
 }

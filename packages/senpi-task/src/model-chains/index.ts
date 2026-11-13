@@ -1,4 +1,4 @@
-import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
+import type { OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import { resolveTaskAgents } from "../agents/task-agents"
 import { DEFAULT_CATEGORIES } from "../category/builtins"

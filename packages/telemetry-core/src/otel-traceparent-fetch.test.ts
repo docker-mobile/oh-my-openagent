@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test } from "bun:test"
 
-import { createTraceparentFetch, OMO_TRACE_HOSTS } from "./otel-traceparent-fetch"
+import { createTraceparentFetch, OMC_TRACE_HOSTS } from "./otel-traceparent-fetch"
 import type { OtlpFetch } from "./otlp-http"
 import { capture, createSpoolRoot, makeTransport, recordingFetch } from "./otlp-test-support"
 
@@ -27,32 +27,32 @@ describe("traceparent injection allowlist", () => {
     const turn = transport.traces.startTurn({ attributes: { "gen_ai.operation.name": "chat" } })
     if (turn === undefined) throw new Error("turn span not started")
     const recorder = headerRecorder()
-    const wrapped = createTraceparentFetch(recorder.fetch, OMO_TRACE_HOSTS)
+    const wrapped = createTraceparentFetch(recorder.fetch, OMC_TRACE_HOSTS)
     const urls = [
-      "https://t.omo.dev/v1/logs",
-      "https://api.omo.dev/v1/device",
+      "https://t.omc.nga.hm/v1/logs",
+      "https://api.omc.nga.hm/v1/device",
       "https://api.anthropic.com/v1/messages",
       "https://api.openai.com/v1/responses",
       "https://openrouter.ai/api/v1/chat/completions",
-      "https://t.omo.dev.attacker.example/v1/logs",
+      "https://t.omc.nga.hm.attacker.example/v1/logs",
       "not a url",
     ]
 
     // when
     await turn.run(() => Promise.all(urls.map((url) => wrapped(url, { method: "POST", headers: { "content-type": "application/json" } }))))
     turn.end("ok")
-    await wrapped("https://t.omo.dev/v1/logs", { method: "POST", headers: {} })
+    await wrapped("https://t.omc.nga.hm/v1/logs", { method: "POST", headers: {} })
 
     // then
     expect(recorder.seen).toEqual([
-      { url: "https://t.omo.dev/v1/logs", traceparent: turn.traceparent },
-      { url: "https://api.omo.dev/v1/device", traceparent: turn.traceparent },
+      { url: "https://t.omc.nga.hm/v1/logs", traceparent: turn.traceparent },
+      { url: "https://api.omc.nga.hm/v1/device", traceparent: turn.traceparent },
       { url: "https://api.anthropic.com/v1/messages", traceparent: undefined },
       { url: "https://api.openai.com/v1/responses", traceparent: undefined },
       { url: "https://openrouter.ai/api/v1/chat/completions", traceparent: undefined },
-      { url: "https://t.omo.dev.attacker.example/v1/logs", traceparent: undefined },
+      { url: "https://t.omc.nga.hm.attacker.example/v1/logs", traceparent: undefined },
       { url: "not a url", traceparent: undefined },
-      { url: "https://t.omo.dev/v1/logs", traceparent: undefined },
+      { url: "https://t.omc.nga.hm/v1/logs", traceparent: undefined },
     ])
   })
 
@@ -73,7 +73,7 @@ describe("traceparent injection allowlist", () => {
     turn.end("ok")
 
     // then
-    expect(recorder.calls.map(({ url, headers }) => [url, headers["traceparent"], headers["x-omo-ingest-key"]])).toEqual([
+    expect(recorder.calls.map(({ url, headers }) => [url, headers["traceparent"], headers["x-omc-ingest-key"]])).toEqual([
       ["https://collector.test/v1/logs", turn.traceparent, "test-ingest-key"],
     ])
   })

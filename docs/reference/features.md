@@ -98,7 +98,7 @@ For projects that must keep all agent scratch work under the repository, add a
 project `AGENTS.md` rule with an explicit writable path:
 
 ```md
-Use ./.omo/session-work/ for clones, downloaded docs, scratch files, and
+Use ./.omc/session-work/ for clones, downloaded docs, scratch files, and
 temporary outputs. Do not write under /tmp, /var, or other OS temp directories
 unless the user approves it.
 ```
@@ -128,9 +128,9 @@ When running inside tmux:
 - Each pane shows agent output live
 - Auto-cleanup when agents complete
 
-When running inside cmux (`cmux omo-agent-toolkit`), the same pane integration is routed through cmux's tmux compatibility command. OMO detects the cmux environment from `CMUX_SOCKET_PATH` or a cmux-provided `TMUX` value, so `tmux.enabled` can create cmux panes even when a real `tmux` binary is not installed.
+When running inside cmux (`cmux omc-agent-toolkit`), the same pane integration is routed through cmux's tmux compatibility command. OMO detects the cmux environment from `CMUX_SOCKET_PATH` or a cmux-provided `TMUX` value, so `tmux.enabled` can create cmux panes even when a real `tmux` binary is not installed.
 
-Customize agent models, prompts, and permissions in the `[opencode]` block of `~/.omo/omo.jsonc`.
+Customize agent models, prompts, and permissions in the `[opencode]` block of `~/.omc/omc.jsonc`.
 
 ### Team Mode (experimental, OFF by default)
 
@@ -140,8 +140,8 @@ See the **[Team Mode Guide](../guide/team-mode.md)** for configuration, team spe
 
 ### Architecture Snapshot (current)
 
-- **Feature modules**: `packages/omo-opencode/src/features/` has 23 modules.
-- **Tool system**: `packages/omo-opencode/src/tools/` has 14 tool-producing directories plus a shared helper directory. The registry exposes **12 to 38 tools** depending on config gates. The 9 LSP aliases are served by the built-in `lsp` MCP, not by the tool registry.
+- **Feature modules**: `packages/omc-opencode/src/features/` has 23 modules.
+- **Tool system**: `packages/omc-opencode/src/tools/` has 14 tool-producing directories plus a shared helper directory. The registry exposes **12 to 38 tools** depending on config gates. The 9 LSP aliases are served by the built-in `lsp` MCP, not by the tool registry.
 - **Hook system**: the 5-tier composers define **58 slots** (Session 23 + Tool Guard 18 + Transform 8 + Continuation 7 + Skill 2). Default config activates about 50-51; the maximum is 62 when the 4 direct Team Mode event handlers are included.
 - **MCP system**: 3 tiers: built-in MCPs with 3 remote servers (`websearch`, `context7`, `grep_app`) plus local stdio `lsp`, `.mcp.json` loader, and skill-embedded MCP from `SKILL.md` frontmatter.
 - **Managers and controllers**: startup creates TmuxSessionManager, BackgroundManager, SkillMcpManager, ConfigHandler, and ModelFallbackControllerAccessor fields, plus optional TuiStateMirror and MonitorManager fields.
@@ -363,7 +363,7 @@ Commands are slash-triggered workflows that execute predefined templates.
 - While a goal is active, every `session.idle` re-injects a continuation prompt that includes the stored `tokensUsed` and `timeUsedSeconds` fields (currently unused; they remain 0).
 - The agent calls `update_goal({ status: "complete" })` only after a completion audit confirms the objective is achieved.
 - `pause` stops idle continuations without clearing the goal; `clear` removes it. `session.deleted` also clears the goal.
-- Goal state is stored in `.omo/goal/<sessionID>.json`.
+- Goal state is stored in `.omc/goal/<sessionID>.json`.
 
 **Tools** (registered only when `goal.enabled` is true):
 
@@ -391,7 +391,7 @@ Commands are slash-triggered workflows that execute predefined templates.
 
 ### /ulw-loop
 
-The `/ulw-loop` slash command has been removed; continuous goal pursuit is now handled by `/goal`. The `omo-agent-toolkit ulw-loop` CLI subcommand remains as a passthrough to the Codex LazyCodex ulw-loop CLI.
+The `/ulw-loop` slash command has been removed; continuous goal pursuit is now handled by `/goal`. The `omc-agent-toolkit ulw-loop` CLI subcommand remains as a passthrough to the Codex LazyCodex ulw-loop CLI.
 
 ### /refactor
 
@@ -507,7 +507,7 @@ Selected built-in skills include `debugging`, `dev-browser`, `frontend`, `git-ma
 
 ### Browser Automation Options
 
-On OmO Native and Codex, shipped browser guidance runs through **omowright**,
+On OmC Native and Codex, shipped browser guidance runs through **omowright**,
 staged inside the `browser` skill and loaded from the js-eval kernel. In Codex,
 `browser:control-in-app-browser` stays first for ordinary page control. The
 OpenCode edition keeps its `browser_automation_engine` providers; an obsolete
@@ -581,7 +581,7 @@ Same-named skill at higher priority overrides lower.
 
 Loaded skill display priority follows this order: `project > user > opencode > builtin/plugin`.
 
-Disable built-in skills via `disabled_skills: ["playwright"]` in config; the same key at the shared base of `~/.omo/omo.jsonc` hides a skill on every harness, including the bundled `frontend` / `visual-qa` skills on OmO Native.
+Disable built-in skills via `disabled_skills: ["playwright"]` in config; the same key at the shared base of `~/.omc/omc.jsonc` hides a skill on every harness, including the bundled `frontend` / `visual-qa` skills on OmC Native.
 
 ### Category + Skill Combo Strategies
 
@@ -691,9 +691,9 @@ path is explicitly allowed.
 | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **look_at** | Analyze media files (PDFs, images, diagrams) via Multimodal-Looker agent. Extracts specific information or summaries from documents, describes visual content. |
 
-### Computer Use (OmO Native)
+### Computer Use (OmC Native)
 
-**Experimental.** OmO Native agents can drive native desktop applications through the `computer` tool: screenshots, window lists, accessibility trees, and mouse and keyboard input on macOS, Linux and Windows. The engine starts only when the tool is first used; input goes to the target in the background by default, a global stop chord (Control+Option+Command+Escape on macOS, Ctrl+Alt+Shift+Escape elsewhere) suspends it, and `/computer on|off|status|stop|resume` controls it from the prompt. Inspection needs the `computer:read` permission tier and input needs `computer:exec`.
+**Experimental.** OmC Native agents can drive native desktop applications through the `computer` tool: screenshots, window lists, accessibility trees, and mouse and keyboard input on macOS, Linux and Windows. The engine starts only when the tool is first used; input goes to the target in the background by default, a global stop chord (Control+Option+Command+Escape on macOS, Ctrl+Alt+Shift+Escape elsewhere) suspends it, and `/computer on|off|status|stop|resume` controls it from the prompt. Inspection needs the `computer:read` permission tier and input needs `computer:exec`.
 
 Setup per OS, configuration, the safety model, privacy and troubleshooting are in the [computer use guide](../guide/computer-use.md); the tool contract is in the [computer tool reference](computer.md).
 
@@ -989,13 +989,13 @@ Disable specific hooks in config:
 
 The plugin uses a three-tier MCP architecture:
 
-1. Built-in MCPs from `packages/omo-opencode/src/mcp/` (remote plus local stdio)
+1. Built-in MCPs from `packages/omc-opencode/src/mcp/` (remote plus local stdio)
 2. Claude Code `.mcp.json` loader with `${VAR}` expansion
 3. Skill-embedded MCP servers declared in `SKILL.md` frontmatter
 
 ### Native vs plugin-injected MCPs
 
-oh-my-openagent injects MCP servers at **runtime** through the OpenCode plugin API. This is fundamentally different from MCP servers you configure directly in `opencode.json`.
+oh-my-cybersecurity injects MCP servers at **runtime** through the OpenCode plugin API. This is fundamentally different from MCP servers you configure directly in `opencode.json`.
 
 Because `opencode mcp list` reads OpenCode's static configuration only, it **cannot see** MCPs that the plugin injects at runtime. This is expected behavior, not a bug:
 
@@ -1005,18 +1005,18 @@ $ opencode mcp list
 No MCP servers configured
 ```
 
-To inspect which MCP servers oh-my-openagent is actually providing, run the doctor command:
+To inspect which MCP servers oh-my-cybersecurity is actually providing, run the doctor command:
 
 ```bash
-bunx oh-my-openagent doctor --verbose
+bunx oh-my-cybersecurity doctor --verbose
 ```
 
 The three tiers of MCP servers and where they come from:
 
 | Tier | Source | Visible in `opencode mcp list`? |
 | ---- | ------ | ------------------------------- |
-| 1 — Built-in | Injected at runtime by oh-my-openagent (`websearch`, `context7`, `grep_app`, `lsp`) | No |
-| 2 — Claude Code `.mcp.json` | Loaded from `.mcp.json` files and merged in by oh-my-openagent at runtime | No |
+| 1 — Built-in | Injected at runtime by oh-my-cybersecurity (`websearch`, `context7`, `grep_app`, `lsp`) | No |
+| 2 — Claude Code `.mcp.json` | Loaded from `.mcp.json` files and merged in by oh-my-cybersecurity at runtime | No |
 | 3 — Skill-embedded | Declared in `SKILL.md` frontmatter, spun up on demand per session | No |
 | — Native OpenCode | Configured directly in `opencode.json` under the `mcp` key, without the plugin | Yes |
 
@@ -1086,7 +1086,7 @@ When a skill MCP has `oauth` configured:
 Pre-authenticate via CLI:
 
 ```bash
-bunx oh-my-openagent mcp oauth login <server-name> --server-url https://api.example.com
+bunx oh-my-cybersecurity mcp oauth login <server-name> --server-url https://api.example.com
 ```
 
 ## Model Capabilities
@@ -1098,7 +1098,7 @@ Model capabilities are models.dev-backed, with a refreshable cache and compatibi
 Update the local cache with the latest model information:
 
 ```bash
-bunx oh-my-openagent refresh-model-capabilities
+bunx oh-my-cybersecurity refresh-model-capabilities
 ```
 
 Configure automatic refresh at startup:
@@ -1116,7 +1116,7 @@ Configure automatic refresh at startup:
 
 ### Capability Diagnostics
 
-Run `bunx oh-my-openagent doctor` to see capability diagnostics including:
+Run `bunx oh-my-cybersecurity doctor` to see capability diagnostics including:
 - effective model resolution for agents and categories
 - warnings when configured models rely on compatibility fallback
 - override compatibility details alongside model resolution output
@@ -1130,7 +1130,7 @@ Auto-injects AGENTS.md when reading files. Walks from file directory to project 
 ```
 project/
 ├── AGENTS.md                        # Injected first
-├── packages/omo-opencode/src/
+├── packages/omc-opencode/src/
 │   ├── AGENTS.md                    # Injected second
 │   └── components/
 │       ├── AGENTS.md                # Injected third

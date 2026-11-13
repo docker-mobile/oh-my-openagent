@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs"
 import { afterEach, describe, expect, setDefaultTimeout, test } from "bun:test"
 
-import { createRuntimeState } from "@oh-my-opencode/team-core/team-state-store"
+import { createRuntimeState } from "@oh-my-cybersecurity/team-core/team-state-store"
 
 import { writeMemberTaskMap } from "./member-map"
 import { normalizeSenpiTeamSpec } from "./normalize"
@@ -200,7 +200,7 @@ describe("deleteTeam", () => {
     expect(destruction.calls).toEqual([])
   })
 
-  test("#given cancel releases a finished resident member (omo#9785) #when the team is deleted #then deletion still destroys it once", async () => {
+  test("#given cancel releases a finished resident member (omc#9785) #when the team is deleted #then deletion still destroys it once", async () => {
     // given
     const { created, deps, destruction, taskId } = await completedResidentTeam("completed", undefined, true)
 

@@ -8,8 +8,8 @@ import { fileURLToPath } from "node:url"
 
 const REPOSITORY_ROOT = fileURLToPath(new URL("..", import.meta.url))
 const BUILD_DIRS = [".github", "script"]
-const BUILD_DEFINE_FILE = "packages/omo-senpi/plugin/scripts/build-extension-core.mjs"
-const KEY = "OMO_TELEMETRY_INGEST_KEY"
+const BUILD_DEFINE_FILE = "packages/omc-senpi/plugin/scripts/build-extension-core.mjs"
+const KEY = "OMC_TELEMETRY_INGEST_KEY"
 const SELF = "script/telemetry-ingest-key-gate.test.ts"
 
 /** Lines that give the key a value: `KEY: ...`, `KEY=...`, `env.KEY = ...` or `--define ...KEY...`. */
@@ -30,7 +30,7 @@ async function filesUnder(dir: string): Promise<string[]> {
 
 describe("telemetry ingest key gate", () => {
   test("#given a workflow that sets the key #then the scanner reports it", () => {
-    expect(keyAssignments(`env:\n  ${KEY}: \${{ secrets.OMO_TELEMETRY_INGEST_KEY }}\n`)).toHaveLength(1)
+    expect(keyAssignments(`env:\n  ${KEY}: \${{ secrets.OMC_TELEMETRY_INGEST_KEY }}\n`)).toHaveLength(1)
     expect(keyAssignments(`run: ${KEY}=abc bun run build`)).toHaveLength(1)
     expect(keyAssignments(`# mentions ${KEY} in a comment only`)).toHaveLength(0)
   })

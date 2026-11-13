@@ -23,7 +23,7 @@ const platformSensitiveExactPaths = new Set([
   "rust-toolchain.toml",
   "postinstall.mjs",
   "script/build-binaries.ts",
-  "script/build-omo-native.ts",
+  "script/build-omc-native.ts",
   "script/ci-fast-path.mjs",
   "script/ci-platform-invocations.mjs",
   "script/ci-leg-tests-guard.mjs",
@@ -36,13 +36,13 @@ const platformSensitivePrefixes = [
   ".github/actions/",
   ".github/scripts/",
   "packages/git-bash-mcp/",
-  "packages/omo-codex/src/install/",
-  "packages/omo-native/",
-  "packages/omo-codex/scripts/install-",
+  "packages/omc-codex/src/install/",
+  "packages/omc-native/",
+  "packages/omc-codex/scripts/install-",
   "script/qa/desktop/macos/",
   "script/qa/desktop/windows/",
 ]
-const platformPackagePath = /^packages\/oh-my-opencode-(?:darwin|linux|windows)-/
+const platformPackagePath = /^packages\/oh-my-cybersecurity-(?:darwin|linux|windows)-/
 const platformBasename = /windows|win32|darwin|macos|\.platform\./
 
 function parseArguments(argv) {

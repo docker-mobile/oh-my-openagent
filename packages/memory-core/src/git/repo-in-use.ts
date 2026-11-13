@@ -5,7 +5,7 @@ import { readlink, realpath, stat } from "../fs/resilient"
 import { LSOF_ANSWER_BOUND_MS, answerFromProcOrLsof, runLsofBounded, type HolderLookupOptions } from "./open-file-holders"
 import { classifyEntryError, errnoCode, scanEveryProcess, type EntryVerdict, type ProcScan, type ProcView } from "./proc-view"
 
-// omo #10199 r5 HIGH 1: the dead-owner proof covers the process that held the memory-write lock,
+// omc #10199 r5 HIGH 1: the dead-owner proof covers the process that held the memory-write lock,
 // not the git child that created the lock file. A SIGKILLed writer's git keeps running as an
 // orphan (in a hook, with index.lock written and its fd CLOSED, so no open-file check sees it).
 // Git always works with its cwd at the worktree top (or inside the git dir), and so do its hooks,

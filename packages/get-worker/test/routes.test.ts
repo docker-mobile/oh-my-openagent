@@ -10,7 +10,7 @@ afterEach(() => {
 const installSh = await Bun.file(new URL("../scripts/install.sh", import.meta.url)).text()
 const installPs1 = await Bun.file(new URL("../scripts/install.ps1", import.meta.url)).text()
 
-const get = (path: string, headers: Record<string, string> = {}) => new Request(`https://get.omo.dev${path}`, { headers })
+const get = (path: string, headers: Record<string, string> = {}) => new Request(`https://get.omc.nga.hm${path}`, { headers })
 
 function mirror(h: ReturnType<typeof harness>, version: string, assets: Record<string, string>) {
   for (const [name, body] of Object.entries(assets)) h.bucket.put(`releases/v${version}/${name}`, body)
@@ -35,7 +35,7 @@ describe("install scripts", () => {
     expect(await (await route(get("/", { "User-Agent": "Mozilla/5.0 WindowsPowerShell/5.1" }), h.ctx)).text()).toBe(installPs1)
     const browser = await route(get("/", { "User-Agent": "Mozilla/5.0 Safari/605" }), h.ctx)
     expect(browser.status).toBe(302)
-    expect(browser.headers.get("Location")).toBe("https://omo.dev/docs/install")
+    expect(browser.headers.get("Location")).toBe("https://omc.nga.hm/docs/install")
   })
 })
 
@@ -68,22 +68,22 @@ describe("channel pointers", () => {
 describe("release assets", () => {
   test("serves a mirrored binary from R2 with an immutable cache and counts it", async () => {
     const h = harness()
-    mirror(h, "5.1.1", { "omo-linux-x64": "binary-bytes", SHA256SUMS: "sums" })
-    const response = await route(get("/v/5.1.1/omo-linux-x64"), h.ctx)
+    mirror(h, "5.1.1", { "omc-linux-x64": "binary-bytes", SHA256SUMS: "sums" })
+    const response = await route(get("/v/5.1.1/omc-linux-x64"), h.ctx)
     expect(response.status).toBe(200)
     expect(await response.text()).toBe("binary-bytes")
     expect(response.headers.get("Cache-Control")).toBe("public, max-age=31536000, immutable")
     expect(response.headers.get("X-Omo-Source")).toBe("r2")
-    expect(h.points.at(-1)?.blobs.slice(0, 4)).toEqual(["binary", "r2", "5.1.1", "omo-linux-x64"])
+    expect(h.points.at(-1)?.blobs.slice(0, 4)).toEqual(["binary", "r2", "5.1.1", "omc-linux-x64"])
   })
 
   test("repeat downloads are cache hits that never read R2", async () => {
     const h = harness()
-    mirror(h, "5.1.1", { "omo-darwin-arm64": "arm-bytes" })
-    await (await route(get("/v/5.1.1/omo-darwin-arm64"), h.ctx)).text()
+    mirror(h, "5.1.1", { "omc-darwin-arm64": "arm-bytes" })
+    await (await route(get("/v/5.1.1/omc-darwin-arm64"), h.ctx)).text()
     await h.settle()
     const reads = h.bucket.reads.length
-    const again = await route(get("/v/5.1.1/omo-darwin-arm64"), h.ctx)
+    const again = await route(get("/v/5.1.1/omc-darwin-arm64"), h.ctx)
     expect(await again.text()).toBe("arm-bytes")
     expect(again.headers.get("X-Omo-Source")).toBe("cache")
     expect(h.bucket.reads.length).toBe(reads)
@@ -92,11 +92,11 @@ describe("release assets", () => {
 
   test("redirects to the GitHub asset when the version was never marked complete", async () => {
     const h = harness()
-    h.bucket.put("releases/v5.1.0/omo-linux-x64", "half-mirrored")
-    const response = await route(get("/v/5.1.0/omo-linux-x64"), h.ctx)
+    h.bucket.put("releases/v5.1.0/omc-linux-x64", "half-mirrored")
+    const response = await route(get("/v/5.1.0/omc-linux-x64"), h.ctx)
     expect(response.status).toBe(302)
     expect(response.headers.get("Location")).toBe(
-      "https://github.com/code-yeongyu/oh-my-openagent/releases/download/v5.1.0/omo-linux-x64",
+      "https://github.com/code-yeongyu/oh-my-cybersecurity/releases/download/v5.1.0/omc-linux-x64",
     )
     expect(response.headers.get("X-Omo-Fallback-Reason")).toBe("version-not-mirrored")
     expect(h.points.at(-1)?.blobs[1]).toBe("github")
@@ -104,16 +104,16 @@ describe("release assets", () => {
 
   test("redirects to GitHub when R2 errors", async () => {
     const h = harness()
-    mirror(h, "5.1.1", { "omo-linux-x64": "bytes" })
+    mirror(h, "5.1.1", { "omc-linux-x64": "bytes" })
     h.bucket.failWith = new Error("R2 unavailable")
-    const response = await route(get("/v/5.1.1/omo-linux-x64"), h.ctx)
+    const response = await route(get("/v/5.1.1/omc-linux-x64"), h.ctx)
     expect(response.status).toBe(302)
     expect(response.headers.get("X-Omo-Fallback-Reason")).toBe("r2-error")
   })
 
   test("refuses names outside the release allowlist so the redirect cannot be steered", async () => {
     const h = harness()
-    for (const path of ["/v/5.1.1/..%2F..%2Fevil", "/v/5.1.1/install.sh", "/v/latest/omo-linux-x64", "/v/5.1.1/omo-plan9-x64"]) {
+    for (const path of ["/v/5.1.1/..%2F..%2Fevil", "/v/5.1.1/install.sh", "/v/latest/omc-linux-x64", "/v/5.1.1/omc-plan9-x64"]) {
       expect((await route(get(path), h.ctx)).status).toBe(404)
     }
     expect(h.points).toEqual([])
@@ -121,9 +121,9 @@ describe("release assets", () => {
 
   test("tags installer QA downloads so the rollup can leave them out", async () => {
     const h = harness()
-    mirror(h, "5.1.1", { "omo-linux-x64": "bytes" })
-    await route(get("/v/5.1.1/omo-linux-x64", { "User-Agent": "omo-install.sh/1 omo-install-qa" }), h.ctx)
-    await route(get("/v/5.1.1/omo-linux-x64", { "User-Agent": "omo-install.sh/1" }), h.ctx)
+    mirror(h, "5.1.1", { "omc-linux-x64": "bytes" })
+    await route(get("/v/5.1.1/omc-linux-x64", { "User-Agent": "omc-install.sh/1 omc-install-qa" }), h.ctx)
+    await route(get("/v/5.1.1/omc-linux-x64", { "User-Agent": "omc-install.sh/1" }), h.ctx)
     expect(h.points.map((p) => p.blobs[5])).toEqual(["qa", ""])
   })
 

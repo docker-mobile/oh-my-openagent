@@ -5,7 +5,7 @@ import { AuditError, graphArguments, parseModuleCount } from "./contracts"
 import { execute, hashFile, normalized, REPO, requireSuccess, type Runtime } from "./runtime"
 
 export async function captureGraph(runtime: Runtime) {
-  const sourcePath = join(REPO, "script/build-omo-binary.ts")
+  const sourcePath = join(REPO, "script/build-omc-binary.ts")
   const source = await readFile(sourcePath, "utf8")
   const expression = /compileOutput\s*=\s*runCommandCaptured\(\s*"bun",\s*\[([\s\S]*?)\]/.exec(source)?.[1]
   if (!expression) throw new AuditError("graph", "release compile argument array was not found")
@@ -17,7 +17,7 @@ export async function captureGraph(runtime: Runtime) {
     switch (value) {
       case "`--target=${target.bunTarget}`": args.push(`--target=bun-${process.platform}-${process.arch}`); break
       case "`--asset=${stageDir}`": args.push("--asset=unused"); break
-      case "compileEntry": args.push(join(REPO, "packages/omo-native/compile-entry.ts")); break
+      case "compileEntry": args.push(join(REPO, "packages/omc-native/compile-entry.ts")); break
       case "...senpiWorkerCompileArgs(repoRoot)": args.push(...senpiWorkerCompileArgs(REPO)); break
       case "binaryPath": args.push("unused"); break
       default: throw new AuditError("graph", `unrecognized release argument expression: ${value}`)

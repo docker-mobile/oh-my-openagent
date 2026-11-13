@@ -76,7 +76,7 @@ exec 3<> "$work/events"
     printf '%s\n' '<?xml version="1.0" encoding="UTF-8"?>' '<plist version="1.0"><dict>'
     printf '<key>Label</key><string>%s</string>\n' "$label"
     printf '<key>ProgramArguments</key><array><string>%s/agent.app/Contents/MacOS/fixture</string><string>--exact</string><string>xpc_tests::global_stop_latches_all_clients</string><string>--nocapture</string></array>\n' "$work"
-    printf '<key>EnvironmentVariables</key><dict><key>OMO_XPC_TEST_STATE_DIR</key><string>%s/state</string><key>OMO_XPC_TEST_SERVICE</key><string>%s</string></dict>\n' "$work" "$service"
+    printf '<key>EnvironmentVariables</key><dict><key>OMC_XPC_TEST_STATE_DIR</key><string>%s/state</string><key>OMC_XPC_TEST_SERVICE</key><string>%s</string></dict>\n' "$work" "$service"
     printf '<key>MachServices</key><dict><key>%s</key><true/></dict>\n' "$service"
     printf '<key>StandardOutPath</key><string>%s/events</string>\n' "$work"
     printf '<key>StandardErrorPath</key><string>%s/stderr</string>\n' "$work"

@@ -1,6 +1,6 @@
 import { mkdir } from "node:fs/promises"
 
-import type { TeamSpec } from "@oh-my-opencode/team-core/types"
+import type { TeamSpec } from "@oh-my-cybersecurity/team-core/types"
 
 import type { ManagerStartSpec, PlanResolutionError, StartResult } from "../manager"
 import { resolveInheritedExtensionList } from "../runners/rpc/parent-extensions"
@@ -187,7 +187,7 @@ function describePlanError(error: PlanResolutionError): string {
   const categorySuffix = categories.length === 0
     ? ""
     : error.code === "model_unavailable"
-      ? ` Valid category names: ${categories.join(", ")}. Retry one of these, or configure categories.<name>.models in omo.json: model overrides cannot be combined with category.`
+      ? ` Valid category names: ${categories.join(", ")}. Retry one of these, or configure categories.<name>.models in omc.json: model overrides cannot be combined with category.`
       : ` Available categories: ${categories.join(", ")}.`
   return error.message + agentSuffix + categorySuffix
 }

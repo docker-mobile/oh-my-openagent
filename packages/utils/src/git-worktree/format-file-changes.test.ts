@@ -55,21 +55,21 @@ describe("formatFileChanges path display", () => {
   })
 
   test("#given a notepad path with a newline #when formatting #then the notepad line is escaped and still matched", () => {
-    const notepadPath = ".omo/notepads/work/no\ntes.md"
+    const notepadPath = ".omc/notepads/work/no\ntes.md"
 
     const summary = formatFileChanges([{ path: notepadPath, added: 1, removed: 0, status: "modified" }], notepadPath)
 
     expect(summary).toContain("[NOTEPAD UPDATED]")
-    expect(summary).toContain(String.raw`  ".omo/notepads/work/no\ntes.md"  (+1)`)
+    expect(summary).toContain(String.raw`  ".omc/notepads/work/no\ntes.md"  (+1)`)
     expect(summary.split("\n")).toHaveLength(7)
   })
 
   test("#given a plain notepad path with backslashes #when formatting #then still matches and prints it unchanged", () => {
     const summary = formatFileChanges(
-      [{ path: ".omo/notepads/work/notes.md", added: 1, removed: 0, status: "modified" }],
-      ".omo\\notepads\\work\\notes.md",
+      [{ path: ".omc/notepads/work/notes.md", added: 1, removed: 0, status: "modified" }],
+      ".omc\\notepads\\work\\notes.md",
     )
 
-    expect(summary).toContain("[NOTEPAD UPDATED]\n  .omo/notepads/work/notes.md  (+1)")
+    expect(summary).toContain("[NOTEPAD UPDATED]\n  .omc/notepads/work/notes.md  (+1)")
   })
 })

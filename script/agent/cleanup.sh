@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Cross-harness teardown for oh-my-openagent dev environments.
+# Cross-harness teardown for oh-my-cybersecurity dev environments.
 #
 # Default: remove only regenerable transient artifacts (build-info, OS junk).
 # It NEVER touches source, node_modules, dist, or anything outside the repo.
@@ -15,9 +15,9 @@ cd "$REPO_ROOT"
 
 log() { printf '[cleanup] %s\n' "$*"; }
 
-# Safety guard: refuse to run unless we are at the oh-my-openagent repo root.
-if ! grep -q '"oh-my-openagent"' "$REPO_ROOT/package.json" 2>/dev/null; then
-  log "ERROR: refusing to run - $REPO_ROOT is not the oh-my-openagent repo root"
+# Safety guard: refuse to run unless we are at the oh-my-cybersecurity repo root.
+if ! grep -q '"oh-my-cybersecurity"' "$REPO_ROOT/package.json" 2>/dev/null; then
+  log "ERROR: refusing to run - $REPO_ROOT is not the oh-my-cybersecurity repo root"
   exit 1
 fi
 

@@ -22,7 +22,7 @@ afterEach(async () => {
 })
 
 async function seeded(): Promise<GitMemoryRepo> {
-  const root = realpathSync.native(await mkdtemp(join(tmpdir(), "omo-memory-legacy-")))
+  const root = realpathSync.native(await mkdtemp(join(tmpdir(), "omc-memory-legacy-")))
   roots.push(root)
   const repo = new GitMemoryRepo({ dir: join(root, "repo"), agentId: AUTHOR.agentId })
   await repo.init({ authorName: AUTHOR.authorName })

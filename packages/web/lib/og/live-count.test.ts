@@ -152,14 +152,14 @@ describe("edgeCountStore", () => {
     await edgeCountStore.write("npm-downloads", { count: 4_032_665, timestamp: 5 }, 86_400)
     const roundTrip = await edgeCountStore.read("npm-downloads")
     entries.set(
-      "https://omo.dev/__og-count/github-stars",
+      "https://omc.nga.hm/__og-count/github-stars",
       Response.json({ count: -1, timestamp: 5 }),
     )
 
     // Then: the value survives with the stale-window TTL, and corrupt data is ignored.
     expect(roundTrip).toEqual({ count: 4_032_665, timestamp: 5 })
     expect(puts).toEqual([
-      { url: "https://omo.dev/__og-count/npm-downloads", cacheControl: "public, max-age=86400" },
+      { url: "https://omc.nga.hm/__og-count/npm-downloads", cacheControl: "public, max-age=86400" },
     ])
     expect(await edgeCountStore.read("github-stars")).toBeNull()
   })

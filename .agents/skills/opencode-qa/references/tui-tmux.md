@@ -23,7 +23,7 @@ color and CJK width:
 ```bash
 node script/qa/web-terminal-visual-qa.mjs --title "OpenCode TUI QA" \
   --command "opencode" --input "{Enter}" \
-  --evidence-dir .omo/evidence/<slug>/opencode-web-terminal
+  --evidence-dir .omc/evidence/<slug>/opencode-web-terminal
 ```
 
 The helper runs a real pty, renders it in xterm.js under Chrome, captures

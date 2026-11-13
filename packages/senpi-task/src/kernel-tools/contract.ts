@@ -1,7 +1,7 @@
 /**
- * omo's OWN structural view of the senpi JS kernel-tool capability (senpi PR #1728 / item 6).
+ * omc's OWN structural view of the senpi JS kernel-tool capability (senpi PR #1728 / item 6).
  *
- * senpi-codemode's implementation is never imported here: the engine pin that ships with omo can
+ * senpi-codemode's implementation is never imported here: the engine pin that ships with omc can
  * predate the producer, so this package duck-types the transient `kernelTools` capability off the
  * live tool-call context and validates every reply structurally. The shapes below mirror the frozen
  * `kernel-tools` contract: fenced descriptors, `describe(names)`,

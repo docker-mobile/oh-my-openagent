@@ -41,7 +41,7 @@ describe("githubIssueUrl", () => {
   test("#given a report #when the issue link is built #then it opens a new issue on the public repo with the report prefilled", () => {
     const url = new URL(githubIssueUrl({ title: "Report a problem 404", body: "a & b = c" }))
     expect(`${url.origin}${url.pathname}`).toBe(
-      "https://github.com/code-yeongyu/oh-my-openagent/issues/new",
+      "https://github.com/code-yeongyu/oh-my-cybersecurity/issues/new",
     )
     expect(url.searchParams.get("title")).toBe("Report a problem 404")
     expect(url.searchParams.get("body")).toBe("a & b = c")

@@ -4,7 +4,7 @@ import { toTeamCoreConfig, toTeamCoreSpecSource } from "./runtime-config"
 import { taskSettings } from "./__fixtures__/runtime-fakes"
 
 describe("toTeamCoreConfig", () => {
-  test("#given omo task.team bounds #when converted #then the team-core config carries the bounds and base dir", () => {
+  test("#given omc task.team bounds #when converted #then the team-core config carries the bounds and base dir", () => {
     // given
     const settings = taskSettings({ max_members: 5, max_parallel_members: 2, max_wall_clock_minutes: 30 })
 
@@ -40,8 +40,8 @@ describe("toTeamCoreSpecSource", () => {
     expect(toTeamCoreSpecSource("project")).toBe("project")
   })
 
-  test("#given an omo-json source #when mapped #then it maps to the user slot", () => {
+  test("#given an omc-json source #when mapped #then it maps to the user slot", () => {
     // when / then
-    expect(toTeamCoreSpecSource("omo-json")).toBe("user")
+    expect(toTeamCoreSpecSource("omc-json")).toBe("user")
   })
 })

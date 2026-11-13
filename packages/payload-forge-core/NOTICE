@@ -1,0 +1,96 @@
+# Third-party notices for @oh-my-cybersecurity/payload-forge-core
+
+This package carries an absorbed offensive payload corpus derived from one
+upstream community project, which is licensed under the MIT License. The notice
+and permission text is reproduced below, as the license requires of any copy or
+substantial portion. The corpora ship here as generated JSON read from disk at
+runtime; no upstream source file is vendored into this repository.
+
+## PayloadsAllTheThings
+
+- Upstream repository: https://github.com/swisskyrepo/PayloadsAllTheThings
+- Pinned commit: 08ea40e77db3f42ef8f20c65196f3936a19b6c86
+- License name: MIT License
+- Copyright line: Copyright (c) 2019 Swissky
+- Upstream LICENSE file sha256: f21ad49cdad2bf18c06543fb064a81d04bd2bff497dd20a1ecc45c5df8643691
+
+The shipped corpora in `data/` are derived from that pin: every payload string,
+payload family name, variable name, and wordlist line we redistribute is read
+from the checkout at commit `08ea40e77db3f42ef8f20c65196f3936a19b6c86` and mapped onto the `PayloadTemplate`,
+`PayloadVariable`, and `WordlistEntry` shapes in `src/types.ts`.
+
+### What is absorbed from that pin
+
+Two sources, both verified by reading them at the pin:
+
+1. `.github/hopla_config.json` (87,410 bytes at the pin), the upstream
+   payload/keyword catalogue. Its top-level shape is `{ categories, keywords }`:
+   - `categories`: 17 category objects, each `{ name, values }`, together
+     holding 128 named entries at depth 1. A value object is one of
+     `{ name, value }` (227 leaves), `{ name, prompt, value }` (13),
+     `{ name, title, value }` (1), or `{ name, values }` as a nested group
+     (31). Nesting reaches depth 3.
+   - `keywords`: 14 groups, each `{ name, values }` with a flat list of
+     strings, about 1,282 keywords in total.
+   - Templating convention: a payload body may wrap a variable name in section
+     signs (U+00A7) as placeholders, and the entry's `prompt` array names the
+     variables to substitute. That character is spelled out here so this file
+     stays ASCII. The renderer contract in `src/types.ts` follows that
+     convention.
+2. The Intruder wordlists: 69 plain-text, line-oriented files totalling
+   2,869,102 bytes across `Intruder/` and `Intruders/` directories, e.g.
+   `Directory Traversal/Intruder/dotdotpwn.txt` (1,872,006 bytes),
+   `File Inclusion/Intruders/Traversal.txt` (378,306 bytes),
+   `XSS Injection/Intruders/xss_alert.txt` (46,709 bytes),
+   `SQL Injection/Intruder/Generic_UnionSelect.txt` (37,386 bytes).
+   Each file is registered as one `WordlistEntry` with its family, line count,
+   and upstream source path; the lines themselves stay on disk.
+
+### Full license text at the pin
+
+```
+MIT License
+
+Copyright (c) 2019 Swissky
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+## Deliberately NOT absorbed: HackTricks (CC BY-NC 4.0)
+
+The HackTricks project (https://github.com/HackTricks-wiki/hacktricks) is
+licensed CC BY-NC 4.0, whose NonCommercial term forbids commercial use of the
+licensed material. Its corpus is deliberately NOT absorbed into this package and
+MUST NOT be: no HackTricks text, checklist, or payload list is copied,
+transformed, or regenerated into `data/` here, and nothing in this package is
+derived from it. The decision is deliberate and not an oversight of an
+available source.
+
+To be precise about what exists upstream at the pin: PayloadsAllTheThings
+carries no HackTricks corpus at all. What it does carry is 13 markdown
+references that link out to `book.hacktricks.xyz` in the "References" sections
+of its own documents (for example `Web Sockets/README.md`,
+`SQL Injection/MSSQL Injection.md`, `File Inclusion/LFI-to-RCE.md`). Those are
+URLs, not content, and no HackTricks material is redistributed through them.
+
+## Scope of the redistribution
+
+Every corpus file in `data/` is generated from the pinned commit above and read
+from disk at runtime by `src/loader.ts`. Nothing in this package statically
+imports or inlines a corpus into a TypeScript module.

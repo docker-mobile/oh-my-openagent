@@ -16,7 +16,7 @@ import { sweepStrandedGitLockFiles } from "./repo-lock-sweep"
 // test budget would cut a correct but slow answer short.
 setDefaultTimeout(90_000)
 
-// omo #10199 review round 5, MEDIUM 3: a dead-owner takeover authorizes reclaiming stranded git
+// omc #10199 review round 5, MEDIUM 3: a dead-owner takeover authorizes reclaiming stranded git
 // locks for THAT acquisition of THAT writer lock only. The proof must not outlive the acquisition
 // (release, then a later ordinary acquisition) and must not leak from the directory sweep that
 // reclaimed the dead owner on behalf of a different lock in the same directory.
@@ -69,7 +69,7 @@ async function withWriterLock<T>(paths: IdentityPaths, run: () => Promise<T>): P
   }
 }
 
-describe("the dead-owner reclaim authorization is scoped to one acquisition of one lock (omo #10199 r5 MEDIUM 3)", () => {
+describe("the dead-owner reclaim authorization is scoped to one acquisition of one lock (omc #10199 r5 MEDIUM 3)", () => {
   test.skipIf(process.platform === "win32")("#given a takeover acquisition that was released #when a LATER ordinary acquisition sweeps #then the stranded lock is kept", async () => {
     // #given
     const paths = await identityWithDeadWriter("authz-released")

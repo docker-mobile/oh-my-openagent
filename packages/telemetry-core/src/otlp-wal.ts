@@ -174,7 +174,7 @@ export class SpoolWriter {
   }
 }
 
-const EVENT_NAME = /^omo\.[a-z][a-z0-9_]{0,62}$/
+const EVENT_NAME = /^omc\.[a-z][a-z0-9_]{0,62}$/
 
 function wireAttributes<T>(attributes: Readonly<Record<string, T>>): Record<string, T> {
   return Object.fromEntries(Object.entries(attributes).filter(([key]) => isWireAttributeKey(key)))
@@ -192,7 +192,7 @@ export class WalLogRecordProcessor implements LogRecordProcessor {
   onEmit(record: ReadableLogRecord): void {
     const encode = (): Uint8Array =>
       toBinary(LogRecordSchema, encodeLogRecord({ ...record, body: undefined, severityText: "", attributes: wireAttributes(record.attributes) }))
-    // No free-text slot: a record's name must be an `omo.<bare name>` event, or it is not written.
+    // No free-text slot: a record's name must be an `omc.<bare name>` event, or it is not written.
     if (record.eventName === undefined || !EVENT_NAME.test(record.eventName)) return
     if (this.writer.append(encode)) this.#onAppended(this.writer)
   }

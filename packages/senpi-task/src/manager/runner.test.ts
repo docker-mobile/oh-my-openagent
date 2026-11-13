@@ -12,7 +12,7 @@ function managedSpec(): ManagedStartSpec {
   return {
     taskId: "st_00000001",
     cwd: "/tmp/project",
-    stateDir: "/tmp/project/.omo/senpi-task/children/st_00000001",
+    stateDir: "/tmp/project/.omc/senpi-task/children/st_00000001",
     prompt: "do it",
     depth: 1,
     parentSessionId: "parent-1",
@@ -177,7 +177,7 @@ describe("createRpcManagedRunner", () => {
     const handle = await managed.start(managedSpec())
 
     // then
-    expect(captured?.state_dir).toBe("/tmp/project/.omo/senpi-task/children/st_00000001")
+    expect(captured?.state_dir).toBe("/tmp/project/.omc/senpi-task/children/st_00000001")
     expect(captured?.prompt).toBe("do it")
     expect(handle.pid).toBe(99)
   })

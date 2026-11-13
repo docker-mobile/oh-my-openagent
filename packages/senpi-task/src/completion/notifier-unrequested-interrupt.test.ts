@@ -48,7 +48,7 @@ function fakeParent(): { parent: ParentNotifier; calls: ParentNotifierMessage[] 
   return { parent: { enqueue: (message) => calls.push(message) }, calls }
 }
 
-describe("interrupts the parent did not request (omo#10112)", () => {
+describe("interrupts the parent did not request (omc#10112)", () => {
   test("#given a child interrupted because its session was replaced #when it settles #then the parent is notified with the reason", () => {
     // given
     const record = interruptedRecord({

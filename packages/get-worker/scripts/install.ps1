@@ -1,10 +1,10 @@
-# OmO native installer for Windows (Windows PowerShell 5.1 and PowerShell 7+):
-#   irm https://get.omo.dev/install.ps1 | iex
-#   & ([scriptblock]::Create((irm https://get.omo.dev/install.ps1))) beta      # latest | beta | X.Y.Z
-#   OMO_INSTALL_DIR           install directory (default $HOME\.local\bin)
-#   OMO_NO_MODIFY_PATH=1      never edit the User PATH
-#   OMO_INSTALL_BASE_URL      mirror base (default https://get.omo.dev); GitHub is the fallback
-#   OMO_INSTALL_ALLOW_SUDO=1  allow running elevated (as Administrator)
+# OmC native installer for Windows (Windows PowerShell 5.1 and PowerShell 7+):
+#   irm https://get.omc.nga.hm/install.ps1 | iex
+#   & ([scriptblock]::Create((irm https://get.omc.nga.hm/install.ps1))) beta      # latest | beta | X.Y.Z
+#   OMC_INSTALL_DIR           install directory (default $HOME\.local\bin)
+#   OMC_NO_MODIFY_PATH=1      never edit the User PATH
+#   OMC_INSTALL_BASE_URL      mirror base (default https://get.omc.nga.hm); GitHub is the fallback
+#   OMC_INSTALL_ALLOW_SUDO=1  allow running elevated (as Administrator)
 # The whole body runs from Install-Omo on the last line, so a truncated download never runs half a script.
 param([Parameter(Position = 0)][string]$OmoTarget = 'latest')
 
@@ -12,13 +12,13 @@ function Install-Omo {
   param([string]$Target)
   $ErrorActionPreference = 'Stop'
   $ProgressPreference = 'SilentlyContinue' # Invoke-WebRequest is many times slower with the progress bar on 5.1
-  $GitHubDownload = 'https://github.com/code-yeongyu/oh-my-openagent/releases/download'
-  $NpmDistTags = 'https://registry.npmjs.org/-/package/omo-ai/dist-tags'
-  $UserAgent = 'omo-install.ps1/1'
-  if ($env:OMO_INSTALL_QA -eq '1') { $UserAgent += ' omo-install-qa' } # QA runs stay out of the public count
+  $GitHubDownload = 'https://github.com/code-yeongyu/oh-my-cybersecurity/releases/download'
+  $NpmDistTags = 'https://registry.npmjs.org/-/package/omc-ai/dist-tags'
+  $UserAgent = 'omc-install.ps1/1'
+  if ($env:OMC_INSTALL_QA -eq '1') { $UserAgent += ' omc-install-qa' } # QA runs stay out of the public count
 
   function Write-OmoSay([string]$Message) { Write-Host $Message }
-  function Stop-OmoInstall([string]$Message) { throw "omo installer: $Message" }
+  function Stop-OmoInstall([string]$Message) { throw "omc installer: $Message" }
 
   function Test-OmoVersion([string]$Value) {
     # \z, not $: .NET's $ also matches before a trailing newline
@@ -70,17 +70,17 @@ public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint msg, UIntPtr wP
   }
 
   function Get-OmoAsset {
-    if (-not [Environment]::Is64BitOperatingSystem) { Stop-OmoInstall 'omo needs 64-bit Windows' }
+    if (-not [Environment]::Is64BitOperatingSystem) { Stop-OmoInstall 'omc needs 64-bit Windows' }
     # The registry holds the native CPU, so x64 PowerShell emulated on ARM64 still gets the arm64 build.
     $envKey = 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Environment'
     $arch = [string](Get-ItemProperty -LiteralPath $envKey -Name PROCESSOR_ARCHITECTURE -ErrorAction SilentlyContinue).PROCESSOR_ARCHITECTURE
     if (-not $arch) { $arch = [string]$env:PROCESSOR_ARCHITEW6432 }
     if (-not $arch) { $arch = [string]$env:PROCESSOR_ARCHITECTURE }
     switch ($arch.ToUpperInvariant()) {
-      'ARM64' { return 'omo-windows-arm64.exe' }
+      'ARM64' { return 'omc-windows-arm64.exe' }
       'AMD64' {
-        if (Test-OmoAvx2) { return 'omo-windows-x64.exe' }
-        return 'omo-windows-x64-baseline.exe'
+        if (Test-OmoAvx2) { return 'omc-windows-x64.exe' }
+        return 'omc-windows-x64-baseline.exe'
       }
       default { Stop-OmoInstall "unsupported architecture '$arch'" }
     }
@@ -153,7 +153,7 @@ public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint msg, UIntPtr wP
     Copy-Item -LiteralPath $Source -Destination $staged -Force
     $old = "$Target.old"
     if (Test-Path -LiteralPath $Target) {
-      # A running omo.exe cannot be overwritten or deleted, but it can be renamed out of the way.
+      # A running omc.exe cannot be overwritten or deleted, but it can be renamed out of the way.
       if (Test-Path -LiteralPath $old) {
         try { Remove-Item -LiteralPath $old -Force -ErrorAction Stop } catch { $old = "$Target.old-$([guid]::NewGuid().ToString('N').Substring(0, 8))" }
       }
@@ -182,14 +182,14 @@ public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint msg, UIntPtr wP
       # HWND_BROADCAST, WM_SETTINGCHANGE, SMTO_ABORTIFHUNG, 5 s
       [void]$native::SendMessageTimeout([IntPtr]0xffff, 0x1A, [UIntPtr]::Zero, 'Environment', 2, 5000, [ref]$result)
     } catch {
-      Write-OmoSay "  could not announce the PATH change ($($_.Exception.Message)); sign out and back in if a new terminal cannot find omo"
+      Write-OmoSay "  could not announce the PATH change ($($_.Exception.Message)); sign out and back in if a new terminal cannot find omc"
     }
   }
 
   function Update-OmoPath([string]$Dir) { # returns $true when the User PATH was edited
     $onSession = Test-OmoPathHas $env:Path $Dir
     if (-not $onSession -and $env:GITHUB_PATH) { [IO.File]::AppendAllText($env:GITHUB_PATH, "$Dir`n") }
-    if ($env:OMO_NO_MODIFY_PATH -eq '1') { return $false }
+    if ($env:OMC_NO_MODIFY_PATH -eq '1') { return $false }
     $edited = $false
     # Raw registry access keeps %VAR% entries unexpanded and the value REG_EXPAND_SZ;
     # [Environment]::SetEnvironmentVariable would write them back expanded.
@@ -212,7 +212,7 @@ public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint msg, UIntPtr wP
   }
 
   function Write-OmoReceipt([string]$Channel, [string]$Version, [string]$Asset, [string]$BinPath) {
-    $dir = Join-Path $HOME '.omo'
+    $dir = Join-Path $HOME '.omc'
     New-Item -ItemType Directory -Force -Path $dir | Out-Null
     $receipt = [ordered]@{
       method       = 'standalone'
@@ -229,7 +229,7 @@ public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint msg, UIntPtr wP
   }
 
   function Get-OmoInstallOwner([string]$Path) {
-    # npm/bun shims (omo.cmd, omo.ps1, bun's omo.exe + omo.bunx) name the package they launch.
+    # npm/bun shims (omc.cmd, omc.ps1, bun's omc.exe + omc.bunx) name the package they launch.
     $text = $Path
     foreach ($file in @($Path, [IO.Path]::ChangeExtension($Path, '.bunx'))) {
       $item = Get-Item -LiteralPath $file -ErrorAction SilentlyContinue
@@ -238,13 +238,13 @@ public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint msg, UIntPtr wP
         $text += [Text.Encoding]::UTF8.GetString($bytes) + [Text.Encoding]::Unicode.GetString($bytes)
       }
     }
-    if ($text -match 'node_modules[\\/]omo-ai([\\/]|$)') { return 'omo-ai (npm or bun global install)' }
+    if ($text -match 'node_modules[\\/]omc-ai([\\/]|$)') { return 'omc-ai (npm or bun global install)' }
     if ($text -match 'node_modules[\\/]oh-my-(opencode|openagent)([\\/]|$)') { return 'the legacy oh-my-openagent package' }
-    return 'another omo binary'
+    return 'another omc binary'
   }
 
   function Show-OmoOtherInstalls([string]$Launcher) {
-    $found = @(Get-Command omo -All -CommandType Application, ExternalScript -ErrorAction SilentlyContinue)
+    $found = @(Get-Command omc -All -CommandType Application, ExternalScript -ErrorAction SilentlyContinue)
     if ($found.Count -eq 0) { return }
     $winner = [string]$found[0].Path
     $seen = @{ (Split-Path -Parent $Launcher) = $true }
@@ -257,14 +257,14 @@ public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint msg, UIntPtr wP
       Write-OmoSay ''
       Write-OmoSay "Note: $candidate is $owner."
       if ((Split-Path -Parent $winner) -eq $dir) {
-        Write-OmoSay "  It comes first on PATH, so typing 'omo' still runs it instead of $Launcher."
+        Write-OmoSay "  It comes first on PATH, so typing 'omc' still runs it instead of $Launcher."
       } elseif ($winner -eq $Launcher) {
         Write-OmoSay "  $Launcher comes first on PATH; that one is not used."
       } else {
-        Write-OmoSay "  It is not the first omo on PATH; $winner is."
+        Write-OmoSay "  It is not the first omc on PATH; $winner is."
       }
-      if ($owner.StartsWith('omo-ai')) {
-        Write-OmoSay '  Nothing was removed. To keep only this install: bun remove -g omo-ai  (or: npm uninstall -g omo-ai)'
+      if ($owner.StartsWith('omc-ai')) {
+        Write-OmoSay '  Nothing was removed. To keep only this install: bun remove -g omc-ai  (or: npm uninstall -g omc-ai)'
       } else {
         Write-OmoSay '  Nothing was removed. Remove it yourself if you no longer need it.'
       }
@@ -282,31 +282,31 @@ public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint msg, UIntPtr wP
     Stop-OmoInstall "usage: install.ps1 [latest|beta|X.Y.Z] (got '$want')"
   }
   if ($PSVersionTable.PSVersion.Major -ge 6 -and -not $IsWindows) {
-    Stop-OmoInstall 'this installer is for Windows; elsewhere run: curl -fsSL https://get.omo.dev/install.sh | bash'
+    Stop-OmoInstall 'this installer is for Windows; elsewhere run: curl -fsSL https://get.omc.nga.hm/install.sh | bash'
   }
-  if ((Test-OmoElevated) -and $env:OMO_INSTALL_ALLOW_SUDO -ne '1') {
-    Stop-OmoInstall 'refusing to run as Administrator; run it from a normal PowerShell (set OMO_INSTALL_ALLOW_SUDO=1 to override)'
+  if ((Test-OmoElevated) -and $env:OMC_INSTALL_ALLOW_SUDO -ne '1') {
+    Stop-OmoInstall 'refusing to run as Administrator; run it from a normal PowerShell (set OMC_INSTALL_ALLOW_SUDO=1 to override)'
   }
   if (-not $HOME) { Stop-OmoInstall 'HOME is not set' }
   if ($PSVersionTable.PSVersion.Major -lt 6) {
     [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
   }
 
-  $base = [string]$env:OMO_INSTALL_BASE_URL
-  if (-not $base) { $base = 'https://get.omo.dev' }
+  $base = [string]$env:OMC_INSTALL_BASE_URL
+  if (-not $base) { $base = 'https://get.omc.nga.hm' }
   $base = $base.TrimEnd('/')
-  $dir = [string]$env:OMO_INSTALL_DIR
+  $dir = [string]$env:OMC_INSTALL_DIR
   if (-not $dir) { $dir = Join-Path $HOME '.local\bin' }
   $dir = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($dir)
-  $exe = Join-Path $dir 'omo.exe'
-  $work = Join-Path ([IO.Path]::GetTempPath()) "omo-install.$([guid]::NewGuid().ToString('N'))"
+  $exe = Join-Path $dir 'omc.exe'
+  $work = Join-Path ([IO.Path]::GetTempPath()) "omc-install.$([guid]::NewGuid().ToString('N'))"
   New-Item -ItemType Directory -Path $work | Out-Null
   try {
     $asset = Get-OmoAsset
     $version = Resolve-OmoVersion $want $base $work
     $channel = $want
     if (Test-OmoVersion $want) { $channel = 'pinned' }
-    Write-OmoSay "Installing omo $version ($asset) into $dir"
+    Write-OmoSay "Installing omc $version ($asset) into $dir"
 
     $sums = Join-Path $work 'SHA256SUMS'
     Save-OmoReleaseFile $version 'SHA256SUMS' $sums $base
@@ -314,7 +314,7 @@ public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint msg, UIntPtr wP
     if (-not $expected) { Stop-OmoInstall "SHA256SUMS for $version has no entry for $asset" }
 
     if ((Test-Path -LiteralPath $exe) -and (Get-OmoSha256 $exe) -eq $expected) {
-      Write-OmoSay "  omo $version is already installed at $exe"
+      Write-OmoSay "  omc $version is already installed at $exe"
     } else {
       $download = Join-Path $work $asset
       Save-OmoReleaseFile $version $asset $download $base
@@ -335,19 +335,19 @@ public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint msg, UIntPtr wP
     Write-OmoReceipt $channel $version $asset $exe
     Show-OmoOtherInstalls $exe
     Write-OmoSay ''
-    Write-OmoSay "omo $version is installed at $exe."
+    Write-OmoSay "omc $version is installed at $exe."
     if ($pathEdited) {
-      Write-OmoSay "Added $dir to your User PATH. This window can run omo now; other terminals see it after a restart."
+      Write-OmoSay "Added $dir to your User PATH. This window can run omc now; other terminals see it after a restart."
     } elseif (-not (Test-OmoPathHas $env:Path $dir)) {
-      Write-OmoSay "$dir is not on PATH (OMO_NO_MODIFY_PATH=1). Add it yourself, or run: & '$exe'"
+      Write-OmoSay "$dir is not on PATH (OMC_NO_MODIFY_PATH=1). Add it yourself, or run: & '$exe'"
     } else {
-      Write-OmoSay 'Run: omo'
+      Write-OmoSay 'Run: omc'
     }
     Write-OmoSay ''
-    Write-OmoSay 'OmO sends anonymous usage telemetry (no prompts, code, file paths, or account data) to improve the product.'
+    Write-OmoSay 'OmC sends anonymous usage telemetry (no prompts, code, file paths, or account data) to improve the product.'
     Write-OmoSay 'The data goes to PostHog in the United States.'
-    Write-OmoSay 'Turn it off with DO_NOT_TRACK=1 (or OMO_DISABLE_TELEMETRY=1).'
-    Write-OmoSay 'Details: https://github.com/code-yeongyu/oh-my-openagent/blob/dev/docs/legal/privacy-policy.md'
+    Write-OmoSay 'Turn it off with DO_NOT_TRACK=1 (or OMC_DISABLE_TELEMETRY=1).'
+    Write-OmoSay 'Details: https://github.com/code-yeongyu/oh-my-cybersecurity/blob/dev/docs/legal/privacy-policy.md'
   } finally {
     Remove-Item -LiteralPath $work -Recurse -Force -ErrorAction SilentlyContinue
   }

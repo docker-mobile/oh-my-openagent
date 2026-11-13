@@ -4,7 +4,7 @@ use std::sync::OnceLock;
 
 use senpi_desktop_core::error::{DesktopError, PermissionDeniedData, TccPermission};
 
-const LAUNCHER: &str = "the app that launched OmO (for a terminal launch, that terminal app)";
+const LAUNCHER: &str = "the app that launched OmC (for a terminal launch, that terminal app)";
 
 fn settings_url(permission: TccPermission) -> &'static str {
     match permission {

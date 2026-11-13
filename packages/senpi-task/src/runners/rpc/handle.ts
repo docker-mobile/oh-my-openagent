@@ -1,6 +1,6 @@
 import type { ChildProcess } from "node:child_process"
 import type { RpcResponse, RpcSessionState } from "@code-yeongyu/senpi"
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import type { RunnerOutcome } from "../in-process/child-handle"
 import type {
@@ -107,7 +107,7 @@ export function createRpcChildHandle(options: CreateRpcChildHandleOptions): Trac
   client.onEvent((event) => {
     heartbeatActivity()
     // A run the child starts on its own after its turn settled (a monitor or background job woke it)
-    // is a new turn: the next outcome is that run's, never the settled one again (omo#9069).
+    // is a new turn: the next outcome is that run's, never the settled one again (omc#9069).
     if (event.type === "agent_start" && turnOutcome !== undefined && outcome === undefined) {
       beginTurn()
       if (!claims.consume()) for (const listener of resumedListeners) listener()

@@ -5,7 +5,7 @@ describe("expandEnvReferences", () => {
   test("#given an untrusted command-looking env value #when expanding #then it remains inert string data", () => {
     // given
     const env = {
-      PAYLOAD: "$(touch /tmp/omo-should-not-exist)",
+      PAYLOAD: "$(touch /tmp/omc-should-not-exist)",
     }
 
     // when
@@ -15,7 +15,7 @@ describe("expandEnvReferences", () => {
     })
 
     // then
-    expect(result).toBe("$(touch /tmp/omo-should-not-exist)")
+    expect(result).toBe("$(touch /tmp/omc-should-not-exist)")
   })
 
   test("#given a blocked variable with a fallback #when expanding #then fallback is used and block is reported", () => {

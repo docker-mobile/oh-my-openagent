@@ -7,7 +7,7 @@ import type {
 	ComputerRunOk,
 	ComputerScreenshot,
 	ComputerSessionSnapshot,
-} from "@oh-my-opencode/senpi-desktop-protocol";
+} from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import { isRecord } from "../service/parse";
 import type { DesktopService } from "../service/service";
 import {

@@ -10,7 +10,7 @@ import { openHpkeSealedBox } from "./hpke-sealed-box"
 
 /**
  * DeviceKeyring is the sync engine's only path to this device's private keys
- * (work-plan todo 14; custody model in `docs/sync-design.md` §7 of omo-service).
+ * (work-plan todo 14; custody model in `docs/sync-design.md` §7 of omc-service).
  *
  * A device principal owns two key pairs generated on the device itself:
  *  - an Ed25519 signing pair, which signs every sync batch and keyring record;
@@ -163,7 +163,7 @@ export interface DeviceKeyring {
   sign(request: DeviceKeyringSignRequest): Promise<Uint8Array>
   /**
    * Opens a sealed wrap addressed to this device's sealing key and returns the
-   * plaintext envelope (spec §8.1, omo-service docs/sync-design.md @21e0757).
+   * plaintext envelope (spec §8.1, omc-service docs/sync-design.md @21e0757).
    *
    * Construction: RFC 9180 HPKE, base mode (mode 0), suite
    * DHKEM(X25519, HKDF-SHA256) + HKDF-SHA256 + AES-256-GCM

@@ -1,8 +1,8 @@
-import { handleLspMcpRequest } from "@oh-my-opencode/lsp-core/mcp";
-import { parseLspRequestContext, type RequestContext, runWithRequestContext } from "@oh-my-opencode/lsp-core/request-context";
-import { isPlainRecord } from "@oh-my-opencode/mcp-stdio-core/record";
+import { handleLspMcpRequest } from "@oh-my-cybersecurity/lsp-core/mcp";
+import { parseLspRequestContext, type RequestContext, runWithRequestContext } from "@oh-my-cybersecurity/lsp-core/request-context";
+import { isPlainRecord } from "@oh-my-cybersecurity/mcp-stdio-core/record";
 
-import { authenticateMessage, OMO_DAEMON_PROTOCOL_VERSION } from "./ipc-protocol.js";
+import { authenticateMessage, OMC_DAEMON_PROTOCOL_VERSION } from "./ipc-protocol.js";
 import type { DaemonOwner } from "./ownership.js";
 
 export const CONTEXT_KEY = "_context";
@@ -42,11 +42,11 @@ export type DaemonRouteState = {
 export function handleDaemonMessage(raw: unknown, state: DaemonRouteState): Promise<unknown> {
 	const authenticated = authenticateMessage(raw, state.token);
 	if ("error" in authenticated) return Promise.resolve(authenticated);
-	if (authenticated.method === "omo/ping") {
+	if (authenticated.method === "omc/ping") {
 		return Promise.resolve({
 			jsonrpc: "2.0",
 			id: authenticated.id,
-			result: { protocolVersion: OMO_DAEMON_PROTOCOL_VERSION, ...state.owner },
+			result: { protocolVersion: OMC_DAEMON_PROTOCOL_VERSION, ...state.owner },
 		});
 	}
 	if (authenticated.method === "$/cancelRequest") {

@@ -18,7 +18,7 @@ function withStorage(run: (fixture: {
   statePath: string
   storage: FileHookStateStorage
 }) => void): void {
-  const root = mkdtempSync(join(tmpdir(), "omo-hooks-state-"))
+  const root = mkdtempSync(join(tmpdir(), "omc-hooks-state-"))
   const cwd = join(root, "project")
   const agentDir = join(root, "agent")
   const statePath = join(cwd, CONFIG_DIR_NAME, "hooks-state.json")

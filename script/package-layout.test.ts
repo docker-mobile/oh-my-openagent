@@ -10,19 +10,19 @@ const skillRoots = [".opencode/skills", ".agents/skills"] as const
 const codexMaterializedRuntimePayloadPaths = [
   "dist/cli/index.js",
   "dist/cli-node/index.js",
-  "packages/omo-codex/plugin/components/bootstrap/dist/cli.js",
-  "packages/omo-codex/plugin/components/bootstrap/scripts/bootstrap.ps1",
-  "packages/omo-codex/plugin/components/bootstrap/scripts/node-dispatch.ps1",
-  "packages/omo-codex/plugin/components/comment-checker/dist/cli.js",
-  "packages/omo-codex/plugin/components/git-bash/dist/cli.js",
-  "packages/omo-codex/plugin/components/lazycodex-executor-verify/dist/cli.js",
-  "packages/omo-codex/plugin/components/lsp/dist/cli.js",
-  "packages/omo-codex/plugin/components/rules/dist/cli.js",
-  "packages/omo-codex/plugin/components/ulw-execute-continuation/dist/cli.js",
-  "packages/omo-codex/plugin/components/teammode/dist/cli.js",
-  "packages/omo-codex/plugin/components/telemetry/dist/cli.js",
-  "packages/omo-codex/plugin/components/ultrawork/dist/cli.js",
-  "packages/omo-codex/plugin/components/ulw-loop/dist/cli.js",
+  "packages/omc-codex/plugin/components/bootstrap/dist/cli.js",
+  "packages/omc-codex/plugin/components/bootstrap/scripts/bootstrap.ps1",
+  "packages/omc-codex/plugin/components/bootstrap/scripts/node-dispatch.ps1",
+  "packages/omc-codex/plugin/components/comment-checker/dist/cli.js",
+  "packages/omc-codex/plugin/components/git-bash/dist/cli.js",
+  "packages/omc-codex/plugin/components/lazycodex-executor-verify/dist/cli.js",
+  "packages/omc-codex/plugin/components/lsp/dist/cli.js",
+  "packages/omc-codex/plugin/components/rules/dist/cli.js",
+  "packages/omc-codex/plugin/components/ulw-execute-continuation/dist/cli.js",
+  "packages/omc-codex/plugin/components/teammode/dist/cli.js",
+  "packages/omc-codex/plugin/components/telemetry/dist/cli.js",
+  "packages/omc-codex/plugin/components/ultrawork/dist/cli.js",
+  "packages/omc-codex/plugin/components/ulw-loop/dist/cli.js",
 ] as const
 const webTerminalVisualQaRuntimePaths = [
   "script/qa/strip-ansi.mjs",
@@ -193,8 +193,8 @@ describe("published package layout", () => {
 
   test("#given generated Codex installer bundle #when packing package #then generated output ships and stale forks do not", async () => {
     // given
-    const expectedGeneratedInstaller = "packages/omo-codex/scripts/install-dist/install-local.mjs"
-    const obsoleteForkPrefix = "packages/omo-codex/scripts/install/"
+    const expectedGeneratedInstaller = "packages/omc-codex/scripts/install-dist/install-local.mjs"
+    const obsoleteForkPrefix = "packages/omc-codex/scripts/install/"
 
     // when
     const packedPaths = await packDryRunPaths()
@@ -243,7 +243,7 @@ describe("published package layout", () => {
 
   test("#given Codex installer source tree #when checking obsolete forks #then hand-written install mjs files are absent", () => {
     // given
-    const obsoleteForkRoot = join(repositoryRoot, "packages/omo-codex/scripts/install")
+    const obsoleteForkRoot = join(repositoryRoot, "packages/omc-codex/scripts/install")
 
     // when
     const obsoleteForks = existsSync(obsoleteForkRoot)

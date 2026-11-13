@@ -1,4 +1,4 @@
-import type { OmoConfigEnv } from "@oh-my-opencode/omo-config-core"
+import type { OmoConfigEnv } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { AgentModelEntry } from "./agent-model-entry"
 

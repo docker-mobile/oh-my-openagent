@@ -1,6 +1,6 @@
 import type { ToolDefinition } from "@code-yeongyu/senpi"
-import type { DelegateFallbackEntry } from "@oh-my-opencode/delegate-core"
-import type { OmoTaskSettings } from "@oh-my-opencode/omo-config-core"
+import type { DelegateFallbackEntry } from "@oh-my-cybersecurity/delegate-core"
+import type { OmoTaskSettings } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { IsolationRuntime, IsolationStartedDetails } from "../isolation"
 import type { KernelToolBindingRegistry } from "../kernel-tools/bindings"

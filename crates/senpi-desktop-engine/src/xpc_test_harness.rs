@@ -34,13 +34,13 @@ impl Observers {
 }
 
 pub(crate) fn state_dir() -> PathBuf {
-    std::env::var_os("OMO_XPC_TEST_STATE_DIR")
+    std::env::var_os("OMC_XPC_TEST_STATE_DIR")
         .map(PathBuf::from)
         .expect("the signed test harness must supply its private state directory")
 }
 
 pub(crate) async fn run_if_requested() -> bool {
-    let Ok(service) = std::env::var("OMO_XPC_TEST_SERVICE") else {
+    let Ok(service) = std::env::var("OMC_XPC_TEST_SERVICE") else {
         return false;
     };
     let mode = crate::cli::Cli::parse_from(["engine", "--xpc-agent", &service]).mode();

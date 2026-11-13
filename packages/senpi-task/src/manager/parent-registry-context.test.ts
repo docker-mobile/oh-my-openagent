@@ -10,7 +10,7 @@ function baseSpec(overrides: Partial<ManagedStartSpec> = {}): ManagedStartSpec {
   return {
     taskId: "st_child",
     cwd: "/tmp/project",
-    stateDir: "/tmp/project/.omo/task",
+    stateDir: "/tmp/project/.omc/task",
     prompt: "do the child work",
     depth: 1,
     parentSessionId: "parent-session",
@@ -21,8 +21,8 @@ function baseSpec(overrides: Partial<ManagedStartSpec> = {}): ManagedStartSpec {
 
 function registryWithMockProvider(): ModelRegistry {
   const registry = new ModelRegistry(ModelRuntime.createSync())
-  registry.registerProvider("omo-mock", {
-    name: "omo mock provider",
+  registry.registerProvider("omc-mock", {
+    name: "omc mock provider",
     baseUrl: "file://mock-provider",
     apiKey: "mock",
     api: "openai-completions",
@@ -53,11 +53,11 @@ describe("findModelReference", () => {
     }
 
     // when
-    const model = findModelReference(registry, "omo-mock/mock-1")
+    const model = findModelReference(registry, "omc-mock/mock-1")
 
     // then
-    expect(calls).toEqual([{ provider: "omo-mock", modelId: "mock-1" }])
-    expect(model).toEqual({ provider: "omo-mock", id: "mock-1" })
+    expect(calls).toEqual([{ provider: "omc-mock", modelId: "mock-1" }])
+    expect(model).toEqual({ provider: "omc-mock", id: "mock-1" })
   })
 
   test("#given a modelId that itself contains slashes #when resolved #then only the FIRST slash splits provider from modelId", () => {
@@ -101,17 +101,17 @@ describe("createParentRegistrySessionContext", () => {
     const provide = createParentRegistrySessionContext(() => undefined)
 
     // when / then
-    expect(() => provide(baseSpec({ model: "omo-mock/mock-1" }))).toThrow(/model_unavailable|omo-mock\/mock-1/)
+    expect(() => provide(baseSpec({ model: "omc-mock/mock-1" }))).toThrow(/model_unavailable|omc-mock\/mock-1/)
   })
 
   test("#given the parent did not trust its project #when a child starts or resumes #then the child is told the project is untrusted", () => {
     // given
     const registry = registryWithMockProvider()
-    const resolved: ResolvedModelRecord = { provider: "omo-mock", model_id: "mock-1", display: "omo-mock/mock-1", source: "category" }
+    const resolved: ResolvedModelRecord = { provider: "omc-mock", model_id: "mock-1", display: "omc-mock/mock-1", source: "category" }
     const provide = createParentRegistrySessionContext(() => registry, () => false)
 
     // when
-    const started = provide(baseSpec({ model: "omo-mock/mock-1" }))
+    const started = provide(baseSpec({ model: "omc-mock/mock-1" }))
     const resumed = provide.resolveResumeContext?.(baseSpec({ resolvedModel: resolved }))
 
     // then
@@ -137,13 +137,13 @@ describe("createParentRegistrySessionContext", () => {
     const provide = createParentRegistrySessionContext(() => registry)
 
     // when
-    const context = provide(baseSpec({ model: "omo-mock/mock-1" }))
+    const context = provide(baseSpec({ model: "omc-mock/mock-1" }))
 
     // then
     expect(context.modelRegistry).toBe(registry)
     expect(context.modelRuntime).toBe(modelRuntime)
     expect(context.authStorage).toBe(registry.authStorage)
-    expect(context.model?.provider).toBe("omo-mock")
+    expect(context.model?.provider).toBe("omc-mock")
     expect(context.model?.id).toBe("mock-1")
   })
 
@@ -167,7 +167,7 @@ describe("createParentRegistrySessionContext", () => {
     const provide = createParentRegistrySessionContext(() => registry)
 
     // when
-    const context = provide(baseSpec({ model: "omo-mock/mock-1", variant: "xhigh" }))
+    const context = provide(baseSpec({ model: "omc-mock/mock-1", variant: "xhigh" }))
 
     // then
     expect(context.thinkingLevel).toBe("xhigh")
@@ -179,7 +179,7 @@ describe("createParentRegistrySessionContext", () => {
     const provide = createParentRegistrySessionContext(() => registry)
 
     // when
-    const context = provide(baseSpec({ model: "omo-mock/mock-1", variant: "ultra" }))
+    const context = provide(baseSpec({ model: "omc-mock/mock-1", variant: "ultra" }))
 
     // then
     expect(context.thinkingLevel).toBeUndefined()
@@ -191,7 +191,7 @@ describe("createParentRegistrySessionContext", () => {
     const provide = createParentRegistrySessionContext(() => registry)
 
     // when
-    const context = provide(baseSpec({ model: "omo-mock/mock-1:xhigh" }))
+    const context = provide(baseSpec({ model: "omc-mock/mock-1:xhigh" }))
 
     // then
     expect(context.model?.id).toBe("mock-1")
@@ -204,7 +204,7 @@ describe("createParentRegistrySessionContext", () => {
     const provide = createParentRegistrySessionContext(() => registry)
 
     // when / then
-    expect(() => provide(baseSpec({ model: "omo-mock/does-not-exist" }))).toThrow(/model_unavailable|does-not-exist/)
+    expect(() => provide(baseSpec({ model: "omc-mock/does-not-exist" }))).toThrow(/model_unavailable|does-not-exist/)
   })
 })
 
@@ -213,7 +213,7 @@ describe("resolveResumeContext", () => {
     // given
     const registry = registryWithMockProvider()
     const resolvedModel: ResolvedModelRecord = {
-      provider: "omo-mock",
+      provider: "omc-mock",
       model_id: "mock-1",
       display: "Mock 1",
       source: "explicit",
@@ -228,7 +228,7 @@ describe("resolveResumeContext", () => {
     if (result.ok) {
       expect(result.context.modelRegistry).toBe(registry)
       expect(result.context.authStorage).toBe(registry.authStorage)
-      expect(result.context.model?.provider).toBe("omo-mock")
+      expect(result.context.model?.provider).toBe("omc-mock")
       expect(result.context.model?.id).toBe("mock-1")
     }
   })
@@ -237,7 +237,7 @@ describe("resolveResumeContext", () => {
     // given
     const registry = registryWithMockProvider()
     const resolvedModel: ResolvedModelRecord = {
-      provider: "omo-mock",
+      provider: "omc-mock",
       model_id: "does-not-exist",
       display: "Mock 1",
       source: "explicit",
@@ -251,7 +251,7 @@ describe("resolveResumeContext", () => {
     expect(result.ok).toBe(false)
     if (!result.ok) {
       expect(result.code).toBe("model_unavailable")
-      expect(result.reason).toContain("omo-mock")
+      expect(result.reason).toContain("omc-mock")
       expect(result.reason).toContain("does-not-exist")
     }
   })
@@ -261,7 +261,7 @@ describe("resolveResumeContext", () => {
     const registry = registryWithMockProvider()
     // display says something completely different from the registry id
     const resolvedModel: ResolvedModelRecord = {
-      provider: "omo-mock",
+      provider: "omc-mock",
       model_id: "mock-1",
       display: "Some Human Label That Does Not Match",
       source: "explicit",
@@ -274,7 +274,7 @@ describe("resolveResumeContext", () => {
     // then
     expect(result.ok).toBe(true)
     if (result.ok) {
-      expect(result.context.model?.provider).toBe("omo-mock")
+      expect(result.context.model?.provider).toBe("omc-mock")
       expect(result.context.model?.id).toBe("mock-1")
     }
   })
@@ -282,8 +282,8 @@ describe("resolveResumeContext", () => {
   test("#given a spec whose provider+model_id match one model but display matches a DIFFERENT model in the registry #when resolved #then it resolves the provider+model_id match, never the display match", () => {
     // given
     const registry = new ModelRegistry(ModelRuntime.createSync())
-    registry.registerProvider("omo-mock", {
-      name: "omo mock provider",
+    registry.registerProvider("omc-mock", {
+      name: "omc mock provider",
       baseUrl: "file://mock-provider",
       apiKey: "mock",
       api: "openai-completions",
@@ -310,7 +310,7 @@ describe("resolveResumeContext", () => {
     })
     // canonical provider/model_id point to mock-1, but display deceptively says mock-2's name
     const resolvedModel: ResolvedModelRecord = {
-      provider: "omo-mock",
+      provider: "omc-mock",
       model_id: "mock-1",
       display: "Mock 2",
       source: "explicit",
@@ -331,7 +331,7 @@ describe("resolveResumeContext", () => {
   test("#given no live parent registry available #when resolved #then it returns model_unavailable, never silently drifting to a default", () => {
     // given
     const resolvedModel: ResolvedModelRecord = {
-      provider: "omo-mock",
+      provider: "omc-mock",
       model_id: "mock-1",
       display: "Mock 1",
       source: "explicit",

@@ -13,7 +13,7 @@ afterEach(() => {
 })
 
 function memoryRoot(identities: number, repoLess: readonly number[] = []): string {
-  const root = realpathSync.native(mkdtempSync(join(tmpdir(), "omo-host-sweep-")))
+  const root = realpathSync.native(mkdtempSync(join(tmpdir(), "omc-host-sweep-")))
   roots.push(root)
   for (let index = 0; index < identities; index += 1) {
     const identity = join(root, "agents", `agent-${String(index).padStart(2, "0")}`)

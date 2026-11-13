@@ -1,4 +1,4 @@
-import { spawn } from "@oh-my-opencode/utils/runtime"
+import { spawn } from "@oh-my-cybersecurity/utils/runtime"
 import {
   createReplyListenerDaemonEnv,
   REPLY_LISTENER_DAEMON_IDENTITY_MARKER,

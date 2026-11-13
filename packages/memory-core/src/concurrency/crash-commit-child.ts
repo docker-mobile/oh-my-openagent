@@ -13,7 +13,7 @@ import {
 import { runMemoryTool } from "../tools/memory"
 import { windowsTreeKillArgs } from "./windows-process-tree.mjs"
 
-// Subprocess fixture for omo #10177 crash-consistency coverage. Unlike writer-child.ts (which
+// Subprocess fixture for omc #10177 crash-consistency coverage. Unlike writer-child.ts (which
 // parks BETWEEN commits before the parent SIGKILLs it), the kill-mid-commit mode SIGKILLs itself
 // while its own `git commit` process is mid-flight - the interleaving the issue's missing-object
 // failure needs: object writes, index update, and ref update sampled at a random point. The peer
@@ -28,7 +28,7 @@ import { windowsTreeKillArgs } from "./windows-process-tree.mjs"
 // killer's process - so the killer stays alive until the parent observes the debris, sends
 // "swept", and only then does the killer die (the memory-write lock record names the killer).
 
-const SETTLE_ENV_VAR = "OMO_TEST_GIT_LOCK_SETTLE_MS"
+const SETTLE_ENV_VAR = "OMC_TEST_GIT_LOCK_SETTLE_MS"
 // Read by ../git/repo-lock-sweep at module init in THIS child process; the harness passes the
 // value through the child's environment. Kept here as a named constant so the fixture and the
 // test share one spelling.

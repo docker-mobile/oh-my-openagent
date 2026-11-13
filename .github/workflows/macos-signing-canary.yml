@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   canary:
-    if: github.repository == 'code-yeongyu/oh-my-openagent'
+    if: github.repository == 'code-yeongyu/oh-my-cybersecurity'
     runs-on: macos-15
     timeout-minutes: 90
     defaults:
@@ -32,11 +32,11 @@ jobs:
           RELEASE_TAG: ${{ inputs.release_tag }}
         run: |
           set -euo pipefail
-          mkdir -p .omo/canary
-          gh release download "$RELEASE_TAG" --dir .omo/canary \
-            --pattern omo-darwin-arm64 --pattern omo-darwin-x64 \
+          mkdir -p .omc/canary
+          gh release download "$RELEASE_TAG" --dir .omc/canary \
+            --pattern omc-darwin-arm64 --pattern omc-darwin-x64 \
             --pattern senpi-desktop-engine-darwin-arm64 --pattern senpi-desktop-engine-darwin-x64
-          chmod +x .omo/canary/*
+          chmod +x .omc/canary/*
 
       - name: Sign and notarize with the release script
         env:
@@ -50,20 +50,20 @@ jobs:
           set -euo pipefail
           bash .github/scripts/macos-sign-and-notarize.sh \
             --identifier ai.sisyphuslabs.omo \
-            --entitlements .github/scripts/omo-bun-executable.entitlements \
-            .omo/canary/omo-darwin-arm64 .omo/canary/omo-darwin-x64
+            --entitlements .github/scripts/omc-bun-executable.entitlements \
+            .omc/canary/omc-darwin-arm64 .omc/canary/omc-darwin-x64
           bash .github/scripts/macos-sign-and-notarize.sh \
             --identifier ai.sisyphuslabs.senpi-desktop-engine \
-            .omo/canary/senpi-desktop-engine-darwin-arm64 .omo/canary/senpi-desktop-engine-darwin-x64
+            .omc/canary/senpi-desktop-engine-darwin-arm64 .omc/canary/senpi-desktop-engine-darwin-x64
 
       - name: Run the signed binaries
         run: |
           set -euo pipefail
           HOME="$(mktemp -d)"
           export HOME
-          .omo/canary/omo-darwin-arm64 --version
-          .omo/canary/senpi-desktop-engine-darwin-arm64 --selftest
-          for file in .omo/canary/*; do
+          .omc/canary/omc-darwin-arm64 --version
+          .omc/canary/senpi-desktop-engine-darwin-arm64 --selftest
+          for file in .omc/canary/*; do
             codesign -dv --verbose=2 "$file" 2>&1 | grep -E '^(Identifier|CodeDirectory|Authority|TeamIdentifier|Timestamp)='
           done
 
@@ -71,7 +71,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: macos-signing-canary
-          path: .omo/canary/*
+          path: .omc/canary/*
           retention-days: 3
           if-no-files-found: error
 

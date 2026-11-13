@@ -56,8 +56,8 @@ export async function HomeNav({
       <div className="nav__inner">
         <NavLink className="brand" onHome={onHome} hash="#top" path="/">
           {/* eslint-disable-next-line @next/next/no-img-element -- a 28 px static SVG mark; next/image adds nothing */}
-          <img src="/brand/omo-mark.svg" alt="" width={28} height={28} />
-          OmO
+          <img src="/brand/omc-mark.svg" alt="" width={28} height={28} />
+          OmC
         </NavLink>
         <nav aria-label={t("primary")}>
           <ul className="nav__links">

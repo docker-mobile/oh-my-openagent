@@ -1,5 +1,5 @@
-import { listActiveTeams } from "@oh-my-opencode/team-core/team-state-store"
-import { log } from "@oh-my-opencode/utils"
+import { listActiveTeams } from "@oh-my-cybersecurity/team-core/team-state-store"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import { readMemberTaskMap } from "../member-map"
 import { TEAM_LEAD_SENTINEL } from "../normalize"

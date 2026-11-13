@@ -12,7 +12,7 @@ async function scenario(mode) {
       headers: { "content-type": "text/css" },
     })
   const page = (href) =>
-    new Response(`<link rel="stylesheet" href="${href}"><main>OmO</main>`, {
+    new Response(`<link rel="stylesheet" href="${href}"><main>OmC</main>`, {
       headers: { "content-type": "text/html" },
     })
   const a = Bun.serve({

@@ -27,7 +27,7 @@ test("#given mixed npm 12 pack entries #when parsing the manifest #then rejects 
 test("#given multiple valid npm 12 pack entries #when parsing the manifest #then rejects the ambiguous payload", () => {
   const output = JSON.stringify({
     decoy: { files: [{ path: "THIRD-PARTY-NOTICES.md" }] },
-    "oh-my-opencode": { files: [] },
+    "oh-my-cybersecurity": { files: [] },
   })
 
   assert.throws(() => parseNpmPackJson(output), /did not produce a parseable file list/)

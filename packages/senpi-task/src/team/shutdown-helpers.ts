@@ -1,7 +1,7 @@
-import type { RuntimeState, RuntimeStateMember } from "@oh-my-opencode/team-core/types"
+import type { RuntimeState, RuntimeStateMember } from "@oh-my-cybersecurity/team-core/types"
 
 /**
- * Member statuses from which a member may be torn down during team deletion (omo
+ * Member statuses from which a member may be torn down during team deletion (omc
  * `shutdown-helpers.ts:6-10` parity): a member that has finished, been approved for shutdown, or
  * errored out is safe to remove. Any other status means the member is still live.
  */

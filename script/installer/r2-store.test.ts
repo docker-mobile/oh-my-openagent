@@ -6,8 +6,8 @@ import { createR2Store } from "./r2-store"
 const EMPTY_SHA256 = createHash("sha256").update("").digest("hex")
 
 describe("R2 prefix deletes", () => {
-  const credentials = { accountId: "dummy", accessKeyId: "test-access-key", secretAccessKey: "test-secret-key", bucket: "omo-releases" }
-  const scratchKey = "dry-run/delete/releases/v5.1.48/omo-linux-x64-baseline"
+  const credentials = { accountId: "dummy", accessKeyId: "test-access-key", secretAccessKey: "test-secret-key", bucket: "omc-releases" }
+  const scratchKey = "dry-run/delete/releases/v5.1.48/omc-linux-x64-baseline"
   const badGateway = () => new Response(`<html><title>502 Bad Gateway</title> ${credentials.secretAccessKey}</html>`, { status: 502, headers: { "cf-ray": "ray-502" } })
   const internalError = () => new Response(
     "<Error><Code>InternalError</Code><Message>We encountered an internal error. Please try again.</Message></Error>",
@@ -36,7 +36,7 @@ describe("R2 prefix deletes", () => {
       expect(sleep.mock.calls).toHaveLength(2)
       for (const [url, init] of fetch.mock.calls) {
         const headers = new Headers(init?.headers)
-        expect(url).toBe(`https://dummy.r2.cloudflarestorage.com/omo-releases/${scratchKey}`)
+        expect(url).toBe(`https://dummy.r2.cloudflarestorage.com/omc-releases/${scratchKey}`)
         expect(init?.method).toBe("DELETE")
         expect(init?.body ?? null).toBeNull()
         expect(headers.get("x-amz-content-sha256")).toBe(EMPTY_SHA256)
@@ -100,7 +100,7 @@ describe("R2 text object writes", () => {
     const sleep = spyOn(Bun, "sleep").mockResolvedValue(undefined)
     const log = spyOn(console, "log").mockImplementation(() => {})
     try {
-      const store = createR2Store({ accountId: "dummy", accessKeyId: "test-key", secretAccessKey: "test-secret", bucket: "omo-releases" }, "dry-run/retry/")
+      const store = createR2Store({ accountId: "dummy", accessKeyId: "test-key", secretAccessKey: "test-secret", bucket: "omc-releases" }, "dry-run/retry/")
       await store.write(key, "5.1.48\n", type)
       expect(fetch.mock.calls).toHaveLength(2)
       expect(sleep.mock.calls).toHaveLength(1)
@@ -118,7 +118,7 @@ describe("R2 text object writes", () => {
   test("marker and pointer use signed fixed-length PUTs within the scratch prefix", async () => {
     // given
     const fetch = spyOn(globalThis, "fetch").mockResolvedValue(new Response(null))
-    const store = createR2Store({ accountId: "dummy", accessKeyId: "test-key", secretAccessKey: "test-secret", bucket: "omo-releases" }, "dry-run/test/")
+    const store = createR2Store({ accountId: "dummy", accessKeyId: "test-key", secretAccessKey: "test-secret", bucket: "omc-releases" }, "dry-run/test/")
     const objects = [
       { key: "releases/v5.1.48/.complete", body: '{"version":"5.1.48"}', type: "application/json" },
       { key: "channels/latest", body: "5.1.48\n", type: "text/plain" },
@@ -133,7 +133,7 @@ describe("R2 text object writes", () => {
         if (!request) throw new Error(`missing request ${index}`)
         const [url, init] = request
         const headers = new Headers(init?.headers)
-        expect(url).toBe(`https://dummy.r2.cloudflarestorage.com/omo-releases/dry-run/test/${object.key}`)
+        expect(url).toBe(`https://dummy.r2.cloudflarestorage.com/omc-releases/dry-run/test/${object.key}`)
         expect(init?.method).toBe("PUT")
         if (!(init?.body instanceof Blob)) throw new Error("text object body must have a known byte length")
         expect(await init.body.text()).toBe(object.body)

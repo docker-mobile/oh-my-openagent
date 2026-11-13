@@ -4,7 +4,7 @@ import { getTranslations } from "next-intl/server"
 import { DagPanel } from "@/components/home/dag-panel"
 import { SectionHead } from "@/components/home/section-head"
 
-/** The current omo.dev layout: a sticky title column beside the desktop app window with the workflow graph open. */
+/** The current omc.nga.hm layout: a sticky title column beside the desktop app window with the workflow graph open. */
 export async function MassUlwSection(): Promise<JSX.Element> {
   const t = await getTranslations("home.massUlw")
 

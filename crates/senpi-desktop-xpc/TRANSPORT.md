@@ -63,10 +63,10 @@ become global reset authority.
 
 The agent resolves its effective UID's home from the OS account database, not
 `HOME`, and uses
-`~/Library/Application Support/OmO/ComputerControl/xpc-v1/global-stop`.
+`~/Library/Application Support/OmC/ComputerControl/xpc-v1/global-stop`.
 The private `xpc-v1` directory is created with mode 0700 and must belong to that
 UID. The marker must be a regular, non-symlink file owned by the same UID with
-mode 0600 and the exact bytes `omo-global-stop-v1\n`. There is no production
+mode 0600 and the exact bytes `omc-global-stop-v1\n`. There is no production
 environment variable, command-line option or feature flag for changing this
 location.
 
@@ -80,7 +80,7 @@ a same-user process can delete it and thereby lift a persisted stop at the next
 startup, because a missing marker means not stopped. A stop during a live
 session remains latched in memory and is unaffected by deleting the marker.
 No external anchor is implemented in this delta; the anchor design is tracked in
-[#10238](https://github.com/code-yeongyu/oh-my-openagent/issues/10238).
+[#10238](https://github.com/code-yeongyu/oh-my-cybersecurity/issues/10238).
 File ownership, permissions and descriptor-relative access do not
 prevent this deletion.
 

@@ -19,7 +19,7 @@ export async function writeIndexIfIdentity(options: {
   const rawIndexPath = (await git(options, ["rev-parse", "--git-path", "index"])).stdout.trim()
   const indexPath = isAbsolute(rawIndexPath) ? rawIndexPath : resolve(options.dir, rawIndexPath)
   const lockPath = `${indexPath}.lock`
-  const temporary = `${indexPath}.omo-${process.pid}-${randomUUID()}`
+  const temporary = `${indexPath}.omc-${process.pid}-${randomUUID()}`
   let lock
   try {
     lock = await open(lockPath, "wx")

@@ -9,7 +9,7 @@ when Docker is unavailable or on Windows.
 
 ## Use it
 
-`qa-docker.sh` brings up a disposable box (builds `omo-dev` then `omo-qa` on
+`qa-docker.sh` brings up a disposable box (builds `omc-dev` then `omc-qa` on
 first use, reused after) and drops you into it. From the repo root:
 
 ```bash
@@ -30,7 +30,7 @@ script/agent/qa-docker.sh exec bash .claude/skills/codex-qa/scripts/tui-smoke.sh
 script/agent/qa-docker.sh --clean   # remove the QA images
 ```
 
-`omo-qa` is `omo-dev` (`.devcontainer/Dockerfile`) plus the latest `@openai/codex`
+`omc-qa` is `omc-dev` (`.devcontainer/Dockerfile`) plus the latest `@openai/codex`
 and `opencode-ai` npm packages and `sqlite3 jq curl rsync`.
 
 ## Isolation still applies inside
@@ -58,5 +58,5 @@ run the scripts directly on the host there (they isolate via mktemp
 
 ## Cleanup
 
-Each run auto-removes its container (`--rm`). The `omo-dev` / `omo-qa` images
+Each run auto-removes its container (`--rm`). The `omc-dev` / `omc-qa` images
 persist for fast re-runs; drop them with `script/agent/qa-docker.sh --clean`.

@@ -1,4 +1,4 @@
-import type { Message } from "@oh-my-opencode/team-core/types"
+import type { Message } from "@oh-my-cybersecurity/team-core/types"
 
 import type { LeadPollerDeps } from "./lead-poller-types"
 

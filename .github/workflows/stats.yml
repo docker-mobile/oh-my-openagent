@@ -11,7 +11,7 @@ permissions:
 jobs:
   stats:
     runs-on: ubuntu-latest
-    if: github.repository == 'code-yeongyu/oh-my-openagent'
+    if: github.repository == 'code-yeongyu/oh-my-cybersecurity'
     steps:
       - uses: actions/checkout@v7
 

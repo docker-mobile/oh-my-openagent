@@ -5,7 +5,7 @@ Use this reference when a PR or issue body needs screenshots or other short-live
 ## Contract
 
 - Upload through GitHub's own web attachment flow and use the resulting `https://github.com/user-attachments/assets/<uuid>` URL.
-- Keep temporary files under `/tmp` or an untracked evidence directory such as `.omo/evidence/...`.
+- Keep temporary files under `/tmp` or an untracked evidence directory such as `.omc/evidence/...`.
 - Never commit generated screenshots, terminal PNGs, upload scripts with secrets, cookies, tokens, S3 form fields, or copied request headers.
 - Never use GitHub Releases for PR evidence images.
 - Never use external image hosters.
@@ -45,7 +45,7 @@ For PR body editing, write the body to `/tmp/pr-body.md`, inspect it, then pass 
 
 - ANSI terminal rendering: https://github.com/user-attachments/assets/<uuid>
 - Long-line wrapping: https://github.com/user-attachments/assets/<uuid>
-- Local evidence: `.omo/evidence/20260623-web-terminal-rendering/`
+- Local evidence: `.omc/evidence/20260623-web-terminal-rendering/`
 ```
 
 If the authenticated browser session is unavailable, leave the PR ready with local evidence paths and state the blocker. Do not fall back to releases or external hosting.

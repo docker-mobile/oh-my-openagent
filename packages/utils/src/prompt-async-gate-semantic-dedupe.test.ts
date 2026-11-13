@@ -288,8 +288,8 @@ describe("dispatchInternalPrompt semantic dedupe", () => {
       expect(first.status).toBe("dispatched")
       expect(second.status).toBe("dispatched")
       expect(promptCalls).toEqual([
-        "internal route A\n<!-- OMO_INTERNAL_INITIATOR -->",
-        "internal route B\n<!-- OMO_INTERNAL_INITIATOR -->",
+        "internal route A\n<!-- OMC_INTERNAL_INITIATOR -->",
+        "internal route B\n<!-- OMC_INTERNAL_INITIATOR -->",
       ])
     } finally {
       Date.now = originalDateNow

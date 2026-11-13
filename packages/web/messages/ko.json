@@ -1,10 +1,10 @@
 {
   "metadata": {
-    "title": "OmO",
+    "title": "OmC",
     "description": "Your tool for real work. But it's an agent. OmO는 당신의 토큰을 현실세계의 가치있는 결과물로 바꿔드립니다."
   },
   "nav": {
-    "brand": "OmO",
+    "brand": "OmC",
     "features": "기능",
     "docs": "문서",
     "manifesto": "매니페스토",
@@ -16,7 +16,7 @@
     "skipToContent": "본문으로 건너뛰기"
   },
   "footer": {
-    "brand": "OmO",
+    "brand": "OmC",
     "copyright": "© {year} Sisyphus Labs · SUL-1.0 소스 공개 라이선스",
     "product": "제품",
     "community": "커뮤니티",
@@ -167,7 +167,7 @@
         "author": "Arthur Guiot"
       },
       "review2": {
-        "text": "If Claude Code does in 7 days what a human does in 3 months, OmO does it in 1 hour.",
+        "text": "If Claude Code does in 7 days what a human does in 3 months, OmC does it in 1 hour.",
         "author": "B, Quant Researcher"
       },
       "review3": {
@@ -183,8 +183,8 @@
       "readTheDocs": "문서 읽기"
     },
     "dag": {
-      "region": "워크플로우 그래프가 열린 OmO 데스크톱",
-      "windowTitle": "OmO — 시장 조사 12k 소스",
+      "region": "워크플로우 그래프가 열린 OmC 데스크톱",
+      "windowTitle": "OmC — 시장 조사 12k 소스",
       "threads": "스레드",
       "thread1": "시장 조사 12k 소스",
       "thread2": "랭킹 모델 학습",
@@ -206,12 +206,12 @@
     }
   },
   "docs": {
-    "mobileHeader": "OmO 문서",
+    "mobileHeader": "OmC 문서",
     "searchPlaceholder": "문서 검색...",
     "searchLabel": "문서 섹션 필터",
     "sectionsLabel": "문서 섹션",
     "install": {
-      "title": "OmO 설치",
+      "title": "OmC 설치",
       "description": "macOS, Linux, WSL, Windows에서 명령 하나로 OmO를 설치합니다."
     }
   },
@@ -263,7 +263,7 @@
     "closing": {
       "lead": "그러니 고민하지 말고",
       "title": "just ulw ulw",
-      "button": "OmO 받기"
+      "button": "OmC 받기"
     },
     "legacyNote": "참고: 우리는 <date>2026년 1월 19일</date>에 코드를 보게 만드는 에이전트는 잘못 만들어진 도구라고 정의했습니다. <link>구 버전 읽기</link>"
   },
@@ -285,7 +285,7 @@
     },
     "notCollaboration": "그건 '인간-AI 협업'이 아닙니다. AI가 제 일을 못 하고 있습니다.",
     "premise": "{linkText}뒤에 깔린 전제는 하나입니다. 사람은 설계를 하고, 오타 교정은 에이전트가 합니다.",
-    "premiseLinkText": "OmO",
+    "premiseLinkText": "OmC",
     "indistinguishable": {
       "title": "구분할 수 없는 코드",
       "subtitle": "에이전트가 쓴 코드는 시니어 엔지니어가 쓴 코드와 구분되지 않아야 합니다.",
@@ -402,7 +402,7 @@
     },
     "finalCta": {
       "title": "just ulw ulw",
-      "button": "OmO 받기"
+      "button": "OmC 받기"
     },
     "archive": {
       "eyebrow": "구 버전 · 2026.01.19",
@@ -412,12 +412,12 @@
   },
   "download": {
     "metadata": {
-      "title": "OmO 데스크톱 앱 다운로드",
-      "description": "macOS, Windows, Linux용 OmO 데스크톱 앱을 내려받으세요. 모든 설치 파일에 크기와 SHA-256 체크섬이 함께 표시됩니다."
+      "title": "OmC 데스크톱 앱 다운로드",
+      "description": "macOS, Windows, Linux용 OmC 데스크톱 앱을 내려받으세요. 모든 설치 파일에 크기와 SHA-256 체크섬이 함께 표시됩니다."
     },
     "eyebrow": "데스크톱 앱",
-    "title": "OmO 다운로드",
-    "lead": "Mac, Windows PC, Linux에서 쓰는 OmO 데스크톱 앱입니다. 내 컴퓨터에 맞는 설치 파일을 골라 드리고, 전체 목록은 체크섬과 함께 아래에 있습니다.",
+    "title": "OmC 다운로드",
+    "lead": "Mac, Windows PC, Linux에서 쓰는 OmC 데스크톱 앱입니다. 내 컴퓨터에 맞는 설치 파일을 골라 드리고, 전체 목록은 체크섬과 함께 아래에 있습니다.",
     "channel": {
       "label": "릴리스 채널",
       "stable": "안정",
@@ -440,8 +440,8 @@
     },
     "primary": {
       "button": "{os}용 다운로드",
-      "meta": "OmO {version} · {arch} · {size}",
-      "metaNoSize": "OmO {version} · {arch}",
+      "meta": "OmC {version} · {arch} · {size}",
+      "metaNoSize": "OmC {version} · {arch}",
       "intelPrompt": "Apple 실리콘 Mac이 아닌가요?",
       "intelLink": "Intel Mac용 다운로드",
       "released": "{date} 출시",
@@ -494,13 +494,13 @@
   },
   "support": {
     "metadata": {
-      "title": "OmO 지원",
-      "description": "OmO 문제를 신고하거나 커뮤니티에 도움을 요청하세요."
+      "title": "OmC 지원",
+      "description": "OmC 문제를 신고하거나 커뮤니티에 도움을 요청하세요."
     },
     "eyebrow": "지원",
-    "title": "OmO 지원",
+    "title": "OmC 지원",
     "lead": "문제를 발견했거나 궁금한 점이 있나요? GitHub에 이슈를 열거나 커뮤니티 Discord에서 물어보세요.",
-    "leadWithReport": "OmO 앱에서 작성한 신고 내용이 아래에 있습니다. GitHub 이슈로 보내거나 커뮤니티 Discord에 가져와 주세요.",
+    "leadWithReport": "OmC 앱에서 작성한 신고 내용이 아래에 있습니다. GitHub 이슈로 보내거나 커뮤니티 Discord에 가져와 주세요.",
     "report": {
       "heading": "신고 내용",
       "titleLabel": "제목",
@@ -513,7 +513,7 @@
       "openIssueNote": "신고 내용이 채워진 GitHub 이슈가 열립니다. GitHub 이슈는 공개되니 제출 전에 내용을 확인해 주세요. 진단 zip 파일이 있다면 그곳에 첨부해 주세요.",
       "discord": "Discord에서 물어보기"
     },
-    "privacy": "이 페이지는 신고 내용을 저장하지 않습니다. 다만 앱이 연 링크에 담겨 omo.dev로 전달되었습니다. GitHub에는 직접 이슈를 제출할 때만 전달됩니다."
+    "privacy": "이 페이지는 신고 내용을 저장하지 않습니다. 다만 앱이 연 링크에 담겨 omc.nga.hm로 전달되었습니다. GitHub에는 직접 이슈를 제출할 때만 전달됩니다."
   },
   "notFound": {
     "title": "페이지를 찾을 수 없습니다.",
@@ -521,7 +521,7 @@
     "home": "홈으로 돌아가기"
   },
   "home": {
-    "metaTitle": "OmO: Your tool for real work. But it's an agent.",
+    "metaTitle": "OmC: Your tool for real work. But it's an agent.",
     "nav": {
       "primary": "주 메뉴",
       "skip": "본문으로 건너뛰기",
@@ -574,7 +574,7 @@
       "step1": "한 줄을 고치기 전에 코드베이스 전체를 읽습니다",
       "step2": "계획을 세우고, 단계마다 증명한 뒤 넘어갑니다",
       "step3": "실제 화면에서 결과를 눈으로 확인한 뒤에 멈춥니다",
-      "frame": "omo · ~/reports"
+      "frame": "omc · ~/reports"
     },
     "massUlw": {
       "eyebrow": "Mass ulw",
@@ -649,7 +649,7 @@
       "terminalBody": "명령 하나로 OmO를 설치합니다. 그다음 어떤 프로젝트에서든 omo를 실행하세요.",
       "terminalMeta": "macOS, Linux, WSL, Windows",
       "desktopTitle": "데스크톱 앱에서",
-      "desktopBody": "Mac, Windows PC, Linux에서 쓰는 OmO 데스크톱 앱입니다.",
+      "desktopBody": "Mac, Windows PC, Linux에서 쓰는 OmC 데스크톱 앱입니다.",
       "desktopMeta": "베타",
       "chatTitle": "메신저에서",
       "chatBody": "당신이 이미 쓰는 메신저에서 에이전트에게 말하세요. 메시지는 당신 계정으로 나가고, 플랫폼은 가리지 않습니다.",
@@ -660,7 +660,7 @@
       "title": "사용자들의 말.",
       "q1": "It made me cancel my Cursor subscription. Unbelievable things are happening in the open source community.",
       "a1": "Arthur Guiot",
-      "q2": "If Claude Code does in 7 days what a human does in 3 months, OmO does it in 1 hour.",
+      "q2": "If Claude Code does in 7 days what a human does in 3 months, OmC does it in 1 hour.",
       "a2": "B, Quant Researcher",
       "q3": "You guys should pull this into core and recruit him. Seriously. It's really, really, really good.",
       "a3": "Henning Kilset"

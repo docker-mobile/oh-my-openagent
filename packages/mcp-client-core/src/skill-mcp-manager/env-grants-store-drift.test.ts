@@ -1,4 +1,4 @@
-// Contract: the vendored store stays code-identical to the pinned senpi store (omo-opencode cannot depend on senpi).
+// Contract: the vendored store stays code-identical to the pinned senpi store (omc-opencode cannot depend on senpi).
 import { expect, test } from "bun:test"
 import { readFileSync } from "node:fs"
 import { join } from "node:path"

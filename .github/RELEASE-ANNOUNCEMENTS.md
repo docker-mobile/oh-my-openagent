@@ -1,7 +1,7 @@
 # Discord release announcements
 
-`release-announce.yml` announces published stable omo tags (`vX.Y.Z`) to
-`#omo-releases`. Drafts, prereleases, and other tags are skipped. The release
+`release-announce.yml` announces published stable omc tags (`vX.Y.Z`) to
+`#omc-releases`. Drafts, prereleases, and other tags are skipped. The release
 body supplies the hook and up to four bold headline paragraphs. Whole paragraphs
 are dropped to keep the message below 2000 characters. Blank lines inside code
 fences do not split a paragraph, so truncation cannot leave a partial fenced
@@ -13,7 +13,7 @@ credentials, empty release notes, malformed responses, and failed HTTP requests
 fail manual jobs with a tag-specific error. Automatic calls are non-fatal to the
 publish run and emit an Actions warning and a recovery command in the job summary.
 
-The publish workflow creates the omo GitHub release with `GITHUB_TOKEN` and then
+The publish workflow creates the omc GitHub release with `GITHUB_TOKEN` and then
 calls `release-announce.yml` as a reusable workflow with the required string
 input `tag`. The caller waits for `release`, `post-publish-verify`, and
 `installer-mirror` to finish and
@@ -96,8 +96,8 @@ gh workflow run release-announce.yml -f tag=v5.1.29 -f dry_run=false
 
 ## Operator-side missed-post watch
 
-The maintainer runs a separate persistent monitor in their own ops tooling. It checks npm `omo-ai@latest` every
-5 minutes and alerts when a new stable version has no `#omo-releases` post
+The maintainer runs a separate persistent monitor in their own ops tooling. It checks npm `omc-ai@latest` every
+5 minutes and alerts when a new stable version has no `#omc-releases` post
 30 minutes after it appears. This is operator-side tooling, not a guarantee
 provided by this repository. Workflow execution does not depend on the watch
 and does not automatically re-announce old versions.

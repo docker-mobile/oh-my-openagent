@@ -26,7 +26,7 @@ import {
 const withStateDir = async <T>(
 	run: (stateDir: string) => Promise<T>,
 ): Promise<T> => {
-	const stateDir = await mkdtemp(join(tmpdir(), "omo-recovery-anchor-"));
+	const stateDir = await mkdtemp(join(tmpdir(), "omc-recovery-anchor-"));
 	try {
 		return await run(stateDir);
 	} finally {

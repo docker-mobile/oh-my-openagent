@@ -18,7 +18,7 @@ import {
   STALE_WORK_THRESHOLD_ENV_KEY,
 } from "./index"
 
-const STALE_WORK_ID = "omo-agent-toolkit-eval-sdk-20260913"
+const STALE_WORK_ID = "omc-agent-toolkit-eval-sdk-20260913"
 const STALE_SESSION_ID = "senpi:01a09988-f0b5-7e7c-97b2-ea591aa4bdaf"
 const STALE_TRANSCRIPT_FILE = "2026-09-13T06-51-23-701Z_01a09988-f0b5-7e7c-97b2-ea591aa4bdaf.jsonl"
 const HOUR_MS = 60 * 60 * 1000
@@ -28,8 +28,8 @@ const HOUR_MS = 60 * 60 * 1000
 function createStaleWorkRecord(overrides: Record<string, unknown> = {}): Record<string, unknown> {
   return {
     work_id: STALE_WORK_ID,
-    active_plan: ".omo/plans/omo-agent-toolkit-eval-sdk.md",
-    plan_name: "omo-agent-toolkit-eval-sdk",
+    active_plan: ".omc/plans/omc-agent-toolkit-eval-sdk.md",
+    plan_name: "omc-agent-toolkit-eval-sdk",
     session_ids: [STALE_SESSION_ID],
     status: "active",
     worktree_path: null,
@@ -47,7 +47,7 @@ function tempDirectory(prefix: string): string {
 
 function createProject(works: Record<string, unknown>, activeWorkId: string): string {
   const directory = tempDirectory("boulder-stale-work-")
-  const boulderDirectory = join(directory, ".omo")
+  const boulderDirectory = join(directory, ".omc")
   mkdirSync(boulderDirectory, { recursive: true })
   const activeWork = works[activeWorkId] as Record<string, unknown>
   writeFileSync(
@@ -153,8 +153,8 @@ describe("reconcileStaleWorks", () => {
     expect(result.written).toBe(true)
     expect(result.demoted[0]?.last_activity_at).toBe(new Date(nowMs - 41 * HOUR_MS).toISOString())
     const work = readBoulderState(directory)?.works?.[STALE_WORK_ID] as Record<string, unknown> | undefined
-    expect(work?.["active_plan"]).toBe(".omo/plans/omo-agent-toolkit-eval-sdk.md")
-    expect(work?.["plan_name"]).toBe("omo-agent-toolkit-eval-sdk")
+    expect(work?.["active_plan"]).toBe(".omc/plans/omc-agent-toolkit-eval-sdk.md")
+    expect(work?.["plan_name"]).toBe("omc-agent-toolkit-eval-sdk")
     expect(work?.["ulw_loop_session"]).toBe("01a09988-f0b5-7e7c-97b2-ea591aa4bdaf")
     expect(work?.["mode"]).toBe("--ship")
   })
@@ -320,7 +320,7 @@ describe("reconcileStaleWorks", () => {
   test("#given an unreadable boulder file #when reconciling #then nothing is written and nothing throws", () => {
     // given
     const directory = tempDirectory("boulder-stale-broken-")
-    mkdirSync(join(directory, ".omo"), { recursive: true })
+    mkdirSync(join(directory, ".omc"), { recursive: true })
     writeFileSync(getBoulderFilePath(directory), "{not-json", "utf-8")
 
     // when

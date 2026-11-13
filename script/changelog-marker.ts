@@ -5,8 +5,8 @@
  * These markers enable deterministic, fail-closed validation and prevent re-processing.
  */
 
-const BACKFILL_MARKER_PATTERN = /<!-- omo-backfill-marker: ([\w.-]+) -->/
-const BACKFILL_MARKER_TEMPLATE = "<!-- omo-backfill-marker: {VERSION} -->"
+const BACKFILL_MARKER_PATTERN = /<!-- omc-backfill-marker: ([\w.-]+) -->/
+const BACKFILL_MARKER_TEMPLATE = "<!-- omc-backfill-marker: {VERSION} -->"
 
 /**
  * Stamp a release body with the backfill marker (version anchor).

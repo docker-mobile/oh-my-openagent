@@ -99,7 +99,7 @@ mod tests {
     fn request_serializes_the_helper_wire_shape() {
         let targets = [
             TargetRequest::window(42),
-            TargetRequest::display(1, &["OmO HUD".to_owned()], &[]),
+            TargetRequest::display(1, &["OmC HUD".to_owned()], &[]),
         ];
         let batch = Batch {
             requests: &targets,
@@ -111,7 +111,7 @@ mod tests {
             serde_json::json!({
                 "requests": [
                     {"kind": "window", "id": 42},
-                    {"kind": "display", "id": 1, "excludeWindowTitles": ["OmO HUD"]},
+                    {"kind": "display", "id": 1, "excludeWindowTitles": ["OmC HUD"]},
                 ],
                 "maxPixels": 8_294_400u64,
             })

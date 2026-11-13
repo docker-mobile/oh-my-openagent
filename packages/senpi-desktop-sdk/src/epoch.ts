@@ -1,4 +1,4 @@
-import type { EpochChanged, StopPathStatus } from "@oh-my-opencode/senpi-desktop-protocol";
+import type { EpochChanged, StopPathStatus } from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import type { Events, StopPath } from "./facade";
 import type { Link } from "./link";
 import { parseStopPathStatus } from "./validate";

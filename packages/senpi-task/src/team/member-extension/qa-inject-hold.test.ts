@@ -3,7 +3,7 @@ import { tmpdir } from "node:os"
 import { join } from "node:path"
 
 import { afterEach, describe, expect, test } from "bun:test"
-import type { Message } from "@oh-my-opencode/team-core/types"
+import type { Message } from "@oh-my-cybersecurity/team-core/types"
 
 import { createQaAfterInjectHold, QA_HOLD_AFTER_INJECT_ENV } from "./qa-inject-hold"
 
@@ -27,7 +27,7 @@ describe("member QA after-inject hold", () => {
     mkdirSync(join(root, "hold"), { recursive: true })
     writeFileSync(`${markerPath}.release`, "release\n", "utf8")
     const hook = createQaAfterInjectHold({
-      OMO_SENPI_QA: "1",
+      OMC_SENPI_QA: "1",
       [QA_HOLD_AFTER_INJECT_ENV]: markerPath,
     })
     if (hook === undefined) throw new Error("expected QA hold hook")

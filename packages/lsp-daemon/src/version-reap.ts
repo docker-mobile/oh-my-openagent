@@ -4,7 +4,7 @@ import { basename, dirname, join } from "node:path";
 
 import { isProcessAlive, readLockPid } from "./lock.js";
 import { type DaemonOwner, readDaemonOwner } from "./ownership.js";
-import { type DaemonPaths, daemonPaths, OMO_LSP_DAEMON_DIR } from "./paths.js";
+import { type DaemonPaths, daemonPaths, OMC_LSP_DAEMON_DIR } from "./paths.js";
 
 const TERM_GRACE_MS = 5_000;
 const KILL_GRACE_MS = 1_000;
@@ -77,7 +77,7 @@ export async function reapStaleDaemonVersions(
 		const version = parseVersionEntry(entry.name);
 		if (version === null || !entry.isDirectory()) continue;
 		const versionDir = join(baseDir, entry.name);
-		const siblingPaths = daemonPaths({ [OMO_LSP_DAEMON_DIR]: baseDir }, { cliPath: ownPaths.cliPath, version });
+		const siblingPaths = daemonPaths({ [OMC_LSP_DAEMON_DIR]: baseDir }, { cliPath: ownPaths.cliPath, version });
 		results.push(
 			await reapOneVersion({
 				version,

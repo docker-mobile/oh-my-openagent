@@ -2,9 +2,9 @@ import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSy
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 
-import { BACKEND_FILE } from "@oh-my-opencode/isolation-core"
+import { BACKEND_FILE } from "@oh-my-cybersecurity/isolation-core"
 
-import { OmoTaskSettingsSchema, type OmoTaskSettings } from "@oh-my-opencode/omo-config-core"
+import { OmoTaskSettingsSchema, type OmoTaskSettings } from "@oh-my-cybersecurity/omc-config-core"
 
 import { createIsolationRuntime, isolationBackends, type IsolationRuntime } from "../../isolation"
 import type { RunnerOutcome } from "../../runners/in-process/child-handle"
@@ -25,7 +25,7 @@ const roots: string[] = []
  * tree by hand is to stop its recorded backend at `<dir>/m` first; that is what this does.
  */
 export async function releaseSandboxes(homeDir: string): Promise<void> {
-  const worktrees = join(homeDir, ".omo", "wt")
+  const worktrees = join(homeDir, ".omc", "wt")
   if (!existsSync(worktrees)) return
   const backends = isolationBackends()
   for (const entry of readdirSync(worktrees, { withFileTypes: true })) {

@@ -20,7 +20,7 @@ afterEach(async () => {
 })
 
 async function fixture(): Promise<GitMemoryRepo> {
-  const root = realpathSync.native(await mkdtemp(join(tmpdir(), "omo-memory-claim-")))
+  const root = realpathSync.native(await mkdtemp(join(tmpdir(), "omc-memory-claim-")))
   roots.push(root)
   const repo = new GitMemoryRepo({ dir: join(root, "repo"), agentId: AUTHOR.agentId })
   await repo.init({ authorName: AUTHOR.authorName })

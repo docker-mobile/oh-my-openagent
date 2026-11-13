@@ -11,7 +11,7 @@ async function marked(name = "t0123456789", child?: object, host = hostname()) {
   const { root } = await fixture()
   const base = join(root, name)
   await mkdir(base)
-  await writeFile(join(base, ".omo-isolation-owner.json"), JSON.stringify({
+  await writeFile(join(base, ".omc-isolation-owner.json"), JSON.stringify({
     id: "id", hostname: host, created_at: 0,
     host: { pid: 101, start_identity: "proc-start-epoch:10" },
     ...(child ? { child } : {}),
@@ -31,7 +31,7 @@ test("recycled host start identity is passed to the probe and rejected", async (
 test.each([["old", 0, "reclaimable"], ["young", now, "creating"]] as const)(
   "malformed %s marker obeys the grace period", async (_label, mtime, result) => {
     const base = await marked()
-    await writeFile(join(base, ".omo-isolation-owner.json"), "{")
+    await writeFile(join(base, ".omc-isolation-owner.json"), "{")
     await utimes(base, mtime / 1000, mtime / 1000)
     expect(await readOwnerLiveness(base, dead, now)).toBe(result)
   },
@@ -100,7 +100,7 @@ test("records host and child identities separately", async () => {
   await writeOwnerMarker(root, "task", {
     host: { pid: 101 }, child: { kind: "process", pid: 202 },
   }, async (pid) => `test:${pid}`)
-  const marker = JSON.parse(await readFile(join(root, ".omo-isolation-owner.json"), "utf8"))
+  const marker = JSON.parse(await readFile(join(root, ".omc-isolation-owner.json"), "utf8"))
   expect(marker.host).toEqual({ pid: 101, start_identity: "test:101" })
   expect(marker.child).toEqual({ kind: "process", pid: 202, start_identity: "test:202" })
 })

@@ -1,5 +1,5 @@
-import { resolveModelForDelegateTask, type DelegateFallbackEntry } from "@oh-my-opencode/delegate-core"
-import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
+import { resolveModelForDelegateTask, type DelegateFallbackEntry } from "@oh-my-cybersecurity/delegate-core"
+import type { OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import { missingChainProviders } from "../category/chain-diagnostics"
 import { type AgentCategoryRefusal, firstCategoryDefaultModel, resolveAgentCategoryModel } from "./resolve-agent-categories"
@@ -21,7 +21,7 @@ import type { AgentDefinition } from "./types"
 export type ResolveAgentOptions = {
   readonly modelOverride?: string
   readonly omoConfig?: OmoConfig
-  readonly distributeModels?: import("@oh-my-opencode/omo-config-core").ModelDistributor
+  readonly distributeModels?: import("@oh-my-cybersecurity/omc-config-core").ModelDistributor
 }
 
 export type AgentPersona = {
@@ -40,7 +40,7 @@ export type ResolvedAgentResult = AgentPersona & {
   readonly kind: "resolved"
   readonly agent: string
   readonly model: string
-  /** `user` when the model came from omo.json (the agent's own model/models, a user category it runs through) or a call-site pin. */
+  /** `user` when the model came from omc.json (the agent's own model/models, a user category it runs through) or a call-site pin. */
   readonly modelSource: ModelSelectionSource
   readonly requested_model?: ResolvedModelRecord
   readonly fallback_models?: readonly ResolvedModelRecord[]

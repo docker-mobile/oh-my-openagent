@@ -213,8 +213,8 @@ describe("real local collector", () => {
     // then
     expect(bodies.length).toBe(1)
     expect(headers[0]?.get("content-type")).toBe("application/x-protobuf")
-    expect(headers[0]?.get("x-omo-ingest-key")).toBe("test-ingest-key")
-    expect(logRecordsOf(decodeLogs(bodies[0] ?? new Uint8Array())).map((r) => r.eventName)).toEqual(["omo.feature_used"])
+    expect(headers[0]?.get("x-omc-ingest-key")).toBe("test-ingest-key")
+    expect(logRecordsOf(decodeLogs(bodies[0] ?? new Uint8Array())).map((r) => r.eventName)).toEqual(["omc.feature_used"])
     expect(spoolNames(dir)).toEqual([])
   })
 })

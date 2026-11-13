@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Cross-harness dev-environment bootstrap for oh-my-openagent.
+# Cross-harness dev-environment bootstrap for oh-my-cybersecurity.
 #
 # Single source of truth for setting up a working tree so an agent (or human)
 # can build and QA the plugin. Wired into Codex App (.codex/setup.sh), Cursor
 # (.cursor/environment.json install), Claude Code (.claude/settings.json
 # SessionStart), and the devcontainer (postCreateCommand). Idempotent and safe
 # to re-run: it skips the (slow) build when dist/index.js already exists unless
-# OMO_AGENT_FORCE_BUILD=1.
+# OMC_AGENT_FORCE_BUILD=1.
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -67,11 +67,11 @@ git submodule update --init --recursive || log "WARN: submodule init skipped (of
 log "materializing frontend references from submodules (non-fatal)"
 node packages/shared-skills/scripts/materialize-frontend-refs.mjs || log "WARN: frontend refs not materialized (submodules missing?)"
 
-if [ ! -f "$REPO_ROOT/dist/index.js" ] || [ "${OMO_AGENT_FORCE_BUILD:-0}" = "1" ]; then
-  log "building plugin (dist/index.js missing or OMO_AGENT_FORCE_BUILD=1)"
+if [ ! -f "$REPO_ROOT/dist/index.js" ] || [ "${OMC_AGENT_FORCE_BUILD:-0}" = "1" ]; then
+  log "building plugin (dist/index.js missing or OMC_AGENT_FORCE_BUILD=1)"
   bun run build
 else
-  log "dist/index.js present - skipping build (set OMO_AGENT_FORCE_BUILD=1 to force a rebuild)"
+  log "dist/index.js present - skipping build (set OMC_AGENT_FORCE_BUILD=1 to force a rebuild)"
 fi
 
 log "ready. Run 'bun test' to verify, or 'source script/agent/qa-sandbox.sh' for isolated QA."

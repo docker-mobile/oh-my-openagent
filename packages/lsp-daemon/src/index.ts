@@ -1,4 +1,4 @@
-export { disposeDefaultLspManager } from "@oh-my-opencode/lsp-core/lsp/manager";
+export { disposeDefaultLspManager } from "@oh-my-cybersecurity/lsp-core/lsp/manager";
 export {
 	type CallToolOptions,
 	callDiagnosticsViaDaemon,
@@ -9,7 +9,7 @@ export {
 export {
 	ensureDaemonRunning,
 	InvalidRuntimeOverrideError,
-	OMO_LSP_DAEMON_CLI,
+	OMC_LSP_DAEMON_CLI,
 	probeDaemon,
 	resolveDaemonRuntime,
 } from "./ensure-daemon.js";
@@ -18,8 +18,8 @@ export {
 	daemonPaths,
 	InvalidDaemonDirectoryError,
 	InvalidDaemonVersionError,
-	OMO_LSP_DAEMON_DIR,
-	OMO_LSP_DAEMON_VERSION,
+	OMC_LSP_DAEMON_DIR,
+	OMC_LSP_DAEMON_VERSION,
 	validateDaemonVersion,
 } from "./paths.js";
 export { runMcpStdioProxy } from "./proxy.js";

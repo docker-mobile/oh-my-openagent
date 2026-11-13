@@ -68,7 +68,7 @@ export class ReflinkBackend implements IsolationBackend {
         this.unavailableReason = "no FICLONE or cp"
         return { available: false, reason: this.unavailableReason }
       }
-      const base = await mkdtemp(join(target, ".omo-reflink-probe-"))
+      const base = await mkdtemp(join(target, ".omc-reflink-probe-"))
       try {
         await writeFile(join(base, "source"), "x")
         if (this.ffi) await this.clone(join(base, "source"), join(base, "clone"))

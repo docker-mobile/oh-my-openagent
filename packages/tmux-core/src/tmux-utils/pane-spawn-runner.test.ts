@@ -110,7 +110,7 @@ describe("spawnTmuxPane runner integration", () => {
 	it("#given healthy tmux environment #when spawnTmuxPane called #then delegates split-window and select-pane to shared runner", async () => {
 		// given
 		const spawnTmuxPane = await loadSpawnTmuxPane()
-		const directory = "/tmp/omo-project/(pane)"
+		const directory = "/tmp/omc-project/(pane)"
 
 		// when
 		const result = await spawnTmuxPane("session-1", "worker", enabledTmuxConfig, "http://127.0.0.1:1234", directory, "%0", "-h", createDeps())
@@ -120,7 +120,7 @@ describe("spawnTmuxPane runner integration", () => {
 		const secondCall = getRunTmuxCommandCall(1)
 		expect(result).toEqual({ success: true, paneId: "%42" })
 		expect(firstCall[1].slice(0, 8)).toEqual(["split-window", "-h", "-d", "-P", "-F", "#{pane_id}", "-t", "%0"])
-		expect(secondCall[1]).toEqual(["select-pane", "-t", "%42", "-T", "omo-subagent-worker"])
+		expect(secondCall[1]).toEqual(["select-pane", "-t", "%42", "-T", "omc-subagent-worker"])
 		expect(getSplitWindowCommand()).toContain("Focus this pane to attach.")
 		expect(getSplitWindowCommand()).toContain("while :; do sleep 86400; done")
 		expect(getSplitWindowCommand()).not.toContain("opencode attach")
@@ -129,7 +129,7 @@ describe("spawnTmuxPane runner integration", () => {
 	it("#given a description holding tmux format syntax #when the pane title is set #then # is doubled so tmux keeps it literal and runs nothing (#10228)", async () => {
 		// given
 		const spawnTmuxPane = await loadSpawnTmuxPane()
-		const directory = "/tmp/omo-project/(pane)"
+		const directory = "/tmp/omc-project/(pane)"
 
 		// when
 		const result = await spawnTmuxPane("session-1", "#(touch x)#{pane_id} and more", enabledTmuxConfig, "http://127.0.0.1:1234", directory, "%0", "-h", createDeps())
@@ -139,7 +139,7 @@ describe("spawnTmuxPane runner integration", () => {
 		const secondCall = getRunTmuxCommandCall(1)
 		expect(result).toEqual({ success: true, paneId: "%42" })
 		expect(firstCall[1].slice(0, 8)).toEqual(["split-window", "-h", "-d", "-P", "-F", "#{pane_id}", "-t", "%0"])
-		expect(secondCall[1]).toEqual(["select-pane", "-t", "%42", "-T", "omo-subagent-##(touch x)##{pane_id}"])
+		expect(secondCall[1]).toEqual(["select-pane", "-t", "%42", "-T", "omc-subagent-##(touch x)##{pane_id}"])
 		expect(getSplitWindowCommand()).toContain("Focus this pane to attach.")
 		expect(getSplitWindowCommand()).toContain("while :; do sleep 86400; done")
 		expect(getSplitWindowCommand()).not.toContain("opencode attach")
@@ -198,7 +198,7 @@ describe("spawnTmuxPane runner integration", () => {
 			// given
 			isCmuxCompatEnvironmentMock.mockReturnValue(true)
 			const spawnTmuxPane = await loadSpawnTmuxPane()
-			const directory = "/tmp/omo-project"
+			const directory = "/tmp/omc-project"
 
 			// when
 			await spawnTmuxPane("session-cmux-1", "worker", enabledTmuxConfig, "http://127.0.0.1:1234", directory, "%0", "-h", createDeps())
@@ -227,7 +227,7 @@ describe("spawnTmuxPane runner integration", () => {
 				"worker",
 				enabledTmuxConfig,
 				"http://127.0.0.1:1234",
-				"/tmp/omo-project",
+				"/tmp/omc-project",
 				"%0",
 				"-h",
 				createDeps(),
@@ -318,7 +318,7 @@ describe("spawnTmuxPane runner integration", () => {
 			const spawnTmuxPane = await loadSpawnTmuxPane()
 
 			// when
-			const result = await spawnTmuxPane("session-headless", "worker", enabledTmuxConfig, "http://127.0.0.1:1234", "/tmp/omo-project", "%0", "-h", createHeadlessDeps())
+			const result = await spawnTmuxPane("session-headless", "worker", enabledTmuxConfig, "http://127.0.0.1:1234", "/tmp/omc-project", "%0", "-h", createHeadlessDeps())
 
 			// then
 			expect(result).toEqual({ success: true, paneId: "%42" })
@@ -335,7 +335,7 @@ describe("spawnTmuxPane runner integration", () => {
 			const spawnTmuxPane = await loadSpawnTmuxPane()
 
 			// when
-			const result = await spawnTmuxPane("session-none", "worker", enabledTmuxConfig, "http://127.0.0.1:1234", "/tmp/omo-project", "%0", "-h", createHeadlessDeps())
+			const result = await spawnTmuxPane("session-none", "worker", enabledTmuxConfig, "http://127.0.0.1:1234", "/tmp/omc-project", "%0", "-h", createHeadlessDeps())
 
 			// then
 			expect(result).toEqual({ success: false })

@@ -4,10 +4,10 @@ import {
   parseModelString,
   parseVariantFromModelID,
   transformModelForProvider,
-} from "@oh-my-opencode/model-core"
+} from "@oh-my-cybersecurity/model-core"
 import { resolveDelegateFallback } from "./delegate-fallback-resolution"
 
-export { transformModelForProvider } from "@oh-my-opencode/model-core"
+export { transformModelForProvider } from "@oh-my-cybersecurity/model-core"
 
 export type DelegateFallbackEntry = {
   readonly providers: readonly string[]

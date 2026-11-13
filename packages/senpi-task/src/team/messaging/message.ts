@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto"
 
-import type { Message } from "@oh-my-opencode/team-core/types"
+import type { Message } from "@oh-my-cybersecurity/team-core/types"
 
 import type { SendTeamMessageInput } from "./types"
 

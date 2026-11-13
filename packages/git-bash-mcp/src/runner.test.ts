@@ -47,7 +47,7 @@ describe("Git Bash runner", () => {
   // Windows CI compiles a fake bash.exe via Bun.build and then spawns it; both
   // steps are much slower than the 5 s Bun default on the shared runners.
   it("#given fake bash executable #when command runs #then invokes bash with -lc and command payload", async () => {
-    const directory = createTemporaryDirectory("omo-git-bash-runner-");
+    const directory = createTemporaryDirectory("omc-git-bash-runner-");
     const argvPath = join(directory, "argv.txt");
     const fakeBashPath = join(directory, process.platform === "win32" ? "bash.exe" : "bash");
     if (process.platform === "win32") {

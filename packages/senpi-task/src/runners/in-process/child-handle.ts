@@ -60,7 +60,7 @@ export type RunnerFailure = {
   readonly message: string
   readonly reason?: RunnerFailureReason
   readonly cause?: unknown
-  // Set only with `launch_spec_insecure`: the refused spec path omo resolved itself, never child
+  // Set only with `launch_spec_insecure`: the refused spec path omc resolved itself, never child
   // output, so the public start failure may name the file and its fix (#9208).
   readonly launch_spec_path?: string
   /**
@@ -382,7 +382,7 @@ export async function discardUnstartedChildSession(session: ChildSession): Promi
 // #9413: a bare dispose() never emits session_shutdown; only senpi's AgentSessionRuntime does. An
 // in-process child loads the builtin extensions, and codemode closes its per-session bridge server
 // (like every other shutdown-scoped resource) only on session_shutdown, so without this the child
-// leaks a listening socket that keeps `omo -p` alive. The runner applies the host's per-handler
+// leaks a listening socket that keeps `omc -p` alive. The runner applies the host's per-handler
 // shutdown budget, so a hung handler cannot hold teardown, and dispose() runs either way.
 async function shutDownChildSession(session: ChildSession): Promise<void> {
   try {

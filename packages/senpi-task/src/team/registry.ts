@@ -2,14 +2,14 @@ import type { Dirent } from "node:fs"
 import { readFile, readdir } from "node:fs/promises"
 import { join } from "node:path"
 
-import type { TeamSpec } from "@oh-my-opencode/team-core/types"
+import type { TeamSpec } from "@oh-my-cybersecurity/team-core/types"
 
 import { SenpiTeamSpecError } from "./errors"
 import { type SenpiTeamMemberPorts, validateSenpiTeamMembers } from "./member-validator"
 import { normalizeSenpiTeamSpec } from "./normalize"
 import { resolveProjectTeamSpecPath } from "./storage"
 
-export type TeamSpecSource = "project" | "omo-json"
+export type TeamSpecSource = "project" | "omc-json"
 
 export type TeamRegistryEntry = {
   readonly name: string
@@ -48,7 +48,7 @@ function toRegistryError(name: string, source: TeamSpecSource, error: unknown): 
 }
 
 async function readProjectTeamSpecs(projectRoot: string): Promise<readonly RawProjectSpec[]> {
-  const teamsDir = join(projectRoot, ".omo", "teams")
+  const teamsDir = join(projectRoot, ".omc", "teams")
   let entries: Dirent[]
   try {
     entries = await readdir(teamsDir, { withFileTypes: true, encoding: "utf8" })
@@ -87,9 +87,9 @@ function ingest(
 }
 
 /**
- * Loads named team specs from the two project-scoped sources: the raw `omo.json` `teams` section and
- * the omo-compatible `<projectRoot>/.omo/teams/<name>/config.json` directory specs. The project
- * directory beats `omo.json` on a name collision. Each candidate is normalized + parsed via
+ * Loads named team specs from the two project-scoped sources: the raw `omc.json` `teams` section and
+ * the omc-compatible `<projectRoot>/.omc/teams/<name>/config.json` directory specs. The project
+ * directory beats `omc.json` on a name collision. Each candidate is normalized + parsed via
  * `normalizeSenpiTeamSpec` (team-core normalizer + schema, never `validateSpec`) and checked by the
  * senpi-local member validator; a failing team is recorded in `errors` and spawns zero members.
  */
@@ -119,7 +119,7 @@ export async function loadTeamRegistry(input: LoadTeamRegistryInput): Promise<Lo
   const omoTeams = input.omoTeams ?? {}
   for (const name of Object.keys(omoTeams)) {
     if (projectNames.has(name)) continue
-    ingest(name, "omo-json", Object.hasOwn(omoTeams, name) ? omoTeams[name] : undefined, input.ports, teams, errors)
+    ingest(name, "omc-json", Object.hasOwn(omoTeams, name) ? omoTeams[name] : undefined, input.ports, teams, errors)
   }
 
   return { teams, errors }

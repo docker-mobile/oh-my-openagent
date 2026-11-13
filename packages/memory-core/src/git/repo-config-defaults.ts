@@ -25,8 +25,8 @@ export async function ensureRepoConfigDefaults(
   const local = await readLocalConfig(run)
   const configGet = (key: string): Promise<string | null> =>
     local === null ? port.configGet(key) : Promise.resolve(local.get(key.toLowerCase()) ?? null)
-  if ((await configGet("omo.agentId")) !== port.agentId) await port.configSet("omo.agentId", port.agentId)
-  if (!(await configGet("user.email"))) await port.configSet("user.email", `${port.agentId}@omo.local`)
+  if ((await configGet("omc.agentId")) !== port.agentId) await port.configSet("omc.agentId", port.agentId)
+  if (!(await configGet("user.email"))) await port.configSet("user.email", `${port.agentId}@omc.local`)
   if (!(await configGet("user.name"))) await port.configSet("user.name", authorName)
   if ((await configGet("commit.gpgsign")) === null) await port.configSet("commit.gpgsign", "false")
   if ((await configGet("gc.auto")) === null) await port.configSet("gc.auto", "0")
@@ -78,9 +78,9 @@ async function restoreConvertedCheckouts(dir: string, run: RepoGitRunner): Promi
       const bytes = copy === undefined ? undefined : dropCarriageReturnsBeforeLineFeeds(copy)
       if (bytes === undefined || !(await matchesIndexBlob(run, path, bytes))) continue
       const { mode } = await stat(target)
-      await writeFile(`${target}.omo-eol.tmp`, bytes, { mode })
-      await rename(`${target}.omo-eol.tmp`, target).catch(async (error: unknown) => {
-        await rm(`${target}.omo-eol.tmp`, { force: true })
+      await writeFile(`${target}.omc-eol.tmp`, bytes, { mode })
+      await rename(`${target}.omc-eol.tmp`, target).catch(async (error: unknown) => {
+        await rm(`${target}.omc-eol.tmp`, { force: true })
         throw error
       })
     }

@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import { ENGINE_ABI, PROTOCOL_VERSION } from "@oh-my-opencode/senpi-desktop-protocol";
+import { ENGINE_ABI, PROTOCOL_VERSION } from "@oh-my-cybersecurity/senpi-desktop-protocol";
 
 export const refusalRecord = (reason = "self-responsible"): string =>
 	`SENPI_DESKTOP_LAUNCH_REFUSED ${JSON.stringify({ version: 1, reason })}\n`;

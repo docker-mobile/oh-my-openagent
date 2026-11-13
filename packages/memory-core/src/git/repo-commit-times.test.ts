@@ -167,7 +167,7 @@ describe("GitMemoryRepo.pathCommitTimes", () => {
         { write: { "a.md": "1" }, at: "2026-01-01T00:00:01Z" },
         { write: { "b.md": "1" }, at: "2026-01-01T00:00:02Z" },
       ])
-      await writeFile(join(dir, ".git", "omo-path-commit-times.json"), store(heads[0] ?? ""))
+      await writeFile(join(dir, ".git", "omc-path-commit-times.json"), store(heads[0] ?? ""))
       const counting = countingExec()
       const fresh = new GitMemoryRepo({ dir, agentId: "agent", exec: counting.exec })
 
@@ -191,7 +191,7 @@ describe("GitMemoryRepo.pathCommitTimes", () => {
 
     // when
     const warm = await new GitMemoryRepo({ dir, agentId: "agent" }).pathCommitTimes(heads[2] ?? "")
-    await rm(join(dir, ".git", "omo-path-commit-times.json"))
+    await rm(join(dir, ".git", "omc-path-commit-times.json"))
     const cold = await new GitMemoryRepo({ dir, agentId: "agent" }).pathCommitTimes(heads[2] ?? "")
 
     // then
@@ -208,7 +208,7 @@ describe("GitMemoryRepo.pathCommitTimes", () => {
     ])
     const repo = new GitMemoryRepo({ dir, agentId: "agent" })
     await repo.pathCommitTimes(heads[1] ?? "")
-    await rm(join(dir, ".git", "omo-path-commit-times.json"))
+    await rm(join(dir, ".git", "omc-path-commit-times.json"))
 
     // when
     const later = await repo.pathCommitTimes(heads[2] ?? "")
@@ -237,7 +237,7 @@ describe("GitMemoryRepo.pathCommitTimes", () => {
 
     // when
     const warm = await new GitMemoryRepo({ dir, agentId: "agent" }).pathCommitTimes(merged)
-    await rm(join(dir, ".git", "omo-path-commit-times.json"))
+    await rm(join(dir, ".git", "omc-path-commit-times.json"))
     const cold = await new GitMemoryRepo({ dir, agentId: "agent" }).pathCommitTimes(merged)
 
     // then
@@ -276,7 +276,7 @@ describe("GitMemoryRepo.pathCommitTimes", () => {
       { write: { "b.md": "1" }, at: "2026-01-01T00:00:02Z" },
     ])
     await new GitMemoryRepo({ dir, agentId: "agent" }).pathCommitTimes(heads[1] ?? "")
-    const storePath = join(dir, ".git", "omo-path-commit-times.json")
+    const storePath = join(dir, ".git", "omc-path-commit-times.json")
     const before = await readFile(storePath, "utf8")
 
     // when
@@ -290,7 +290,7 @@ describe("GitMemoryRepo.pathCommitTimes", () => {
   it("#given a git dir the store cannot be written to #when read #then the times are still returned", async () => {
     // given
     const { dir, heads } = await repoWithHistory([{ write: { "a.md": "1" }, at: "2026-01-01T00:00:01Z" }])
-    await mkdir(join(dir, ".git", "omo-path-commit-times.json"))
+    await mkdir(join(dir, ".git", "omc-path-commit-times.json"))
 
     // when
     const times = await new GitMemoryRepo({ dir, agentId: "agent" }).pathCommitTimes(heads[0] ?? "")

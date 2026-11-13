@@ -1,8 +1,8 @@
 # Senpi Task Delegation
 
-OmO Native (installed through `packages/omo-senpi`) ships a `task` component that lets the agent you are talking to spawn child agents, keep working while they run, steer them, and coordinate a named team. This guide covers the day-to-day surface. The engine internals live in [`packages/senpi-task/AGENTS.md`](../../packages/senpi-task/AGENTS.md); the config file is documented in [`docs/reference/omo-json.md`](../reference/omo-json.md).
+OmC Native (installed through `packages/omc-senpi`) ships a `task` component that lets the agent you are talking to spawn child agents, keep working while they run, steer them, and coordinate a named team. This guide covers the day-to-day surface. The engine internals live in [`packages/senpi-task/AGENTS.md`](../../packages/senpi-task/AGENTS.md); the config file is documented in [`docs/reference/omc-json.md`](../reference/omc-json.md).
 
-The component is on by default. Disable it with the `--no-omo-task` flag; it also self-skips if the Senpi runtime is missing the ExtensionAPI capabilities it needs (`packages/omo-senpi/src/components/task/index.ts`).
+The component is on by default. Disable it with the `--no-omc-task` flag; it also self-skips if the Senpi runtime is missing the ExtensionAPI capabilities it needs (`packages/omc-senpi/src/components/task/index.ts`).
 
 ## Spawning a child
 
@@ -37,9 +37,9 @@ Two runners back a child (`packages/senpi-task/src/runners/`):
 - **in-process (default).** The child runs inside the same Senpi runtime and executes through the SAME parent tool closures, minus `task`, `task_*`, `team_*`, and `dag` (member-scoped tools are the only sanctioned bypass). This is the cheapest path and needs no extra process.
 - **process.** The child is spawned as an isolated Senpi process. Steering (`steer` / `abort` / `prompt`) crosses a JSON-RPC boundary, and the child's transcript is written below `children/<taskId>/sessions/<taskId>/`. On the next session start, a dead process child with a persisted session can be respawned without replaying its original prompt and rebound with `switch_session`.
 
-A process child is itself run one of two ways: as a SESSION of the parent session's own engine host (the default on macOS/Linux, `task.process_runner: "host"`; one host per session, see [omo daemon](../reference/omo-daemon.md)), or as its own OS process (`"child-process"`, and always on Windows).
+A process child is itself run one of two ways: as a SESSION of the parent session's own engine host (the default on macOS/Linux, `task.process_runner: "host"`; one host per session, see [omc daemon](../reference/omc-daemon.md)), or as its own OS process (`"child-process"`, and always on Windows).
 
-The default comes from `task.default_execution_mode` in `omo.json`, which ships as `auto`: the parent session asks its own task host ONCE whether it can host children (not Windows, `process_runner: "host"`, and the host advertises `session_context` + `generation_handoff`) and uses `process` when it can, `in-process` when it cannot. A per-agent `execution_mode` and an explicit `in-process`/`process` in `omo.json` both win over that check, and curated read-only agents stay in-process either way. When the host cannot take the children, the reason is reported once per session and shows up in `task_output` as a `host_unavailable:<reason>` note.
+The default comes from `task.default_execution_mode` in `omc.json`, which ships as `auto`: the parent session asks its own task host ONCE whether it can host children (not Windows, `process_runner: "host"`, and the host advertises `session_context` + `generation_handoff`) and uses `process` when it can, `in-process` when it cannot. A per-agent `execution_mode` and an explicit `in-process`/`process` in `omc.json` both win over that check, and curated read-only agents stay in-process either way. When the host cannot take the children, the reason is reported once per session and shows up in `task_output` as a `host_unavailable:<reason>` note.
 
 Team members always use process mode. Their child process loads a small member extension that owns the member inbox poller and exposes only team-scoped `task_send`.
 
@@ -78,7 +78,7 @@ Because cancel (and interrupt) return synchronously in the tool result, they are
 
 ## The `/tasks` UI
 
-The component registers two slash commands (`packages/omo-senpi/src/components/task/commands.ts`):
+The component registers two slash commands (`packages/omc-senpi/src/components/task/commands.ts`):
 
 - **`/tasks`** lists this session's tasks; `/tasks --all` lists tasks across every session.
 - **`/task-kill`** opens a selector over cancellable tasks (running / pending / interrupted) and cancels the chosen one after a confirm.
@@ -89,7 +89,7 @@ A live status widget below the editor tracks the session's tasks as they change;
 
 For coordinated multi-agent work, the lead session gets 6 team tools (`packages/senpi-task/src/tools/team/index.ts`): `team_create`, `team_delete`, `task_create`, `task_get`, `task_list`, and `task_update`. These are lead-only. Member sessions receive only team-scoped `task_send`; they never receive team lifecycle or tasklist tools. Lead team messages and shutdown request/response payloads route through `task_send`.
 
-Named teams come from the project `teams` block in `omo.json` or `<project>/.omo/teams/<name>/config.json` (directory spec wins on a name collision); user-global team storage is not loaded. Each team has 1-8 members; a multi-member `omo.json` spec still requires `leadAgentId` in schema, and the current session is always the runtime lead. A member is either `kind: "category"` (needs `category` + `prompt`) or `kind: "subagent_type"` (needs `subagent_type`). See the [teams schema](../reference/omo-json.md#teams).
+Named teams come from the project `teams` block in `omc.json` or `<project>/.omc/teams/<name>/config.json` (directory spec wins on a name collision); user-global team storage is not loaded. Each team has 1-8 members; a multi-member `omc.json` spec still requires `leadAgentId` in schema, and the current session is always the runtime lead. A member is either `kind: "category"` (needs `category` + `prompt`) or `kind: "subagent_type"` (needs `subagent_type`). See the [teams schema](../reference/omc-json.md#teams).
 
 ### Mailbox delivery
 
@@ -109,14 +109,14 @@ When a worker's result should be checked independently (a source comparison, a s
 
 The verifier never sees the worker's reasoning, only its output and the repository. That separation is what makes the check independent. A worker that asked its own child to verify it would choose what that child sees.
 
-If a deeper tree is genuinely needed, use the narrowest control that fits. Both are read from the agent being **started**, not from the agent that starts it (see the [`agents` reference](../reference/omo-json.md#agents)):
+If a deeper tree is genuinely needed, use the narrowest control that fits. Both are read from the agent being **started**, not from the agent that starts it (see the [`agents` reference](../reference/omc-json.md#agents)):
 
 - `agents.<name>.max_depth` lets that one agent run deeper than the session limit, whichever agent starts it. The session value stays as it is for every other agent.
 - An agent whose own `allowed_subagents` lists its own name may be started past the depth limit by any parent.
 
 For in-process children (always the case for the curated read-only agents such as `explore` and `librarian`, and for the ulw plan reviewers), the runner adds a fixed cap of one level past `task.max_depth`. So neither setting can take an in-process child deeper than `task.max_depth + 1`; with the default of 1, a child at depth 3 is refused even when the setting admits it.
 
-Raising `task.max_depth` (see the [`task` reference](../reference/omo-json.md#task)) is the last resort. It applies to every agent in the session, so any worker can then start its own children: the tree gets deeper, cost and running work spread across levels the session that started the work no longer sees directly, and a worker can again verify itself.
+Raising `task.max_depth` (see the [`task` reference](../reference/omc-json.md#task)) is the last resort. It applies to every agent in the session, so any worker can then start its own children: the tree gets deeper, cost and running work spread across levels the session that started the work no longer sees directly, and a worker can again verify itself.
 
 ## Configuration
 
@@ -154,10 +154,10 @@ inherit `task.isolation.enabled`; they have no per-node switch of their own.
 | `task.isolation.merge` | `patch` | Choose patch application or branch integration (`branch`). |
 | `task.isolation.commits` | `generic` | Reserved for the commit-message style of a `branch` merge (`ai`). Accepted and validated; no backend consumes it yet, so both values behave as `generic`. |
 
-All defaults live in `omo.json` under `task` and `teams`. A minimal project config:
+All defaults live in `omc.json` under `task` and `teams`. A minimal project config:
 
 ```jsonc
-// .omo/omo.jsonc
+// .omc/omc.jsonc
 {
   "task": {
     "default_execution_mode": "auto",
@@ -168,9 +168,9 @@ All defaults live in `omo.json` under `task` and `teams`. A minimal project conf
 }
 ```
 
-The schema default for `task.wait.default_ms` is 60,000 ms; the 90,000 ms value above is only a sample override. Full field reference, defaults, layer precedence, harness blocks, and profile resolution are in [`docs/reference/omo-json.md`](../reference/omo-json.md).
+The schema default for `task.wait.default_ms` is 60,000 ms; the 90,000 ms value above is only a sample override. Full field reference, defaults, layer precedence, harness blocks, and profile resolution are in [`docs/reference/omc-json.md`](../reference/omc-json.md).
 
-`packages/omo-opencode` is a separate build that still uses its prior task/team names; cross-edition parity is a deliberate follow-up outside this Senpi guide.
+`packages/omc-opencode` is a separate build that still uses its prior task/team names; cross-edition parity is a deliberate follow-up outside this Senpi guide.
 
 ## Follow-ups
 

@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 import type { ResumeCredential } from "./admission-barrier"
 import type { PauseParticipant, PauseRegistry } from "./registry"
 import { REMOTE_DEADLINE_MS, remoteFailure, writeRemote } from "./remote-participants"

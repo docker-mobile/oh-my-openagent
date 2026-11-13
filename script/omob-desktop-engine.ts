@@ -1,6 +1,6 @@
 // script/omob-desktop-engine.ts
-// Builds the Rust desktop engine a compiled omob binary embeds. build-omo-binary.ts stages
-// `target/<rust-triple>/release/senpi-desktop-engine[.exe]` from the omo cache clone and fails
+// Builds the Rust desktop engine a compiled omob binary embeds. build-omc-binary.ts stages
+// `target/<rust-triple>/release/senpi-desktop-engine[.exe]` from the omc cache clone and fails
 // when a declared-available target has none, so the dev build has to produce it the way the
 // release workflows do (publish-platform.yml, desktop-engine.yml) - and skip cargo entirely
 // when nothing the engine is built from changed since the last build.
@@ -27,7 +27,7 @@ interface CargoCall {
 }
 
 /** Per-package RUSTFLAGS the release workflows build with (publish-platform.yml); every other package gets none. */
-const RELEASE_RUSTFLAGS: Readonly<Record<string, string>> = { "omo-git-job-helper": "-C target-feature=+crt-static" }
+const RELEASE_RUSTFLAGS: Readonly<Record<string, string>> = { "omc-git-job-helper": "-C target-feature=+crt-static" }
 
 function desktopEngineCargoCalls(rustTarget: string, helperPackages: readonly string[]): CargoCall[] {
 	return [
@@ -82,9 +82,9 @@ function stampMatches(stampPath: string, binary: string, fingerprint: string): b
 export type DesktopEngineOutcome = "skipped" | "reused" | "built"
 
 /**
- * Makes sure the omo checkout at `repoRoot` holds the desktop engine build-omo-binary stages for
+ * Makes sure the omc checkout at `repoRoot` holds the desktop engine build-omc-binary stages for
  * `target`. Availability comes from that checkout's own fixture, so the step matches what its
- * build-omo-binary will demand; a checkout that predates the engine needs nothing.
+ * build-omc-binary will demand; a checkout that predates the engine needs nothing.
  */
 export function ensureDesktopEngine(
 	repoRoot: string,
@@ -103,12 +103,12 @@ export function ensureDesktopEngine(
 	const rustTarget = desktopEngineRustTarget(entry.host)
 	const binary = join(repoRoot, entry.source)
 	// A checkout that carries a helper crate also stages that helper from the same target directory as the engine: the
-	// engine trust helper on Darwin and Windows hosts (omo#10762), the git job helper on Windows hosts (omo#10391).
+	// engine trust helper on Darwin and Windows hosts (omc#10762), the git job helper on Windows hosts (omc#10391).
 	const windows = entry.host.startsWith("win32-")
 	const exe = windows ? ".exe" : ""
 	const helpers = [
-		{ packageName: "omo-engine-trust-helper", label: "engine trust helper", ships: windows || entry.host.startsWith("darwin-") },
-		{ packageName: "omo-git-job-helper", label: "git job helper", ships: windows },
+		{ packageName: "omc-engine-trust-helper", label: "engine trust helper", ships: windows || entry.host.startsWith("darwin-") },
+		{ packageName: "omc-git-job-helper", label: "git job helper", ships: windows },
 	]
 		.filter((helper) => helper.ships && existsSync(join(repoRoot, "crates", helper.packageName)))
 		.map((helper) => ({ ...helper, path: join(dirname(binary), `${helper.packageName}${exe}`) }))
@@ -124,7 +124,7 @@ export function ensureDesktopEngine(
 	for (const call of calls) {
 		const args = [...call.args]
 		log(`[omob] building desktop engine: cargo ${describeCall(call)}`)
-		// build-omo-binary stages from <repoRoot>/target; a caller's CARGO_TARGET_DIR would build elsewhere.
+		// build-omc-binary stages from <repoRoot>/target; a caller's CARGO_TARGET_DIR would build elsewhere.
 		const callEnv = { ...env, CARGO_TARGET_DIR: join(repoRoot, "target"), ...(call.rustflags === undefined ? {} : { RUSTFLAGS: call.rustflags }) }
 		const result = spawnSync("cargo", args, { cwd: repoRoot, stdio: "inherit", env: callEnv })
 		if (result.error !== undefined) {

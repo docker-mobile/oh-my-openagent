@@ -143,7 +143,7 @@ function readVariantReasoningEfforts(value: unknown): string[] | undefined {
 
 /**
  * The reasoning efforts the model's own variant options declare, e.g. an openai-compatible model
- * configured with `variants: { xhigh: { reasoningEffort: "xhigh" } }` (oh-my-openagent#9140).
+ * configured with `variants: { xhigh: { reasoningEffort: "xhigh" } }` (oh-my-cybersecurity#9140).
  */
 export function readRuntimeModelReasoningEfforts(
 	runtimeModel: Record<string, unknown> | undefined,

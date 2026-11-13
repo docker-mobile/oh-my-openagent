@@ -5,7 +5,7 @@ import { checkPackageLogs } from "./package-log-gate.ts"
 
 // Release contract (#10477 review rounds 2-3): every entry names the PR that made it unless it already links that
 // exact PR of this repository, and code fences are never split, rewritten or linked. One table, one owner.
-const PULL = "https://github.com/code-yeongyu/oh-my-openagent/pull"
+const PULL = "https://github.com/code-yeongyu/oh-my-cybersecurity/pull"
 const link = (pr: number) => `([#${pr}](${PULL}/${pr}))`
 const FENCE3 = "```"
 

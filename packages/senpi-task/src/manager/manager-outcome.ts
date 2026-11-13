@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import type { SuspensionReason, TaskRecord, TaskRunStats, TaskTransition } from "../state"
 import type { TaskRecordStore } from "../store"

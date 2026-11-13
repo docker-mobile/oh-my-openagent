@@ -3,7 +3,7 @@
 // sessions are pinned by audit-dir.characterization.test.ts (X17).
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { ExecuteTool } from "@oh-my-opencode/senpi-desktop-service";
+import type { ExecuteTool } from "@oh-my-cybersecurity/senpi-desktop-service";
 import { afterEach, describe, expect, it } from "vitest";
 import type { ComputerHandle } from "../src/activation";
 import {

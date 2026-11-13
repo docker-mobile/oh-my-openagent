@@ -121,7 +121,7 @@ export function isAgentSessionEvent(record: unknown): record is AgentSessionEven
 }
 
 /**
- * Convert an `open_session` rejection into omo's typed refusals. Codes ride the response `error`
+ * Convert an `open_session` rejection into omc's typed refusals. Codes ride the response `error`
  * field by contract (`<code>: <detail>`) and the typed `errorCode`/`errorData` fields when the host
  * is new enough; anything that carries no code (a transport loss, a write failure) is handed back
  * untouched so the caller sees the original failure.

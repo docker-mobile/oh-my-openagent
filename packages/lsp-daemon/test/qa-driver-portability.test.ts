@@ -22,7 +22,7 @@ describe("LSP QA driver portability", () => {
 	it("#given a fresh clone #when cancellation QA runs #then every runtime dependency is tracked outside evidence", () => {
 		for (const driver of drivers) {
 			const source = readFileSync(join(repositoryRoot, driver), "utf8");
-			expect(source).not.toContain(".omo/evidence");
+			expect(source).not.toContain(".omc/evidence");
 			for (const dependency of runtimeDependencies) expect(source).toContain(dependency);
 		}
 

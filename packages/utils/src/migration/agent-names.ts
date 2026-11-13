@@ -1,7 +1,7 @@
 export const AGENT_NAME_MAP: Record<string, string> = {
   // Sisyphus variants → "sisyphus"
-  omo: "sisyphus",
-  OmO: "sisyphus",
+  omc: "sisyphus",
+  OmC: "sisyphus",
   Sisyphus: "sisyphus",
   "Sisyphus (Ultraworker)": "sisyphus",
   sisyphus: "sisyphus",
@@ -10,8 +10,8 @@ export const AGENT_NAME_MAP: Record<string, string> = {
   "Hephaestus (Deep Agent)": "hephaestus",
 
   // Prometheus variants → "prometheus"
-  "OmO-Plan": "prometheus",
-  "omo-plan": "prometheus",
+  "OmC-Plan": "prometheus",
+  "omc-plan": "prometheus",
   "Planner-Sisyphus": "prometheus",
   "planner-sisyphus": "prometheus",
   "Prometheus - Plan Builder": "prometheus",

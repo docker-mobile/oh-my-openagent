@@ -15,7 +15,7 @@ function resolverFor(opts: {
     hasUserRequested: (name: string) => (opts.requested ?? []).includes(name),
     hasPlanArtifact: () => opts.artifact ?? false,
     planArtifactReferences: () =>
-      opts.artifact === true ? [{ path: ".omo/plans/gate-plan.md", count: 1, lastTouchedAt: 1 }] : [],
+      opts.artifact === true ? [{ path: ".omc/plans/gate-plan.md", count: 1, lastTouchedAt: 1 }] : [],
   })
 }
 

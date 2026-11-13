@@ -2,11 +2,11 @@ import { fileURLToPath } from "node:url"
 import { assertReleaseKeySet } from "./service-auth-release-key"
 
 const root = fileURLToPath(new URL("..", import.meta.url))
-const target = `${root}packages/omo-native/bin/lib/service-auth.generated.js`
+const target = `${root}packages/omc-native/bin/lib/service-auth.generated.js`
 
 export async function buildServiceAuth(check = false): Promise<void> {
   const result = await Bun.build({
-    entrypoints: [`${root}packages/omo-native/launcher-commands.ts`],
+    entrypoints: [`${root}packages/omc-native/launcher-commands.ts`],
     target: "node", format: "esm", minify: { whitespace: true, syntax: true },
   })
   if (!result.success) throw new Error("Service auth bundle failed", { cause: result.logs })

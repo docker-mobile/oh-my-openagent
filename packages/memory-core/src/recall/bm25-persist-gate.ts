@@ -11,7 +11,7 @@ interface GateState {
   readonly excluded: Map<string, number>
   readonly writing: Map<string, Set<Promise<void>>>
 }
-const GATE_KEY = Symbol.for("omo.memory-core.recall-term-save-gate")
+const GATE_KEY = Symbol.for("omc.memory-core.recall-term-save-gate")
 const holder = globalThis as typeof globalThis & { [GATE_KEY]?: GateState }
 const state: GateState = (holder[GATE_KEY] ??= { excluded: new Map(), writing: new Map() })
 const { excluded, writing } = state

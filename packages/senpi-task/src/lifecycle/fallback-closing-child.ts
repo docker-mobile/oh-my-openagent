@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 import type { HostSessionIdentity, TaskRecord } from "../state"
 import { delay, type LifecycleContext } from "./context"
 import { forgetClosedChild } from "./fallback-handoff"

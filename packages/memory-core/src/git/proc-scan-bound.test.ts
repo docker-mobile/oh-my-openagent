@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test"
 
 import { answerFromProcOrLsof } from "./open-file-holders"
 
-// omo #10199 r5 delta review MEDIUM (Linux platform contract): the /proc scans stat every process's
+// omc #10199 r5 delta review MEDIUM (Linux platform contract): the /proc scans stat every process's
 // fd targets and cwd, and a stat on a hung NFS or dead FUSE mount never returns. The sweep runs
 // under the memory-write lock, so an unbounded scan stalls every writer of the identity. The scan
 // is raced against the same bound as lsof; a scan that has not answered by then is UNKNOWN

@@ -9,7 +9,7 @@
 import { assembleUnreleasedBody } from "./changelog-gate-rules.ts"
 import { entriesOf, linkEntry, linkScanned, scanFences } from "./changelog-notes-markdown.ts"
 
-const PULL_URL = "https://github.com/code-yeongyu/oh-my-openagent/pull"
+const PULL_URL = "https://github.com/code-yeongyu/oh-my-cybersecurity/pull"
 const OWN_PULL_LINK = new RegExp(`${PULL_URL.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&")}/(\\d+)\\)`, "g")
 const FENCE_LINE = /^(`{3,}|~{3,})/
 const SECTION = /^### (.+?)\s*$/

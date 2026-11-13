@@ -1,6 +1,6 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { locateDesktopEngine } from "@oh-my-opencode/senpi-desktop-engine";
+import { locateDesktopEngine } from "@oh-my-cybersecurity/senpi-desktop-engine";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { DesktopService } from "../src/service/service";
 

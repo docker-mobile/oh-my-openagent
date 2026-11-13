@@ -29,7 +29,7 @@ describe("normalizeSenpiTeamSpec", () => {
     }
   })
 
-  test("#given a name-less omo.json team value #when normalized #then it takes the record key as its name", () => {
+  test("#given a name-less omc.json team value #when normalized #then it takes the record key as its name", () => {
     // given
     const rawSpec = { members: [{ kind: "subagent_type", subagent_type: "sisyphus" }] }
 

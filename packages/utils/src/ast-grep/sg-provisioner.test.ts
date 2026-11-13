@@ -7,7 +7,7 @@ import { join } from "node:path"
 import { provisionSgBinary, SgProvisionError } from "./sg-provisioner"
 
 function tempDir(name: string): string {
-  return join(tmpdir(), `omo-${name}-${crypto.randomUUID()}`)
+  return join(tmpdir(), `omc-${name}-${crypto.randomUUID()}`)
 }
 
 function uint16(value: number): Buffer {

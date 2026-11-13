@@ -5,7 +5,7 @@ import type { TaskRecord } from "../state"
 import { startHostWorld, type HostWorld, type ParentSession } from "./rpc-host/__fixtures__/host-world"
 
 /**
- * #8932: a daemon-hosted child belongs to the omo process that launched it. Every OTHER omo process
+ * #8932: a daemon-hosted child belongs to the omc process that launched it. Every OTHER omc process
  * sharing the project store reconciles that store on session start, and it may only leave the child
  * alone if the production liveness adapter reports the child's worker session as live. When it
  * reads as dead, the other process claims the child, the owner's outcome is fenced off, and a DAG

@@ -32,7 +32,7 @@ export function detectBunBinary(metaUrl: string): boolean {
 /**
  * Whether this process is a Bun single-file executable that embeds the engine. Such a process IS
  * the engine: spawning `process.execPath` yields a child with the same version and the same shipped
- * assets, which no PATH or sibling lookup can promise. `import.meta.url` cannot answer this: omo's
+ * assets, which no PATH or sibling lookup can promise. `import.meta.url` cannot answer this: omc's
  * plugin is loaded from a real file inside the compiled binary, so its URL is a plain `file:` path
  * and `detectBunBinary` reports false while PATH may hold a different senpi install entirely.
  */
@@ -133,7 +133,7 @@ function passesEngineParity(candidate: string, runtime: RpcSpawnRuntime): boolea
 
 /**
  * Resolve the senpi EXECUTABLE to spawn the rpc child with (`<exe> --mode rpc`). Spawning the binary
- * directly bypasses module resolution, which senpi's own loader alias HIJACKS when omo runs as a senpi
+ * directly bypasses module resolution, which senpi's own loader alias HIJACKS when omc runs as a senpi
  * extension: `require.resolve("@code-yeongyu/senpi/rpc-entry")` then resolves to the running dist entry
  * instead of the child rpc entry and the child never boots. Preference order: an explicit `SENPI_BIN`
  * override (used even when its package version differs), the running executable when it embeds the
@@ -183,8 +183,8 @@ function normalizeSenpiLauncher(executable: string, runtime: RpcSpawnRuntime): S
 /**
  * Whether the resolved executable IS this running process. `normalizeSenpiLauncher` reads a Windows
  * candidate without an `.exe` suffix as an npm shim, which is the right guess for a PATH or sibling
- * hit but wrong for the compiled engine: a single-file executable may be named anything (`omo`,
- * `omo-dev`) and still be the engine. Re-interpreting it looked for an adjacent `dist/cli.js`, found
+ * hit but wrong for the compiled engine: a single-file executable may be named anything (`omc`,
+ * `omc-dev`) and still be the engine. Re-interpreting it looked for an adjacent `dist/cli.js`, found
  * none, discarded the one candidate guaranteed to match the running version and its embedded assets,
  * and fell through to the PATH shim scans and finally the `argv[1]` entry-script guess.
  */

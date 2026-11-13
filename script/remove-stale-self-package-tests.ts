@@ -1,7 +1,7 @@
 import { lstat, readdir, rm } from "node:fs/promises"
 import { join } from "node:path"
 
-const SELF_PACKAGE_NAMES = ["oh-my-opencode", "oh-my-openagent"] as const
+const SELF_PACKAGE_NAMES = ["oh-my-cybersecurity", "oh-my-openagent", "oh-my-opencode"] as const
 
 export async function removeStaleSelfPackageTests(root = process.cwd()): Promise<string[]> {
   const packagesDir = join(root, "packages")

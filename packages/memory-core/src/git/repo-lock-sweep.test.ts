@@ -20,7 +20,7 @@ import { findOpenFileHolderPids, unreadableFdDirMeansHeld } from "./open-file-ho
 // test budget would cut a correct but slow answer short.
 setDefaultTimeout(90_000)
 
-// omo #10199 review HIGH 1: the stranded-lock sweep's premise - "git keeps the lock fd open from
+// omc #10199 review HIGH 1: the stranded-lock sweep's premise - "git keeps the lock fd open from
 // create until rename" - is false. Git's lockfile API closes the descriptor after writing the lock
 // and keeps the FILE as the lock until commit or rollback: commit's prepare_index closes
 // index.lock before the commit-msg hook runs, and the files ref backend closes each ref lock
@@ -64,7 +64,7 @@ function removedPaths(sweepResult: unknown): readonly string[] {
 
 // Proof that the lock file has NO visible open holder right now, through the same production
 // helper the sweep uses (findOpenFileHolderPids: /proc scan on linux, lsof elsewhere). On a host
-// whose same-uid processes cannot be inspected (null, omo #10322) the closed fd is unobservable,
+// whose same-uid processes cannot be inspected (null, omc #10322) the closed fd is unobservable,
 // and the sweep must keep the live writer's lock all the same.
 async function expectNoHolder(lockPath: string): Promise<void> {
   const holders = await findOpenFileHolderPids(lockPath)
@@ -87,7 +87,7 @@ async function releaseAndAwaitCommit(commit: ChildProcess, releasePath: string, 
   }
 }
 
-describe("stranded git lock sweep vs LIVE writers (omo #10199 review)", () => {
+describe("stranded git lock sweep vs LIVE writers (omc #10199 review)", () => {
   test.skipIf(process.platform === "win32")("#given a LIVE commit -a parked in its commit-msg hook holding a closed-fd index.lock #when the sweep runs #then the lock survives and the commit lands", async () => {
     // #given: a production-shaped memory repo (GitMemoryRepo.init installs the real hooks) and a
     // commit-msg hook that parks the commit AFTER the -a shape's prepare_index wrote index.lock

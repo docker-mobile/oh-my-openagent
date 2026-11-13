@@ -9,7 +9,7 @@ import { installOmobLauncher, parseOmobArgs } from "./build-omob"
 import { removeTempRoot } from "./remove-temp-root"
 
 const builder = resolve(import.meta.dir, "build-omob.ts")
-const canonical = "https://github.com/code-yeongyu/oh-my-openagent.git"
+const canonical = "https://github.com/code-yeongyu/oh-my-cybersecurity.git"
 
 // Replace only the expensive package/compiler boundary. Git, cache selection,
 // update decisions, installs and the installed launcher all run the real code.
@@ -22,7 +22,7 @@ if (args[0]?.endsWith(path.join('script', 'build-omob.ts'))) {
  if (result.error) throw result.error;
  process.exit(result.status ?? 1);
 }
-if (args.includes(path.join('script', 'build-omo-binary.ts'))) {
+if (args.includes(path.join('script', 'build-omc-binary.ts'))) {
  fs.appendFileSync(process.env.OMOB_TEST_BUILDS, 'compile\\n');
  if (process.env.OMOB_TEST_FAIL === '1') process.exit(23);
  const info = JSON.parse(args[args.indexOf('--build-info')+1]);
@@ -31,7 +31,7 @@ if (args.includes(path.join('script', 'build-omo-binary.ts'))) {
  const version = require(process.env.OMOB_TEST_BUILD_INFO).versionLines(info).join('\\n');
  const out = args[args.indexOf('--out-dir')+1], target = args[args.indexOf('--target')+1];
  fs.mkdirSync(out,{recursive:true});
- const binary = path.join(out,'omo-'+target+(target.startsWith('windows-')?'.exe':''));
+ const binary = path.join(out,'omc-'+target+(target.startsWith('windows-')?'.exe':''));
  const entry = path.join(out,'fixture.cjs');
  fs.writeFileSync(entry, 'if(process.argv[2]==="--version") console.log('+JSON.stringify(version)+'); else {console.log(JSON.stringify(process.argv.slice(2))); process.exit(17)}\\n');
  const result = cp.spawnSync(process.env.OMOB_TEST_BUN, ['build','--compile',entry,'--outfile',binary], {stdio:'inherit'});
@@ -74,17 +74,17 @@ function fixtureTools(): string {
 
 function fixture() {
 	const root = mkdtempSync(join(tmpdir(), "omob-refresh-"))
-	const omo = join(root, "upstream-omo"), senpi = join(root, "upstream-senpi")
+	const omc = join(root, "upstream-omc"), senpi = join(root, "upstream-senpi")
 	const cache = join(root, "cache"), tools = fixtureTools(), builds = join(root, "builds")
-	const env = { ...process.env, PATH: `${tools}${delimiter}${process.env.PATH}`, OMOB_TEST_BUN: process.execPath, OMOB_TEST_BUILDER: builder, OMOB_TEST_BUILDS: builds, OMOB_TEST_BUILD_INFO: resolve(import.meta.dir, "../packages/omo-native/build-info.ts"),
+	const env = { ...process.env, PATH: `${tools}${delimiter}${process.env.PATH}`, OMOB_TEST_BUN: process.execPath, OMOB_TEST_BUILDER: builder, OMOB_TEST_BUILDS: builds, OMOB_TEST_BUILD_INFO: resolve(import.meta.dir, "../packages/omc-native/build-info.ts"),
 		GIT_CONFIG_COUNT: "5", GIT_CONFIG_KEY_0: "user.name", GIT_CONFIG_VALUE_0: "Test", GIT_CONFIG_KEY_1: "user.email", GIT_CONFIG_VALUE_1: "test@example.com",
-		GIT_CONFIG_KEY_2: `url.${pathToFileURL(omo).href}.insteadOf`, GIT_CONFIG_VALUE_2: canonical, GIT_CONFIG_KEY_3: "protocol.file.allow", GIT_CONFIG_VALUE_3: "always", GIT_CONFIG_KEY_4: `url.${pathToFileURL(senpi).href}.insteadOf`, GIT_CONFIG_VALUE_4: "https://github.com/code-yeongyu/senpi.git" }
+		GIT_CONFIG_KEY_2: `url.${pathToFileURL(omc).href}.insteadOf`, GIT_CONFIG_VALUE_2: canonical, GIT_CONFIG_KEY_3: "protocol.file.allow", GIT_CONFIG_VALUE_3: "always", GIT_CONFIG_KEY_4: `url.${pathToFileURL(senpi).href}.insteadOf`, GIT_CONFIG_VALUE_4: "https://github.com/code-yeongyu/senpi.git" }
 	const git = (cwd: string, args: string[]) => {
 		const result = spawnSync("git", args, { cwd, env, encoding: "utf8" })
 		if (result.status !== 0) throw new Error(result.stderr)
 		return result.stdout.trim()
 	}
-	for (const [repo, branch] of [[omo, "dev"], [senpi, "main"]]) {
+	for (const [repo, branch] of [[omc, "dev"], [senpi, "main"]]) {
 		mkdirSync(join(repo, "scripts"), { recursive: true })
 		mkdirSync(join(repo, "packages", "coding-agent"), { recursive: true })
 		writeFileSync(join(repo, "packages", "coding-agent", "package.json"), '{"name":"@code-yeongyu/senpi"}')
@@ -96,15 +96,15 @@ function fixture() {
 		git(repo, ["commit", "-qm", "initial"])
 	}
 	mkdirSync(cache)
-	git(root, ["clone", "-q", canonical, join(cache, "omo")])
-	git(omo, ["switch", "-qc", "feature"])
-	writeFileSync(join(omo, "uncommitted"), "keep me")
+	git(root, ["clone", "-q", canonical, join(cache, "omc")])
+	git(omc, ["switch", "-qc", "feature"])
+	writeFileSync(join(omc, "uncommitted"), "keep me")
 	writeFileSync(builds, "")
 	const options = parseOmobArgs(["--cache-dir", cache, "--install-dir", join(root, "install")], process.platform, process.arch, root)
 	const args = [builder, "--if-changed", "--binary-only", "--cache-dir", cache, "--install-dir", join(cache, "bin")]
 	const run = (extraEnv = {}) => spawnSync(process.execPath, args, { env: { ...env, ...extraEnv }, encoding: "utf8", timeout: 30_000 })
 	const ordinary = (extraArgs: string[] = []) => spawnSync(process.execPath, [builder, "--cache-dir", cache, "--install-dir", options.installDir, ...extraArgs], { env, encoding: "utf8", timeout: 30_000 })
-	return { root, omo, senpi, cache, builds, env, options, git, run, ordinary, binary: join(cache, "bin", process.platform === "win32" ? "omob.exe" : "omob") }
+	return { root, omc, senpi, cache, builds, env, options, git, run, ordinary, binary: join(cache, "bin", process.platform === "win32" ? "omob.exe" : "omob") }
 }
 
 describe("omob refresh integration", () => {
@@ -204,8 +204,8 @@ describe("omob refresh integration", () => {
 					const version = spawnSync(f.binary, ["--version"], { encoding: "utf8" })
 					expect(version.stdout).toContain(f.git(f.senpi, ["rev-parse", "main"]))
 				}
-				expect(f.git(f.omo, ["branch", "--show-current"])).toBe("feature")
-				expect(readFileSync(join(f.omo, "uncommitted"), "utf8")).toBe("keep me")
+				expect(f.git(f.omc, ["branch", "--show-current"])).toBe("feature")
+				expect(readFileSync(join(f.omc, "uncommitted"), "utf8")).toBe("keep me")
 			} finally { removeTempRoot(f.root) }
 		}, 60_000)
 	}

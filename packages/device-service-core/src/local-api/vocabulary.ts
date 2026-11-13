@@ -30,8 +30,8 @@ export const THIS_DEVICE_STATES = [
 ] as const;
 export type ThisDeviceState = (typeof THIS_DEVICE_STATES)[number];
 
-// "sdk": a program built on the machine SDK (design 8.4); like "omo", it carries no data_home.
-export const CLIENT_NAMES = ["desktop", "omo", "installer", "sdk"] as const;
+// "sdk": a program built on the machine SDK (design 8.4); like "omc", it carries no data_home.
+export const CLIENT_NAMES = ["desktop", "omc", "installer", "sdk"] as const;
 export type ClientName = (typeof CLIENT_NAMES)[number];
 export const CAPABILITIES = ["sessions", "devices", "enforcement", "upgrade", "control"] as const;
 // A service that also serves machine operations lists "machine"; this client uses none of them but accepts the word.

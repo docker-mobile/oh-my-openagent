@@ -10,7 +10,7 @@ import {
 	type RpcPort,
 	type RpcPortFailure,
 	STANDARD_RPC_ERRORS,
-} from "@oh-my-opencode/senpi-desktop-protocol";
+} from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import { ComputerError, refusal } from "../errors";
 
 /**

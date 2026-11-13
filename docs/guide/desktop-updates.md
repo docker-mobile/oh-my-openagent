@@ -1,12 +1,12 @@
 # Desktop updates
 
-OmO Desktop checks for a new version when it starts and every few minutes after that. Nothing downloads or installs until you say so.
+OmC Desktop checks for a new version when it starts and every few minutes after that. Nothing downloads or installs until you say so.
 
 ## Update the app
 
 1. When a new version is ready, an update button appears in the sidebar.
 2. Open it to read what changed, then choose **Download**.
-3. When the download finishes, choose **Install**. OmO restarts on the new version.
+3. When the download finishes, choose **Install**. OmC restarts on the new version.
 
 You can also check by hand: open **Settings**, find the version, and choose **Check for Updates**.
 
@@ -25,8 +25,8 @@ You can switch back to Stable at any time.
 
 ## Apple Silicon Macs
 
-If OmO says it is running the Intel build on an Apple Silicon Mac, it is working through Rosetta and runs slower than it should. Install the next update and OmO switches to the Apple Silicon build.
+If OmC says it is running the Intel build on an Apple Silicon Mac, it is working through Rosetta and runs slower than it should. Install the next update and OmC switches to the Apple Silicon build.
 
 ## If an update fails
 
-If OmO can't check for or download an update, make sure you are online and try again from **Settings**. A failed download changes nothing: you keep running the version you have until an update installs.
+If OmC can't check for or download an update, make sure you are online and try again from **Settings**. A failed download changes nothing: you keep running the version you have until an update installs.

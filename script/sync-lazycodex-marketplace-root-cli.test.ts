@@ -17,19 +17,19 @@ async function writeRuntimeFile(path: string, label: string): Promise<void> {
 }
 
 async function writeMarketplaceFixture(sourceRoot: string, includeRootCli: boolean): Promise<void> {
-  await writeJson(join(sourceRoot, "packages", "omo-codex", "marketplace.json"), {
+  await writeJson(join(sourceRoot, "packages", "omc-codex", "marketplace.json"), {
     name: "sisyphuslabs",
-    plugins: [{ name: "omo", source: "./plugins/omo" }],
+    plugins: [{ name: "omc", source: "./plugins/omc" }],
   })
-  await writeJson(join(sourceRoot, "packages", "omo-codex", "plugin", ".codex-plugin", "plugin.json"), {
-    name: "omo",
+  await writeJson(join(sourceRoot, "packages", "omc-codex", "plugin", ".codex-plugin", "plugin.json"), {
+    name: "omc",
     version: "1.2.3",
   })
-  await writeJson(join(sourceRoot, "packages", "omo-codex", "plugin", "package.json"), {
-    name: "@sisyphuslabs/omo-codex-plugin",
+  await writeJson(join(sourceRoot, "packages", "omc-codex", "plugin", "package.json"), {
+    name: "@sisyphuslabs/omc-codex-plugin",
     version: "1.2.3",
   })
-  await writeJson(join(sourceRoot, "packages", "omo-codex", "plugin", "hooks", "hooks.json"), {
+  await writeJson(join(sourceRoot, "packages", "omc-codex", "plugin", "hooks", "hooks.json"), {
     hooks: {
       SessionStart: [
         {
@@ -43,13 +43,13 @@ async function writeMarketplaceFixture(sourceRoot: string, includeRootCli: boole
       ],
     },
   })
-  await writeRuntimeFile(join(sourceRoot, "packages", "omo-codex", "plugin", "components", "bootstrap", "dist", "cli.js"), "bootstrap")
+  await writeRuntimeFile(join(sourceRoot, "packages", "omc-codex", "plugin", "components", "bootstrap", "dist", "cli.js"), "bootstrap")
   await writeRuntimeFile(join(sourceRoot, "packages", "git-bash-mcp", "dist", "cli.js"), "git-bash")
   await writeRuntimeFile(join(sourceRoot, "packages", "lsp-tools-mcp", "dist", "cli.js"), "lsp-tools")
   await writeRuntimeFile(join(sourceRoot, "packages", "lsp-daemon", "dist", "cli.js"), "lsp-daemon")
   if (!includeRootCli) return
-  await writeRuntimeFile(join(sourceRoot, "dist", "cli", "index.js"), "omo bun runtime")
-  await writeRuntimeFile(join(sourceRoot, "dist", "cli-node", "index.js"), "omo node runtime")
+  await writeRuntimeFile(join(sourceRoot, "dist", "cli", "index.js"), "omc bun runtime")
+  await writeRuntimeFile(join(sourceRoot, "dist", "cli-node", "index.js"), "omc node runtime")
 }
 
 async function readOptionalFile(path: string): Promise<string> {
@@ -61,7 +61,7 @@ async function readOptionalFile(path: string): Promise<string> {
 }
 
 describe("sync-lazycodex-marketplace root CLI payload", () => {
-  test("#given root CLI dists #when syncing marketplace #then the plugin payload carries the omo runtime targets", async () => {
+  test("#given root CLI dists #when syncing marketplace #then the plugin payload carries the omc runtime targets", async () => {
     // given
     const sourceRoot = await mkdtemp(join(tmpdir(), "omo-sync-root-cli-source-"))
     const lazycodexRoot = await mkdtemp(join(tmpdir(), "omo-sync-root-cli-lazycodex-"))
@@ -71,12 +71,12 @@ describe("sync-lazycodex-marketplace root CLI payload", () => {
     await syncLazycodexMarketplace({ sourceRoot, lazycodexRoot })
 
     // then
-    const bunRuntime = join(lazycodexRoot, "plugins", "omo", "dist", "cli", "index.js")
-    const nodeRuntime = join(lazycodexRoot, "plugins", "omo", "dist", "cli-node", "index.js")
+    const bunRuntime = join(lazycodexRoot, "plugins", "omc", "dist", "cli", "index.js")
+    const nodeRuntime = join(lazycodexRoot, "plugins", "omc", "dist", "cli-node", "index.js")
     expect((await stat(bunRuntime)).isFile()).toBe(true)
     expect((await stat(nodeRuntime)).isFile()).toBe(true)
-    await expect(readOptionalFile(bunRuntime)).resolves.toContain("omo bun runtime")
-    await expect(readOptionalFile(nodeRuntime)).resolves.toContain("omo node runtime")
+    await expect(readOptionalFile(bunRuntime)).resolves.toContain("omc bun runtime")
+    await expect(readOptionalFile(nodeRuntime)).resolves.toContain("omc node runtime")
   })
 
   test("#given missing root CLI dist #when syncing marketplace #then validation rejects the broken payload", async () => {

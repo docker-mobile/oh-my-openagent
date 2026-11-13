@@ -3,7 +3,7 @@
 # install.sh - install the ast-grep binary on POSIX systems (macOS, Linux, WSL, Git Bash).
 #
 # Tries package managers in priority order, then falls back to downloading a
-# pinned release binary from GitHub into ${XDG_CACHE_HOME:-~/.cache}/omo-ast-grep/bin/sg
+# pinned release binary from GitHub into ${XDG_CACHE_HOME:-~/.cache}/omc-ast-grep/bin/sg
 # (never into the skill directory, which can sit inside a signed app bundle).
 #
 # Order:
@@ -14,7 +14,7 @@
 #   5. pip (ast-grep-cli)
 #   6. nix-env (NixOS / Nix users)
 #   7. mise (asdf successor)
-#   8. GitHub release tarball -> ${XDG_CACHE_HOME:-~/.cache}/omo-ast-grep/bin/sg
+#   8. GitHub release tarball -> ${XDG_CACHE_HOME:-~/.cache}/omc-ast-grep/bin/sg
 #
 # Flags:
 #   --method=<m>     Force one method: brew | npm | cargo | pip | nix | mise | github
@@ -30,7 +30,7 @@
 
 set -euo pipefail
 
-CACHE_BIN_DIR="${OMO_AST_GREP_BIN_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/omo-ast-grep/bin}"
+CACHE_BIN_DIR="${OMC_AST_GREP_BIN_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/omc-ast-grep/bin}"
 
 PINNED_VERSION="0.45.0"
 FORCED_METHOD=""

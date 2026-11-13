@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 import { HEARTBEAT_DEADLINE_MS } from "../rpc/heartbeat"
 import { RpcRequestTimeout } from "../rpc/errors"
 
@@ -12,7 +12,7 @@ const MAX_BACKOFF_MS = 30_000
 const STOPPED = Symbol("host heartbeat stopped")
 
 // Same semantics as the parent-wake notifier's unrefTimerHandle, kept local because this package must not
-// import packages/omo-opencode: a timer implementation that throws on unref (fake timers, a patched global)
+// import packages/omc-opencode: a timer implementation that throws on unref (fake timers, a patched global)
 // must never let the throw escape from heartbeat teardown.
 function unrefTimer(timer: ReturnType<typeof setTimeout> | undefined): void {
   if (timer === undefined) return

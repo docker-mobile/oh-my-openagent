@@ -9,7 +9,7 @@ import {
   resolveDaemonLaunchSpecPath,
 } from "./launch-spec"
 
-const pluginRoot = join(import.meta.dir, "../../../../omo-senpi/plugin")
+const pluginRoot = join(import.meta.dir, "../../../../omc-senpi/plugin")
 const scratchRoots: string[] = []
 
 afterEach(() => {
@@ -33,7 +33,7 @@ function validSpec(overrides: Record<string, unknown> = {}) {
       extensions: [".", `./extensions/${MEMBER_EXTENSION_BUNDLE_NAME}`],
     },
     tunables: { idleExitMs: 900_000, coldStart: "transient" },
-    env: { OMO_NATIVE: "1" },
+    env: { OMC_NATIVE: "1" },
     ...overrides,
   }
 }
@@ -92,7 +92,7 @@ describe("readDaemonLaunchSpec", () => {
     expect(spec.core.extensions).toEqual([".", `./extensions/${MEMBER_EXTENSION_BUNDLE_NAME}`])
     expect(spec.tunables.idleExitMs).toBe(900_000)
     expect(spec.tunables.coldStart).toBe("transient")
-    expect(spec.env).toEqual({ OMO_NATIVE: "1" })
+    expect(spec.env).toEqual({ OMC_NATIVE: "1" })
   })
 
   test("#given the built plugin spec #when resolving extensions #then each path exists under the plugin root", () => {
@@ -180,7 +180,7 @@ describe("readDaemonLaunchSpec", () => {
   test("#given a spec env key PATH #when reading #then it is rejected as launch_spec_env_denied", () => {
     // given
     const dir = scratchDir()
-    const path = writeSpec(dir, validSpec({ env: { PATH: "/usr/bin", OMO_NATIVE: "1" } }))
+    const path = writeSpec(dir, validSpec({ env: { PATH: "/usr/bin", OMC_NATIVE: "1" } }))
 
     // when / then
     try {

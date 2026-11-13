@@ -32,7 +32,7 @@ async function repo(): Promise<string> {
   return root
 }
 
-test("the sync commit takes exactly its paths, as OmO Sync, leaving unrelated edits dirty and unstaged", async () => {
+test("the sync commit takes exactly its paths, as OmC Sync, leaving unrelated edits dirty and unstaged", async () => {
   const root = await repo()
   const sync = createGitSyncRepo({ root })
   await writeFile(join(root, "synced.md"), "from sync\n")
@@ -42,7 +42,7 @@ test("the sync commit takes exactly its paths, as OmO Sync, leaving unrelated ed
   await sync.commit(["synced.md"], "sync: 1 memories updated\n\nSync-Seq: 1-1\nSync-Principals: device:a")
   await sync.syncIndex(["synced.md"])
   expect(await git(root, "rev-parse", "HEAD^{tree}")).toBe(tree)
-  expect(await git(root, "log", "-1", "--format=%an <%ae>|%cn")).toBe("OmO Sync <sync@omo.invalid>|OmO Sync")
+  expect(await git(root, "log", "-1", "--format=%an <%ae>|%cn")).toBe("OmC Sync <sync@omc.invalid>|OmC Sync")
   expect(await git(root, "show", "--name-only", "--format=", "HEAD")).toBe("synced.md")
   expect(await porcelain(root)).toBe(" M base.md\n?? draft.md")
   expect(await sync.hasSyncCommit("1-1")).toBe(true)
@@ -81,7 +81,7 @@ test("an agent commit landing while the sync commits is kept: HEAD moves by comp
   expect(await porcelain(root)).toBe("")
 })
 
-test("a stranded .git/HEAD.lock whose owner cannot be proven dead stops the sync commit as StrandedGitLockError naming it, and HEAD does not move (omo #10637)", async () => {
+test("a stranded .git/HEAD.lock whose owner cannot be proven dead stops the sync commit as StrandedGitLockError naming it, and HEAD does not move (omc #10637)", async () => {
   const root = await repo()
   const sync = createGitSyncRepo({ root })
   const head = await git(root, "rev-parse", "HEAD")
@@ -94,7 +94,7 @@ test("a stranded .git/HEAD.lock whose owner cannot be proven dead stops the sync
   expect(await git(root, "rev-parse", "HEAD")).toBe(head)
 })
 
-test("a stranded .git/index.lock whose owner cannot be proven dead stops the index update as StrandedGitLockError naming it (omo #10637)", async () => {
+test("a stranded .git/index.lock whose owner cannot be proven dead stops the index update as StrandedGitLockError naming it (omc #10637)", async () => {
   const root = await repo()
   const sync = createGitSyncRepo({ root })
   await writeFile(join(root, "synced.md"), "from sync\n")

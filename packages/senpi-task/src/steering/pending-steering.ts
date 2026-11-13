@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto"
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 import type { PendingSteeringEntry, TaskRecord } from "../state"
 import { withDroppedSteeringNotice } from "../state/queued-steering"
 import { HostSessionDetachedError, HostSessionUnresponsiveError, SessionHeldElsewhereError } from "../runners/rpc-host/session-wire"

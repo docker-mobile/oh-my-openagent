@@ -3,9 +3,9 @@ import { describe, expect, test } from "bun:test"
 import { BUILTIN_AGENTS } from "../agents/builtin"
 import { resolveAgent } from "../agents/resolve-agent"
 import { resolveCategory } from "./index"
-import { FABLE_55_RELEASED } from "@oh-my-opencode/model-core"
+import { FABLE_55_RELEASED } from "@oh-my-cybersecurity/model-core"
 
-// Regression coverage for code-yeongyu/oh-my-openagent#8051: senpi's Claude subscription lane
+// Regression coverage for code-yeongyu/oh-my-cybersecurity#8051: senpi's Claude subscription lane
 // (`anthropic-subscription`, Claude Pro/Max) serves the same model ids as `anthropic`. A machine that is
 // logged in there AND holds an OpenCode Zen key sees both providers in `getAvailable()`, and every
 // builtin Claude rung must pick the subscription lane, not the metered `opencode` one.

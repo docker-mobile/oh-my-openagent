@@ -154,7 +154,7 @@ describe("verified acquisition of the device service", () => {
       const result = await acquireDeviceService({ ...options(state, served, ""), releaseKeys })
       expect(result).toMatchObject({ ok: false, refusal: "release_key_invalid" })
       expect(result.ok ? "" : result.action).toBe(
-        "This omo build carries no usable device service release key, so it cannot verify device service releases. That is a defect in this build: report it with /bug.",
+        "This omc build carries no usable device service release key, so it cannot verify device service releases. That is a defect in this build: report it with /bug.",
       )
       expect(served.requested).toEqual([])
     }
@@ -233,7 +233,7 @@ describe("verified acquisition of the device service", () => {
     expect(result).toEqual({
       ok: false,
       refusal: "download_failed",
-      action: "Could not download the OmO device service. Check the connection and try again.",
+      action: "Could not download the OmC device service. Check the connection and try again.",
     })
     expect(existsSync(state)).toBe(false)
   })
@@ -286,7 +286,7 @@ describe("verified acquisition of the device service", () => {
     const served = serveRelease(buildRelease({ key, host: HOST, minEngine: "0.81.0" }))
     const result = await acquireDeviceService(options(state, served, key.publicHex))
     expect(result).toMatchObject({ ok: false, refusal: "update_required" })
-    expect(result.ok ? "" : result.action).toContain("Update OmO")
+    expect(result.ok ? "" : result.action).toContain("Update OmC")
     expect(existsSync(state)).toBe(false)
   })
 

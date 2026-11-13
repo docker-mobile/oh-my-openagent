@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import type { TaskRecord } from "../state"
 import { nowIso, reconciliationActive, TERMINAL_STATUSES, type LifecycleContext } from "./context"
@@ -128,7 +128,7 @@ export async function reconcileScopedRevival(
 }
 
 // The session is resumed now, so a child this pass deferred no longer "resumes with its session":
-// its record carries the deferral, which task_send and task_output then state (omo#9498).
+// its record carries the deferral, which task_send and task_output then state (omc#9498).
 function recordDeferrals(context: LifecycleContext, outcomes: ReconcileOutcome[]): ReconcileOutcome[] {
   if (!reconciliationActive(context)) return outcomes
   for (const outcome of outcomes) {

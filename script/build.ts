@@ -35,18 +35,18 @@ function killTree(child: ReturnType<typeof spawn>): void {
 // reads another's output. The three real edges: index -> node-require-shim (patches
 // dist/index.js), materialize -> skills-assets and materialize -> codex-plugin (both read
 // the materialized packages/shared-skills/skills). materialize is hoisted to run exactly
-// once up front; OMO_SKIP_MATERIALIZE=1 makes the downstream copies inside codex-plugin and
+// once up front; OMC_SKIP_MATERIALIZE=1 makes the downstream copies inside codex-plugin and
 // shared-skills-assets no-ops, avoiding a git submodule index.lock and torn writes.
 //
 // The graph itself, its dependency edges and the consumer profiles live in build-nodes.ts so
 // they can be inspected without running a build.
-const nodes: BuildNode[] = selectBuildNodes(BUILD_NODES, process.env.OMO_BUILD_PROFILE)
+const nodes: BuildNode[] = selectBuildNodes(BUILD_NODES, process.env.OMC_BUILD_PROFILE)
 
 async function run() {
-	const profile = process.env.OMO_BUILD_PROFILE;
+	const profile = process.env.OMC_BUILD_PROFILE;
 	if (profile) process.stdout.write(`build: profile ${profile} selected ${nodes.length} of ${BUILD_NODES.length} nodes\n`);
 	await materializeOnce();
-	const childEnv = { ...process.env, OMO_SKIP_MATERIALIZE: "1" };
+	const childEnv = { ...process.env, OMC_SKIP_MATERIALIZE: "1" };
 	await runGraph(nodes, childEnv);
 	process.stdout.write("build: all steps completed\n");
 }

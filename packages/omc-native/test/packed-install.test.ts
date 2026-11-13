@@ -1,0 +1,115 @@
+import { describe, expect, test } from "bun:test"
+import { createRequire } from "node:module"
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs"
+import { tmpdir } from "node:os"
+import { join, sep } from "node:path"
+
+const packageRoot = join(import.meta.dir, "..")
+
+function expectSuccess(command: string, result: Bun.SyncSubprocess<"pipe", "pipe">): void {
+  const decoder = new TextDecoder()
+  const message = [
+    `${command} exited ${result.exitCode} (signal=${result.signalCode ?? "none"}, timeout=${result.exitedDueToTimeout ?? false}, maxBuffer=${result.exitedDueToMaxBuffer ?? false})`,
+    `stdout:\n${decoder.decode(result.stdout).slice(-8192)}`,
+    `stderr:\n${decoder.decode(result.stderr).slice(-8192)}`,
+  ].join("\n")
+  expect(result.exitCode, message).toBe(0)
+}
+
+
+// `bun add` of the packed tarball resolves @code-yeongyu/senpi from the npm registry. On CI runners that step has
+// failed in under a second across unrelated PRs while the same pack + add passed on the dev tip, so it gets one
+// retry for a transient registry or network error, and a failure prints bun's output instead of only the exit code.
+function bunAdd(args: string[], cwd: string): void {
+  let output = ""
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    const install = Bun.spawnSync(["bun", "add", ...args], { cwd, stdout: "pipe", stderr: "pipe" })
+    if (install.exitCode === 0) return
+    const decode = (bytes: Uint8Array) => new TextDecoder().decode(bytes)
+    output += `attempt ${attempt}: exit ${install.exitCode}\n${decode(install.stdout)}${decode(install.stderr)}\n`
+  }
+  throw new Error(`bun add ${args.join(" ")} failed twice:\n${output}`)
+}
+
+describe("omc-ai packed install", () => {
+  test("ships the Senpi patch installer and installs a Senpi that surfaces pre-replay results natively", () => {
+    const root = mkdtempSync(join(tmpdir(), "omc-ai-packed-install-"))
+    try {
+      const pack = Bun.spawnSync(["bun", "pm", "pack", "--ignore-scripts", "--destination", root], { cwd: packageRoot, stdout: "pipe", stderr: "pipe" })
+      expectSuccess("bun pm pack", pack)
+      const tarball = [...new Bun.Glob("*.tgz").scanSync(root)][0]
+      expect(tarball).toBeDefined()
+      const listing = Bun.spawnSync(["tar", "-tzf", join(root, tarball!)], { stdout: "pipe", stderr: "pipe" })
+      expectSuccess("tar -tzf", listing)
+      const entries = new TextDecoder().decode(listing.stdout).split(/\r?\n/).filter(Boolean).map((entry) => entry.replaceAll("/", sep))
+      expect(entries).toContain(join("package", "bin", "senpi-patch.mjs"))
+
+      const consumer = join(root, "consumer")
+      Bun.spawnSync(["mkdir", "-p", consumer], { stdout: "ignore", stderr: "ignore" })
+      writeFileSync(join(consumer, "package.json"), JSON.stringify({ name: "omc-ai-consumer", private: true }))
+      bunAdd(["--trust", join(root, tarball!)], consumer)
+      const installedPackageRoot = join(consumer, "node_modules", "omc-ai")
+
+      const consumerRequire = createRequire(join(installedPackageRoot, "package.json"))
+      const searchPaths = consumerRequire.resolve.paths("@code-yeongyu/senpi") ?? []
+      const senpiRoot = searchPaths.map((searchPath) => join(searchPath, "@code-yeongyu", "senpi")).find((candidate) => existsSync(join(candidate, "package.json")))
+      expect(senpiRoot).toBeDefined()
+      const sessionRegistryPump = readFileSync(join(senpiRoot!, "dist/core/extensions/builtin/anthropic-subscription/session-registry-pump.js"), "utf8")
+      expect(sessionRegistryPump).toContain("sdkResultFailure(message)")
+
+      // omc#8247: the ~255 MiB checker npm payload is deliberately absent from a native install. The
+      // extension resolves it from plugin/extensions/omc.js, and that lookup walks the same node_modules
+      // chain as the package root, so the miss is proven here without the staged plugin payload (which
+      // build:omc-native produces; package-shape.test.ts pins the downloader in the source bundle).
+      const installedExtensionDir = join(installedPackageRoot, "plugin", "extensions")
+      const extensionRequire = createRequire(join(installedExtensionDir, "omc.js"))
+      expect(existsSync(join(installedPackageRoot, "node_modules", "@code-yeongyu", "comment-checker"))).toBe(false)
+      expect(existsSync(join(consumer, "node_modules", "@code-yeongyu", "comment-checker"))).toBe(false)
+      expect(() => extensionRequire.resolve("@code-yeongyu/comment-checker")).toThrow()
+    } finally {
+      rmSync(root, { recursive: true, force: true })
+    }
+  }, 240_000)
+
+  // #8713: with install scripts blocked (ignore-scripts=true, Bun's untrusted-postinstall default)
+  // the first engine launch has to prepare the engine itself.
+  test("prepares the engine on the first launch when install scripts never ran", () => {
+    const root = mkdtempSync(join(tmpdir(), "omc-ai-ignore-scripts-"))
+    try {
+      const pack = Bun.spawnSync(["bun", "pm", "pack", "--ignore-scripts", "--destination", root], { cwd: packageRoot, stdout: "pipe", stderr: "pipe" })
+      expectSuccess("bun pm pack --ignore-scripts", pack)
+      const tarball = [...new Bun.Glob("*.tgz").scanSync(root)][0]
+      expect(tarball).toBeDefined()
+      const consumer = join(root, "consumer")
+      const home = join(root, "home")
+      Bun.spawnSync(["mkdir", "-p", consumer, home], { stdout: "ignore", stderr: "ignore" })
+      writeFileSync(join(consumer, "package.json"), JSON.stringify({ name: "omc-ai-consumer", private: true }))
+      bunAdd(["--ignore-scripts", "--backend", "copyfile", join(root, tarball!)], consumer)
+      const installedPackageRoot = join(consumer, "node_modules", "omc-ai")
+      const consumerRequire = createRequire(join(installedPackageRoot, "package.json"))
+      const searchPaths = consumerRequire.resolve.paths("@code-yeongyu/senpi") ?? []
+      const senpiRoot = searchPaths.map((searchPath) => join(searchPath, "@code-yeongyu", "senpi")).find((candidate) => existsSync(join(candidate, "package.json")))
+      expect(senpiRoot).toBeDefined()
+      const rpcMode = join(senpiRoot!, "dist", "modes", "rpc", "rpc-mode.js")
+      const stamp = join(senpiRoot!, ".omc-engine-prepared")
+      // The stamp is the precondition: a hardlinked Bun cache can already carry a rewritten rpc-mode.js.
+      expect(existsSync(stamp)).toBe(false)
+
+      const env: NodeJS.ProcessEnv = { ...process.env, HOME: home, USERPROFILE: home, OMC_RUNTIME: "node", OMC_CODING_AGENT_DIR: join(home, ".omc", "agent") }
+      delete env.SENPI_RPC_INTERNAL_KEY_STDIN
+      const launch = Bun.spawnSync(["node", join(installedPackageRoot, "bin", "omc.js"), "--help"], {
+        cwd: consumer,
+        env,
+        stdout: "pipe",
+        stderr: "pipe",
+      })
+      expect(new TextDecoder().decode(launch.stderr)).not.toContain("could not prepare the installed engine")
+      expect(launch.exitCode, new TextDecoder().decode(launch.stderr)).toBe(0)
+      expect(readFileSync(rpcMode, "utf8")).toContain("invalid_stream_event")
+      const omoVersion = JSON.parse(readFileSync(join(installedPackageRoot, "package.json"), "utf8")).version
+      expect(readFileSync(stamp, "utf8").trim()).toBe(omoVersion)
+    } finally {
+      rmSync(root, { recursive: true, force: true })
+    }
+  }, 240_000)
+})

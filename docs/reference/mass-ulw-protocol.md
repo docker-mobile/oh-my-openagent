@@ -4,8 +4,8 @@ The wire contract for external viewers of DAG orchestration runs. Everything bel
 the shipped code:
 
 - `packages/senpi-task/src/dag/types.ts` (event union, envelope, activity type)
-- `packages/omo-senpi/src/components/task/dag-rpc-bridge.ts` (push channels)
-- `packages/omo-senpi/src/components/task/dag-rpc-handlers.ts` (request methods)
+- `packages/omc-senpi/src/components/task/dag-rpc-bridge.ts` (push channels)
+- `packages/omc-senpi/src/components/task/dag-rpc-handlers.ts` (request methods)
 
 A viewer can be implemented from this document alone. Schema version is `1` on every payload that
 carries one; a consumer must reject payloads with an unknown `schemaVersion`.
@@ -27,12 +27,12 @@ Four extension-event channels exist. Only one of them is sequenced.
 
 | Channel | Sequenced | Persisted | Purpose |
 | --- | --- | --- | --- |
-| `omo.dag.event` | yes (`seq`) | yes (WAL) | The journaled run ledger. The only channel in the seq ledger. |
-| `omo.dag.heartbeat` | no | no | Liveness beacon for nonterminal runs. |
-| `omo.dag.activity` | no | no | Live per-node telemetry. |
-| `omo.dag.updated` | no | no | Wholesale run-list snapshot for stateless consumers. |
+| `omc.dag.event` | yes (`seq`) | yes (WAL) | The journaled run ledger. The only channel in the seq ledger. |
+| `omc.dag.heartbeat` | no | no | Liveness beacon for nonterminal runs. |
+| `omc.dag.activity` | no | no | Live per-node telemetry. |
+| `omc.dag.updated` | no | no | Wholesale run-list snapshot for stateless consumers. |
 
-### `omo.dag.event`
+### `omc.dag.event`
 
 Every payload is the FLAT intersection of the envelope and one of the 17 journaled payload types.
 `type`, `seq`, and the payload fields are siblings on one object, not nested.
@@ -51,7 +51,7 @@ Envelope fields, present on every event:
 
 The `lane` distinction: `boundary` marks state transitions and run lifecycle, journaled with a WAL
 seq. `activity` is the live-telemetry lane name used by stream classification; the actual
-`DagActivityEvent` payloads are unsequenced and travel on `omo.dag.activity`, never here.
+`DagActivityEvent` payloads are unsequenced and travel on `omc.dag.activity`, never here.
 
 The 26 journaled payload types (`DAG_RUN_EVENT_TYPES`), with their fields beyond the envelope:
 
@@ -88,7 +88,7 @@ Node states: `pending`, `blocked`, `scheduled`, `running`, `paused` (its child i
 Stop), `completed`, `failed`, `cancelled`, `skipped`. Run statuses: `pending`, `running`, `paused`, `completed`, `failed`, `cancelled`.
 `counts` carries `total` plus one counter per node state.
 
-### `omo.dag.heartbeat`
+### `omc.dag.heartbeat`
 
 ```jsonc
 {
@@ -103,7 +103,7 @@ Emitted every 15s (default) while at least one owned run is nonterminal. Termina
 bridge has forwarded for that run, so a viewer can detect that it fell behind without waiting for
 the next event.
 
-### `omo.dag.activity`
+### `omc.dag.activity`
 
 ```jsonc
 {
@@ -123,10 +123,10 @@ the next event.
 Coalesced latest-wins per `(runId, nodeId)` over a 150ms window: a chatty node collapses to one
 payload per window. Treat every payload as a full replacement of that node's live status.
 
-### `omo.dag.updated`
+### `omc.dag.updated`
 
 Wholesale snapshot of the whole owned run set, debounced 50ms and fingerprint-deduped. Field names
-are snake_case (the same wire convention as `omo.task.updated`); optional fields are absent, never
+are snake_case (the same wire convention as `omc.task.updated`); optional fields are absent, never
 `null`.
 
 ```jsonc
@@ -168,16 +168,16 @@ of accepted amendments and is absent on runs that were never amended.
 
 ## Emission rules
 
-- Journaled events reach `omo.dag.event` only AFTER the WAL append and the checkpoint replace both
+- Journaled events reach `omc.dag.event` only AFTER the WAL append and the checkpoint replace both
   succeed. There is no pre-durability emission path: an event you receive is already on disk and
-  will replay from `omo.dag.history`.
+  will replay from `omc.dag.history`.
 - The bridge delivers each seq at most once per attach. A journal reopen may redeliver a seq; the
   bridge drops anything at or below the last forwarded seq for that run.
 - Heartbeats are never persisted and do not advance `seq`. They carry no payload state beyond
   `headSeq` observations.
 - Activity is unsequenced and never enters the seq ledger. It is never journaled and must never be
   treated as replayable.
-- `omo.dag.updated` is derived state. It can lag or skip intermediate states (debounce plus
+- `omc.dag.updated` is derived state. It can lag or skip intermediate states (debounce plus
   dedupe); do not use it for event-level bookkeeping.
 - Every attach delivers the current state. When a session starts or resumes, the bridge emits the
   recovered snapshot immediately (no debounce, and `runs: []` when there are none). The session's
@@ -197,9 +197,9 @@ All four methods return the same envelope:
 Error codes (`DAG_RPC_ERROR_CODES`): `invalid_arguments`, `run_not_found`, `run_not_owned`,
 `history_unavailable`. Nothing crosses the boundary as a throw; unknown failures degrade to
 `history_unavailable`. When no session is active, run-scoped methods answer `run_not_owned` and
-`omo.dag.list` answers with an empty run list.
+`omc.dag.list` answers with an empty run list.
 
-### `omo.dag.list`
+### `omc.dag.list`
 
 Params: `{ statuses?: string[], limit?: number }`. `statuses` values must come from the run-status
 vocabulary. `limit` defaults to 100, capped at 256.
@@ -209,17 +209,17 @@ Value: `{ runs: [{ runId, runKey, name, parentSessionId, status, createdAt, upda
 100, max 256). The status filter is applied after the
 engine's maximum window, so a filtered query never loses runs the window already held.
 
-### `omo.dag.snapshot`
+### `omc.dag.snapshot`
 
 Params: `{ runId: string }`.
 
-Value: the full camelCase `DagRunSnapshot` (not the snake_case `omo.dag.updated` projection). It
+Value: the full camelCase `DagRunSnapshot` (not the snake_case `omc.dag.updated` projection). It
 always includes `lastSeq` (WAL head) plus run identity, `status`, `generation`, the graph
 (`nodes`/`edges`/`waves`/`criticalPath`/`bottlenecks`), `diagnostics`, `counts`, and
 `amendHistory` when the run was amended. Node `prompt` is the submitted prompt, not the
 skill-prepended `effectivePrompt`.
 
-### `omo.dag.history`
+### `omc.dag.history`
 
 Params: `{ runId, sinceSeq?, limit?, lane?, types?, throughSeq? }`.
 
@@ -231,9 +231,9 @@ Params: `{ runId, sinceSeq?, limit?, lane?, types?, throughSeq? }`.
 Value: `{ events, nextSinceSeq, headSeq, hasMore }`. Page with `sinceSeq = nextSinceSeq` until
 `hasMore` is false.
 
-### `omo.dag.subscribe`
+### `omc.dag.subscribe`
 
-Params: same shape as `omo.dag.history`. This is a stateless catch-up handshake; no server-side
+Params: same shape as `omc.dag.history`. This is a stateless catch-up handshake; no server-side
 subscriber is registered. The snapshot is read first, so `highWaterSeq` describes the ledger before
 the first page is read, and the page is bounded by that mark.
 
@@ -242,7 +242,7 @@ Value:
 ```jsonc
 {
   "schemaVersion": 1,
-  "eventName": "omo.dag.event",
+  "eventName": "omc.dag.event",
   "snapshot": { "runId": "...", "status": "...", "lastSeq": 42 },
   "highWaterSeq": 42,
   "page": { "events": [], "nextSinceSeq": 42, "headSeq": 42, "hasMore": false }
@@ -251,18 +251,18 @@ Value:
 
 ## Gap-free catch-up algorithm
 
-The seq ledger is scoped to `omo.dag.event` only. Dedupe by `(runId, seq)`.
+The seq ledger is scoped to `omc.dag.event` only. Dedupe by `(runId, seq)`.
 
-1. Register your `omo.dag.event` listener FIRST, before any request. Buffer everything it receives.
-2. Call `omo.dag.subscribe` for the run. Record `highWaterSeq` from the handshake.
+1. Register your `omc.dag.event` listener FIRST, before any request. Buffer everything it receives.
+2. Call `omc.dag.subscribe` for the run. Record `highWaterSeq` from the handshake.
 3. Apply the handshake `page` to your model.
-4. While `page.hasMore`, call `omo.dag.history` with `sinceSeq = page.nextSinceSeq` and
+4. While `page.hasMore`, call `omc.dag.history` with `sinceSeq = page.nextSinceSeq` and
    `throughSeq: highWaterSeq`. The bound freezes the window: paging never races past events that
    arrived live during the loop.
 5. Drain the live buffer, dropping every event with `seq <= highWaterSeq` or any `(runId, seq)`
    already applied. Apply the rest in seq order.
 6. Steady state: apply live events, tracking the last applied seq per run. On a non-contiguous seq
-   (received seq > last applied + 1), refetch the gap via `omo.dag.history` with
+   (received seq > last applied + 1), refetch the gap via `omc.dag.history` with
    `sinceSeq = lastApplied` and `throughSeq = received seq`, then continue.
 
 ## Overflow recovery
@@ -278,29 +278,29 @@ It receives a fresh seq greater than the current WAL tail. No journal seq is eve
 when reporting overflow; the overflow event's envelope `seq` is therefore not a dropped event's seq.
 
 When a viewer receives an overflow event, it must pause normal application and call
-`omo.dag.history` with `sinceSeq = recoverAfterSeq` and `throughSeq = overflow.seq`. Apply that
+`omc.dag.history` with `sinceSeq = recoverAfterSeq` and `throughSeq = overflow.seq`. Apply that
 bounded page and every continuation page in seq order, deduping by `(runId, seq)`. This recovers all
 missed durable events and the overflow event itself. Then resume buffered live delivery, discarding
 any event whose seq was already applied. Do not subtract one from `recoverAfterSeq`, and do not infer
 a recovery cursor from `droppedCount` or the overflow event's own seq.
 
-## omo-desktop-app integration
+## omc-desktop-app integration
 
 Deferred follow-up. The wiring described here is NOT shipped; this section only maps the contract
 onto the app's existing pattern so the follow-up is mechanical.
 
-omo-desktop-app already consumes `omo.task.updated`: it registers one `extension_event` name and
+omc-desktop-app already consumes `omc.task.updated`: it registers one `extension_event` name and
 runs a wholesale-replace reducer that swaps the stored task list on every payload. This protocol
-was shaped so `omo.dag.updated` slots into that exact pattern:
+was shaped so `omc.dag.updated` slots into that exact pattern:
 
-- One NEW `extension_event` name to register: `omo.dag.updated`. No new transport, no new
+- One NEW `extension_event` name to register: `omc.dag.updated`. No new transport, no new
   capability; Native RPC host delivery is thread-scoped and already reaches the app.
 - One wholesale-replace reducer: on each payload, replace the run list for `parent_session_id`
   with `runs`. No per-event state, no seq tracking, no merge logic. Surface `truncated_runs` when
   present.
-- The payload is already snake_case for the same reason `omo.task.updated` is: the app's decoders
+- The payload is already snake_case for the same reason `omc.task.updated` is: the app's decoders
   expect that convention.
 
 An app view that later wants event-level fidelity (live edge animation, per-transition history)
-graduates to the `omo.dag.event` ledger and the catch-up algorithm above. Until then the
+graduates to the `omc.dag.event` ledger and the catch-up algorithm above. Until then the
 snapshot channel is the whole integration.

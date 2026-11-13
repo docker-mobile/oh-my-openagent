@@ -10,7 +10,7 @@ import { pathToFileURL } from "node:url"
 import { runBlock } from "./release-workflow-test-steps"
 
 const repoRoot = join(import.meta.dir, "..")
-const buildCore: unknown = await import(pathToFileURL(join(repoRoot, "packages/omo-senpi/plugin/scripts/build-extension-core.mjs")).href)
+const buildCore: unknown = await import(pathToFileURL(join(repoRoot, "packages/omc-senpi/plugin/scripts/build-extension-core.mjs")).href)
 
 function bundleOutputs(): string[] {
   if (typeof buildCore !== "object" || buildCore === null || !("resolveOutputs" in buildCore) || typeof buildCore.resolveOutputs !== "function") {
@@ -22,7 +22,7 @@ function bundleOutputs(): string[] {
 }
 const workflow = readFileSync(join(repoRoot, ".github", "workflows", "publish.yml"), "utf8")
 const prepareStep = runBlock(workflow, "      - name: Prepare release state (generation)\n", "      - name: Publish prepared release state\n")
-const senpiStaging = prepareStep.split("\n").filter((line) => /^git add .*packages\/omo-senpi\/plugin\/(extensions|runtime)/.test(line))
+const senpiStaging = prepareStep.split("\n").filter((line) => /^git add .*packages\/omc-senpi\/plugin\/(extensions|runtime)/.test(line))
 
 const git = (cwd: string, ...args: string[]) => {
   const result = spawnSync("git", args, { cwd, encoding: "utf8" })
@@ -33,10 +33,10 @@ const git = (cwd: string, ...args: string[]) => {
 describe("release-state staging of the committed Senpi bundles", () => {
   test("stages every bundle build-extension.mjs rewrites, and no gitignored staged runtime", () => {
     const outputs = bundleOutputs()
-    const root = mkdtempSync(join(tmpdir(), "omo-release-state-"))
+    const root = mkdtempSync(join(tmpdir(), "omc-release-state-"))
     try {
       git(root, "init", "-q")
-      writeFileSync(join(root, ".gitignore"), "packages/omo-senpi/plugin/runtime/lsp-daemon/\n")
+      writeFileSync(join(root, ".gitignore"), "packages/omc-senpi/plugin/runtime/lsp-daemon/\n")
       for (const path of outputs) {
         mkdirSync(join(root, dirname(path)), { recursive: true })
         writeFileSync(join(root, path), "before\n")
@@ -44,7 +44,7 @@ describe("release-state staging of the committed Senpi bundles", () => {
       git(root, "add", "-A")
       git(root, "-c", "user.email=t@t", "-c", "user.name=t", "commit", "-q", "-m", "base")
       for (const path of outputs) writeFileSync(join(root, path), "after version stamp\n")
-      const ignoredRuntime = "packages/omo-senpi/plugin/runtime/lsp-daemon/dist/cli.js"
+      const ignoredRuntime = "packages/omc-senpi/plugin/runtime/lsp-daemon/dist/cli.js"
       mkdirSync(join(root, dirname(ignoredRuntime)), { recursive: true })
       writeFileSync(join(root, ignoredRuntime), "staged runtime\n")
 
@@ -58,18 +58,18 @@ describe("release-state staging of the committed Senpi bundles", () => {
     }
   })
 
-  // Release contract (#12046): the service-auth bundle inlines packages/omo-native/package.json's
+  // Release contract (#12046): the service-auth bundle inlines packages/omc-native/package.json's
   // version, so the release commit must rebuild it after the bump and stage it, or the release-state
   // PR fails build-service-auth.test.ts as stale.
   test("rebuilds the service-auth bundle after the version bump and stages it", () => {
-    const bundle = "packages/omo-native/bin/lib/service-auth.generated.js"
+    const bundle = "packages/omc-native/bin/lib/service-auth.generated.js"
     const lines = prepareStep.split("\n")
-    const bump = lines.findIndex((line) => line.includes("packages/omo-native/package.json > tmp.json"))
+    const bump = lines.findIndex((line) => line.includes("packages/omc-native/package.json > tmp.json"))
     const build = lines.findIndex((line) => /^bun (run )?script\/build-service-auth\.ts\b/.test(line))
     expect(bump).toBeGreaterThanOrEqual(0)
     expect(build).toBeGreaterThan(bump)
 
-    const root = mkdtempSync(join(tmpdir(), "omo-release-state-"))
+    const root = mkdtempSync(join(tmpdir(), "omc-release-state-"))
     try {
       git(root, "init", "-q")
       mkdirSync(join(root, dirname(bundle)), { recursive: true })
@@ -77,7 +77,7 @@ describe("release-state staging of the committed Senpi bundles", () => {
       git(root, "add", "-A")
       git(root, "-c", "user.email=t@t", "-c", "user.name=t", "commit", "-q", "-m", "base")
       writeFileSync(join(root, bundle), "version 2\n")
-      const staging = lines.filter((line) => /^git add\b/.test(line) && line.includes("packages/omo-native/bin"))
+      const staging = lines.filter((line) => /^git add\b/.test(line) && line.includes("packages/omc-native/bin"))
 
       const result = spawnSync("bash", ["-e", "-c", staging.join("\n")], { cwd: root, encoding: "utf8" })
 

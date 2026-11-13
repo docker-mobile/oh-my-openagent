@@ -119,7 +119,7 @@ export interface RecallCorpusCacheOptions {
   /** Told when the persisted recall terms cannot be read or saved; recall itself is unaffected. */
   readonly onTermStoreError?: (error: unknown) => void
   /**
-   * Loads the persisted-terms store (`@oh-my-opencode/memory-core/recall-store`) on the first corpus load, so
+   * Loads the persisted-terms store (`@oh-my-cybersecurity/memory-core/recall-store`) on the first corpus load, so
    * its codec stays out of a host's startup bundle. Without it every new process tokenizes the corpus.
    */
   readonly termStore?: () => Promise<RecallTermStoreModule>
@@ -164,7 +164,7 @@ function acquireSharedCache(dir: string, options: RecallCorpusCacheOptions): Rec
   return cache
 }
 
-// Every cache in the process, read only when a memory report is taken (oh-my-openagent#9442).
+// Every cache in the process, read only when a memory report is taken (oh-my-cybersecurity#9442).
 const liveCaches = new Set<WeakRef<RecallCorpusCache>>()
 const releaseLiveCache = new FinalizationRegistry<WeakRef<RecallCorpusCache>>((ref) => {
   liveCaches.delete(ref)

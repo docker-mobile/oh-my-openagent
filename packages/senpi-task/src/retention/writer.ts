@@ -3,7 +3,7 @@ import { gunzipSync, gzipSync } from "node:zlib"
 import { mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 
-import type { OmoTaskTranscriptRetention } from "@oh-my-opencode/omo-config-core"
+import type { OmoTaskTranscriptRetention } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { TaskRecord } from "../state"
 import { readBoundedFileText } from "../tools/output/transcript/read-bounded"

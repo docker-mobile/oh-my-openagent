@@ -134,14 +134,14 @@ describe("RpcProcessRunner model admission", () => {
     // given
     const output = [
       "provider                    model                                                     context  max-out  thinking  images",
-      "omo-mock/mock-1",
+      "omc-mock/mock-1",
     ].join("\n")
 
     // when
     const catalog = parseModelCatalog(output)
 
     // then
-    expect(catalog.has("omo-mock/mock-1")).toBe(true)
+    expect(catalog.has("omc-mock/mock-1")).toBe(true)
   })
 
   test("#given a model absent from the child profile #when started #then admission rejects before spawn", async () => {

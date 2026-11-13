@@ -89,7 +89,7 @@ async function exchange(deps: PostDeps, signal: Signal, body: Uint8Array, abort:
   const compressed = body.byteLength > GZIP_THRESHOLD_BYTES
   const headers: Record<string, string> = {
     "content-type": "application/x-protobuf",
-    "x-omo-ingest-key": deps.ingestKey,
+    "x-omc-ingest-key": deps.ingestKey,
     ...(compressed ? { "content-encoding": "gzip" } : {}),
   }
   const response = await deps.fetch(`${deps.endpoint}/v1/${signal}`, {

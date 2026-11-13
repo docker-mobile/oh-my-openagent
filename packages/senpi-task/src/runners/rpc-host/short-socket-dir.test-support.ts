@@ -7,7 +7,7 @@ import { MAX_SHARD_BIND_PATH } from "./shard-socket"
 
 // A test that hands a spawned senpi engine a socket path under the runner's TMPDIR must keep that path within the
 // engine's MAX_SOCKET_PATH_BYTES (mirrored here as MAX_SHARD_BIND_PATH), or the engine exits 1 before it binds. The
-// root suite's preload nests TMPDIR one level deeper than a package run (`<TMPDIR>/omo-test-run-XXXXXX`), so a long
+// root suite's preload nests TMPDIR one level deeper than a package run (`<TMPDIR>/omc-test-run-XXXXXX`), so a long
 // runner TMPDIR broke such tests only in the whole-suite run (#12557). Every such test takes its socket from here:
 // a short parent (the runner's TMPDIR when the path fits, else /tmp) plus a short hashed, unique leaf.
 

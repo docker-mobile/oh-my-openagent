@@ -16,8 +16,8 @@ const mcpPackagePaths: readonly string[] = [
   "packages/lsp-tools-mcp",
 ] as const
 const adapterPackagePaths: readonly string[] = [
-  "packages/omo-codex",
-  "packages/omo-senpi",
+  "packages/omc-codex",
+  "packages/omc-senpi",
   "packages/senpi-task",
   "packages/senpi-desktop-engine",
   "packages/senpi-desktop-prelude",
@@ -25,12 +25,12 @@ const adapterPackagePaths: readonly string[] = [
   "packages/senpi-desktop-sdk",
   "packages/senpi-desktop-service",
   "packages/senpi-desktop-tool",
-  "packages/omo-opencode",
-  "packages/omo-native",
+  "packages/omc-opencode",
+  "packages/omc-native",
 ] as const
 const skillPackagePaths: readonly string[] = ["packages/shared-skills"] as const
-const shimSourceRoots: readonly string[] = ["packages/omo-opencode/src", "packages/omo-codex/src"] as const
-const reExportShimFirstLinePattern = /^export (\*|\{).*from ["'](@oh-my-opencode\/[^/"']+)/
+const shimSourceRoots: readonly string[] = ["packages/omc-opencode/src", "packages/omc-codex/src"] as const
+const reExportShimFirstLinePattern = /^export (\*|\{).*from ["'](@oh-my-cybersecurity\/[^/"']+)/
 
 const layerRanks = {
   skill: 1,
@@ -170,7 +170,7 @@ function unclassifiedRootPackageWorkspaces(workspaces: readonly string[]): reado
 }
 
 function isNestedCodexPluginPackage(path: string): boolean {
-  return path.startsWith("packages/omo-codex/plugin/")
+  return path.startsWith("packages/omc-codex/plugin/")
 }
 
 function isRootManagedTypecheckPackage(path: string): boolean {
@@ -203,9 +203,9 @@ describe("package registration audit", () => {
     const expectedDevDependencyNames = (
       await Promise.all(
         managedWorkspacePaths
-          // omo-opencode stays linked because the Senpi build imports its config-migration export.
-          // omo-native publishes under its own npm name and is not an internal workspace devDependency.
-          .filter((path) => path !== "packages/omo-native")
+          // omc-opencode stays linked because the Senpi build imports its config-migration export.
+          // omc-native publishes under its own npm name and is not an internal workspace devDependency.
+          .filter((path) => path !== "packages/omc-native")
           .map((path) => readManifest(join(path, "package.json")).then((manifest) => manifest.name)),
       )
     ).toSorted()
@@ -217,7 +217,7 @@ describe("package registration audit", () => {
       isRootManagedTypecheckPackage,
     )
     const actualDevDependencyNames = Object.entries(root.devDependencies)
-      .filter((entry) => entry[1] === "workspace:*" && entry[0].startsWith("@oh-my-opencode/"))
+      .filter((entry) => entry[1] === "workspace:*" && entry[0].startsWith("@oh-my-cybersecurity/"))
       .map((entry) => entry[0])
       .toSorted()
 

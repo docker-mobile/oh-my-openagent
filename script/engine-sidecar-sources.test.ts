@@ -4,7 +4,7 @@ import { createRequire } from "node:module"
 import { dirname, join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import { tmpdir } from "node:os"
-import { RELEASE_BINARY_TARGETS, resolveExpectedSidecarRelPaths } from "./build-omo-binary"
+import { RELEASE_BINARY_TARGETS, resolveExpectedSidecarRelPaths } from "./build-omc-binary"
 import { codemodeRuntimeDependencySources, engineSidecarSources } from "./engine-sidecar-sources"
 
 const scriptDir = dirname(fileURLToPath(import.meta.url))
@@ -41,7 +41,7 @@ function writePackage(
 describe("sidecar parity set", () => {
   test("requires every wasm asset when a runtime dependency ships nested assets", () => {
     // Given
-    const root = join(tmpdir(), `omo-codemode-wasm-${crypto.randomUUID()}`)
+    const root = join(tmpdir(), `omc-codemode-wasm-${crypto.randomUUID()}`)
     const codemode = join(root, "codemode")
     const host = join(root, "host")
     const dependency = join(codemode, "node_modules", "runtime")
@@ -66,7 +66,7 @@ describe("sidecar parity set", () => {
 
   test("fails when codemode declares an uninstalled runtime dependency", () => {
     // Given
-    const root = join(tmpdir(), `omo-codemode-missing-${crypto.randomUUID()}`)
+    const root = join(tmpdir(), `omc-codemode-missing-${crypto.randomUUID()}`)
     const codemode = join(root, "codemode")
     const host = join(root, "host")
     try {
@@ -119,7 +119,7 @@ describe("sidecar parity set", () => {
 
   test("#given the host declares the same dependency name at a different version #when codemode dependencies are resolved #then codemode's version remains staged", () => {
     // given
-    const root = join(tmpdir(), `omo-codemode-conflict-${process.pid}-${crypto.randomUUID()}`)
+    const root = join(tmpdir(), `omc-codemode-conflict-${process.pid}-${crypto.randomUUID()}`)
     const codemode = join(root, "codemode")
     const host = join(root, "host")
     try {
@@ -142,7 +142,7 @@ describe("sidecar parity set", () => {
 
   test("#given the host declares but cannot resolve codemode's dependency #when resolved #then codemode's installed copy remains staged", () => {
     // given
-    const root = join(tmpdir(), `omo-codemode-missing-host-${process.pid}-${crypto.randomUUID()}`)
+    const root = join(tmpdir(), `omc-codemode-missing-host-${process.pid}-${crypto.randomUUID()}`)
     const codemode = join(root, "codemode")
     const host = join(root, "host")
     try {
@@ -164,7 +164,7 @@ describe("sidecar parity set", () => {
 
   test("#given matching aliased host and codemode dependencies #when resolved #then the host copy is reused by package identity", () => {
     // given
-    const root = join(tmpdir(), `omo-codemode-alias-${process.pid}-${crypto.randomUUID()}`)
+    const root = join(tmpdir(), `omc-codemode-alias-${process.pid}-${crypto.randomUUID()}`)
     const codemode = join(root, "codemode")
     const host = join(root, "host")
     try {
@@ -185,7 +185,7 @@ describe("sidecar parity set", () => {
 
   test("#given a transitive dependency cycle #when resolved #then ancestor packages are not staged twice", () => {
     // given
-    const root = join(tmpdir(), `omo-codemode-cycle-${process.pid}-${crypto.randomUUID()}`)
+    const root = join(tmpdir(), `omc-codemode-cycle-${process.pid}-${crypto.randomUUID()}`)
     const codemode = join(root, "codemode")
     const host = join(root, "host")
     try {

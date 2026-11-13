@@ -82,11 +82,11 @@ test("zfs dataset-root probe, snapshot/clone, relocation and restart-safe stop",
   await backend.relocate(f.baseDir, final)
   await new ZfsBackend(io).stop(join(final, "m"))
   expect(calls.slice(-5)).toEqual([
-    ["zfs", "snapshot", "pool/repo@omo-test"],
-    ["zfs", "clone", "-o", `mountpoint=${f.merged}`, "pool/repo@omo-test", "pool/repo/omo-test"],
-    ["zfs", "set", `mountpoint=${join(final, "m")}`, "pool/repo/omo-test"],
-    ["zfs", "destroy", "-r", "pool/repo/omo-test"],
-    ["zfs", "destroy", "pool/repo@omo-test"],
+    ["zfs", "snapshot", "pool/repo@omc-test"],
+    ["zfs", "clone", "-o", `mountpoint=${f.merged}`, "pool/repo@omc-test", "pool/repo/omc-test"],
+    ["zfs", "set", `mountpoint=${join(final, "m")}`, "pool/repo/omc-test"],
+    ["zfs", "destroy", "-r", "pool/repo/omc-test"],
+    ["zfs", "destroy", "pool/repo@omc-test"],
   ])
 })
 
@@ -184,9 +184,9 @@ test("zfs failed relocation restores the source parent and marker identity", asy
   const final = join(f.root, "final")
   await expect(backend.relocate(f.baseDir, final)).rejects.toThrow("mount busy")
   expect(await readFile(join(f.merged, "sentinel"), "utf8")).toBe("untouched")
-  expect(JSON.parse(await readFile(join(f.baseDir, BACKEND_FILE), "utf8")).dataset).toBe("pool/repo/omo-test")
+  expect(JSON.parse(await readFile(join(f.baseDir, BACKEND_FILE), "utf8")).dataset).toBe("pool/repo/omc-test")
   await expect(access(final)).rejects.toThrow()
-  expect(calls.at(-1)).toEqual(["zfs", "set", `mountpoint=${join(final, "m")}`, "pool/repo/omo-test"])
+  expect(calls.at(-1)).toEqual(["zfs", "set", `mountpoint=${join(final, "m")}`, "pool/repo/omc-test"])
 })
 
 test("zfs clone failure leaves a snapshot marker that restart-safe stop reclaims", async () => {
@@ -197,7 +197,7 @@ test("zfs clone failure leaves a snapshot marker that restart-safe stop reclaims
   } })
   await expect(new ZfsBackend(io).start(f.repoRoot, f.merged, f.ctx)).rejects.toThrow("clone failed")
   await new ZfsBackend(io).stop(f.merged)
-  expect(calls.at(-1)).toEqual(["zfs", "destroy", "pool/repo@omo-test"])
+  expect(calls.at(-1)).toEqual(["zfs", "destroy", "pool/repo@omc-test"])
   expect(calls.some((argv) => argv[1] === "destroy" && argv[2] === "-r")).toBe(false)
 })
 

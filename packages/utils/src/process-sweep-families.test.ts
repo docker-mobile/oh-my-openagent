@@ -26,7 +26,7 @@ function writeOwner(versionDir: string, pid: number): void {
 }
 
 describe("process sweep family matrix", () => {
-  const omoRoot = "/tmp/omo-plugin"
+  const omoRoot = "/tmp/omc-plugin"
 
   const posixTable: readonly ProcessInfo[] = [
     { command: "codex app-server", pid: 200, ppid: 1 },
@@ -55,7 +55,7 @@ describe("process sweep family matrix", () => {
 
   it("#given a windows process table spanning every family #when classifying #then windows shapes are selected per family", () => {
     // given
-    const winRoot = "C:\\Users\\runner\\.codex\\plugins\\cache\\sisyphuslabs\\omo\\4.15.1"
+    const winRoot = "C:\\Users\\runner\\.codex\\plugins\\cache\\sisyphuslabs\\omc\\4.15.1"
     const table: readonly ProcessInfo[] = [
       { command: "codex.exe app-server", pid: 200, ppid: 4 },
       { command: `node.exe ${winRoot}\\components\\lsp-daemon\\dist\\cli.js mcp`, pid: 312, ppid: 1 },
@@ -102,8 +102,8 @@ describe("process sweep family matrix", () => {
 describe("orphaned lsp-daemon proxy sweep", () => {
   it("#given an orphaned proxy and a live-parent proxy #when sweeping #then only the orphan is killed and the family stamp is written", async () => {
     // given
-    const homeDir = mkdtempSync(join(tmpdir(), "omo-lsp-proxy-sweep-"))
-    const omoRoot = "/tmp/omo-plugin"
+    const homeDir = mkdtempSync(join(tmpdir(), "omc-lsp-proxy-sweep-"))
+    const omoRoot = "/tmp/omc-plugin"
     const calls: string[] = []
     try {
       // when
@@ -136,7 +136,7 @@ describe("orphaned lsp-daemon proxy sweep", () => {
       expect(result.action).toBe("swept")
       expect(result.killed.map((processInfo) => processInfo.pid)).toEqual([401])
       expect(calls).toEqual(["term:401"])
-      expect(result.stampFile).toBe(join(homeDir, ".omo", "lsp-daemon", "lsp-proxy-sweep.stamp"))
+      expect(result.stampFile).toBe(join(homeDir, ".omc", "lsp-daemon", "lsp-proxy-sweep.stamp"))
       expect(existsSync(result.stampFile)).toBe(true)
     } finally {
       rmSync(homeDir, { force: true, recursive: true })
@@ -145,14 +145,14 @@ describe("orphaned lsp-daemon proxy sweep", () => {
 
   it("#given a fresh proxy family stamp #when sweeping without force #then the proxy family is throttled independently", async () => {
     // given
-    const homeDir = mkdtempSync(join(tmpdir(), "omo-lsp-proxy-throttle-"))
+    const homeDir = mkdtempSync(join(tmpdir(), "omc-lsp-proxy-throttle-"))
     try {
       const nowMs = Date.UTC(2026, 6, 21, 3, 0, 0)
       await sweepOrphanedLspDaemonProxies({
         force: true,
         homeDir,
         nowMs,
-        ownedRoots: ["/tmp/omo-plugin"],
+        ownedRoots: ["/tmp/omc-plugin"],
         processProvider: () => Promise.resolve([]),
       })
 
@@ -160,7 +160,7 @@ describe("orphaned lsp-daemon proxy sweep", () => {
       const result = await sweepOrphanedLspDaemonProxies({
         homeDir,
         nowMs: nowMs + 1_000,
-        ownedRoots: ["/tmp/omo-plugin"],
+        ownedRoots: ["/tmp/omc-plugin"],
         processProvider: () => {
           throw new Error("process provider should not run while throttled")
         },
@@ -177,8 +177,8 @@ describe("orphaned lsp-daemon proxy sweep", () => {
 describe("stale lsp-daemon version sweep", () => {
   it("#given a stale attested daemon and a live current daemon #when sweeping #then only the stale daemon is killed", async () => {
     // given (posix-forced: the kill path is platform-gated; a dedicated win32-defer test covers the real-Windows behavior)
-    const homeDir = mkdtempSync(join(tmpdir(), "omo-lsp-daemon-sweep-"))
-    const baseDir = join(homeDir, ".omo", "lsp-daemon")
+    const homeDir = mkdtempSync(join(tmpdir(), "omc-lsp-daemon-sweep-"))
+    const baseDir = join(homeDir, ".omc", "lsp-daemon")
     const calls: string[] = []
     try {
       writeOwner(join(baseDir, "v0.0.1"), 710)
@@ -220,8 +220,8 @@ describe("stale lsp-daemon version sweep", () => {
 
   it("#given a stale version whose owner pid fails attestation #when sweeping #then it is spared as a possible recycled pid", async () => {
     // given
-    const homeDir = mkdtempSync(join(tmpdir(), "omo-lsp-daemon-spare-"))
-    const baseDir = join(homeDir, ".omo", "lsp-daemon")
+    const homeDir = mkdtempSync(join(tmpdir(), "omc-lsp-daemon-spare-"))
+    const baseDir = join(homeDir, ".omc", "lsp-daemon")
     const logs: string[] = []
     try {
       writeOwner(join(baseDir, "v0.0.1"), 720)
@@ -253,8 +253,8 @@ describe("stale lsp-daemon version sweep", () => {
 
   it("#given a stale version on Windows #when sweeping #then it is spared because ownership cannot be proven", async () => {
     // given
-    const homeDir = mkdtempSync(join(tmpdir(), "omo-lsp-daemon-win-"))
-    const baseDir = join(homeDir, ".omo", "lsp-daemon")
+    const homeDir = mkdtempSync(join(tmpdir(), "omc-lsp-daemon-win-"))
+    const baseDir = join(homeDir, ".omc", "lsp-daemon")
     try {
       writeOwner(join(baseDir, "v0.0.1"), 730)
 
@@ -279,8 +279,8 @@ describe("stale lsp-daemon version sweep", () => {
 
   it("#given a stale version whose owner pid is dead #when sweeping #then there is nothing to kill", async () => {
     // given
-    const homeDir = mkdtempSync(join(tmpdir(), "omo-lsp-daemon-dead-"))
-    const baseDir = join(homeDir, ".omo", "lsp-daemon")
+    const homeDir = mkdtempSync(join(tmpdir(), "omc-lsp-daemon-dead-"))
+    const baseDir = join(homeDir, ".omc", "lsp-daemon")
     try {
       writeOwner(join(baseDir, "v0.0.1"), 740)
 
@@ -303,8 +303,8 @@ describe("stale lsp-daemon version sweep", () => {
 
   it("#given no current version can be determined #when sweeping #then the family skips conservatively", async () => {
     // given
-    const homeDir = mkdtempSync(join(tmpdir(), "omo-lsp-daemon-unknown-"))
-    const baseDir = join(homeDir, ".omo", "lsp-daemon")
+    const homeDir = mkdtempSync(join(tmpdir(), "omc-lsp-daemon-unknown-"))
+    const baseDir = join(homeDir, ".omc", "lsp-daemon")
     try {
       writeOwner(join(baseDir, "v0.0.1"), 750)
 
@@ -321,8 +321,8 @@ describe("stale lsp-daemon version sweep", () => {
 
   it("#given non-version entries in the base dir #when sweeping #then they are ignored", async () => {
     // given
-    const homeDir = mkdtempSync(join(tmpdir(), "omo-lsp-daemon-entries-"))
-    const baseDir = join(homeDir, ".omo", "lsp-daemon")
+    const homeDir = mkdtempSync(join(tmpdir(), "omc-lsp-daemon-entries-"))
+    const baseDir = join(homeDir, ".omc", "lsp-daemon")
     try {
       mkdirSync(join(baseDir, "not-a-version"), { recursive: true })
       writeFileSync(join(baseDir, "vfile"), "not a dir")
@@ -350,7 +350,7 @@ describe("stale lsp-daemon version sweep", () => {
 describe("lsp-daemon cli attestation", () => {
   it("#given a linux /proc cmdline with node cli.js daemon #when attesting #then it passes", async () => {
     // given
-    const cmdline = Buffer.from("node\u0000/usr/lib/omo/lsp-daemon/dist/cli.js\u0000daemon\u0000")
+    const cmdline = Buffer.from("node\u0000/usr/lib/omc/lsp-daemon/dist/cli.js\u0000daemon\u0000")
 
     // when / then
     expect(
@@ -360,7 +360,7 @@ describe("lsp-daemon cli attestation", () => {
 
   it("#given a linux /proc cmdline for the mcp proxy shape #when attesting #then it fails", async () => {
     // given
-    const cmdline = Buffer.from("node\u0000/usr/lib/omo/lsp-daemon/dist/cli.js\u0000mcp\u0000")
+    const cmdline = Buffer.from("node\u0000/usr/lib/omc/lsp-daemon/dist/cli.js\u0000mcp\u0000")
 
     // when / then
     expect(
@@ -381,12 +381,12 @@ describe("lsp-daemon cli attestation", () => {
     // given / when / then
     expect(
       await attestLspDaemonCliProcess(804, "darwin", {
-        executeForStdout: () => Promise.resolve("node /usr/lib/omo/lsp-daemon/dist/cli.js daemon\n"),
+        executeForStdout: () => Promise.resolve("node /usr/lib/omc/lsp-daemon/dist/cli.js daemon\n"),
       }),
     ).toBe(true)
     expect(
       await attestLspDaemonCliProcess(805, "darwin", {
-        executeForStdout: () => Promise.resolve("node /usr/lib/omo/lsp-daemon/dist/cli.js mcp\n"),
+        executeForStdout: () => Promise.resolve("node /usr/lib/omc/lsp-daemon/dist/cli.js mcp\n"),
       }),
     ).toBe(false)
     expect(await attestLspDaemonCliProcess(806, "darwin", { executeForStdout: () => Promise.resolve(null) })).toBe(false)
@@ -400,8 +400,8 @@ describe("lsp-daemon cli attestation", () => {
 
 describe("stale lsp-daemon version sweep pid reuse", () => {
   it("#given daemon identity changes after TERM #when escalation runs #then replacement PID is never killed", async () => {
-    const homeDir = mkdtempSync(join(tmpdir(), "omo-lsp-pid-reuse-"))
-    const baseDir = join(homeDir, ".omo", "lsp-daemon")
+    const homeDir = mkdtempSync(join(tmpdir(), "omc-lsp-pid-reuse-"))
+    const baseDir = join(homeDir, ".omc", "lsp-daemon")
     writeOwner(join(baseDir, "v1.0.0"), 4242)
     const signals: string[] = []
     let attestCalls = 0

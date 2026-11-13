@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test"
 import { existsSync } from "node:fs"
 import { join } from "node:path"
 import { builtinToLoadedSkill } from "./builtin-skill-converter"
-import { sharedSkillsRootPath } from "@oh-my-opencode/shared-skills"
+import { sharedSkillsRootPath } from "@oh-my-cybersecurity/shared-skills"
 import { devBrowserSkill } from "../../builtin-skills/skills/dev-browser"
 import type { BuiltinSkill } from "../../builtin-skills/types"
 
@@ -33,13 +33,13 @@ describe("builtinToLoadedSkill", () => {
   // #then resolvedPath preserves that directory for local references
   test("#given a built-in skill with explicit path #when converted to loaded skill #then resolvedPath preserves local reference base", () => {
     // given
-    const builtin: BuiltinSkill = { ...baseBuiltin, name: "dev-browser", resolvedPath: "/tmp/omo/dev-browser" }
+    const builtin: BuiltinSkill = { ...baseBuiltin, name: "dev-browser", resolvedPath: "/tmp/omc/dev-browser" }
 
     // when
     const loaded = builtinToLoadedSkill(builtin)
 
     // then
-    expect(loaded.resolvedPath).toBe("/tmp/omo/dev-browser")
+    expect(loaded.resolvedPath).toBe("/tmp/omc/dev-browser")
   })
 
   // #given the dev-browser built-in skill has local reference files

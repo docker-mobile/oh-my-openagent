@@ -1,8 +1,8 @@
 import { fileURLToPath } from "node:url"
 
 import type { ExtensionAPI } from "@code-yeongyu/senpi"
-import { TeamModeConfigSchema, type TeamModeConfig } from "@oh-my-opencode/team-core/config"
-import { log } from "@oh-my-opencode/utils/logger"
+import { TeamModeConfigSchema, type TeamModeConfig } from "@oh-my-cybersecurity/team-core/config"
+import { log } from "@oh-my-cybersecurity/utils/logger"
 
 import { createTaskRecordStore } from "../../store"
 import { MEMBER_EXTENSION_BUNDLE_NAME, WORKPOOL_STATE_DIR_ENV, WORKPOOL_TASK_ID_ENV } from "./identity"

@@ -8,7 +8,7 @@ import { probeFakeHost } from "./fake-host-probe"
  * writer attaches through, and the per-child runner the daemon path may fall back to.
  */
 
-/** The real `closeHostSession` over the fixture's probe - a fake daemon, omo's own close path. */
+/** The real `closeHostSession` over the fixture's probe - a fake daemon, omc's own close path. */
 export function fakeCloseChannel(socket: string): HostSessionCloseChannel {
   const client = new HostSessionClient({
     socketPath: socket,

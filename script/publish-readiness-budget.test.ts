@@ -7,10 +7,10 @@ import { tmpdir } from "node:os"
 import { join } from "node:path"
 
 /**
- * Executes the "Wait for omo-ai registry readiness" step of publish.yml with `npm` and `sleep`
+ * Executes the "Wait for omc-ai registry readiness" step of publish.yml with `npm` and `sleep`
  * stubbed on PATH, so the loop's budget is asserted rather than assumed.
  *
- * Regression pinned (2026-09-04, beta.42): `npm publish` printed "+ omo-ai@5.0.0-0.beta.42" and
+ * Regression pinned (2026-09-04, beta.42): `npm publish` printed "+ omc-ai@5.0.0-0.beta.42" and
  * "Your package is being processed and may take a few minutes to become available", yet the verify
  * step gave up after 5 x 15 s = 60 s and failed the release run - a false failure of a successful
  * publish (the same shape that bit lazycodex-ai in beta.31 and beta.34). The registry showed the
@@ -24,8 +24,8 @@ const workflow = Bun.YAML.parse(workflowText) as { jobs: Record<string, { steps:
 const READINESS_TEST_TIMEOUT_MS = process.platform === "win32" ? 60_000 : 15_000
 
 function readinessRunBlock(): string {
-  const step = workflow.jobs["post-publish-verify"].steps.find((s) => s.name === "Wait for omo-ai registry readiness")
-  if (!step?.run) throw new Error("post-publish-verify has no 'Wait for omo-ai registry readiness' run block")
+  const step = workflow.jobs["post-publish-verify"].steps.find((s) => s.name === "Wait for omc-ai registry readiness")
+  if (!step?.run) throw new Error("post-publish-verify has no 'Wait for omc-ai registry readiness' run block")
   return step.run
 }
 
@@ -66,9 +66,9 @@ function runReadiness(options: { readonly metadataReadyAfterViews: number; reado
       '  local n; IFS= read -r n < "$COUNTER" || :; n=$((n+1)); printf "%s" "$n" > "$COUNTER"',
       '  if [ "$n" -gt "$METADATA_READY_AFTER" ]; then',
       '    case "$*" in *dist.tarball*)',
-      '      printf "https://registry.npmjs.org/omo-ai/-/omo-ai-%s.tgz\\n" "$OMO_AI_VERSION"',
+      '      printf "https://registry.npmjs.org/omc-ai/-/omc-ai-%s.tgz\\n" "$OMC_AI_VERSION"',
       "    ;; *)",
-      '      printf "%s\\n" "$OMO_AI_VERSION"',
+      '      printf "%s\\n" "$OMC_AI_VERSION"',
       "    ;; esac",
       "  fi",
       "  return 0",
@@ -93,8 +93,8 @@ function runReadiness(options: { readonly metadataReadyAfterViews: number; reado
         SLEEPS: sleeps,
         METADATA_READY_AFTER: String(options.metadataReadyAfterViews),
         TARBALL_READY_AFTER: String(options.tarballReadyAfterHeads),
-        OMO_AI_VERSION: channel.version,
-        OMO_AI_DIST_TAG: channel.distTag,
+        OMC_AI_VERSION: channel.version,
+        OMC_AI_DIST_TAG: channel.distTag,
         ALREADY_PUBLISHED: "false",
       },
     })
@@ -129,7 +129,7 @@ describe("publish.yml post-publish-verify registry readiness", () => {
   test("#given a stable release on the latest dist-tag #when the registry catches up #then readiness passes on the same budget", () => {
     const outcome = runReadiness({ metadataReadyAfterViews: 3 * 20, tarballReadyAfterHeads: 0 }, { version: "5.0.0", distTag: "latest" })
     expect(outcome.status).toBe(0)
-    expect(outcome.stdout).toContain("omo-ai@5.0.0 metadata and tarball are ready")
+    expect(outcome.stdout).toContain("omc-ai@5.0.0 metadata and tarball are ready")
   }, READINESS_TEST_TIMEOUT_MS)
 
   test("#given metadata is ready but the tarball stays unavailable #when readiness exhausts its budget #then it probes HEAD every attempt and names tarball availability", () => {
@@ -148,7 +148,7 @@ describe("publish.yml post-publish-verify registry readiness", () => {
       expect(outcome.status).not.toBe(0)
       expect(outcome.stdout + outcome.stderr).toContain("propagat")
       // Budget is wall-clock shaped, not "5 tries": sleeps x the 15 s interval must cover npm's
-      // measured processing delay, which reached ~55 minutes for omo-ai@5.1.13 (#9492).
+      // measured processing delay, which reached ~55 minutes for omc-ai@5.1.13 (#9492).
       expect(outcome.sleeps * 15).toBeGreaterThanOrEqual(55 * 60)
     },
     READINESS_TEST_TIMEOUT_MS,

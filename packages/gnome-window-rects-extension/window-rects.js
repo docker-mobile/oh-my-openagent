@@ -1,10 +1,10 @@
 // Pure half of the extension: no gi:// imports, so it runs under bun test too.
 // The reply shape is the contract of crates/senpi-desktop-backend-wayland/src/compositor/gnome.rs.
 
-export const OBJECT_PATH = "/dev/omo/SenpiDesktop/WindowRects";
+export const OBJECT_PATH = "/dev/omc/SenpiDesktop/WindowRects";
 
 export const INTERFACE_XML = `<node>
-  <interface name="dev.omo.SenpiDesktop.WindowRects">
+  <interface name="dev.omc.SenpiDesktop.WindowRects">
     <method name="List">
       <arg type="s" direction="out" name="json"/>
     </method>

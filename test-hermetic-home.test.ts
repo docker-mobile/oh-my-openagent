@@ -9,12 +9,12 @@ import { probeSocket, runCheckThenTeardown, shardsCreatedBy, type SocketState, s
 describe("hermetic memory home (#9469)", () => {
   test("the preload pins memory inside the temporary home", () => {
     const home = process.env.HOME
-    const memory = process.env.OMO_MEMORY_HOME
+    const memory = process.env.OMC_MEMORY_HOME
     expect(home).toBeDefined()
     expect(memory).toBeDefined()
     if (!home || !memory) throw new Error("missing hermetic home")
     const path = relative(home, memory)
-    expect(path).toBe(join(".omo", "memory"))
+    expect(path).toBe(join(".omc", "memory"))
     expect(isAbsolute(path)).toBe(false)
   })
 })
@@ -26,7 +26,7 @@ describe("hermetic git config (#11742)", () => {
   })
 
   function scratch(): string {
-    const dir = mkdtempSync(join(tmpdir(), "omo-hermetic-git-"))
+    const dir = mkdtempSync(join(tmpdir(), "omc-hermetic-git-"))
     dirs.push(dir)
     return dir
   }
@@ -70,7 +70,7 @@ describe("shardsCreatedBy (#9673)", () => {
   })
 
   function shardsDirWith(createdBy: number, createdAt: Date): string {
-    const dir = mkdtempSync(join(tmpdir(), "omo-shards-"))
+    const dir = mkdtempSync(join(tmpdir(), "omc-shards-"))
     dirs.push(dir)
     writeFileSync(
       join(dir, "p-abc.meta.json"),
@@ -92,7 +92,7 @@ describe("shardsCreatedBy (#9673)", () => {
   })
 
   test("reports a shard naming this pid whose created_at cannot be parsed", () => {
-    const dir = mkdtempSync(join(tmpdir(), "omo-shards-"))
+    const dir = mkdtempSync(join(tmpdir(), "omc-shards-"))
     dirs.push(dir)
     writeFileSync(join(dir, "p-abc.meta.json"), JSON.stringify({ created_by_pid: process.pid, created_at: "not a date" }))
     expect(shardsCreatedBy(dir, process.pid, startedAt)).toEqual([join(dir, "p-abc.meta.json")])
@@ -124,13 +124,13 @@ describe("runCheckThenTeardown (#9766)", () => {
   })
 
   test("#given both throw #when run #then the thrown message carries both, since the runner prints only that", async () => {
-    const error = await runCheckThenTeardown(async () => fail("shard p-1 leaked")(), fail("left omo-x-1")).catch(
+    const error = await runCheckThenTeardown(async () => fail("shard p-1 leaked")(), fail("left omc-x-1")).catch(
       (caught: unknown) => caught,
     )
 
     if (!(error instanceof AggregateError)) throw new Error(`expected an AggregateError, got ${String(error)}`)
     expect(error.message).toContain("shard p-1 leaked")
-    expect(error.message).toContain("left omo-x-1")
+    expect(error.message).toContain("left omc-x-1")
     expect(error.errors).toHaveLength(2)
   })
 
@@ -161,7 +161,7 @@ describe("stopRunTaskHosts (#11630)", () => {
   })
 
   function agentDirWithHosts(): string {
-    const dir = mkdtempSync(join(tmpdir(), "omo-agent-"))
+    const dir = mkdtempSync(join(tmpdir(), "omc-agent-"))
     dirs.push(dir)
     mkdirSync(join(dir, "rpc-host-daemon"))
     return dir
@@ -183,7 +183,7 @@ describe("stopRunTaskHosts (#11630)", () => {
   }
 
   test("#given no host registry in the agent dir #when torn down #then the engine is never loaded", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "omo-agent-"))
+    const dir = mkdtempSync(join(tmpdir(), "omc-agent-"))
     dirs.push(dir)
     let loaded = false
     await stopRunTaskHosts(dir, { loadEngine: async () => { loaded = true; return engine({}) } })
@@ -302,7 +302,7 @@ describe("probeSocket (#11630)", () => {
   })
 
   function socketPath(): string {
-    const dir = mkdtempSync(join(tmpdir(), "omo-sock-"))
+    const dir = mkdtempSync(join(tmpdir(), "omc-sock-"))
     dirs.push(dir)
     return join(dir, "h.sock")
   }

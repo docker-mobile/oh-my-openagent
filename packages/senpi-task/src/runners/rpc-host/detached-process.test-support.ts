@@ -1,7 +1,7 @@
 import { spawn } from "node:child_process"
 import { once } from "node:events"
 import type { RpcCommand, RpcResponse } from "@code-yeongyu/senpi"
-import { configureSharedSubunitLogger } from "@oh-my-opencode/utils"
+import { configureSharedSubunitLogger } from "@oh-my-cybersecurity/utils"
 
 import { createRpcChildHandle } from "../rpc/handle"
 import { RpcProtocolClient } from "../rpc/protocol-client"

@@ -10,13 +10,13 @@ import {
 import { redactUrl } from "./redact"
 
 /** Repo-local git config key holding the mirror URL (letta used `letta.*`). */
-export const CONFIG_KEY = "omo.memoryRepository.url"
+export const CONFIG_KEY = "omc.memoryRepository.url"
 
 /** Push log file name, relative to the repository's git directory. */
 export const LOG_NAME = "memory-repository-push.log"
 
 /** Set to `1` to run the post-commit push in the foreground (tests, CI). */
-export const SYNC_PUSH_ENV = "OMO_MEMORY_PUSH_SYNC"
+export const SYNC_PUSH_ENV = "OMC_MEMORY_PUSH_SYNC"
 
 /** The mirror only ever tracks `main`; reflection branches must not mirror. */
 const BRANCH = "main"
@@ -181,12 +181,12 @@ export class MirrorSync {
  * Kept here beside the config key and log name it depends on so the three
  * cannot drift apart. Guarantees: never blocks a commit, never pushes from a
  * detached HEAD or a non-`main` branch, appends every attempt to the log, and
- * backgrounds the push unless `OMO_MEMORY_PUSH_SYNC=1` forces foreground.
+ * backgrounds the push unless `OMC_MEMORY_PUSH_SYNC=1` forces foreground.
  */
 export function getPostCommitHookScript(): string {
   return `#!/bin/sh
 # Push memory commits to the configured memory-repository mirror.
-# Installed by omo memory-core. Do not edit by hand - regenerated on startup.
+# Installed by omc memory-core. Do not edit by hand - regenerated on startup.
 url=$(git config --local --get ${CONFIG_KEY} 2>/dev/null)
 [ -z "$url" ] && exit 0
 
@@ -210,7 +210,7 @@ if [ "$${SYNC_PUSH_ENV}" = "1" ]; then
 fi
 
 # Detach the background push from git's stdout/stderr: a child that keeps them open makes the
-# commit wait for it (omo #10199). A bare exec redirects for good; a redirect on the function
+# commit wait for it (omc #10199). A bare exec redirects for good; a redirect on the function
 # call would make dash keep saved copies of the originals open for the whole push.
 ( exec </dev/null >/dev/null 2>&1; push_to_mirror ) &
 exit 0

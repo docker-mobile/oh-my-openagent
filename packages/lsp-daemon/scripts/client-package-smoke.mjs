@@ -52,9 +52,9 @@ import { mkdirSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-	OMO_LSP_DAEMON_CLI,
-	OMO_LSP_DAEMON_DIR,
-	OMO_LSP_DAEMON_VERSION,
+	OMC_LSP_DAEMON_CLI,
+	OMC_LSP_DAEMON_DIR,
+	OMC_LSP_DAEMON_VERSION,
 	callToolViaDaemon,
 	currentRequestContext,
 	resolveDaemonRuntime,
@@ -70,12 +70,12 @@ const cliResolved = await import.meta.resolve("@code-yeongyu/lsp-daemon/cli");
 const cliPath = fileURLToPath(cliResolved);
 const context = currentRequestContext({ HOME: homeDir });
 const runtime = resolveDaemonRuntime({
-	[OMO_LSP_DAEMON_CLI]: cliPath,
-	[OMO_LSP_DAEMON_VERSION]: version,
+	[OMC_LSP_DAEMON_CLI]: cliPath,
+	[OMC_LSP_DAEMON_VERSION]: version,
 }, { cliPath, version });
-process.env[OMO_LSP_DAEMON_DIR] = omoRoot;
-process.env[OMO_LSP_DAEMON_CLI] = cliPath;
-process.env[OMO_LSP_DAEMON_VERSION] = version;
+process.env[OMC_LSP_DAEMON_DIR] = omoRoot;
+process.env[OMC_LSP_DAEMON_CLI] = cliPath;
+process.env[OMC_LSP_DAEMON_VERSION] = version;
 process.chdir(projectDir);
 const baseline = await callToolViaDaemon("status", {}, { context: currentRequestContext({ HOME: homeDir }), requestTimeoutMs: 10000 });
 const baselineText = baseline.content.map((block) => block.text).join("\\n");
@@ -120,7 +120,7 @@ const serverSymbols = [
 ].filter((name) => Object.prototype.hasOwnProperty.call(clientModule, name));
 writeFileSync(output, JSON.stringify({
 	result: "PASS",
-	envConstants: [OMO_LSP_DAEMON_CLI, OMO_LSP_DAEMON_DIR, OMO_LSP_DAEMON_VERSION].sort(),
+	envConstants: [OMC_LSP_DAEMON_CLI, OMC_LSP_DAEMON_DIR, OMC_LSP_DAEMON_VERSION].sort(),
 	runtime,
 	versionValidated: validateDaemonVersion(version),
 	defaultContext: context,
@@ -245,7 +245,7 @@ try {
 	const consumerOutput = join(consumerRoot, "consumer-result.json");
 	const projectDir = join(workRoot, "project");
 	const homeDir = join(workRoot, "home");
-	const omoRoot = join(workRoot, "omo-lsp-daemon");
+	const omoRoot = join(workRoot, "omc-lsp-daemon");
 	writeConsumerScript(consumerScript);
 	writeConsumerTypes(consumerTypes);
 	const consumerRun = runStatus(process.execPath, [
@@ -298,8 +298,8 @@ try {
 			distPackageJson,
 		},
 		scans: {
-			clientJsNoWorkspaceDeps: !clientJs.includes("@oh-my-opencode/"),
-			clientDtsNoWorkspaceDeps: !clientDts.includes("@oh-my-opencode/"),
+			clientJsNoWorkspaceDeps: !clientJs.includes("@oh-my-cybersecurity/"),
+			clientDtsNoWorkspaceDeps: !clientDts.includes("@oh-my-cybersecurity/"),
 			noRepositoryPathCoupling: !clientJs.includes(repoRoot) && !clientDts.includes(repoRoot),
 			clientDtsHasNoPackageRootImport: !clientDts.includes("@code-yeongyu/lsp-daemon"),
 		},
@@ -340,5 +340,5 @@ try {
 } finally {
 	if (outputPath) writeFileSync(outputPath, `${JSON.stringify(finalResult, null, 2)}\n`);
 	process.stdout.write(`${JSON.stringify(finalResult, null, 2)}\n`);
-	if (process.env["OMO_KEEP_CLIENT_PACKAGE_SMOKE"] !== "1") rmSync(workRoot, { recursive: true, force: true });
+	if (process.env["OMC_KEEP_CLIENT_PACKAGE_SMOKE"] !== "1") rmSync(workRoot, { recursive: true, force: true });
 }

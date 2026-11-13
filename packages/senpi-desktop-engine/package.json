@@ -1,5 +1,5 @@
 {
-	"name": "@oh-my-opencode/senpi-desktop-engine",
+	"name": "@oh-my-cybersecurity/senpi-desktop-engine",
 	"version": "0.1.0",
 	"type": "module",
 	"private": true,
@@ -17,7 +17,7 @@
 		"test": "vitest --run test"
 	},
 	"dependencies": {
-		"@oh-my-opencode/senpi-desktop-protocol": "workspace:*"
+		"@oh-my-cybersecurity/senpi-desktop-protocol": "workspace:*"
 	},
 	"devDependencies": {
 		"@types/node": "26.6.2",

@@ -10,10 +10,10 @@ import {
   reserveMessageForDelivery,
   withInboxConsumerLease,
   type DeliveryReservation,
-} from "@oh-my-opencode/team-core/team-mailbox"
-import type { TeamModeConfig } from "@oh-my-opencode/team-core/config"
-import { getInboxDir } from "@oh-my-opencode/team-core/team-registry"
-import { MessageSchema, type Message } from "@oh-my-opencode/team-core/types"
+} from "@oh-my-cybersecurity/team-core/team-mailbox"
+import type { TeamModeConfig } from "@oh-my-cybersecurity/team-core/config"
+import { getInboxDir } from "@oh-my-cybersecurity/team-core/team-registry"
+import { MessageSchema, type Message } from "@oh-my-cybersecurity/team-core/types"
 
 import type { PersistedTaskEvent } from "../../store"
 import { buildPeerMessageEnvelope } from "../messaging/message"

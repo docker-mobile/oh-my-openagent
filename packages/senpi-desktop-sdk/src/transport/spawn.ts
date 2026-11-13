@@ -1,4 +1,4 @@
-import type { RpcPort } from "@oh-my-opencode/senpi-desktop-protocol";
+import type { RpcPort } from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import { ComputerError, refusal } from "../errors";
 
 /** Engine session settings for a spawned engine; the SDK hands them to `launch` unread. */
@@ -16,11 +16,11 @@ export interface SpawnTransport {
 	readonly settings?: SpawnSettings;
 }
 
-/** Set to `"1"` by the host inside its kernels (the generated prelude): code there is already inside an omo session. */
+/** Set to `"1"` by the host inside its kernels (the generated prelude): code there is already inside an omc session. */
 const IN_SESSION_MARKER = "SENPI_DESKTOP_HOST";
 
 /**
- * Launches the engine through `transport.launch`. Inside an omo session it refuses before `launch` runs: a second
+ * Launches the engine through `transport.launch`. Inside an omc session it refuses before `launch` runs: a second
  * engine there could grant itself host-only control and its stop path would leave the host. This is an accident
  * guard, not a security boundary: code that can clear the marker can already do anything the host process can.
  */
@@ -28,7 +28,7 @@ export async function launchSpawned(transport: SpawnTransport): Promise<RpcPort>
 	if (globalThis.process?.env?.[IN_SESSION_MARKER] === "1") {
 		throw refusal(
 			"ControlRequired",
-			"spawn is refused inside an omo session: use the session's own computer instead of starting a second engine",
+			"spawn is refused inside an omc session: use the session's own computer instead of starting a second engine",
 			"spawn_inside_session",
 			{ disposition: { delivery: "not_delivered", retry: "after_user" }, hint: "use the host computer global" },
 		);

@@ -29,7 +29,7 @@ describe("paths", () => {
     }))
   })
 
-  test("resolveBaseDir defaults to ~/.omo", () => {
+  test("resolveBaseDir defaults to ~/.omc", () => {
     // given
     const config = TeamModeConfigSchema.parse({ base_dir: undefined })
 
@@ -37,7 +37,7 @@ describe("paths", () => {
     const resolvedBaseDir = resolveBaseDir(config)
 
     // then
-    expect(resolvedBaseDir).toBe(path.join(homedir(), ".omo"))
+    expect(resolvedBaseDir).toBe(path.join(homedir(), ".omc"))
   })
 
   test("resolveBaseDir honors override", () => {
@@ -53,18 +53,18 @@ describe("paths", () => {
 
   test("#given base dir starts with tilde #when resolving team base dir #then it expands to the user home directory", () => {
     // given
-    const config = TeamModeConfigSchema.parse({ base_dir: "~/.omo" })
+    const config = TeamModeConfigSchema.parse({ base_dir: "~/.omc" })
 
     // when
     const resolvedBaseDir = resolveBaseDir(config)
 
     // then
-    expect(resolvedBaseDir).toBe(path.join(homedir(), ".omo"))
+    expect(resolvedBaseDir).toBe(path.join(homedir(), ".omc"))
   })
 
   test("#given team runtime ids contain traversal #when runtime paths are built #then they are rejected before escaping base dir", () => {
     // given
-    const baseDir = "/tmp/omo-contained"
+    const baseDir = "/tmp/omc-contained"
 
     // when
     const runtimeStatePath = () => getRuntimeStateDir(baseDir, "../../escape")
@@ -81,7 +81,7 @@ describe("paths", () => {
 
   test("#given team names contain traversal #when spec paths are built #then they are rejected before escaping scope roots", () => {
     // given
-    const baseDir = "/tmp/omo-contained"
+    const baseDir = "/tmp/omc-contained"
     const projectRoot = "/tmp/project-contained"
 
     // when
@@ -99,8 +99,8 @@ describe("paths", () => {
     temporaryDirectories.push(rootDirectory)
 
     const projectRoot = path.join(rootDirectory, "project")
-    const userBaseDir = path.join(rootDirectory, "home", ".omo")
-    const projectTeamDir = path.join(projectRoot, ".omo", "teams", "foo")
+    const userBaseDir = path.join(rootDirectory, "home", ".omc")
+    const projectTeamDir = path.join(projectRoot, ".omc", "teams", "foo")
     const userTeamDir = path.join(userBaseDir, "teams", "foo")
 
     await mkdir(projectTeamDir, { recursive: true })
@@ -138,7 +138,7 @@ describe("paths", () => {
 
   test("ensureBaseDirs creates all dirs with mode 0700", async () => {
     // given
-    const baseDir = path.join(tmpdir(), `omo-test-${randomUUID()}`)
+    const baseDir = path.join(tmpdir(), `omc-test-${randomUUID()}`)
     temporaryDirectories.push(baseDir)
 
     // when
@@ -165,7 +165,7 @@ describe("paths", () => {
   test("ensureBaseDirs swallows EPERM from chmod and logs a warning instead of aborting team-mode init", async () => {
     // given: directories exist with permissive mode that chmod cannot tighten
     // (mirrors macOS network mount / non-owner / SIP cases reported in #4023).
-    const baseDir = path.join(tmpdir(), `omo-test-eperm-${randomUUID()}`)
+    const baseDir = path.join(tmpdir(), `omc-test-eperm-${randomUUID()}`)
     temporaryDirectories.push(baseDir)
     await mkdir(baseDir, { recursive: true })
     await mkdir(path.join(baseDir, "teams"), { recursive: true })

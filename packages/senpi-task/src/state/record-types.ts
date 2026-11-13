@@ -228,7 +228,7 @@ export type TaskRecord = TaskRecordInput & TaskStartFailureRecordFields & {
     readonly requires_confirmation?: boolean
   }
   readonly residency_claim?: string
-  // task_cancel accepted while the child was unreachable (omo#9403). The cancel is final: every
+  // task_cancel accepted while the child was unreachable (omc#9403). The cancel is final: every
   // revival reads it and finishes the cancel instead of running the child again.
   readonly cancel_requested?: CancelRequest
 }

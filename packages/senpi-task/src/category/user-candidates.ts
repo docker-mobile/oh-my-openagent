@@ -1,4 +1,4 @@
-import type { OmoCategoryConfig, OmoFallbackModelObject, OmoFallbackModels } from "@oh-my-opencode/omo-config-core"
+import type { OmoCategoryConfig, OmoFallbackModelObject, OmoFallbackModels } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { ModelChainCandidate } from "../model-chain"
 

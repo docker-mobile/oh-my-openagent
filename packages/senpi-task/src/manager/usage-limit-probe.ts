@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import type { ManagedChildEvent, ManagedChildHandle, RunnerOutcome } from "./child-handle"
 import type { UsageLimitProbe } from "./usage-limit-memory"

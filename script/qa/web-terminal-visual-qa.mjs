@@ -20,9 +20,9 @@ const HELP = `web-terminal-visual-qa
 Render terminal/TUI evidence through a REAL xterm.js terminal captured in a browser (true color, no tmux).
 
 Usage:
-  node script/qa/web-terminal-visual-qa.mjs --title "Codex TUI" --command "codex --help" --evidence-dir .omo/evidence/run
-  node script/qa/web-terminal-visual-qa.mjs --title "TUI" --command "my-tui" --input "{Down}" --input "{Down}" --input "{Enter}" --evidence-dir .omo/evidence/run
-  node script/qa/web-terminal-visual-qa.mjs --title "Replay" --from-file pane.ansi --evidence-dir .omo/evidence/run
+  node script/qa/web-terminal-visual-qa.mjs --title "Codex TUI" --command "codex --help" --evidence-dir .omc/evidence/run
+  node script/qa/web-terminal-visual-qa.mjs --title "TUI" --command "my-tui" --input "{Down}" --input "{Down}" --input "{Enter}" --evidence-dir .omc/evidence/run
+  node script/qa/web-terminal-visual-qa.mjs --title "Replay" --from-file pane.ansi --evidence-dir .omc/evidence/run
   node script/qa/web-terminal-visual-qa.mjs --self-test
 
 Inputs:

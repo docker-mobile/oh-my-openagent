@@ -69,8 +69,8 @@ describe("removeTreeSync", () => {
   for (const [helper, run] of Object.entries(helpers)) {
     for (const stays of [false, true]) {
       test(`#given a remover silently leaves a path (${helper}, permanent: ${stays}) #when removing #then it retries or throws at the bound`, async () => {
-        const root = mkdtempSync(join(tmpdir(), "omo-remove-tree-"))
-        mkdirSync(join(root, "omo-test-run-a.removing"))
+        const root = mkdtempSync(join(tmpdir(), "omc-remove-tree-"))
+        mkdirSync(join(root, "omc-test-run-a.removing"))
         let calls = 0
         const remove = () => {
           calls++

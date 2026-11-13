@@ -25,7 +25,7 @@ export function hostSessionResumePath(record: TaskRecord | null | undefined): st
 
 /**
  * `unknown`: the daemon answers but could not list its sessions, so whether this one still runs is
- * unknown. A caller that would otherwise END a child on a "gone" answer must wait instead (omo#9450).
+ * unknown. A caller that would otherwise END a child on a "gone" answer must wait instead (omc#9450).
  */
 export type HostSessionLiveness = "live" | "gone" | "unknown"
 
@@ -107,7 +107,7 @@ export function createHostSessionProbe(ports: HostSessionProbePorts): HostSessio
   }
 }
 
-// The daemon lists a session by its canonical path while the record keeps the path omo asked for, so
+// The daemon lists a session by its canonical path while the record keeps the path omc asked for, so
 // a project reached through a symlink (/tmp on macOS, a linked workspace) would never match (#8932).
 function canonicalSessionPath(path: string): string {
   try {

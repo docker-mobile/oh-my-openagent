@@ -26,7 +26,7 @@ function setup(consent: () => boolean = () => true) {
   const root = createSpoolRoot("telemetry-core-turn-")
   roots.push(root.cleanup)
   const recorder = recordingFetch()
-  const spans = { "omo.turn": [...Object.keys(TURN_ATTRIBUTES), "gen_ai.response.model"] }
+  const spans = { "omc.turn": [...Object.keys(TURN_ATTRIBUTES), "gen_ai.response.model"] }
   const transport = makeTransport(root.dir, { fetch: recorder.fetch, consent, spans })
   return { transport, recorder }
 }
@@ -61,12 +61,12 @@ async function sent(transport: OtlpTelemetryTransport, recorder: ReturnType<type
 const TURN_ATTRIBUTES = {
   "gen_ai.operation.name": "chat",
   "session.id": "session-hash",
-  "omo.session.role": "main",
-  "omo.turn.index": 0,
+  "omc.session.role": "main",
+  "omc.turn.index": 0,
 } as const
 
 describe("turn tracing on the OTLP transport", () => {
-  test("#given a turn #when an event is captured inside it and another after it ended #then one omo.turn span is exported and only the in-turn event carries its exact pair", async () => {
+  test("#given a turn #when an event is captured inside it and another after it ended #then one omc.turn span is exported and only the in-turn event carries its exact pair", async () => {
     // given
     const { transport, recorder } = setup()
     const turn = transport.traces.startTurn({ attributes: TURN_ATTRIBUTES })
@@ -95,8 +95,8 @@ describe("turn tracing on the OTLP transport", () => {
     })
     expect(spans[0]?.durationNs).toBeGreaterThanOrEqual(0n)
     expect(logs.map(({ event, traceId, spanId }) => ({ event, traceId, spanId }))).toEqual([
-      { event: "omo.turn_completed", traceId: turn.traceId, spanId: turn.spanId },
-      { event: "omo.session_summary", traceId: "", spanId: "" },
+      { event: "omc.turn_completed", traceId: turn.traceId, spanId: turn.spanId },
+      { event: "omc.session_summary", traceId: "", spanId: "" },
     ])
   })
 
@@ -204,7 +204,7 @@ describe("turn tracing on the OTLP transport", () => {
     const { logs, spans } = await sent(transport, recorder)
     expect(first.spanId).not.toBe(second.spanId)
     expect(new Set(spans.map(({ spanId }) => spanId)).size).toBe(2)
-    expect(logs.map(({ attributes, spanId }) => [attributes["omo.feature"], spanId])).toEqual([
+    expect(logs.map(({ attributes, spanId }) => [attributes["omc.feature"], spanId])).toEqual([
       ["f0", first.spanId],
       ["f1", second.spanId],
     ])

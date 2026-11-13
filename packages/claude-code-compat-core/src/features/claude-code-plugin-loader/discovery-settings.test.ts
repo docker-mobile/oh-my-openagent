@@ -24,7 +24,7 @@ describe("discoverInstalledPlugins settings", () => {
       log: () => {},
     }))
 
-    process.env.CLAUDE_PLUGINS_HOME = createTemporaryDirectory("omo-settings-plugins-")
+    process.env.CLAUDE_PLUGINS_HOME = createTemporaryDirectory("omc-settings-plugins-")
   })
 
   afterEach(() => {
@@ -49,8 +49,8 @@ describe("discoverInstalledPlugins settings", () => {
   it("#given Claude settings disables a plugin #when no override is passed #then the plugin is skipped", async () => {
     //#given
     const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-    const installPath = createTemporaryDirectory("omo-settings-disabled-install-")
-    const settingsPath = join(createTemporaryDirectory("omo-claude-settings-"), "settings.json")
+    const installPath = createTemporaryDirectory("omc-settings-disabled-install-")
+    const settingsPath = join(createTemporaryDirectory("omc-claude-settings-"), "settings.json")
     process.env.CLAUDE_SETTINGS_PATH = settingsPath
     writeFileSync(
       settingsPath,
@@ -87,8 +87,8 @@ describe("discoverInstalledPlugins settings", () => {
   it("#given malformed enabledPlugins settings #when discovery runs #then the plugin still loads", async () => {
     //#given
     const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-    const installPath = createTemporaryDirectory("omo-settings-malformed-install-")
-    const settingsPath = join(createTemporaryDirectory("omo-claude-settings-"), "settings.json")
+    const installPath = createTemporaryDirectory("omc-settings-malformed-install-")
+    const settingsPath = join(createTemporaryDirectory("omc-claude-settings-"), "settings.json")
     process.env.CLAUDE_SETTINGS_PATH = settingsPath
     writeFileSync(
       settingsPath,

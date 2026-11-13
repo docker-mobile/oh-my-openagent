@@ -1,12 +1,12 @@
 /**
- * Stands in for get.omo.dev while the download page is tested: serves each channel's
+ * Stands in for get.omc.nga.hm while the download page is tested: serves each channel's
  * manifest.json in the shape the release publisher writes, and each release's SHA256SUMS. A test
  * picks what the visitor would find on the host with `PUT /__scenario/<name>`.
  */
 
 import { FIXTURE_PORT } from "./download-fixture-port"
 
-const HOST = "https://get.omo.dev"
+const HOST = "https://get.omc.nga.hm"
 
 interface Entry {
   readonly url: string
@@ -37,12 +37,12 @@ function manifest(
   omit: readonly string[] = [],
 ): unknown {
   const platforms: Record<string, Entry | Entry[]> = {
-    "mac-arm64": entry(channel, version, `OmO-${version}-arm64.dmg`, "dmg", 212_000_000, "1"),
-    "mac-x64": entry(channel, version, `OmO-${version}-x64.dmg`, "dmg", 224_500_000, "2"),
-    "win-x64": entry(channel, version, `OmO-${version}-x64.exe`, "exe", 198_300_000, "3"),
+    "mac-arm64": entry(channel, version, `OmC-${version}-arm64.dmg`, "dmg", 212_000_000, "1"),
+    "mac-x64": entry(channel, version, `OmC-${version}-x64.dmg`, "dmg", 224_500_000, "2"),
+    "win-x64": entry(channel, version, `OmC-${version}-x64.exe`, "exe", 198_300_000, "3"),
     "linux-x64": [
-      entry(channel, version, `OmO-${version}-x64.AppImage`, "appimage", 205_000_000, "5"),
-      entry(channel, version, `OmO-${version}-amd64.deb`, "deb", 190_000_000, "4"),
+      entry(channel, version, `OmC-${version}-x64.AppImage`, "appimage", 205_000_000, "5"),
+      entry(channel, version, `OmC-${version}-amd64.deb`, "deb", 190_000_000, "4"),
     ],
   }
   for (const key of omit) delete platforms[key]
@@ -72,7 +72,7 @@ function sumsFor(body: unknown, replace: Readonly<Record<string, string>> = {}):
 
 /** Per scenario: a SHA256SUMS hash to publish instead of the manifest's, keyed by file name. */
 const SUMS_OVERRIDES: Readonly<Record<string, Readonly<Record<string, string>>>> = {
-  tampered: { "OmO-0.1.0-x64.dmg": "f".repeat(64) },
+  tampered: { "OmC-0.1.0-x64.dmg": "f".repeat(64) },
 }
 
 const SCENARIOS: Readonly<Record<string, Readonly<Record<"stable" | "beta", Reply>>>> = {

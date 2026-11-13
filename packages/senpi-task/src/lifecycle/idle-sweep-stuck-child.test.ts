@@ -86,7 +86,7 @@ function seedIdle(store: TaskRecordStore, taskId: string, status: "completed" | 
   seedRecord(store, { task_id: taskId, status, residency_state: "resident", updated_at: new Date(1_000_000).toISOString(), host_pid: process.pid, execution_mode: executionMode })
 }
 
-describe("idle resident sweep with a child that never exits (omo#9785)", () => {
+describe("idle resident sweep with a child that never exits (omc#9785)", () => {
   test("#given a stuck rpc resident before a healthy one #when the sweep runs #then the healthy one is parked without waiting on the stuck one", async () => {
     // given
     const store = tempStore()

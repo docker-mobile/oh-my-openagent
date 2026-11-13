@@ -1,10 +1,10 @@
-# @oh-my-opencode/senpi-desktop-sdk
+# @oh-my-cybersecurity/senpi-desktop-sdk
 
 The typed computer-use SDK. `connect(transport)` returns a `Computer` (windows, the desktop target, control, the stop path, audit and epoch streams, `verify`, `batch`); `Window`, `Element`, `Frame`, `Pointer` and `Keyboard` hang off it. Every engine reply is validated at the boundary, every input action returns an `ActionReport`, and every failure is a `ComputerError` with `code`, `disposition`, `data` and `nothingSent`. Importing the package has no side effects.
 
 ## Transports
 
-- `{ kind: "inProcess", port }` wraps an `RpcPort` (`@oh-my-opencode/senpi-desktop-protocol`) the host already owns, such as the desktop service's engine connection. `computer.close()` detaches the SDK; the port stays with its owner.
+- `{ kind: "inProcess", port }` wraps an `RpcPort` (`@oh-my-cybersecurity/senpi-desktop-protocol`) the host already owns, such as the desktop service's engine connection. `computer.close()` detaches the SDK; the port stays with its owner.
 - `spawn`, `toolBridge` and `attach` are not in this package yet.
 
 ## Reports and verify
@@ -26,5 +26,5 @@ None.
 
 `scripts/desktop-package-boundaries.test.mjs` enforces these edges, in both `package.json` and `src/`:
 
-- `@oh-my-opencode/senpi-desktop-sdk` imports only `-protocol`, and no process or network builtin (`child_process`, `net`, `tls`, `http`, `https`, `dgram`, `cluster`, `worker_threads`).
-- `@oh-my-opencode/senpi-desktop-service` and `@oh-my-opencode/senpi-desktop-tool` may import `-sdk`.
+- `@oh-my-cybersecurity/senpi-desktop-sdk` imports only `-protocol`, and no process or network builtin (`child_process`, `net`, `tls`, `http`, `https`, `dgram`, `cluster`, `worker_threads`).
+- `@oh-my-cybersecurity/senpi-desktop-service` and `@oh-my-cybersecurity/senpi-desktop-tool` may import `-sdk`.

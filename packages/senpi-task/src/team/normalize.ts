@@ -1,6 +1,6 @@
-import { normalizeTeamSpecInput } from "@oh-my-opencode/team-core/team-registry"
-import { TeamSpecSchema, type TeamSpec } from "@oh-my-opencode/team-core/types"
-import { isPlainRecord } from "@oh-my-opencode/utils/record-type-guard"
+import { normalizeTeamSpecInput } from "@oh-my-cybersecurity/team-core/team-registry"
+import { TeamSpecSchema, type TeamSpec } from "@oh-my-cybersecurity/team-core/types"
+import { isPlainRecord } from "@oh-my-cybersecurity/utils/record-type-guard"
 
 import { clampTaskSummary } from "../task-summary"
 import { SenpiTeamSpecError } from "./errors"
@@ -101,7 +101,7 @@ function assertNoReservedMemberName(members: readonly unknown[], teamName: strin
 }
 
 /**
- * Normalizes a raw senpi team spec (from an `omo.json` `teams` value or an `.omo/teams/<name>`
+ * Normalizes a raw senpi team spec (from an `omc.json` `teams` value or an `.omc/teams/<name>`
  * `config.json`) into a parsed team-core `TeamSpec`.
  *
  * Pipeline: reject the three reserved-name paths, run team-core `normalizeTeamSpecInput` WITHOUT the

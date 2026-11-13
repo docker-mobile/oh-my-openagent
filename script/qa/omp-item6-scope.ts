@@ -6,7 +6,7 @@ import type { TaskToolDetails } from "../../packages/senpi-task/src/tools/task/t
 import { openChildEnv, type ChildEnv } from "./omp-item6-harness"
 
 /**
- * Real-transport QA for the invoke-scope consumer (oh-my-openagent#8226, senpi#1731/#1765).
+ * Real-transport QA for the invoke-scope consumer (oh-my-cybersecurity#8226, senpi#1731/#1765).
  *
  * A REAL in-process child - real planner, real senpi agent session, real provider loop over a
  * loopback server - is spawned by the REAL task tool with a narrowed tool policy and a request for
@@ -41,7 +41,7 @@ function childTurn(body: string) {
 
 function narrowedEnv(turn: (body: string) => { toolName?: string; args?: Record<string, unknown>; text?: string }) {
   return openChildEnv(turn, {
-    // The agent's own policy rides the plan, exactly as omo's planner resolves `disallowedTools`.
+    // The agent's own policy rides the plan, exactly as omc's planner resolves `disallowedTools`.
     planner: (spec) => ({
       kind: "resolved",
       plan: {

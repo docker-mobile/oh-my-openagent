@@ -61,10 +61,10 @@ describe("isCmuxCompatEnvironment", () => {
     expect(result).toBe(true)
   })
 
-  it("#given CMUX_SOCKET_PATH set with cmux-omo TMUX #when isCmuxCompatEnvironment called #then returns true", () => {
+  it("#given CMUX_SOCKET_PATH set with cmux-omc TMUX #when isCmuxCompatEnvironment called #then returns true", () => {
     // given
     process.env.CMUX_SOCKET_PATH = "/var/run/cmux.sock"
-    process.env.TMUX = "/tmp/cmux-omo/session,1234,0"
+    process.env.TMUX = "/tmp/cmux-omc/session,1234,0"
 
     // when
     const result = isCmuxCompatEnvironment()

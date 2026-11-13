@@ -30,12 +30,12 @@ describe("package metadata", () => {
 		expect(packageJson.name).toBe("@code-yeongyu/lsp-tools-mcp");
 		expect(packageJson.license).toBe("MIT");
 		expect(packageJson.dependencies ?? {}).toEqual({});
-		expect(packageJson.bin["omo-lsp"]).toBe("./dist/cli.js");
+		expect(packageJson.bin["omc-lsp"]).toBe("./dist/cli.js");
 		expect(packageJson.bin["lsp-tools-mcp"]).toBeUndefined();
 		expect(packageJson.files).toEqual(["dist", "LICENSE", "NOTICE", "README.md", "CHANGELOG.md"]);
 		expect(packageJson.scripts["build"]).toMatch(/^node scripts\/ensure-core-links\.mjs && /);
 		expect(cliSource.startsWith("#!/usr/bin/env node")).toBe(true);
-		expect(cliSource).toContain("Usage: omo-lsp [mcp]");
+		expect(cliSource).toContain("Usage: omc-lsp [mcp]");
 	});
 });
 

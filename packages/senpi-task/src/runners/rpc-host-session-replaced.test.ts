@@ -8,7 +8,7 @@ import { startHostWorld, type HostWorld, type ParentSession } from "./rpc-host/_
 import type { HostSessionReplaced } from "./rpc-host/session-client"
 
 /**
- * F9 / omo#10018 (child half): a raw client can issue `new_session` on a child's routing handle;
+ * F9 / omc#10018 (child half): a raw client can issue `new_session` on a child's routing handle;
  * the host keeps the handle, moves the session to a new durable id and transcript, and pushes
  * `session_replaced` to every attached client. The child must FOLLOW instead of reopening the
  * abandoned transcript on the next reattach: the handle's identity moves to the new path, the

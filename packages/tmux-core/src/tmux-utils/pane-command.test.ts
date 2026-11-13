@@ -57,7 +57,7 @@ describe("buildTmuxAttachCommand", () => {
   itWithUnixShell(
     "#given serverUrl shell metacharacters #when generated command runs through the shell #then serverUrl stays one literal argument",
     () => {
-      const tempDir = mkdtempSync(join(tmpdir(), "omo tmux command "))
+      const tempDir = mkdtempSync(join(tmpdir(), "omc tmux command "))
 
       try {
         const binDir = createFakeOpencodeBin(tempDir)
@@ -87,7 +87,7 @@ describe("buildTmuxAttachCommand", () => {
   itWithUnixShell(
     "#given directory path contains spaces #when generated command runs through the shell #then directory stays one argument",
     () => {
-      const tempDir = mkdtempSync(join(tmpdir(), "omo tmux command "))
+      const tempDir = mkdtempSync(join(tmpdir(), "omc tmux command "))
       const directory = join(tempDir, "Mobile Documents", "project")
 
       try {
@@ -166,7 +166,7 @@ describe("buildTmuxPlaceholderCommand", () => {
   itWithUnixShell(
     "#given single quotes and percent signs #when generated command runs through the shell #then they print literally",
     () => {
-      const tempDir = mkdtempSync(join(tmpdir(), "omo-tmux-placeholder-"))
+      const tempDir = mkdtempSync(join(tmpdir(), "omc-tmux-placeholder-"))
 
       try {
         const description = "Fix Bob's 100% broken pane"
@@ -184,7 +184,7 @@ describe("buildTmuxPlaceholderCommand", () => {
   itWithUnixShell(
     "#given shell syntax in the description #when generated command runs through the shell #then nothing is evaluated and it prints literally",
     () => {
-      const tempDir = mkdtempSync(join(tmpdir(), "omo-tmux-placeholder-"))
+      const tempDir = mkdtempSync(join(tmpdir(), "omc-tmux-placeholder-"))
       const canary = join(tempDir, "canary")
 
       try {
@@ -204,17 +204,17 @@ describe("buildTmuxPlaceholderCommand", () => {
   itWithUnixShell(
     "#given a newline, a trailing backslash, a set variable and a very long description #when generated command runs through the shell #then each prints literally and nothing is evaluated",
     () => {
-      const tempDir = mkdtempSync(join(tmpdir(), "omo-tmux-placeholder-"))
+      const tempDir = mkdtempSync(join(tmpdir(), "omc-tmux-placeholder-"))
       const canary = join(tempDir, "canary")
 
       try {
         const cases = [
           `first line\nsecond line $(touch ${canary})`,
           `ends in a backslash \\`,
-          `expands \${OMO_TMUX_CANARY_VAR} and $OMO_TMUX_CANARY_VAR`,
+          `expands \${OMC_TMUX_CANARY_VAR} and $OMC_TMUX_CANARY_VAR`,
         ]
         for (const description of cases) {
-          const lines = runPlaceholderUntilLoop(buildTmuxPlaceholderCommand(description), tempDir, { OMO_TMUX_CANARY_VAR: "LEAKED" })
+          const lines = runPlaceholderUntilLoop(buildTmuxPlaceholderCommand(description), tempDir, { OMC_TMUX_CANARY_VAR: "LEAKED" })
           expect(lines).toEqual([...`OMO subagent pane ready: ${description}`.split("\n"), "Focus this pane to attach."])
         }
         expect(existsSync(canary)).toBe(false)
@@ -227,7 +227,7 @@ describe("buildTmuxPlaceholderCommand", () => {
   itWithUnixShell(
     "#given a description far over tmux's command limit #when the placeholder is built #then the banner is capped so tmux accepts it and nothing is evaluated",
     () => {
-      const tempDir = mkdtempSync(join(tmpdir(), "omo-tmux-placeholder-"))
+      const tempDir = mkdtempSync(join(tmpdir(), "omc-tmux-placeholder-"))
       const canary = join(tempDir, "canary")
 
       try {
@@ -246,7 +246,7 @@ describe("buildTmuxPlaceholderCommand", () => {
   )
 
   itWithUnixShell("#given a NUL byte in the description #when the placeholder runs #then it prints without the NUL instead of failing the spawn", () => {
-    const tempDir = mkdtempSync(join(tmpdir(), "omo-tmux-placeholder-"))
+    const tempDir = mkdtempSync(join(tmpdir(), "omc-tmux-placeholder-"))
 
     try {
       expect(runPlaceholderUntilLoop(buildTmuxPlaceholderCommand("before\0after"), tempDir)).toEqual([

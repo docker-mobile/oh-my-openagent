@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 import { createTeamLayout, removeTeamLayout } from "./layout"
-import type { HerdrExecResult, HerdrOpsDeps, RunHerdrCommand } from "@oh-my-opencode/tmux-core"
+import type { HerdrExecResult, HerdrOpsDeps, RunHerdrCommand } from "@oh-my-cybersecurity/tmux-core"
 
 function envelope(result: unknown): string {
   return JSON.stringify({ id: "cli:test", result })

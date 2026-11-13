@@ -10,7 +10,7 @@ import { type DaemonPaths, packagedRuntimeDefaults } from "./paths.js";
 import { type DaemonRuntimeDefaults, resolveDaemonRuntime } from "./runtime-contract.js";
 import { createLineDecoder, encodeJsonLine } from "./socket-jsonrpc.js";
 
-export { InvalidRuntimeOverrideError, OMO_LSP_DAEMON_CLI, resolveDaemonRuntime } from "./runtime-contract.js";
+export { InvalidRuntimeOverrideError, OMC_LSP_DAEMON_CLI, resolveDaemonRuntime } from "./runtime-contract.js";
 
 const PROBE_TIMEOUT_MS = 2_000;
 const DEFAULT_READY_TIMEOUT_MS = 5_000;
@@ -115,7 +115,7 @@ export function pingDaemon(
 		});
 		socket.once("connect", () => {
 			socket.write(
-				encodeJsonLine({ jsonrpc: "2.0", id: 1, method: "omo/ping", params: { _omo: authEnvelope(token) } }),
+				encodeJsonLine({ jsonrpc: "2.0", id: 1, method: "omc/ping", params: { _omo: authEnvelope(token) } }),
 			);
 		});
 		socket.on("data", (chunk) => decoder.push(chunk));
@@ -148,7 +148,7 @@ export function spawnDaemonProcess(paths: DaemonPaths, deps: Partial<SpawnDaemon
 			detached: true,
 			stdio: ["ignore", logFd, logFd],
 			windowsHide: true,
-			// Under the packaged runtime execPath is the compiled omo binary, not a
+			// Under the packaged runtime execPath is the compiled omc binary, not a
 			// node interpreter; without BUN_BE_BUN it runs its embedded entrypoint, so
 			// the CLI argv boots a billable agent session instead of the daemon
 			// (issue #7914). Inert for node and for the bun interpreter itself.

@@ -62,7 +62,7 @@ export async function captureChangelog(runtime: Runtime) {
   if (expected.length === 0) throw new AuditError("changelog", "no shipped entries to compare")
   const settingsPath = join(runtime.agent, "settings.json")
   const settings = z.record(z.string(), z.json()).parse(await Bun.file(settingsPath).json())
-  await Bun.write(settingsPath, JSON.stringify({ ...settings, changelogSeen: { omo: previous[1] } }))
+  await Bun.write(settingsPath, JSON.stringify({ ...settings, changelogSeen: { omc: previous[1] } }))
   const captured = await terminalCapture(runtime, expected)
   const entriesMatchShipped = expected.every((entry) => plain(captured.changelog).includes(entry))
   const whatsNew = expected.every((entry) => plain(captured.startup).includes(entry))

@@ -1,6 +1,6 @@
 # Computer-use eval and latency bench
 
-`packages/omo-senpi/scripts/qa/cu-eval/` measures computer use end to end: seven tasks through three arms, each judged by its own oracles, plus a latency bench with per-host baselines. Neither ever calls a real model.
+`packages/omc-senpi/scripts/qa/cu-eval/` measures computer use end to end: seven tasks through three arms, each judged by its own oracles, plus a latency bench with per-host baselines. Neither ever calls a real model.
 
 ## Tasks
 
@@ -34,7 +34,7 @@ Every row carries `steps`, `tokens`, `wallMs`, `status`, the check list, a resto
 
 ## CI regression job
 
-`.github/workflows/desktop-bench.yml` runs on a pull request only when it touches `crates/senpi-desktop-*`, `packages/senpi-desktop-*`, `packages/omo-senpi/scripts/qa/cu-eval/`, the Cargo manifests, the toolchain pin or the workflow itself; `workflow_dispatch` takes a `base_ref` (default `dev`) once the file is on the default branch. One job checks out the PR's base and the PR's merge result, builds `senpi-desktop-engine` at both, and runs the head's `bench.mjs --fake-engine` against each in 10 interleaved rounds of 30 measured runs, swapping which side goes first every round. The head's harness is copied into the base checkout, so only the SDK and the engine differ between the sides. Each side keeps its best wall p50 per op, and the job fails when any head p50 is more than 30% and more than 0.5 ms above the base's, the same rule as `--compare`.
+`.github/workflows/desktop-bench.yml` runs on a pull request only when it touches `crates/senpi-desktop-*`, `packages/senpi-desktop-*`, `packages/omc-senpi/scripts/qa/cu-eval/`, the Cargo manifests, the toolchain pin or the workflow itself; `workflow_dispatch` takes a `base_ref` (default `dev`) once the file is on the default branch. One job checks out the PR's base and the PR's merge result, builds `senpi-desktop-engine` at both, and runs the head's `bench.mjs --fake-engine` against each in 10 interleaved rounds of 30 measured runs, swapping which side goes first every round. The head's harness is copied into the base checkout, so only the SDK and the engine differ between the sides. Each side keeps its best wall p50 per op, and the job fails when any head p50 is more than 30% and more than 0.5 ms above the base's, the same rule as `--compare`.
 
 The step prints one line per op and a closing `bench comparison: base <sha> vs head <sha>: PASS|FAIL (...)` line, writes the same table to the job summary, and uploads every round's JSON plus `comparison.json` as the `desktop-bench` artifact. A round that keeps fewer than 90% of an op's samples fails the job (a concurrent stop-path heartbeat reply can displace a sample, so a single lost sample is tolerated and counted). A base without `packages/senpi-desktop-sdk` fails with that reason, since there is nothing to compare against.
 
@@ -42,13 +42,13 @@ The step prints one line per op and a closing `bench comparison: base <sha> vs h
 
 ```bash
 cargo build --release -p senpi-desktop-engine
-node packages/omo-senpi/scripts/qa/cu-eval/run.mjs --arm sdk-direct --fake-engine --json
-node packages/omo-senpi/scripts/qa/cu-eval/run.mjs --arm all --fake-engine --out cu-eval.json
-node packages/omo-senpi/scripts/qa/cu-eval/run.mjs --arm sdk-direct --fake-engine --mismatch safari-form-fill   # QA control: exits 1
-node packages/omo-senpi/scripts/qa/cu-eval/bench.mjs --fake-engine --compare packages/omo-senpi/scripts/qa/cu-eval/baselines/linux-x64-fake.json
+node packages/omc-senpi/scripts/qa/cu-eval/run.mjs --arm sdk-direct --fake-engine --json
+node packages/omc-senpi/scripts/qa/cu-eval/run.mjs --arm all --fake-engine --out cu-eval.json
+node packages/omc-senpi/scripts/qa/cu-eval/run.mjs --arm sdk-direct --fake-engine --mismatch safari-form-fill   # QA control: exits 1
+node packages/omc-senpi/scripts/qa/cu-eval/bench.mjs --fake-engine --compare packages/omc-senpi/scripts/qa/cu-eval/baselines/linux-x64-fake.json
 # macOS (a QA account, apps in English):
-node packages/omo-senpi/scripts/qa/cu-eval/run.mjs --arm sdk-direct --live --json --out cu-eval-live.json
-node packages/omo-senpi/scripts/qa/cu-eval/bench.mjs --live --write-baseline --out bench-live.json
+node packages/omc-senpi/scripts/qa/cu-eval/run.mjs --arm sdk-direct --live --json --out cu-eval-live.json
+node packages/omc-senpi/scripts/qa/cu-eval/bench.mjs --live --write-baseline --out bench-live.json
 ```
 
 Both scripts re-run themselves on Bun when started with Node (the SDK is TypeScript source). `--engine <path>` or `CARGO_TARGET_DIR` picks the engine binary. Exit 0 means every task ran with no `fail` or `error` and every restore post-check held.

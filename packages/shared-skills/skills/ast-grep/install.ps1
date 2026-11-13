@@ -5,7 +5,7 @@
 
 .DESCRIPTION
   Tries package managers in priority order, then falls back to downloading a
-  pinned release zip from GitHub into %LOCALAPPDATA%\omo-ast-grep\bin\sg.exe
+  pinned release zip from GitHub into %LOCALAPPDATA%\omc-ast-grep\bin\sg.exe
   (never into the skill directory, which can sit inside a signed app bundle).
 
   Order:
@@ -16,7 +16,7 @@
     5. npm (@ast-grep/cli)
     6. cargo binstall / cargo install
     7. pip (ast-grep-cli)
-    8. GitHub release zip -> %LOCALAPPDATA%\omo-ast-grep\bin\sg.exe
+    8. GitHub release zip -> %LOCALAPPDATA%\omc-ast-grep\bin\sg.exe
 
 .PARAMETER Method
   Force one method: scoop | winget | choco | npm | cargo | pip | github
@@ -46,7 +46,7 @@ param(
 $ErrorActionPreference = 'Stop'
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $CacheRoot = if ($env:LOCALAPPDATA) { $env:LOCALAPPDATA } else { Join-Path $HOME "AppData\Local" }
-$CacheBinDir = if ($env:OMO_AST_GREP_BIN_DIR) { $env:OMO_AST_GREP_BIN_DIR } else { Join-Path $CacheRoot "omo-ast-grep\bin" }
+$CacheBinDir = if ($env:OMC_AST_GREP_BIN_DIR) { $env:OMC_AST_GREP_BIN_DIR } else { Join-Path $CacheRoot "omc-ast-grep\bin" }
 
 function Log([string]$msg) {
     if (-not $Quiet) {

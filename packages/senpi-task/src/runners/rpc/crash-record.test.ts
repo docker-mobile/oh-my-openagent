@@ -9,8 +9,8 @@ import { createRpcChildHandle } from "./handle"
 import type { RpcProtocolClient } from "./protocol-client"
 import { createChildExtensionEvents } from "../child-extension-events"
 
-// oh-my-openagent#8931: a process-mode task child is watched by this parent, so its unexpected death
-// is recorded here, in the crashes.jsonl the OmO telemetry reporter reads.
+// oh-my-cybersecurity#8931: a process-mode task child is watched by this parent, so its unexpected death
+// is recorded here, in the crashes.jsonl the OmC telemetry reporter reads.
 const dirs: string[] = []
 afterEach(() => {
   for (const dir of dirs.splice(0)) rmSync(dir, { recursive: true, force: true })
@@ -34,7 +34,7 @@ function harness(): { readonly agentDir: string; readonly child: EventEmitter; r
     taskId: "st_00000001",
     heartbeatIntervalMs: 60_000,
     now: () => 1,
-    childEnv: { OMO_CODING_AGENT_DIR: agentDir },
+    childEnv: { OMC_CODING_AGENT_DIR: agentDir },
   })
   return { agentDir, child, terminate: () => void handle.terminate({ sigkillDelayMs: 1 }) }
 }

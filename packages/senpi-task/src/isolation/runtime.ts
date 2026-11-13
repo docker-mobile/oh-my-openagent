@@ -27,8 +27,8 @@ import {
   type OwnerProbe,
   type SweepResult,
   type WorktreeBaseline,
-} from "@oh-my-opencode/isolation-core"
-import type { IsolationBackendKind } from "@oh-my-opencode/omo-config-core"
+} from "@oh-my-cybersecurity/isolation-core"
+import type { IsolationBackendKind } from "@oh-my-cybersecurity/omc-config-core"
 
 export type { CoreMergeResult, IsolationHandle, IsolationOwner, OwnerProbe, SweepResult, WorktreeBaseline }
 
@@ -42,7 +42,7 @@ export type EnsureInput = {
 /**
  * The isolation capability the task manager consumes, as a port. The production object below is the
  * real isolation-core; tests inject the same object with a temp `homeDir` so a clone never lands in
- * the developer's `~/.omo/wt`, and fake `probe`s so a sweep decision is deterministic.
+ * the developer's `~/.omc/wt`, and fake `probe`s so a sweep decision is deterministic.
  */
 export type IsolationRuntime = {
   /** The git checkout that owns `cwd`, or null when `cwd` is not inside a git repository. */
@@ -101,6 +101,6 @@ export function createIsolationRuntime(options: { readonly homeDir?: string } = 
     retain: (handle, reason) => retainIsolation(handle, reason),
     writeOwner: (baseDir, id, owner) => writeOwnerMarker(baseDir, id, owner),
     sweep: (roots, probe) => sweepStaleIsolations(roots, { backends, probe }),
-    sweepRoots: [join(homeDir, ".omo", "wt")],
+    sweepRoots: [join(homeDir, ".omc", "wt")],
   }
 }

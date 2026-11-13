@@ -1,10 +1,10 @@
 {
   "metadata": {
-    "title": "OmO",
-    "description": "Tu herramienta para el trabajo real. Pero es un agente. OmO convierte tus tokens en resultados que importan."
+    "title": "OmC",
+    "description": "Tu herramienta para el trabajo real. Pero es un agente. OmC convierte tus tokens en resultados que importan."
   },
   "nav": {
-    "brand": "OmO",
+    "brand": "OmC",
     "features": "Funciones",
     "docs": "Docs",
     "manifesto": "Manifiesto",
@@ -16,7 +16,7 @@
     "skipToContent": "Saltar al contenido"
   },
   "footer": {
-    "brand": "OmO",
+    "brand": "OmC",
     "copyright": "© {year} Sisyphus Labs · Código fuente disponible bajo SUL-1.0",
     "product": "Producto",
     "community": "Comunidad",
@@ -56,7 +56,7 @@
         "powershell": "PowerShell",
         "cmd": "CMD"
       },
-      "next": "Luego abre una terminal nueva y ejecuta omo.",
+      "next": "Luego abre una terminal nueva y ejecuta omc.",
       "onComputer": "Ejecuta esto en tu computadora Mac, Linux o Windows."
     },
     "proof": {
@@ -82,7 +82,7 @@
     "multiModel": {
       "title": "Combina modelos sin pensarlo.",
       "body": "Usa los modelos de frontera que te encantan junto con los económicos. Solo inicia sesión. Cada modelo incluye un system prompt ajustado a su medida, para que nunca elijas el equivocado.",
-      "caption": "Perfiles ajustados incluidos con OmO"
+      "caption": "Perfiles ajustados incluidos con OmC"
     },
     "ulw": {
       "title": "Cientos de agentes trabajando para ti. Una palabra clave.",
@@ -114,7 +114,7 @@
     },
     "skills": {
       "title": "Skills de alta calidad. Solo las que necesitas.",
-      "body": "Tu modelo es inteligente, pero aún no sabe mucho sobre cómo resolver problemas del mundo real. OmO incluye ese conocimiento en forma de skills y carga solo lo que la tarea necesita."
+      "body": "Tu modelo es inteligente, pero aún no sabe mucho sobre cómo resolver problemas del mundo real. OmC incluye ese conocimiento en forma de skills y carga solo lo que la tarea necesita."
     },
     "crafted": {
       "title": "Y todo lo demás que toques está cuidado al detalle.",
@@ -167,7 +167,7 @@
         "author": "Arthur Guiot"
       },
       "review2": {
-        "text": "Si Claude Code hace en 7 días lo que un humano hace en 3 meses, OmO lo hace en 1 hora.",
+        "text": "Si Claude Code hace en 7 días lo que un humano hace en 3 meses, OmC lo hace en 1 hora.",
         "author": "B, investigador cuantitativo"
       },
       "review3": {
@@ -178,13 +178,13 @@
     "cta": {
       "eyebrow": "Instalación",
       "title": "Un comando. Y de vuelta al trabajo.",
-      "subtitle": "Instala OmO, abre tu proyecto y describe la tarea. Eso es todo.",
+      "subtitle": "Instala OmC, abre tu proyecto y describe la tarea. Eso es todo.",
       "installNow": "Instalar ahora",
       "readTheDocs": "Leer la documentación"
     },
     "dag": {
-      "region": "App de escritorio de OmO con el grafo de flujo de trabajo abierto",
-      "windowTitle": "OmO — estudio de mercado, 12k fuentes",
+      "region": "App de escritorio de OmC con el grafo de flujo de trabajo abierto",
+      "windowTitle": "OmC — estudio de mercado, 12k fuentes",
       "threads": "Hilos",
       "thread1": "estudio de mercado, 12k fuentes",
       "thread2": "entrenar el modelo de ranking",
@@ -206,13 +206,13 @@
     }
   },
   "docs": {
-    "mobileHeader": "Docs de OmO",
+    "mobileHeader": "Docs de OmC",
     "searchPlaceholder": "Buscar en docs...",
     "searchLabel": "Filtrar secciones de la documentación",
     "sectionsLabel": "Secciones de la documentación",
     "install": {
-      "title": "Instalar OmO",
-      "description": "Instala OmO con un solo comando en macOS, Linux, WSL y Windows."
+      "title": "Instalar OmC",
+      "description": "Instala OmC con un solo comando en macOS, Linux, WSL y Windows."
     }
   },
   "manifesto": {
@@ -263,7 +263,7 @@
     "closing": {
       "lead": "Así que no le des más vueltas,",
       "title": "solo ulw ulw",
-      "button": "Obtener OmO"
+      "button": "Obtener OmC"
     },
     "legacyNote": "El <date>19 de enero de 2026</date> dijimos que un agente que te obliga a leer su código es una herramienta mal hecha. <link>Leer la versión anterior</link>"
   },
@@ -285,7 +285,7 @@
     },
     "notCollaboration": "Eso no es \"colaboración humano-IA\". Es la IA fallando en su trabajo.",
     "premise": "{linkText} parte de la premisa de que el humano debe ser el arquitecto, no el corrector ortográfico.",
-    "premiseLinkText": "OmO",
+    "premiseLinkText": "OmC",
     "indistinguishable": {
       "title": "Código indistinguible",
       "subtitle": "El código escrito por un agente debería ser indistinguible del escrito por un ingeniero sénior.",
@@ -402,7 +402,7 @@
     },
     "finalCta": {
       "title": "solo ulw ulw",
-      "button": "Obtener OmO"
+      "button": "Obtener OmC"
     },
     "archive": {
       "eyebrow": "Versión anterior · 19 ene 2026",
@@ -412,12 +412,12 @@
   },
   "download": {
     "metadata": {
-      "title": "Descargar OmO para escritorio",
-      "description": "Descarga la app de escritorio de OmO para macOS, Windows o Linux. Cada instalador incluye su tamaño y suma de verificación SHA-256."
+      "title": "Descargar OmC para escritorio",
+      "description": "Descarga la app de escritorio de OmC para macOS, Windows o Linux. Cada instalador incluye su tamaño y suma de verificación SHA-256."
     },
     "eyebrow": "App de escritorio",
-    "title": "Descargar OmO",
-    "lead": "La app de escritorio de OmO para tu Mac, PC con Windows o equipo Linux. Elegimos el instalador adecuado para tu equipo y mostramos todos los instaladores abajo, cada uno con su suma de verificación.",
+    "title": "Descargar OmC",
+    "lead": "La app de escritorio de OmC para tu Mac, PC con Windows o equipo Linux. Elegimos el instalador adecuado para tu equipo y mostramos todos los instaladores abajo, cada uno con su suma de verificación.",
     "channel": {
       "label": "Canal de versiones",
       "stable": "Estable",
@@ -440,8 +440,8 @@
     },
     "primary": {
       "button": "Descargar para {os}",
-      "meta": "OmO {version} · {arch} · {size}",
-      "metaNoSize": "OmO {version} · {arch}",
+      "meta": "OmC {version} · {arch} · {size}",
+      "metaNoSize": "OmC {version} · {arch}",
       "intelPrompt": "¿Tu Mac no tiene Apple silicon?",
       "intelLink": "Descargar para Mac con Intel",
       "released": "Publicado el {date}",
@@ -452,17 +452,17 @@
       "body": "Esta versión no tiene un instalador para tu equipo. Abajo se muestra todo lo que incluye."
     },
     "phone": {
-      "title": "OmO para escritorio necesita una computadora",
+      "title": "OmC para escritorio necesita una computadora",
       "body": "Abre esta página en tu Mac, PC con Windows o equipo Linux para descargarlo. Los instaladores están abajo."
     },
     "coming": {
       "title": "Disponible el {date}",
-      "body": "La app de escritorio aún no es pública. Mientras tanto, puedes instalar OmO desde la línea de comandos.",
+      "body": "La app de escritorio aún no es pública. Mientras tanto, puedes instalar OmC desde la línea de comandos.",
       "cli": "Instalar desde la línea de comandos"
     },
     "unavailable": {
       "title": "Las descargas no están disponibles ahora",
-      "body": "No pudimos cargar la lista de descargas. Inténtalo de nuevo en unos minutos o instala OmO desde la línea de comandos.",
+      "body": "No pudimos cargar la lista de descargas. Inténtalo de nuevo en unos minutos o instala OmC desde la línea de comandos.",
       "cli": "Instalar desde la línea de comandos"
     },
     "all": {
@@ -494,13 +494,13 @@
   },
   "support": {
     "metadata": {
-      "title": "Obtén ayuda con OmO",
-      "description": "Reporta un problema con OmO o pide ayuda a la comunidad."
+      "title": "Obtén ayuda con OmC",
+      "description": "Reporta un problema con OmC o pide ayuda a la comunidad."
     },
     "eyebrow": "Soporte",
-    "title": "Obtén ayuda con OmO",
+    "title": "Obtén ayuda con OmC",
     "lead": "¿Encontraste un problema o tienes una pregunta? Abre un issue en GitHub o pregunta en el Discord de la comunidad.",
-    "leadWithReport": "Aquí abajo está tu reporte de la app de OmO. Envíalo como un issue en GitHub o compártelo en el Discord de la comunidad.",
+    "leadWithReport": "Aquí abajo está tu reporte de la app de OmC. Envíalo como un issue en GitHub o compártelo en el Discord de la comunidad.",
     "report": {
       "heading": "Tu reporte",
       "titleLabel": "Título",
@@ -513,7 +513,7 @@
       "openIssueNote": "El issue se abre en GitHub con tu reporte ya completado. Revísalo antes de enviarlo: los issues de GitHub son públicos. Si tu reporte tiene un zip de diagnóstico, adjúntalo ahí.",
       "discord": "Preguntar en Discord"
     },
-    "privacy": "Esta página no guarda tu reporte, pero se envió a omo.dev en el enlace que abrió la app. Solo llega a GitHub cuando tú mismo envías el issue."
+    "privacy": "Esta página no guarda tu reporte, pero se envió a omc.nga.hm en el enlace que abrió la app. Solo llega a GitHub cuando tú mismo envías el issue."
   },
   "notFound": {
     "title": "No encontramos esta página.",
@@ -521,7 +521,7 @@
     "home": "Volver al inicio"
   },
   "home": {
-    "metaTitle": "OmO: Tu herramienta para el trabajo real. Pero es un agente.",
+    "metaTitle": "OmC: Tu herramienta para el trabajo real. Pero es un agente.",
     "nav": {
       "primary": "Principal",
       "skip": "Saltar al contenido",
@@ -574,7 +574,7 @@
       "step1": "lee toda la base de código antes de tocar una línea",
       "step2": "planifica y comprueba cada paso antes de avanzar",
       "step3": "verifica el resultado en la superficie real y luego se detiene",
-      "frame": "omo · ~/reports"
+      "frame": "omc · ~/reports"
     },
     "massUlw": {
       "eyebrow": "Mass ulw",
@@ -587,7 +587,7 @@
       "title": "Modelos de frontera y económicos, juntos.",
       "soft": "Cada uno incluye un prompt ajustado a su medida.",
       "body": "Usa los modelos de frontera que te encantan junto con los económicos. Solo inicia sesión. Cada modelo incluye un system prompt ajustado a su medida, para que nunca elijas el equivocado.",
-      "caption": "Perfiles ajustados incluidos con OmO"
+      "caption": "Perfiles ajustados incluidos con OmC"
     },
     "kibitzer": {
       "eyebrow": "Kibitzer",
@@ -615,7 +615,7 @@
       "eyebrow": "Skills",
       "title": "Conocimiento del mundo real, en forma de skills.",
       "soft": "Se cargan solo cuando la tarea las necesita.",
-      "body": "Tu modelo es inteligente, pero aún no sabe mucho sobre cómo resolver problemas del mundo real. OmO incluye ese conocimiento en forma de skills y carga solo lo que la tarea necesita.",
+      "body": "Tu modelo es inteligente, pero aún no sabe mucho sobre cómo resolver problemas del mundo real. OmC incluye ese conocimiento en forma de skills y carga solo lo que la tarea necesita.",
       "more": "Ver todas las skills en la documentación"
     },
     "crafted": {
@@ -646,10 +646,10 @@
       "title": "Hoy, tu terminal.",
       "soft": "Después, tus apps de chat.",
       "terminalTitle": "En tu terminal",
-      "terminalBody": "Un comando instala OmO. Luego ejecuta omo en cualquier proyecto.",
+      "terminalBody": "Un comando instala OmC. Luego ejecuta omc en cualquier proyecto.",
       "terminalMeta": "macOS, Linux, WSL y Windows",
       "desktopTitle": "En una app de escritorio",
-      "desktopBody": "La app de escritorio de OmO para tu Mac, PC con Windows o equipo Linux.",
+      "desktopBody": "La app de escritorio de OmC para tu Mac, PC con Windows o equipo Linux.",
       "desktopMeta": "Beta",
       "chatTitle": "Desde tus apps de chat",
       "chatBody": "Habla con tu agente donde ya estás. Envía mensajes en tu nombre, no como un bot, en cada plataforma que usas.",
@@ -660,7 +660,7 @@
       "title": "Lo que dice la gente.",
       "q1": "Me hizo cancelar mi suscripción a Cursor. Están pasando cosas increíbles en la comunidad de código abierto.",
       "a1": "Arthur Guiot",
-      "q2": "Si Claude Code hace en 7 días lo que un humano hace en 3 meses, OmO lo hace en 1 hora.",
+      "q2": "Si Claude Code hace en 7 días lo que un humano hace en 3 meses, OmC lo hace en 1 hora.",
       "a2": "B, investigador cuantitativo",
       "q3": "Deberían integrar esto en el core y contratarlo. En serio. Es muy, muy, muy bueno.",
       "a3": "Henning Kilset"
@@ -669,12 +669,12 @@
       "title": "Hecho por Sisyphus Labs.",
       "soft": "Los creadores de Dori y doriterm.",
       "dori": "Un ingeniero que vive en tu chat. Dile qué hacer en Slack, Discord o Telegram; asigna a cada trabajo su propia sesión de agente de código y te informa cuando se hace merge.",
-      "doriterm": "Todos tus equipos, conectados mediante una red mesh cifrada de extremo a extremo, en una sola terminal. Inicia OmO en el mac mini de casa y respóndele desde tu teléfono."
+      "doriterm": "Todos tus equipos, conectados mediante una red mesh cifrada de extremo a extremo, en una sola terminal. Inicia OmC en el mac mini de casa y respóndele desde tu teléfono."
     },
     "closing": {
       "title": "Un comando.",
       "soft": "Y de vuelta al trabajo.",
-      "body": "Instala OmO, abre tu proyecto y describe la tarea. Eso es todo.",
+      "body": "Instala OmC, abre tu proyecto y describe la tarea. Eso es todo.",
       "docs": "Leer la documentación",
       "manifesto": "Leer el manifiesto"
     },
@@ -683,7 +683,7 @@
       "unix": "macOS, Linux, WSL",
       "powershell": "PowerShell",
       "cmd": "CMD",
-      "next": "Luego abre una terminal nueva y ejecuta omo.",
+      "next": "Luego abre una terminal nueva y ejecuta omc.",
       "copy": "Copiar",
       "copied": "Copiado",
       "copyAria": "Copiar comando de instalación",

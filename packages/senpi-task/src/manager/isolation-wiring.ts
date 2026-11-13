@@ -1,5 +1,5 @@
-import type { OmoTaskSettings } from "@oh-my-opencode/omo-config-core"
-import { log } from "@oh-my-opencode/utils"
+import type { OmoTaskSettings } from "@oh-my-cybersecurity/omc-config-core"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import {
   prepareIsolation,

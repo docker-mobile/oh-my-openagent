@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test"
 
-// Production builds leave OMO_WEB_DESKTOP_DOWNLOAD unset: until the desktop app launches, nothing
+// Production builds leave OMC_WEB_DESKTOP_DOWNLOAD unset: until the desktop app launches, nothing
 // on the site may lead to the download page. This spec runs against such a build
 // (playwright.flag-off.config.ts); a gate removed from any entry point fails it.
 test.describe("Download page while the launch flag is off", () => {
@@ -9,7 +9,7 @@ test.describe("Download page while the launch flag is off", () => {
     for (const path of ["/download", "/ko/download", "/download?channel=beta"]) {
       const response = await request.get(path, { maxRedirects: 0 })
       expect(response.status(), path).toBe(307)
-      expect(response.headers()["location"], path).toBe("https://get.omo.dev/desktop/beta/")
+      expect(response.headers()["location"], path).toBe("https://get.omc.nga.hm/desktop/beta/")
     }
   })
 
@@ -24,7 +24,7 @@ test.describe("Download page while the launch flag is off", () => {
     await expect(page.locator('a[href$="/download"]')).toHaveCount(0)
     await expect(page.getByTestId("hero-desktop-beta-cta")).toHaveAttribute(
       "href",
-      "https://get.omo.dev/desktop/beta/",
+      "https://get.omc.nga.hm/desktop/beta/",
     )
   })
 

@@ -57,7 +57,7 @@ export async function runMeasure(out: string) {
   while (runs.length < 4) runs.push(incomplete(MODES[runs.length]!, caps))
   const report = finalizeReport({
     schema_version: 1, plan_sha256: PLAN, design: "AB/BA", width: 2, batch_sha256: batch.batch_sha256,
-    source_sha256: batch.source_sha256, item_count: 12, senpi_items: 6, omo_items: 6, token_coverage: coverage && !exhausted,
+    source_sha256: batch.source_sha256, item_count: 12, senpi_items: 6, omc_items: 6, token_coverage: coverage && !exhausted,
     budget_exhausted: exhausted, duplicate_dispatches: duplicates, uncertain_dispatches: uncertain, runs,
   })
   mkdirSync(dirname(out), { recursive: true })

@@ -4,23 +4,23 @@ import { formatOgDownloads, getOgDownloads, resetOgDownloadsCacheForTests } from
 
 const POINT = /^https:\/\/api\.npmjs\.org\/downloads\/point\/([^/]+)\/([^/]+)$/
 const RELEASES =
-  "https://api.github.com/repos/code-yeongyu/oh-my-openagent/releases?per_page=30&page=1"
+  "https://api.github.com/repos/code-yeongyu/oh-my-cybersecurity/releases?per_page=30&page=1"
 const NATIVE = 32_000
-const INSTALLER_STATS = "https://get.omo.dev/stats/downloads"
+const INSTALLER_STATS = "https://get.omc.nga.hm/stats/downloads"
 const INSTALLER = 700
 const releasesPage = () =>
   Response.json([
     {
       assets: [
-        { name: "omo-darwin-arm64", download_count: NATIVE },
+        { name: "omc-darwin-arm64", download_count: NATIVE },
         { name: "SHA256SUMS", download_count: 9 },
       ],
     },
   ])
 const PER_PACKAGE: Readonly<Record<string, number>> = {
-  "oh-my-opencode": 1_000_000,
+  "oh-my-cybersecurity": 1_000_000,
   "oh-my-openagent": 200_000,
-  "omo-ai": 30_000,
+  "omc-ai": 30_000,
   "lazycodex-ai": 4_000,
 }
 
@@ -113,7 +113,7 @@ describe("OG npm download retrieval", () => {
     expect(await getOgDownloads()).toEqual({ count: null, source: "unavailable" })
   })
 
-  test("failing get.omo.dev stats withhold the figure instead of a total without mirror installs", async () => {
+  test("failing get.omc.nga.hm stats withhold the figure instead of a total without mirror installs", async () => {
     replyInstaller = async () => new Response("Bad gateway", { status: 502 })
 
     expect(await getOgDownloads()).toEqual({ count: null, source: "unavailable" })

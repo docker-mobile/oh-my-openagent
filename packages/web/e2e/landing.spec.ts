@@ -1,9 +1,9 @@
 import { test, expect, type Page } from "@playwright/test"
 
-const UNIX_COMMAND = "curl -fsSL https://get.omo.dev/install.sh | bash"
-const POWERSHELL_COMMAND = "irm https://get.omo.dev/install.ps1 | iex"
+const UNIX_COMMAND = "curl -fsSL https://get.omc.nga.hm/install.sh | bash"
+const POWERSHELL_COMMAND = "irm https://get.omc.nga.hm/install.ps1 | iex"
 const CMD_COMMAND =
-  'powershell -ExecutionPolicy Bypass -c "irm https://get.omo.dev/install.ps1 | iex"'
+  'powershell -ExecutionPolicy Bypass -c "irm https://get.omc.nga.hm/install.ps1 | iex"'
 const IPHONE_UA =
   "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1"
 
@@ -43,7 +43,7 @@ test.describe("Home page", () => {
       .getByRole("link", { name: "Get started" })
 
     // then
-    await expect(page).toHaveTitle(/OmO/)
+    await expect(page).toHaveTitle(/OmC/)
     await expect(heading).toContainText("But it's an agent.")
     await expect(getStarted).toHaveAttribute("href", /\/docs\/install$/)
   })
@@ -62,7 +62,7 @@ test.describe("Home page", () => {
     )
     await expect(install.getByText(UNIX_COMMAND, { exact: true })).toBeVisible()
     await expect(install.getByText(POWERSHELL_COMMAND, { exact: true })).toBeHidden()
-    await expect(install.getByText("Then open a new terminal and run omo.")).toBeVisible()
+    await expect(install.getByText("Then open a new terminal and run omc.")).toBeVisible()
   })
 
   test("shows PowerShell first on Windows and moves between tabs with the arrow keys", async ({
@@ -112,7 +112,7 @@ test.describe("Home page", () => {
     await expect(
       install.getByText("Run this on your Mac, Linux or Windows computer."),
     ).toBeVisible()
-    await expect(install.getByText("Then open a new terminal and run omo.")).toBeHidden()
+    await expect(install.getByText("Then open a new terminal and run omc.")).toBeHidden()
     await context.close()
   })
 
@@ -157,7 +157,7 @@ test.describe("Home page", () => {
     expect(text).not.toMatch(/oh[ -]?my[ -]?open[ -]?agent/i)
     expect(text).not.toMatch(/senpi/i)
     expect(text).not.toMatch(/three editions/i)
-    await expect(page.getByRole("banner").getByRole("link", { name: "OmO" })).toBeVisible()
+    await expect(page.getByRole("banner").getByRole("link", { name: "OmC" })).toBeVisible()
   })
 
   test("renders every section in order, each under its own heading", async ({ page }) => {

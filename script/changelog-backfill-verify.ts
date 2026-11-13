@@ -28,10 +28,10 @@ import {
 // ==============================================================================
 
 async function main() {
-  console.log("🔍 OmO Changelog Backfill Transformer - Standalone Verification\n")
+  console.log("🔍 OmC Changelog Backfill Transformer - Standalone Verification\n")
 
   // Load fixture
-  const fixtureFile = path.join(import.meta.dir, "../.omo/fixtures/releases.json")
+  const fixtureFile = path.join(import.meta.dir, "../.omc/fixtures/releases.json")
   const fixtureText = fs.readFileSync(fixtureFile, "utf-8")
   const fixtureData = JSON.parse(fixtureText)
   const releases = fixtureData.releases as any[]
@@ -58,7 +58,7 @@ async function main() {
     tagName: "v5.0.0-beta.99",
     publishedAt: null,
     isPrerelease: true,
-    body: "## Fixed\n\n- Change\n\n<!-- omo-backfill-marker: v5.0.0-beta.99 -->",
+    body: "## Fixed\n\n- Change\n\n<!-- omc-backfill-marker: v5.0.0-beta.99 -->",
   }
   const noDateErrors = validateReleaseRequirements(noDateRelease)
   console.log(
@@ -72,7 +72,7 @@ async function main() {
     tagName: "v5.0.0-beta.3",
     publishedAt: "2026-08-10T10:16:58Z",
     isPrerelease: true,
-    body: "## Fixed\n\n- Memory extension crash\n\n<!-- omo-backfill-marker: v5.0.0-beta.3 -->",
+    body: "## Fixed\n\n- Memory extension crash\n\n<!-- omc-backfill-marker: v5.0.0-beta.3 -->",
   }
   const validEntry = transformReleaseToEntry(validRelease)
   console.log(`   Result: ${validEntry ? "✅ PASS" : "❌ FAIL"}`)
@@ -97,7 +97,7 @@ async function main() {
   const stamped1 = stampBackfillMarker(body, "5.0.0-beta.5")
   const stamped2 = stampBackfillMarker(stamped1, "5.0.0-beta.5")
   console.log(`   Result: ${stamped1 === stamped2 ? "✅ PASS (idempotent)" : "❌ FAIL"}`)
-  const markerCount = (stamped2.match(/<!-- omo-backfill-marker:/g) || []).length
+  const markerCount = (stamped2.match(/<!-- omc-backfill-marker:/g) || []).length
   console.log(`   Marker count: ${markerCount} (should be 1)\n`)
 
   // GREEN test 4: Raw body content preserved

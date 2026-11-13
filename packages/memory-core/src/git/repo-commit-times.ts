@@ -18,7 +18,7 @@ import { STABLE_LOG_OUTPUT } from "./stable-log-output"
 const CACHE_SIZE = 4
 const FULL_OBJECT_ID = /^(?:[0-9a-f]{40}|[0-9a-f]{64})$/
 const COMMIT_MARK = "\x01"
-const STORE_NAME = "omo-path-commit-times.json"
+const STORE_NAME = "omc-path-commit-times.json"
 const STORE_VERSION = 2
 /** A full walk runs once per repo (the store keeps its result); it must not hit the 30 s default. */
 const FULL_WALK_TIMEOUT_MS = 300_000

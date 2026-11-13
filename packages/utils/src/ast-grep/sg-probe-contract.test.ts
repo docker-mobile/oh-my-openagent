@@ -14,7 +14,7 @@ import { SG_PATH_ENV_KEY, type SgResolverOptions } from "./types"
  */
 
 function tempDir(name: string): string {
-  return join(tmpdir(), `omo-${name}-${crypto.randomUUID()}`)
+  return join(tmpdir(), `omc-${name}-${crypto.randomUUID()}`)
 }
 
 interface StubFixture {
@@ -60,7 +60,7 @@ function runWindowsStubProbe(binaryPath: string): string {
 }
 
 /** Home directory with no OMO runtime, so tier 2 cannot shadow the tier under test. */
-const NO_RUNTIME_HOME = join(tmpdir(), "omo-sg-probe-contract-no-home")
+const NO_RUNTIME_HOME = join(tmpdir(), "omc-sg-probe-contract-no-home")
 
 function isolated(overrides: SgResolverOptions): SgResolverOptions {
   return {

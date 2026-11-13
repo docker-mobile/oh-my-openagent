@@ -1,35 +1,35 @@
 #!/bin/sh
 # Keep this wrapper POSIX-sh parseable: the Bash program is data until Bash reads the temp file.
-omo_sourced=
-if [ -n "${BASH_VERSION:-}" ] && eval '[ -n "${BASH_SOURCE[0]:-}" ] && [ "${BASH_SOURCE[0]}" != "$0" ]'; then omo_sourced=1; fi
-omo_bash="$(command -v bash 2>/dev/null || true)"
-if [ -z "$omo_bash" ]; then
-  printf '%s\n' 'omo installer: bash is required; run with: curl -fsSL https://get.omo.dev/install.sh | bash' >&2
+omc_sourced=
+if [ -n "${BASH_VERSION:-}" ] && eval '[ -n "${BASH_SOURCE[0]:-}" ] && [ "${BASH_SOURCE[0]}" != "$0" ]'; then omc_sourced=1; fi
+omc_bash="$(command -v bash 2>/dev/null || true)"
+if [ -z "$omc_bash" ]; then
+  printf '%s\n' 'omc installer: bash is required; run with: curl -fsSL https://get.omc.nga.hm/install.sh | bash' >&2
   exit 1
 fi
-omo_bash_script="$(mktemp "${TMPDIR:-/tmp}/omo-install-bash.XXXXXX")" || exit 1
-trap 'rm -f "$omo_bash_script"' EXIT HUP INT TERM
-cat >"$omo_bash_script" <<'OMO_INSTALL_BASH'
+omc_bash_script="$(mktemp "${TMPDIR:-/tmp}/omc-install-bash.XXXXXX")" || exit 1
+trap 'rm -f "$omc_bash_script"' EXIT HUP INT TERM
+cat >"$omc_bash_script" <<'OMC_INSTALL_BASH'
 #!/usr/bin/env bash
-# OmO native installer: curl -fsSL https://get.omo.dev/install.sh | bash [-s -- latest|beta|X.Y.Z]
-#   OMO_INSTALL_DIR        launcher directory (default ~/.local/bin)
-#   OMO_NO_MODIFY_PATH=1   never edit shell profiles
-#   OMO_INSTALL_BASE_URL   mirror base (default https://get.omo.dev); GitHub is the fallback
-#   OMO_INSTALL_ALLOW_SUDO=1  allow running as root
+# OmC native installer: curl -fsSL https://get.omc.nga.hm/install.sh | bash [-s -- latest|beta|X.Y.Z]
+#   OMC_INSTALL_DIR        launcher directory (default ~/.local/bin)
+#   OMC_NO_MODIFY_PATH=1   never edit shell profiles
+#   OMC_INSTALL_BASE_URL   mirror base (default https://get.omc.nga.hm); GitHub is the fallback
+#   OMC_INSTALL_ALLOW_SUDO=1  allow running as root
 # The whole body runs from main() on the last line, so a truncated download never runs half a script.
 set -euo pipefail
 
-REPO="code-yeongyu/oh-my-openagent"
+REPO="code-yeongyu/oh-my-cybersecurity"
 GITHUB_DOWNLOAD="https://github.com/${REPO}/releases/download"
-NPM_DIST_TAGS="https://registry.npmjs.org/-/package/omo-ai/dist-tags"
+NPM_DIST_TAGS="https://registry.npmjs.org/-/package/omc-ai/dist-tags"
 VERSION_RE='^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z]+(\.[0-9A-Za-z]+)*)?$'
-MARK_BEGIN="# >>> omo installer >>>"
-MARK_END="# <<< omo installer <<<"
-USER_AGENT="omo-install.sh/1"
-[ "${OMO_INSTALL_QA:-}" = 1 ] && USER_AGENT="${USER_AGENT} omo-install-qa" # QA runs stay out of the public count
+MARK_BEGIN="# >>> omc installer >>>"
+MARK_END="# <<< omc installer <<<"
+USER_AGENT="omc-install.sh/1"
+[ "${OMC_INSTALL_QA:-}" = 1 ] && USER_AGENT="${USER_AGENT} omc-install-qa" # QA runs stay out of the public count
 
 say() { printf '%s\n' "$*" >&2; }
-fail() { say "omo installer: $*"; exit 1; }
+fail() { say "omc installer: $*"; exit 1; }
 
 fetch() { # fetch <url> <output file|->
   if command -v curl >/dev/null 2>&1; then
@@ -63,7 +63,7 @@ detect_asset() {
   case "$(uname -s)" in
     Darwin) os=darwin ;;
     Linux) os=linux ;;
-    MINGW* | MSYS* | CYGWIN*) fail "on Windows run in PowerShell: irm https://get.omo.dev/install.ps1 | iex" ;;
+    MINGW* | MSYS* | CYGWIN*) fail "on Windows run in PowerShell: irm https://get.omc.nga.hm/install.ps1 | iex" ;;
     *) fail "unsupported operating system $(uname -s)" ;;
   esac
   case "$(uname -m)" in
@@ -79,7 +79,7 @@ detect_asset() {
     if [ "$os" = linux ] && ! grep -qwi avx2 /proc/cpuinfo 2>/dev/null; then cpu="-baseline"; fi
     if [ "$os" = darwin ] && [ "$(sysctl -n hw.optional.avx2_0 2>/dev/null || echo 0)" != 1 ]; then cpu="-baseline"; fi
   fi
-  printf 'omo-%s-%s%s%s\n' "$os" "$arch" "$libc" "$cpu"
+  printf 'omc-%s-%s%s%s\n' "$os" "$arch" "$libc" "$cpu"
 }
 
 resolve_version() { # resolve_version <latest|beta|X.Y.Z> <base url>
@@ -105,7 +105,7 @@ profile_file() {
   case "$(basename "${SHELL:-sh}")" in
     zsh) printf '%s\n' "${ZDOTDIR:-$HOME}/.zshrc" ;;
     bash) if [ "$(uname -s)" = Darwin ]; then printf '%s\n' "$HOME/.bash_profile"; else printf '%s\n' "$HOME/.bashrc"; fi ;;
-    fish) printf '%s\n' "${XDG_CONFIG_HOME:-$HOME/.config}/fish/conf.d/omo.fish" ;;
+    fish) printf '%s\n' "${XDG_CONFIG_HOME:-$HOME/.config}/fish/conf.d/omc.fish" ;;
     *) printf '%s\n' "$HOME/.profile" ;;
   esac
 }
@@ -114,12 +114,12 @@ ensure_path() { # ensure_path <dir>; prints the edited profile, or nothing
   local dir="$1" profile line tmp
   case ":${PATH}:" in *":${dir}:"*) return 0 ;; esac
   if [ -n "${GITHUB_PATH:-}" ]; then printf '%s\n' "$dir" >>"$GITHUB_PATH"; fi
-  [ "${OMO_NO_MODIFY_PATH:-}" = 1 ] && return 0
+  [ "${OMC_NO_MODIFY_PATH:-}" = 1 ] && return 0
   profile="$(profile_file)"
   if [[ "$profile" == *.fish ]]; then line="fish_add_path -g \"${dir}\""; else line="export PATH=\"${dir}:\$PATH\""; fi
   mkdir -p "$(dirname "$profile")"
   touch "$profile"
-  tmp="$(mktemp "${profile}.omo.XXXXXX")"
+  tmp="$(mktemp "${profile}.omc.XXXXXX")"
   awk -v b="$MARK_BEGIN" -v e="$MARK_END" '$0==b{skip=1;next} $0==e{skip=0;next} !skip' "$profile" >"$tmp"
   printf '%s\n%s\n%s\n' "$MARK_BEGIN" "$line" "$MARK_END" >>"$tmp"
   cat "$tmp" >"$profile" && rm -f "$tmp"
@@ -145,9 +145,9 @@ classify_other_install() { # classify_other_install <candidate> <prior standalon
   local candidate="$1" prior="$2" real package_root package_name manager root command
   real="$(real_path "$candidate")" || return 1
   case "$real" in
-    */node_modules/omo-ai/*) package_name="omo-ai" ;;
-    */node_modules/oh-my-openagent/*) package_name="oh-my-openagent" ;;
-    */node_modules/oh-my-opencode/*) package_name="oh-my-opencode" ;;
+    */node_modules/omc-ai/*) package_name="omc-ai" ;;
+    */node_modules/oh-my-cybersecurity/*) package_name="oh-my-cybersecurity" ;;
+    */node_modules/oh-my-cybersecurity/*) package_name="oh-my-cybersecurity" ;;
     *) package_name="" ;;
   esac
   if [ -n "$package_name" ]; then
@@ -168,7 +168,7 @@ classify_other_install() { # classify_other_install <candidate> <prior standalon
     printf 'package\t%s\t%s\t%s\t%s\t%s\n' "$candidate" "$real" "$manager" "$root" "$package_name|$command"
     return 0
   fi
-  if [ -n "$prior" ] && [ "$candidate" = "$prior" ] && "$candidate" --version 2>/dev/null | grep -Eq '^omo([[:space:]]|$)'; then
+  if [ -n "$prior" ] && [ "$candidate" = "$prior" ] && "$candidate" --version 2>/dev/null | grep -Eq '^omc([[:space:]]|$)'; then
     printf 'standalone\t%s\t%s\t-\t-\t%s\n' "$candidate" "$real" "standalone|rm -f -- $(shell_quote "$candidate")"
     return 0
   fi
@@ -177,21 +177,21 @@ classify_other_install() { # classify_other_install <candidate> <prior standalon
 
 find_other_installs() { # find_other_installs <launcher> <output file>
   local launcher="$1" output="$2" prior="" dir candidate seen=""
-  if [ -f "$HOME/.omo/install.json" ]; then
-    prior="$(sed -n 's/.*"binPath"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$HOME/.omo/install.json" | head -n1)"
+  if [ -f "$HOME/.omc/install.json" ]; then
+    prior="$(sed -n 's/.*"binPath"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$HOME/.omc/install.json" | head -n1)"
   fi
   : >"$output"
   IFS=:
   for dir in $PATH; do
     [ -n "$dir" ] || dir=.
-    candidate="${dir%/}/omo"
+    candidate="${dir%/}/omc"
     [ -f "$candidate" ] || [ -L "$candidate" ] || continue
     [ "$candidate" = "$launcher" ] && continue
     case "\n$seen" in *"\n$candidate\n"*) continue ;; esac
     seen="${seen}${candidate}\n"
     classify_other_install "$candidate" "$prior" >>"$output" || {
       say ""
-      say "Note: ${candidate} is another omo command, but its installation could not be verified, so nothing was removed."
+      say "Note: ${candidate} is another omc command, but its installation could not be verified, so nothing was removed."
     }
   done
   unset IFS
@@ -217,25 +217,25 @@ remove_detected_install() { # remove_detected_install <record>
     say "  Could not remove ${candidate}; the new install still works. Remove the other install with: ${command}"
     return 1
   fi
-  say "  Removed the other omo install at ${candidate}."
+  say "  Removed the other omc install at ${candidate}."
 }
 
 report_other_installs() { # report_other_installs <launcher> <remove flag> <work dir>
   local launcher="$1" remove_flag="$2" work="$3" first record candidate command answer
   find_other_installs "$launcher" "$work/other-installs"
   [ -s "$work/other-installs" ] || return 0
-  first="$(command -v omo 2>/dev/null || true)"
+  first="$(command -v omc 2>/dev/null || true)"
   exec 3<&0
   while IFS= read -r record; do
     candidate="$(printf '%s' "$record" | cut -f2)"
     command="$(printf '%s' "$record" | cut -f6- | cut -d'|' -f2-)"
     say ""
-    say "Another omo install was found at ${candidate}."
+    say "Another omc install was found at ${candidate}."
     if [ "$first" = "$candidate" ]; then say "  It currently wins on PATH over ${launcher}."
     else say "  ${launcher} wins on PATH; ${candidate} is not used."; fi
     if [ "$remove_flag" = 1 ]; then remove_detected_install "$record" || true; continue; fi
     if is_interactive; then
-      printf 'Remove the other omo install at %s? [y/N] ' "$candidate" >&2
+      printf 'Remove the other omc install at %s? [y/N] ' "$candidate" >&2
       IFS= read -r answer <&3 || answer=""
       case "$answer" in y | Y | yes | YES | Yes) remove_detected_install "$record" || true ;; *) say "  Kept it. Remove it later with: ${command}" ;; esac
     else
@@ -246,16 +246,16 @@ report_other_installs() { # report_other_installs <launcher> <remove flag> <work
 }
 
 write_receipt() { # write_receipt <channel> <version> <asset> <launcher> <profile>
-  mkdir -p "$HOME/.omo"
+  mkdir -p "$HOME/.omc"
   local tmp
-  tmp="$(mktemp "$HOME/.omo/install.json.XXXXXX")"
+  tmp="$(mktemp "$HOME/.omc/install.json.XXXXXX")"
   printf '{\n  "method": "standalone",\n  "channel": "%s",\n  "version": "%s",\n  "asset": "%s",\n  "binPath": "%s",\n  "profileEdits": [%s],\n  "installedAt": "%s"\n}\n' \
     "$1" "$2" "$3" "$4" "${5:+\"$5\"}" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" >"$tmp"
-  mv -f "$tmp" "$HOME/.omo/install.json"
+  mv -f "$tmp" "$HOME/.omc/install.json"
 }
 
 main() {
-  local want="" remove_other_installs=0 arg base="${OMO_INSTALL_BASE_URL:-https://get.omo.dev}"
+  local want="" remove_other_installs=0 arg base="${OMC_INSTALL_BASE_URL:-https://get.omc.nga.hm}"
   for arg in "$@"; do
     case "$arg" in
       --remove-other-installs) remove_other_installs=1 ;;
@@ -269,8 +269,8 @@ main() {
   done
   want="${want:-latest}"
   base="${base%/}"
-  if [ "$(id -u)" = 0 ] && [ "${OMO_INSTALL_ALLOW_SUDO:-}" != 1 ]; then
-    fail "refusing to run as root; run it as your user (set OMO_INSTALL_ALLOW_SUDO=1 to override)"
+  if [ "$(id -u)" = 0 ] && [ "${OMC_INSTALL_ALLOW_SUDO:-}" != 1 ]; then
+    fail "refusing to run as root; run it as your user (set OMC_INSTALL_ALLOW_SUDO=1 to override)"
   fi
   [ -n "${HOME:-}" ] || fail "HOME is not set"
 
@@ -278,11 +278,11 @@ main() {
   asset="$(detect_asset)"
   version="$(resolve_version "$want" "$base")"
   channel="$want"; [[ "$want" =~ $VERSION_RE ]] && channel="pinned"
-  dir="${OMO_INSTALL_DIR:-$HOME/.local/bin}"
-  launcher="${dir}/omo"
-  say "Installing omo ${version} (${asset}) into ${dir}"
+  dir="${OMC_INSTALL_DIR:-$HOME/.local/bin}"
+  launcher="${dir}/omc"
+  say "Installing omc ${version} (${asset}) into ${dir}"
 
-  work="$(mktemp -d "${TMPDIR:-/tmp}/omo-install.XXXXXX")"
+  work="$(mktemp -d "${TMPDIR:-/tmp}/omc-install.XXXXXX")"
   # shellcheck disable=SC2064 # expand now: the local is gone when the EXIT trap fires after main returns
   trap "rm -rf '${work}'" EXIT
   download "$version" SHA256SUMS "$work/SHA256SUMS" "$base"
@@ -290,15 +290,15 @@ main() {
   [ -n "$expected" ] || fail "SHA256SUMS for ${version} has no entry for ${asset}"
 
   if [ -x "$launcher" ] && [ "$(sha256_of "$launcher")" = "$expected" ]; then
-    say "  omo ${version} is already installed at ${launcher}"
+    say "  omc ${version} is already installed at ${launcher}"
   else
-    download "$version" "$asset" "$work/omo" "$base"
-    actual="$(sha256_of "$work/omo")"
+    download "$version" "$asset" "$work/omc" "$base"
+    actual="$(sha256_of "$work/omc")"
     [ "$actual" = "$expected" ] || fail "checksum mismatch for ${asset}: expected ${expected}, got ${actual}"
     say "  checksum verified (sha256 ${expected})"
-    chmod +x "$work/omo"
+    chmod +x "$work/omc"
     mkdir -p "$dir"
-    cp "$work/omo" "${launcher}.new.$$"
+    cp "$work/omc" "${launcher}.new.$$"
     mv -f "${launcher}.new.$$" "$launcher"
   fi
 
@@ -311,31 +311,31 @@ main() {
   report_other_installs "$launcher" "$remove_other_installs" "$work"
   write_receipt "$channel" "$version" "$asset" "$launcher" "$profile"
   say ""
-  say "omo ${version} is installed at ${launcher}."
+  say "omc ${version} is installed at ${launcher}."
   if [ -n "$profile" ]; then
-    say "${profile} puts ${dir} on PATH; open a new shell (or run: export PATH=\"${dir}:\$PATH\") and run: omo"
+    say "${profile} puts ${dir} on PATH; open a new shell (or run: export PATH=\"${dir}:\$PATH\") and run: omc"
   else
-    say "Run: omo"
+    say "Run: omc"
   fi
   say ""
-  say "OmO sends anonymous usage telemetry (no prompts, code, file paths, or account data) to improve the product."
+  say "OmC sends anonymous usage telemetry (no prompts, code, file paths, or account data) to improve the product."
   say "The data goes to PostHog in the United States."
-  say "Turn it off with DO_NOT_TRACK=1 (or OMO_DISABLE_TELEMETRY=1)."
-  say "Details: https://github.com/code-yeongyu/oh-my-openagent/blob/dev/docs/legal/privacy-policy.md"
+  say "Turn it off with DO_NOT_TRACK=1 (or OMC_DISABLE_TELEMETRY=1)."
+  say "Details: https://github.com/code-yeongyu/oh-my-cybersecurity/blob/dev/docs/legal/privacy-policy.md"
 }
 
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then main "$@"; fi
-OMO_INSTALL_BASH
-if [ -n "$omo_sourced" ]; then
+OMC_INSTALL_BASH
+if [ -n "$omc_sourced" ]; then
   # Sourced by Bash (the installer tests): define the installer functions here without running main.
   trap - EXIT HUP INT TERM
   # shellcheck source=/dev/null
-  . "$omo_bash_script"
-  rm -f "$omo_bash_script"
+  . "$omc_bash_script"
+  rm -f "$omc_bash_script"
   return 0
 fi
-"$omo_bash" "$omo_bash_script" "$@"
-omo_bash_status=$?
-rm -f "$omo_bash_script"
+"$omc_bash" "$omc_bash_script" "$@"
+omc_bash_status=$?
+rm -f "$omc_bash_script"
 trap - EXIT HUP INT TERM
-exit "$omo_bash_status"
+exit "$omc_bash_status"

@@ -1,4 +1,4 @@
-export const GITHUB_URL = "https://github.com/code-yeongyu/oh-my-openagent"
+export const GITHUB_URL = "https://github.com/code-yeongyu/oh-my-cybersecurity"
 export const RELEASES_URL = `${GITHUB_URL}/releases`
 export const DISCORD_URL = "https://discord.gg/PUwSMR9XNk"
 export const X_URL = "https://x.com/justsisyphus"

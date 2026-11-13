@@ -83,7 +83,7 @@ export function harness(db: D1Database = sqliteD1("").db) {
     DB: db,
     DOWNLOADS: { writeDataPoint: (point: DataPoint) => points.push(point) } as unknown as AnalyticsEngineDataset,
     ACCOUNT_ID: "account",
-    ANALYTICS_DATASET: "omo_downloads",
+    ANALYTICS_DATASET: "omc_downloads",
     ANALYTICS_TOKEN: "token",
   } satisfies Env
   const ctx: RequestContext = { env, cache: cache as unknown as Cache, waitUntil: (p) => void pending.push(p) }

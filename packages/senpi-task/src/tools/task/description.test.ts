@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 
-import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
+import type { OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { AgentDefinition } from "../../agents"
 import { TASK_PROMPT_GUIDELINES, buildTaskToolDescription } from "./description"
@@ -10,7 +10,7 @@ const agents: Readonly<Record<string, AgentDefinition>> = {
 }
 
 describe("buildTaskToolDescription", () => {
-  test("#given a custom omo.json category #when the description is built #then it lists that category dynamically", () => {
+  test("#given a custom omc.json category #when the description is built #then it lists that category dynamically", () => {
     // given
     const config: OmoConfig = {
       categories: { "release-crew": { description: "Ships the release train" } },

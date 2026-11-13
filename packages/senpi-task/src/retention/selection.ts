@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto"
 import { resolve, sep } from "node:path"
 
-import type { OmoTaskTranscriptRetention } from "@oh-my-opencode/omo-config-core"
+import type { OmoTaskTranscriptRetention } from "@oh-my-cybersecurity/omc-config-core"
 
 import { isSpawnSpecV1, type TaskRecord } from "../state"
 

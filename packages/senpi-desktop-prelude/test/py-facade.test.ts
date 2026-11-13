@@ -87,7 +87,7 @@ describe("Python computer facade", () => {
 	});
 
 	it("raises RuntimeError with the COMPUTER_PERMISSION_REQUIRED text when a permission denial comes back as an error", () => {
-		// Given — the shape a code-mode marshal produces for the denial at omo #9475
+		// Given — the shape a code-mode marshal produces for the denial at omc #9475
 		const text =
 			"COMPUTER_PERMISSION_REQUIRED: screen recording is not granted. Do not retry until the user says the grant is done and the app was relaunched.";
 		const denial = JSON.stringify({

@@ -23,7 +23,7 @@ export function HomeDocument({
     <html
       lang={lang}
       className={`home ${timelessSans.variable} ${jetBrainsMono.variable}`}
-      data-omo-build={process.env.OMO_WEB_BUILD_ID || undefined}
+      data-omc-build={process.env.OMC_WEB_BUILD_ID || undefined}
       suppressHydrationWarning
     >
       {/* eslint-disable-next-line @next/next/no-head-element -- an App Router root layout owns its <head>; next/head is Pages Router only */}

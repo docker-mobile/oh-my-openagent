@@ -25,10 +25,10 @@ type SpawnImplementation = (...args: unknown[]) => MockSpawnProcess
 
 const originalHome = process.env.HOME
 const originalUserProfile = process.env.USERPROFILE
-const originalStartupTimeout = process.env.OMO_OPENCLAW_REPLY_LISTENER_STARTUP_TIMEOUT_MS
+const originalStartupTimeout = process.env.OMC_OPENCLAW_REPLY_LISTENER_STARTUP_TIMEOUT_MS
 
 const tempHome = mkdtempSync(join(tmpdir(), "openclaw-reply-listener-"))
-const stateDir = join(tempHome, ".omo", "openclaw", "state")
+const stateDir = join(tempHome, ".omc", "openclaw", "state")
 const configFilePath = join(stateDir, "reply-listener-config.json")
 const stateFilePath = join(stateDir, "reply-listener-state.json")
 const pidFilePath = join(stateDir, "reply-listener.pid")
@@ -109,7 +109,7 @@ beforeEach(() => {
 
 afterEach(() => {
   resetStateDir()
-  process.env.OMO_OPENCLAW_REPLY_LISTENER_STARTUP_TIMEOUT_MS = "25"
+  process.env.OMC_OPENCLAW_REPLY_LISTENER_STARTUP_TIMEOUT_MS = "25"
 })
 
 afterAll(() => {
@@ -120,9 +120,9 @@ afterAll(() => {
   else process.env.USERPROFILE = originalUserProfile
 
   if (originalStartupTimeout === undefined) {
-    delete process.env.OMO_OPENCLAW_REPLY_LISTENER_STARTUP_TIMEOUT_MS
+    delete process.env.OMC_OPENCLAW_REPLY_LISTENER_STARTUP_TIMEOUT_MS
   } else {
-    process.env.OMO_OPENCLAW_REPLY_LISTENER_STARTUP_TIMEOUT_MS = originalStartupTimeout
+    process.env.OMC_OPENCLAW_REPLY_LISTENER_STARTUP_TIMEOUT_MS = originalStartupTimeout
   }
 
   rmSync(tempHome, { recursive: true, force: true })
@@ -133,7 +133,7 @@ describe("startReplyListener", () => {
   test("returns the child's ready state only after detached startup reaches the poll loop", async () => {
     // The success path returns as soon as the child reports ready, so the budget is only an upper
     // bound here. A loaded runner can delay the fake child's ready write past the 500 ms default.
-    process.env.OMO_OPENCLAW_REPLY_LISTENER_STARTUP_TIMEOUT_MS = "30000"
+    process.env.OMC_OPENCLAW_REPLY_LISTENER_STARTUP_TIMEOUT_MS = "30000"
     const killSpy = spyOn(process, "kill").mockImplementation((pid: number | string) => {
       if (pid === 4321) {
         return true

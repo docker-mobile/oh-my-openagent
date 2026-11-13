@@ -57,10 +57,10 @@ function fixture(responses: Array<Response | Error>) {
 
 test("TLS failures, rate limits and server errors recover automatically with bounded backoff", async () => {
   const f = fixture([Object.assign(new Error("TLS handshake failed"), { code: "ECONNRESET" }), new Response("rate limited", { status: 429 }), new Response("unavailable", { status: 503 }), new Response('{"token":"secret"}', { status: 201 })])
-  await verifyPublisher("oh-my-opencode-windows-x64", "oidc-secret", f.options)
+  await verifyPublisher("oh-my-cybersecurity-windows-x64", "oidc-secret", f.options)
   expect(f.calls).toBe(4)
   expect(f.waits).toEqual([1000, 2000, 4000])
-  expect(f.logs[0]).toContain("oh-my-opencode-windows-x64")
+  expect(f.logs[0]).toContain("oh-my-cybersecurity-windows-x64")
   expect(f.logs[0]).toContain("ECONNRESET")
   expect(f.logs.join("\n")).not.toContain("secret")
 })
@@ -74,11 +74,11 @@ test("ambiguous 404 propagation retries rather than claiming missing configurati
 for (const status of [400, 401, 403]) {
   test(`definitive HTTP ${status} fails fast with package/status and configuration guidance`, async () => {
     const f = fixture([new Response('{"error":"publisher mismatch"}', { status })])
-    await expect(verifyPublisher("omo-ai", "token", f.options)).rejects.toThrow(`omo-ai HTTP ${status}`)
+    await expect(verifyPublisher("omc-ai", "token", f.options)).rejects.toThrow(`omc-ai HTTP ${status}`)
     expect(f.calls).toBe(1)
     expect(f.waits).toEqual([])
-    expect(f.logs[0]).toContain(`omo-ai HTTP ${status}`)
-    expect(f.logs.join("\n")).toContain("https://www.npmjs.com/package/omo-ai/access")
+    expect(f.logs[0]).toContain(`omc-ai HTTP ${status}`)
+    expect(f.logs.join("\n")).toContain("https://www.npmjs.com/package/omc-ai/access")
   })
 }
 
@@ -101,7 +101,7 @@ test("an explicit missing publisher mapping fails fast even on HTTP 404", async 
 
 test("error diagnostics redact credential fields and JWTs", async () => {
   const f = fixture([new Response('{"error":"denied","token":"private-token","value":"private-oidc"}', { status: 403 })])
-  await expect(verifyPublisher("omo-ai", "token", f.options)).rejects.toThrow("HTTP 403")
+  await expect(verifyPublisher("omc-ai", "token", f.options)).rejects.toThrow("HTTP 403")
   expect(f.logs.join("\n")).not.toContain("private-")
 })
 

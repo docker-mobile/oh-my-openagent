@@ -44,11 +44,11 @@ describe("OTLP sender", () => {
     await transport.flush()
 
     // then
-    const batches = calls.map((call) => logRecordsOf(decodeLogs(call.body)).map((r) => attributeMap(r.attributes)["omo.seq"]))
+    const batches = calls.map((call) => logRecordsOf(decodeLogs(call.body)).map((r) => attributeMap(r.attributes)["omc.seq"]))
     expect(batches.map((batch) => batch.length)).toEqual([20, 20, 5])
     expect(batches.flat()).toEqual(Array.from({ length: 45 }, (_, index) => index))
     expect(calls.every((call) => call.url === "https://collector.test/v1/logs")).toBe(true)
-    expect(calls[0]?.headers["x-omo-ingest-key"]).toBe("test-ingest-key")
+    expect(calls[0]?.headers["x-omc-ingest-key"]).toBe("test-ingest-key")
     expect(calls[0]?.headers["content-type"]).toBe("application/x-protobuf")
     expect(spoolNames(dir)).toEqual([])
   }, 30_000)
@@ -72,30 +72,30 @@ describe("OTLP sender", () => {
     expect(logRecordsOf(decodeLogs(calls[1]?.body ?? new Uint8Array())).length).toBe(19)
   }, 30_000)
 
-  test("#given OTEL_EXPORTER_OTLP_ENDPOINT points elsewhere #then it is ignored; OMO_TELEMETRY_ENDPOINT overrides the configured endpoint", async () => {
+  test("#given OTEL_EXPORTER_OTLP_ENDPOINT points elsewhere #then it is ignored; OMC_TELEMETRY_ENDPOINT overrides the configured endpoint", async () => {
     // given
     const dir = root()
 
     // when
     const ignored = makeTransport(dir, { env: { OTEL_EXPORTER_OTLP_ENDPOINT: "http://evil.test", OTEL_EXPORTER_OTLP_LOGS_ENDPOINT: "http://evil.test" } })
-    const overridden = makeTransport(dir, { env: { OMO_TELEMETRY_ENDPOINT: "https://staging.test/" } })
-    const defaulted = await createOtlpTelemetryTransport({ productEnvPrefix: "OMO_TEST", ingestKey: "k", spoolDir: dir, spoolRoot: dirname(dir), resource: testResource(), scope: TEST_SCOPE, project: testWireProjection, spans: TEST_SPANS, env: {}, autoStart: false })
+    const overridden = makeTransport(dir, { env: { OMC_TELEMETRY_ENDPOINT: "https://staging.test/" } })
+    const defaulted = await createOtlpTelemetryTransport({ productEnvPrefix: "OMC_TEST", ingestKey: "k", spoolDir: dir, spoolRoot: dirname(dir), resource: testResource(), scope: TEST_SCOPE, project: testWireProjection, spans: TEST_SPANS, env: {}, autoStart: false })
 
     // then
     expect(ignored.endpoint).toBe("https://collector.test")
     expect(overridden.endpoint).toBe("https://staging.test")
-    expect(defaulted?.endpoint).toBe("https://t.omo.dev")
+    expect(defaulted?.endpoint).toBe("https://t.omc.nga.hm")
   })
 
   test("#given OTEL_SDK_DISABLED=true or DO_NOT_TRACK=1 #then no transport is built and no spool directory exists", async () => {
     // given
     const dir = root()
-    const base = { productEnvPrefix: "OMO_TEST", ingestKey: "k", spoolDir: dir, spoolRoot: dirname(dir), resource: testResource(), scope: TEST_SCOPE, project: testWireProjection, spans: TEST_SPANS, autoStart: false }
+    const base = { productEnvPrefix: "OMC_TEST", ingestKey: "k", spoolDir: dir, spoolRoot: dirname(dir), resource: testResource(), scope: TEST_SCOPE, project: testWireProjection, spans: TEST_SPANS, autoStart: false }
 
     // when
     const otelDisabled = await createOtlpTelemetryTransport({ ...base, env: { OTEL_SDK_DISABLED: "TRUE" } })
     const doNotTrack = await createOtlpTelemetryTransport({ ...base, env: { DO_NOT_TRACK: "1" } })
-    const productOptOut = await createOtlpTelemetryTransport({ ...base, env: { OMO_TEST_SEND_ANONYMOUS_TELEMETRY: "0" } })
+    const productOptOut = await createOtlpTelemetryTransport({ ...base, env: { OMC_TEST_SEND_ANONYMOUS_TELEMETRY: "0" } })
 
     // then
     expect([otelDisabled, doNotTrack, productOptOut]).toEqual([null, null, null])
@@ -140,7 +140,7 @@ describe("the first flush after start", () => {
     const dir = root()
     const { calls, fetch } = recordingFetch()
     const transport = await createOtlpTelemetryTransport({
-      productEnvPrefix: "OMO_TEST",
+      productEnvPrefix: "OMC_TEST",
       ingestKey: "test-ingest-key",
       spoolDir: dir,
       spoolRoot: dirname(dir),

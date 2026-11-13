@@ -1,5 +1,5 @@
-import { DesktopEngineAbiMismatchError } from "@oh-my-opencode/senpi-desktop-engine";
-import type { AuditEvent, StopPathStatus } from "@oh-my-opencode/senpi-desktop-protocol";
+import { DesktopEngineAbiMismatchError } from "@oh-my-cybersecurity/senpi-desktop-engine";
+import type { AuditEvent, StopPathStatus } from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { DesktopEngineRpcError, DesktopServiceError } from "../src/service/rpc-client";
 import { DesktopService } from "../src/service/service";

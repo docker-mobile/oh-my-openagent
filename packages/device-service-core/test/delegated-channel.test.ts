@@ -3,7 +3,7 @@ import { describe, expect, test } from "bun:test"
 import { followDelegatedChannel } from "../src/delegated-channel.ts"
 import type { JsonObject, LocalEvent } from "../src/local-api/protocol.ts"
 
-// #12356: `omo remote attach` subscribes to frames only once its TUI sends subscribe_sessions, so frames the engine
+// #12356: `omc remote attach` subscribes to frames only once its TUI sends subscribe_sessions, so frames the engine
 // writes before that (or in a TUI reconnect gap) reached a channel with no listener and were dropped without a word.
 
 const DEVICE = "dev-b"

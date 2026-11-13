@@ -38,7 +38,7 @@ export interface FakeBun {
 }
 
 export function createFakeBun(behavior: FakeBunBehavior): FakeBun {
-	const dir = createTempDir("omo-fake-bun-");
+	const dir = createTempDir("omc-fake-bun-");
 	const logPath = join(dir, "calls.jsonl");
 	const binDir = join(dir, "bin");
 	mkdirSync(binDir);
@@ -91,7 +91,7 @@ function writeFakeBunScript(scriptPath: string, logPath: string, behavior: FakeB
 }
 
 export function createProject(files: Record<string, string>, options: { readonly git?: boolean } = {}): string {
-	const root = createTempDir("omo-bun-project-");
+	const root = createTempDir("omc-bun-project-");
 	if (options.git !== false) mkdirSync(join(root, ".git"));
 	for (const [relativePath, content] of Object.entries(files)) {
 		const target = join(root, relativePath);

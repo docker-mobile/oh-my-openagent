@@ -43,7 +43,7 @@ test("concurrent edits to one file on two devices both survive", async () => {
   expect([await a.read("shared.md"), await b.read("shared.md")]).toEqual([expected, expected])
 }, GIT_TEST_TIMEOUT)
 
-test("a sync commit names its seq range and is authored OmO Sync; nothing to apply commits nothing", async () => {
+test("a sync commit names its seq range and is authored OmC Sync; nothing to apply commits nothing", async () => {
   const { a, b } = await pair()
   await a.write("x.md", "x\n")
   await a.engine.runCycle()

@@ -1,6 +1,6 @@
 import { join } from "node:path";
-import { ComputerCallError } from "@oh-my-opencode/senpi-desktop-protocol";
-import { DesktopEngineRpcError, type ExecuteTool } from "@oh-my-opencode/senpi-desktop-service";
+import { ComputerCallError } from "@oh-my-cybersecurity/senpi-desktop-protocol";
+import { DesktopEngineRpcError, type ExecuteTool } from "@oh-my-cybersecurity/senpi-desktop-service";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { rejectionOf } from "../../senpi-desktop-service/test/harness";
 import type { ComputerHandle } from "../src/activation";
@@ -244,7 +244,7 @@ describe("computer tool execute", HANG_GUARD, () => {
 		expect(open?.params).toMatchObject({ macosCanary });
 	});
 
-	// Contract: omo's resolved default `computer.intervention` (DESIGN 7, Q decision 1) reaches an engine that
+	// Contract: omc's resolved default `computer.intervention` (DESIGN 7, Q decision 1) reaches an engine that
 	// advertises `intervention-policy`; fails if the default reverts to pause or the open stops carrying it.
 	it.each([
 		["advertising intervention-policy", { FAKE_ENGINE_FEATURES: '["intervention-policy"]' }, "continue"],

@@ -1,4 +1,4 @@
-import { createManagerResidencyRegistry } from "../../../../omo-senpi/src/components/task/residency-registry"
+import { createManagerResidencyRegistry } from "../../../../omc-senpi/src/components/task/residency-registry"
 import { createTaskLifecycle } from "../../lifecycle/create"
 import type { TaskRecordStore } from "../../store"
 import type { ManagedChildHandle } from "../child-handle"

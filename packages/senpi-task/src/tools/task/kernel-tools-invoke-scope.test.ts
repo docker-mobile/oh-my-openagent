@@ -4,7 +4,7 @@ import { tmpdir } from "node:os"
 import { join } from "node:path"
 
 import type { CreateAgentSessionOptions } from "@code-yeongyu/senpi"
-import { OmoTaskSettingsSchema } from "@oh-my-opencode/omo-config-core"
+import { OmoTaskSettingsSchema } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { AgentDefinition } from "../../agents"
 import { createKernelToolBindings } from "../../kernel-tools/bindings"
@@ -26,7 +26,7 @@ afterEach(() => {
 // child surface (no shared parent tools here), so both layers agree on the effective allow list.
 const CHILD_TOOLS = ["read", "grep"]
 
-// The two supported ways an omo.json agent takes `write` away: an EMPTY allowlist plus a denylist,
+// The two supported ways an omc.json agent takes `write` away: an EMPTY allowlist plus a denylist,
 // and a denylist alone. Both were refused before the producer could scope the nested host calls.
 const NO_WRITE_RULE: AgentDefinition = { name: "probe-no-write", tools: [{ pattern: "write", allow: false }] }
 const DENY_ONLY: AgentDefinition = { name: "probe-deny-only", disallowedTools: ["write"] }

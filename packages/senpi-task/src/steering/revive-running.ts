@@ -13,7 +13,7 @@ const UNUSED_RESERVATION = { ok: true as const, commit: (): void => undefined, r
  * A parked daemon child that was still RUNNING is reopened, not revived into a new run: the revival's
  * own reattach opens the run's next epoch and takes its lane slot. Reserving a slot here first made
  * that reattach refuse the very slot this send held, so every send answered `lane_capacity` even on
- * an empty lane (omo#9403). The message is then delivered to the reopened session as a follow-up.
+ * an empty lane (omc#9403). The message is then delivered to the reopened session as a follow-up.
  *
  * Delivery is fenced like every other revival: the reopened run must still be this send's - running,
  * resident, uncancelled, same owner and epoch, same live handle - before the message goes out and

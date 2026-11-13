@@ -18,7 +18,7 @@ import { createRestoredChildHandle, type ChildSession } from "./child-handle"
 
 // #9413: an in-process child loads senpi's builtin extensions, and codemode closes its per-session
 // bridge server only on session_shutdown. A bridge port that still accepts connections after
-// teardown is exactly the leak that kept `omo -p` alive.
+// teardown is exactly the leak that kept `omc -p` alive.
 
 const PRINT_RUN = join(import.meta.dir, "__fixtures__", "print-run.ts")
 const BRIDGE_RUN = join(import.meta.dir, "__fixtures__", "bridge-run.ts")

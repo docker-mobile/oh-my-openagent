@@ -1,11 +1,11 @@
 # Manifesto
 
-The principles and philosophy behind oh-my-openagent (OmO).
+The principles and philosophy behind oh-my-cybersecurity (OmC).
 
 Project reality check:
 
-- Name: oh-my-openagent (renamed from oh-my-opencode; both npm packages still publish in tandem during the transition)
-- Domain: https://omo.dev (legacy https://ohmyopenagent.com, https://ohmyopencode.org, https://ulw.dev, https://ultrawork.ai, https://ultrawork.dev, https://ultrawork.engineer all 301 to omo.dev)
+- Name: oh-my-cybersecurity (renamed from oh-my-cybersecurity; both npm packages still publish in tandem during the transition)
+- Domain: https://omc.nga.hm (legacy https://ohmyopenagent.com, https://ohmyopencode.org, https://ulw.dev, https://ultrawork.ai, https://ultrawork.dev, https://ultrawork.engineer all 301 to omc.nga.hm)
 - Building in Public: https://discord.gg/PUwSMR9XNk
 - Sisyphus Labs: https://sisyphuslabs.ai
 

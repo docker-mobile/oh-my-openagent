@@ -1,0 +1,42 @@
+{
+  "name": "@oh-my-cybersecurity/omc-console-core",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "description": "OmC console brand layer: the semantic palette, the box-drawing wordmark, and the operator slogans every console surface draws with.",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./src/index.ts"
+    },
+    "./palette": {
+      "types": "./palette.d.ts",
+      "import": "./src/palette.ts"
+    },
+    "./wordmark": {
+      "types": "./wordmark.d.ts",
+      "import": "./src/wordmark.ts"
+    },
+    "./slogans": {
+      "types": "./slogans.d.ts",
+      "import": "./src/slogans.ts"
+    },
+    "./render": {
+      "types": "./render.d.ts",
+      "import": "./src/render.ts"
+    },
+    "./dashboard": {
+      "types": "./dashboard.d.ts",
+      "import": "./src/dashboard.ts"
+    }
+  },
+  "types": "./index.d.ts",
+  "scripts": {
+    "typecheck": "tsgo --noEmit -p tsconfig.json",
+    "test": "bun test src"
+  },
+  "dependencies": {
+    "@oh-my-cybersecurity/engagement-core": "workspace:*",
+    "@oh-my-cybersecurity/arsenal-core": "workspace:*"
+  }
+}

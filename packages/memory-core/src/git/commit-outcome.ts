@@ -3,7 +3,7 @@ import type { GitExecResult } from "./exec"
 import { STABLE_LOG_OUTPUT } from "./stable-log-output"
 
 // A `git commit` that timed out may still have committed: the commit object and the HEAD update
-// can land before a slow hook or a loaded host pushes it past the budget (omo #10199 field
+// can land before a slow hook or a loaded host pushes it past the budget (omc #10199 field
 // incident: the write was reported failed although it was on HEAD). Commits are serialized under
 // the memory-write lock, so a HEAD that moved exactly one commit, from the HEAD seen before this
 // commit, with this write's subject, is this write's commit.

@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import { markRecordLostForReconciliation, transitionTaskRecord, type TaskRecord, type TaskTransitionAudit } from "../state"
 import { withDroppedSteeringNotice } from "../state/queued-steering"

@@ -84,7 +84,7 @@ export async function runSpawn(
     const agentSuffix = agents && agents.length > 0 ? ` Available agents: ${agents.join(", ")}.` : ""
     const categorySuffix = categories && categories.length > 0
       ? started.error.code === "model_unavailable"
-        ? ` Valid category names: ${categories.join(", ")}. Retry one of these, or configure categories.<name>.models in omo.json: model overrides cannot be combined with category.`
+        ? ` Valid category names: ${categories.join(", ")}. Retry one of these, or configure categories.<name>.models in omc.json: model overrides cannot be combined with category.`
         : ` Available categories: ${categories.join(", ")}.`
       : ""
     return result(started.error.message + agentSuffix + categorySuffix, {
@@ -121,7 +121,7 @@ export async function runSpawn(
   if (started.kind === "residency_denied") {
     return result(started.reason, { task_id: "", status: "residency_denied", mode: "spawn", reason: started.reason })
   }
-  // What the started child actually runs as. The spec names no mode only when omo.json says `auto`
+  // What the started child actually runs as. The spec names no mode only when omc.json says `auto`
   // and this wiring has no daemon gate at all, which IS in-process.
   const executionMode = spec.execution_mode ?? "in-process"
   if (params.run_in_background === true) {

@@ -208,7 +208,7 @@ describe("reflection integration after the parent moved (#12075)", () => {
     const tip = await validated(worktree)
     const parentHead = await commitIn(parentDir, FACTS, `${FACTS_BASE}- parent fact\n`)
     // The run's completion gate refuses a branch whose git administration files changed under it.
-    expect((await git(parentDir, ["config", "--local", "omo.probe", "changed"])).code).toBe(0)
+    expect((await git(parentDir, ["config", "--local", "omc.probe", "changed"])).code).toBe(0)
     const rebasedTips: ValidatedReflectionTip[] = []
 
     const result = await integrateValidatedReflection(worktree, {

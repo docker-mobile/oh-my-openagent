@@ -34,7 +34,7 @@ function pluginSpec(mode: number): string {
     spec_version: 1,
     core: { session_runtime: "in-process", multi_session: true, extensions: [".", `./extensions/${MEMBER_EXTENSION_BUNDLE_NAME}`] },
     tunables: { idleExitMs: 900_000, coldStart: "transient" },
-    env: { OMO_NATIVE: "1" },
+    env: { OMC_NATIVE: "1" },
   }, null, 2)}\n`)
   chmodSync(path, mode)
   return path

@@ -19,7 +19,7 @@ SCENARIO=""
 EVIDENCE_DIR=""
 SELF_TEST=0
 SANDBOX_ROOT=""
-OMO_TEST_ROOT=""
+OMC_TEST_ROOT=""
 EXPECTED_DAEMON_CLI=""
 EXPECTED_DAEMON_VERSION=""
 OPENCODE_PID=""
@@ -29,7 +29,7 @@ RESULT_STAGE=""
 CLEANUP_RUNNING=0
 NORMAL_CLEANUP_COMPLETE=0
 REAL_HOME="${HOME:-}"
-REAL_OMO_ROOT="${HOME:-}/.omo/lsp-daemon"
+REAL_OMO_ROOT="${HOME:-}/.omc/lsp-daemon"
 REAL_DB_PATH=""
 REAL_DB_COUNT_BEFORE=""
 REAL_OMO_BEFORE_HASH=""
@@ -114,7 +114,7 @@ require_bins() {
 }
 
 verify_tracked_cancellation_probes() {
-  local dependency ignored_evidence_root=".omo""/evidence"
+  local dependency ignored_evidence_root=".omc""/evidence"
   if grep -Fq "$ignored_evidence_root" "${BASH_SOURCE[0]}"; then
     fail "LSP QA driver references ignored evidence state"
     return 1
@@ -209,7 +209,7 @@ NODE
 with_shared_build_lock() {
   local command_name="$1" attempts=0 rc
   shift
-  BUILD_LOCK_DIR="$REPO_ROOT/.omo/locks/lsp-daemon-build.lock"
+  BUILD_LOCK_DIR="$REPO_ROOT/.omc/locks/lsp-daemon-build.lock"
   mkdir -p "$(dirname "$BUILD_LOCK_DIR")"
   while ! mkdir "$BUILD_LOCK_DIR" 2>/dev/null; do
     [ "$attempts" -lt 600 ] || { fail "timed out waiting for shared LSP daemon build lock"; return 1; }
@@ -279,8 +279,8 @@ stop_verified_pid() {
 }
 
 find_daemon_pid_file() {
-  [ -n "$OMO_TEST_ROOT" ] && [ -d "$OMO_TEST_ROOT" ] || return 0
-  find "$OMO_TEST_ROOT" -type f -name daemon.pid -print 2>/dev/null | sort | head -1
+  [ -n "$OMC_TEST_ROOT" ] && [ -d "$OMC_TEST_ROOT" ] || return 0
+  find "$OMC_TEST_ROOT" -type f -name daemon.pid -print 2>/dev/null | sort | head -1
 }
 
 stop_known_daemon() {
@@ -345,7 +345,7 @@ stop_owned_sandbox_processes() {
 
 stop_owned_real_daemon_leak() {
   [ "$REAL_OMO_BEFORE_HASH" = "ABSENT" ] || return 0
-  [ "$OMO_TEST_ROOT" != "$REAL_OMO_ROOT" ] || return 0
+  [ "$OMC_TEST_ROOT" != "$REAL_OMO_ROOT" ] || return 0
   [ -d "$REAL_OMO_ROOT" ] || return 0
   local pid_file pid command state_dir
   pid_file="$(find "$REAL_OMO_ROOT" -type f -name daemon.pid -print 2>/dev/null | sort | head -1)"
@@ -447,7 +447,7 @@ const modulePath = join(repoRoot, "packages/lsp-daemon/dist/index.js");
 const daemon = await import(pathToFileURL(modulePath).href + `?qa=${Date.now()}`);
 const cliPath = join(repoRoot, "packages/lsp-daemon/dist/cli.js");
 const packagedVersion = JSON.parse(readFileSync(join(repoRoot, "packages/lsp-daemon/dist/package.json"), "utf8")).version;
-const envNameValues = [daemon.OMO_LSP_DAEMON_CLI, daemon.OMO_LSP_DAEMON_DIR, daemon.OMO_LSP_DAEMON_VERSION].sort();
+const envNameValues = [daemon.OMC_LSP_DAEMON_CLI, daemon.OMC_LSP_DAEMON_DIR, daemon.OMC_LSP_DAEMON_VERSION].sort();
 
 function capture(run) {
   try {
@@ -459,42 +459,42 @@ function capture(run) {
 }
 
 rmSync(base, { recursive: true, force: true });
-const defaultPaths = daemon.daemonPaths({ [daemon.OMO_LSP_DAEMON_DIR]: base });
+const defaultPaths = daemon.daemonPaths({ [daemon.OMC_LSP_DAEMON_DIR]: base });
 const pairedVersion = "qa.1+pair";
 const pairedPaths = daemon.daemonPaths({
-  [daemon.OMO_LSP_DAEMON_DIR]: base,
-  [daemon.OMO_LSP_DAEMON_CLI]: cliPath,
-  [daemon.OMO_LSP_DAEMON_VERSION]: pairedVersion,
+  [daemon.OMC_LSP_DAEMON_DIR]: base,
+  [daemon.OMC_LSP_DAEMON_CLI]: cliPath,
+  [daemon.OMC_LSP_DAEMON_VERSION]: pairedVersion,
 });
 
 const singletonRoot = join(dirname(base), "singleton-state");
 rmSync(singletonRoot, { recursive: true, force: true });
 const singletonCli = capture(() => daemon.daemonPaths({
-  [daemon.OMO_LSP_DAEMON_DIR]: singletonRoot,
-  [daemon.OMO_LSP_DAEMON_CLI]: cliPath,
+  [daemon.OMC_LSP_DAEMON_DIR]: singletonRoot,
+  [daemon.OMC_LSP_DAEMON_CLI]: cliPath,
 }));
 const singletonVersion = capture(() => daemon.daemonPaths({
-  [daemon.OMO_LSP_DAEMON_DIR]: singletonRoot,
-  [daemon.OMO_LSP_DAEMON_VERSION]: packagedVersion,
+  [daemon.OMC_LSP_DAEMON_DIR]: singletonRoot,
+  [daemon.OMC_LSP_DAEMON_VERSION]: packagedVersion,
 }));
 
-const relativeBase = capture(() => daemon.daemonPaths({ [daemon.OMO_LSP_DAEMON_DIR]: "relative/state" }));
+const relativeBase = capture(() => daemon.daemonPaths({ [daemon.OMC_LSP_DAEMON_DIR]: "relative/state" }));
 const relativeCli = capture(() => daemon.daemonPaths({
-  [daemon.OMO_LSP_DAEMON_DIR]: join(dirname(base), "relative-cli-state"),
-  [daemon.OMO_LSP_DAEMON_CLI]: "relative/cli.js",
-  [daemon.OMO_LSP_DAEMON_VERSION]: packagedVersion,
+  [daemon.OMC_LSP_DAEMON_DIR]: join(dirname(base), "relative-cli-state"),
+  [daemon.OMC_LSP_DAEMON_CLI]: "relative/cli.js",
+  [daemon.OMC_LSP_DAEMON_VERSION]: packagedVersion,
 }));
 const nonFileCli = join(dirname(base), "not-a-file");
 mkdirSync(nonFileCli, { recursive: true });
 const missingCli = capture(() => daemon.daemonPaths({
-  [daemon.OMO_LSP_DAEMON_DIR]: join(dirname(base), "missing-cli-state"),
-  [daemon.OMO_LSP_DAEMON_CLI]: join(dirname(base), "missing-cli.js"),
-  [daemon.OMO_LSP_DAEMON_VERSION]: packagedVersion,
+  [daemon.OMC_LSP_DAEMON_DIR]: join(dirname(base), "missing-cli-state"),
+  [daemon.OMC_LSP_DAEMON_CLI]: join(dirname(base), "missing-cli.js"),
+  [daemon.OMC_LSP_DAEMON_VERSION]: packagedVersion,
 }));
 const directoryCli = capture(() => daemon.daemonPaths({
-  [daemon.OMO_LSP_DAEMON_DIR]: join(dirname(base), "directory-cli-state"),
-  [daemon.OMO_LSP_DAEMON_CLI]: nonFileCli,
-  [daemon.OMO_LSP_DAEMON_VERSION]: packagedVersion,
+  [daemon.OMC_LSP_DAEMON_DIR]: join(dirname(base), "directory-cli-state"),
+  [daemon.OMC_LSP_DAEMON_CLI]: nonFileCli,
+  [daemon.OMC_LSP_DAEMON_VERSION]: packagedVersion,
 }));
 
 const badVersions = ["../escape", "a/b", "a\\b", ".hidden", "bad value", "", "a".repeat(129)];
@@ -504,9 +504,9 @@ const versionFailures = badVersions.map((version, index) => {
   return {
     version,
     error: capture(() => daemon.daemonPaths({
-      [daemon.OMO_LSP_DAEMON_DIR]: stateRoot,
-      [daemon.OMO_LSP_DAEMON_CLI]: cliPath,
-      [daemon.OMO_LSP_DAEMON_VERSION]: version,
+      [daemon.OMC_LSP_DAEMON_DIR]: stateRoot,
+      [daemon.OMC_LSP_DAEMON_CLI]: cliPath,
+      [daemon.OMC_LSP_DAEMON_VERSION]: version,
     })),
     stateCreated: existsSync(stateRoot),
   };
@@ -520,13 +520,13 @@ const neutralPaths = daemon.daemonPaths({
   [`${oldPrefix}DAEMON_CLI`]: join(dirname(base), "ignored-legacy-cli.js"),
   [`${oldPrefix}DAEMON_VERSION`]: "999.999.999",
 });
-const neutralBase = resolve(process.env.HOME, ".omo", "lsp-daemon");
+const neutralBase = resolve(process.env.HOME, ".omc", "lsp-daemon");
 
 const assertions = {
   exactThreeOmoEnvironmentNames: JSON.stringify(envNameValues) === JSON.stringify([
-    "OMO_LSP_DAEMON_CLI",
-    "OMO_LSP_DAEMON_DIR",
-    "OMO_LSP_DAEMON_VERSION",
+    "OMC_LSP_DAEMON_CLI",
+    "OMC_LSP_DAEMON_DIR",
+    "OMC_LSP_DAEMON_VERSION",
   ]),
   defaultBaseResolved: dirname(defaultPaths.dir) === resolve(base),
   defaultVersionStamped: defaultPaths.version === packagedVersion,
@@ -757,7 +757,7 @@ const projectDir = realpathSync(rawProjectDir);
 const homeDir = realpathSync(rawHomeDir);
 const core = await import(pathToFileURL(join(repoRoot, "packages/lsp-core/src/index.ts")).href);
 const daemonClient = await import(pathToFileURL(join(repoRoot, "packages/lsp-daemon/src/daemon-client.ts")).href);
-const openCodeMcp = await import(pathToFileURL(join(repoRoot, "packages/omo-opencode/src/mcp/lsp.ts")).href);
+const openCodeMcp = await import(pathToFileURL(join(repoRoot, "packages/omc-opencode/src/mcp/lsp.ts")).href);
 
 const explicitTranslator = core.createStandaloneMcpRequestContext({
   cwd: projectDir,
@@ -766,8 +766,8 @@ const explicitTranslator = core.createStandaloneMcpRequestContext({
     LSP_TOOLS_MCP_PROJECT_CONFIG: [
       join(projectDir, ".opencode", "lsp.json"),
       "",
-      join(projectDir, ".omo", "lsp.json"),
-      join(projectDir, ".omo", "lsp-client.json"),
+      join(projectDir, ".omc", "lsp.json"),
+      join(projectDir, ".omc", "lsp-client.json"),
     ].join(delimiter),
     LSP_TOOLS_MCP_USER_CONFIG: join(homeDir, ".config", "opencode", "lsp.json"),
     LSP_TOOLS_MCP_INSTALL_DECISIONS: join(homeDir, ".config", "opencode", "lsp-install-decisions.json"),
@@ -776,7 +776,7 @@ const explicitTranslator = core.createStandaloneMcpRequestContext({
 const defaultTranslator = core.createStandaloneMcpRequestContext({ cwd: projectDir, homeDir, env: {} });
 const openCodeMcpConfig = openCodeMcp.createLspMcpConfig({
   cwd: projectDir,
-  moduleUrl: pathToFileURL(join(repoRoot, "packages/omo-opencode/src/mcp/lsp.ts")).href,
+  moduleUrl: pathToFileURL(join(repoRoot, "packages/omc-opencode/src/mcp/lsp.ts")).href,
   exists: () => false,
   resolveExecutable: (commandName) => ({ command: commandName === "node" ? process.execPath : commandName, available: true }),
 });
@@ -884,15 +884,15 @@ const assertions = {
   ])
     && JSON.stringify((openCodeMcpConfig.environment?.LSP_TOOLS_MCP_PROJECT_CONFIG ?? "").split(delimiter)) === JSON.stringify([
       join(projectDir, ".opencode", "lsp.json"),
-      join(projectDir, ".omo", "lsp.json"),
-      join(projectDir, ".omo", "lsp-client.json"),
+      join(projectDir, ".omc", "lsp.json"),
+      join(projectDir, ".omc", "lsp-client.json"),
     ])
     && openCodeMcpConfig.environment?.LSP_TOOLS_MCP_USER_CONFIG === join(openCodeConfigRoot, "lsp.json")
     && openCodeMcpConfig.environment?.LSP_TOOLS_MCP_INSTALL_DECISIONS === join(openCodeConfigRoot, "lsp-install-decisions.json"),
   explicitTranslatorOutputs: JSON.stringify(explicitTranslator.projectConfigPaths) === JSON.stringify([
     join(projectDir, ".opencode", "lsp.json"),
-    join(projectDir, ".omo", "lsp.json"),
-    join(projectDir, ".omo", "lsp-client.json"),
+    join(projectDir, ".omc", "lsp.json"),
+    join(projectDir, ".omc", "lsp-client.json"),
   ])
     && explicitTranslator.userConfigPath === join(homeDir, ".config", "opencode", "lsp.json")
     && explicitTranslator.installDecisionsPath === join(homeDir, ".config", "opencode", "lsp-install-decisions.json")
@@ -1107,9 +1107,9 @@ const ownedPids = [];
 
 function paths(root) {
   return daemon.daemonPaths({
-    [daemon.OMO_LSP_DAEMON_DIR]: root,
-    [daemon.OMO_LSP_DAEMON_CLI]: cliPath,
-    [daemon.OMO_LSP_DAEMON_VERSION]: version,
+    [daemon.OMC_LSP_DAEMON_DIR]: root,
+    [daemon.OMC_LSP_DAEMON_CLI]: cliPath,
+    [daemon.OMC_LSP_DAEMON_VERSION]: version,
   });
 }
 
@@ -1150,9 +1150,9 @@ function startDetached(root, receiptPath) {
     stdio: ["ignore", "ignore", "ignore"],
     env: {
       ...process.env,
-      OMO_LSP_DAEMON_DIR: root,
-      OMO_LSP_DAEMON_CLI: cliPath,
-      OMO_LSP_DAEMON_VERSION: version,
+      OMC_LSP_DAEMON_DIR: root,
+      OMC_LSP_DAEMON_CLI: cliPath,
+      OMC_LSP_DAEMON_VERSION: version,
     },
   });
   ownedPids.push(child.pid);
@@ -1195,7 +1195,7 @@ async function main() {
   const first = await daemon.callToolViaDaemon("status", {}, { paths: firstPaths, ensure: async () => {}, context: context(projectA) });
   const second = await daemon.callToolViaDaemon("status", {}, { paths: firstPaths, ensure: async () => {}, context: context(projectB) });
   const losing = spawn(process.execPath, [cliPath, "daemon"], {
-    env: { ...process.env, OMO_LSP_DAEMON_DIR: firstRoot, OMO_LSP_DAEMON_CLI: cliPath, OMO_LSP_DAEMON_VERSION: version },
+    env: { ...process.env, OMC_LSP_DAEMON_DIR: firstRoot, OMC_LSP_DAEMON_CLI: cliPath, OMC_LSP_DAEMON_VERSION: version },
     stdio: ["ignore", "ignore", "ignore"],
   });
   const losingCandidateExit = await new Promise((resolve) => losing.on("exit", (code) => resolve(code)));
@@ -1207,7 +1207,7 @@ async function main() {
   writeFileSync(livePaths.owner, JSON.stringify({ pid: process.pid, nonce: "live", startedAt: "now", endpoint: { path: livePaths.socket } }), { mode: 0o600 });
   writeFileSync(livePaths.endpoint, livePaths.socket, { mode: 0o600 });
   const live = spawn(process.execPath, [cliPath, "daemon"], {
-    env: { ...process.env, OMO_LSP_DAEMON_DIR: liveRoot, OMO_LSP_DAEMON_CLI: cliPath, OMO_LSP_DAEMON_VERSION: version },
+    env: { ...process.env, OMC_LSP_DAEMON_DIR: liveRoot, OMC_LSP_DAEMON_CLI: cliPath, OMC_LSP_DAEMON_VERSION: version },
     stdio: ["ignore", "ignore", "ignore"],
   });
   const liveOwnerDeferral = await new Promise((resolve) => live.on("exit", (code) => resolve(code !== 0 && existsSync(livePaths.owner))));
@@ -1290,7 +1290,7 @@ write_fake_provider() {
 import http from "node:http";
 import { appendFileSync } from "node:fs";
 
-const marker = process.env.QA_MARKER || "OMO_LSP_PATH_CONTRACT_QA";
+const marker = process.env.QA_MARKER || "OMC_LSP_PATH_CONTRACT_QA";
 const qaScenario = process.env.QA_SCENARIO || "path-contract";
 const qaSourceFile = process.env.QA_SOURCE_FILE || "source.ts";
 const logFile = process.env.FAKE_PROVIDER_LOG;
@@ -1399,7 +1399,7 @@ const server = http.createServer(async (request, response) => {
     const lspTool = preferredTool(names, "lsp_diagnostics");
     log({ call: callCount, branch: lspTool ? "tool-call-diagnostics" : "missing-tool", selectedTool: lspTool ?? null, toolNames: names.sort() });
     if (!lspTool) {
-      send(response, textEvents(callCount, "OMO_LSP_TOOL_MISSING"));
+      send(response, textEvents(callCount, "OMC_LSP_TOOL_MISSING"));
       return;
     }
     qaStage = 2;
@@ -1408,7 +1408,7 @@ const server = http.createServer(async (request, response) => {
   }
   if (input.includes(marker) && hasToolResult(input)) {
     log({ call: callCount, branch: "complete" });
-    send(response, textEvents(callCount, "OMO_LSP_QA_COMPLETE"));
+    send(response, textEvents(callCount, "OMC_LSP_QA_COMPLETE"));
     return;
   }
   if (input.includes(marker)) {
@@ -1416,7 +1416,7 @@ const server = http.createServer(async (request, response) => {
     const lspTool = preferredTool(names, preferred);
     log({ call: callCount, branch: lspTool ? "tool-call" : "missing-tool", selectedTool: lspTool ?? null, toolNames: names.sort() });
     if (!lspTool) {
-      send(response, textEvents(callCount, "OMO_LSP_TOOL_MISSING"));
+      send(response, textEvents(callCount, "OMC_LSP_TOOL_MISSING"));
       return;
     }
     qaStage = qaScenario === "rename" ? 1 : 0;
@@ -1474,7 +1474,7 @@ const permissions = scenario === "rename"
     ? { lsp_diagnostics: "allow" }
     : { lsp_status: "allow" };
 const opencode = {
-  plugin: [pathToFileURL(join(repoRoot, "packages/omo-opencode/src/index.ts")).href],
+  plugin: [pathToFileURL(join(repoRoot, "packages/omc-opencode/src/index.ts")).href],
   model: "openai/gpt-fake",
   provider: {
     openai: {
@@ -1484,12 +1484,12 @@ const opencode = {
   },
   permission: permissions,
 };
-const omo = {
+const omc = {
   disabled_mcps: ["websearch", "context7", "grep_app"],
   disabled_hooks: ["auto-update-checker"],
 };
 writeFileSync(opencodePath, `${JSON.stringify(opencode, null, 2)}\n`);
-writeFileSync(omoPath, `${JSON.stringify(omo, null, 2)}\n`);
+writeFileSync(omoPath, `${JSON.stringify(omc, null, 2)}\n`);
 NODE
 }
 
@@ -1604,7 +1604,7 @@ if (terminalErrorTool) {
       diagnostics: diagnosticsTool?.state?.status ?? null,
       status: statusTool?.state?.status ?? null,
     },
-    finalMarkerObserved: parts.some((part) => part?.type === "text" && typeof part?.text === "string" && part.text.includes("OMO_LSP_QA_COMPLETE")),
+    finalMarkerObserved: parts.some((part) => part?.type === "text" && typeof part?.text === "string" && part.text.includes("OMC_LSP_QA_COMPLETE")),
   }, null, 2)}\n`);
   process.exit(2);
 }
@@ -1616,7 +1616,7 @@ const completed = scenario === "rename"
   : scenario === "diagnostics-freshness"
     ? diagnosticsTool?.state?.status === "completed" && diagnosticsOutput.includes("exact-current")
     : statusTool?.state?.status === "completed" && statusOutput.includes("Configured LSP servers");
-const finalText = parts.some((part) => part?.type === "text" && typeof part?.text === "string" && part.text.includes("OMO_LSP_QA_COMPLETE"));
+const finalText = parts.some((part) => part?.type === "text" && typeof part?.text === "string" && part.text.includes("OMC_LSP_QA_COMPLETE"));
 process.exit(completed && finalText ? 0 : 1);
 NODE
     rc=$?
@@ -1760,7 +1760,7 @@ record_daemon_state() {
     *) fail "daemon process command does not match the local CLI"; return 1 ;;
   esac
   endpoint="$(cat "$endpoint_file")"
-  node --input-type=module - "$EVIDENCE_DIR/daemon-state.json" "$OMO_TEST_ROOT" "$version_dir" "$pid" "$endpoint" "$EXPECTED_DAEMON_CLI" "$EXPECTED_DAEMON_VERSION" <<'NODE'
+  node --input-type=module - "$EVIDENCE_DIR/daemon-state.json" "$OMC_TEST_ROOT" "$version_dir" "$pid" "$endpoint" "$EXPECTED_DAEMON_CLI" "$EXPECTED_DAEMON_VERSION" <<'NODE'
 import { writeFileSync } from "node:fs";
 import { basename, dirname } from "node:path";
 const [output, base, versionDir, pid, endpoint, expectedCliPath, expectedVersion] = process.argv.slice(2);
@@ -1783,10 +1783,10 @@ run_mcp_status_call() {
   env \
     HOME="$HOME" \
     XDG_CONFIG_HOME="$XDG_CONFIG_HOME" \
-    OMO_LSP_DAEMON_DIR="$OMO_LSP_DAEMON_DIR" \
-    ${OMO_LSP_DAEMON_CLI+OMO_LSP_DAEMON_CLI="$OMO_LSP_DAEMON_CLI"} \
-    ${OMO_LSP_DAEMON_VERSION+OMO_LSP_DAEMON_VERSION="$OMO_LSP_DAEMON_VERSION"} \
-    LSP_TOOLS_MCP_PROJECT_CONFIG="$SANDBOX_ROOT/project/.opencode/lsp.json:$SANDBOX_ROOT/project/.omo/lsp.json:$SANDBOX_ROOT/project/.omo/lsp-client.json" \
+    OMC_LSP_DAEMON_DIR="$OMC_LSP_DAEMON_DIR" \
+    ${OMC_LSP_DAEMON_CLI+OMC_LSP_DAEMON_CLI="$OMC_LSP_DAEMON_CLI"} \
+    ${OMC_LSP_DAEMON_VERSION+OMC_LSP_DAEMON_VERSION="$OMC_LSP_DAEMON_VERSION"} \
+    LSP_TOOLS_MCP_PROJECT_CONFIG="$SANDBOX_ROOT/project/.opencode/lsp.json:$SANDBOX_ROOT/project/.omc/lsp.json:$SANDBOX_ROOT/project/.omc/lsp-client.json" \
     LSP_TOOLS_MCP_USER_CONFIG="$XDG_CONFIG_HOME/opencode/lsp.json" \
     LSP_TOOLS_MCP_INSTALL_DECISIONS="$XDG_CONFIG_HOME/opencode/lsp-install-decisions.json" \
     node --input-type=module - "$output" "$stderr_output" "$@" <<'NODE'
@@ -1879,8 +1879,8 @@ run_source_dist_reuse_probe() {
   local source_cli="$REPO_ROOT/packages/lsp-daemon/src/cli.ts"
   local dist_cli="$REPO_ROOT/packages/lsp-daemon/dist/cli.js"
   local opencode_lsp_config="$SANDBOX_ROOT/project/.opencode/lsp.json"
-  local omo_lsp_config="$SANDBOX_ROOT/project/.omo/lsp.json"
-  local omo_lsp_client_config="$SANDBOX_ROOT/project/.omo/lsp-client.json"
+  local omc_lsp_config="$SANDBOX_ROOT/project/.omc/lsp.json"
+  local omc_lsp_client_config="$SANDBOX_ROOT/project/.omc/lsp-client.json"
   local user_lsp_config="$XDG_CONFIG_HOME/opencode/lsp.json"
   local codex_compat_config="$HOME/.codex/lsp-client.json"
 
@@ -1895,27 +1895,27 @@ run_source_dist_reuse_probe() {
   else
     printf 'created=no\nexisting=%s\n' "$SOURCE_PACKAGE_STAMP" >"$EVIDENCE_DIR/source-package-stamp.txt"
   fi
-  mkdir -p "$(dirname "$opencode_lsp_config")" "$(dirname "$omo_lsp_config")" "$(dirname "$omo_lsp_client_config")" \
+  mkdir -p "$(dirname "$opencode_lsp_config")" "$(dirname "$omc_lsp_config")" "$(dirname "$omc_lsp_client_config")" \
     "$(dirname "$user_lsp_config")" "$(dirname "$codex_compat_config")"
   printf '{"lsp":{"typescript":{"command":["%s","--version"],"extensions":[".ts"]}}}\n' "$(command -v node)" >"$opencode_lsp_config"
-  printf '{"lsp":{}}\n' >"$omo_lsp_config"
-  printf '{"lsp":{}}\n' >"$omo_lsp_client_config"
+  printf '{"lsp":{}}\n' >"$omc_lsp_config"
+  printf '{"lsp":{}}\n' >"$omc_lsp_client_config"
   printf '{"lsp":{}}\n' >"$user_lsp_config"
   cp "$opencode_lsp_config" "$codex_compat_config"
 
-  OMO_LSP_DAEMON_CLI="$source_cli" OMO_LSP_DAEMON_VERSION="$EXPECTED_DAEMON_VERSION" \
+  OMC_LSP_DAEMON_CLI="$source_cli" OMC_LSP_DAEMON_VERSION="$EXPECTED_DAEMON_VERSION" \
     run_mcp_status_call "source-status" "$source_output" bun "$source_cli" mcp || {
       fail "source Bun MCP status call failed"; return 1;
     }
   capture_current_daemon_owner "$source_owner" || return 1
 
-  unset OMO_LSP_DAEMON_CLI OMO_LSP_DAEMON_VERSION
+  unset OMC_LSP_DAEMON_CLI OMC_LSP_DAEMON_VERSION
   run_mcp_status_call "dist-status" "$dist_output" node "$dist_cli" mcp || {
     fail "dist MCP status call failed"; return 1;
   }
   capture_current_daemon_owner "$dist_owner" || return 1
   EXPECTED_DAEMON_CLI="$source_cli"
-  unset OMO_LSP_DAEMON_CLI OMO_LSP_DAEMON_VERSION
+  unset OMC_LSP_DAEMON_CLI OMC_LSP_DAEMON_VERSION
 
   local contract_rc=0
   bun --input-type=module - \
@@ -1931,11 +1931,11 @@ const sourceText = readFileSync(sourceOutputPath, "utf8");
 const distText = readFileSync(distOutputPath, "utf8");
 const sourceOwner = JSON.parse(readFileSync(sourceOwnerPath, "utf8"));
 const distOwner = JSON.parse(readFileSync(distOwnerPath, "utf8"));
-const openCodeMcp = await import(pathToFileURL(join(process.cwd(), "packages/omo-opencode/src/mcp/lsp.ts")).href);
-const missingRoot = mkdtempSync(join(tmpdir(), "omo-lsp-missing-source-"));
+const openCodeMcp = await import(pathToFileURL(join(process.cwd(), "packages/omc-opencode/src/mcp/lsp.ts")).href);
+const missingRoot = mkdtempSync(join(tmpdir(), "omc-lsp-missing-source-"));
 const missingConfig = openCodeMcp.createLspMcpConfig({
   cwd: projectDir,
-  moduleUrl: pathToFileURL(join(missingRoot, "packages/omo-opencode/src/mcp/lsp.ts")).href,
+  moduleUrl: pathToFileURL(join(missingRoot, "packages/omc-opencode/src/mcp/lsp.ts")).href,
   exists: (path) => path.endsWith("package.json"),
   resolveExecutable: (commandName) => ({ command: commandName, available: commandName === "node" || commandName === "npm" || commandName === "bun" }),
 });
@@ -1944,8 +1944,8 @@ const context = {
   cwd: projectDir,
   projectConfigPaths: [
     join(projectDir, ".opencode", "lsp.json"),
-    join(projectDir, ".omo", "lsp.json"),
-    join(projectDir, ".omo", "lsp-client.json"),
+    join(projectDir, ".omc", "lsp.json"),
+    join(projectDir, ".omc", "lsp-client.json"),
   ],
   userConfigPath: join(configDir, "lsp.json"),
   installDecisionsPath: join(configDir, "lsp-install-decisions.json"),
@@ -1959,8 +1959,8 @@ const assertions = {
   sameVersionDir: sourceOwner.versionDir === distOwner.versionDir && sourceOwner.versionDir.endsWith(`/v${version}`),
   exactOrderedOpenCodeContext: JSON.stringify(context.projectConfigPaths) === JSON.stringify([
     join(projectDir, ".opencode", "lsp.json"),
-    join(projectDir, ".omo", "lsp.json"),
-    join(projectDir, ".omo", "lsp-client.json"),
+    join(projectDir, ".omc", "lsp.json"),
+    join(projectDir, ".omc", "lsp-client.json"),
   ]),
   distCliExists: existsSync(distCli),
   singletonFailureCoveredByPathContract: true,
@@ -2660,7 +2660,7 @@ const messages = [
           error: "ENOENT: no such file or directory, open '/repo/source.ts'",
         },
       },
-      { type: "text", text: "OMO_LSP_QA_COMPLETE" },
+      { type: "text", text: "OMC_LSP_QA_COMPLETE" },
     ],
   },
 ];
@@ -2862,22 +2862,22 @@ build_lsp_runtime_for_qa() {
 
 scenario_marker() {
   case "$1" in
-    rename) printf '%s' 'OMO_LSP_RENAME_QA' ;;
-    diagnostics-freshness) printf '%s' 'OMO_LSP_DIAGNOSTICS_FRESHNESS_QA' ;;
-    *) printf '%s' 'OMO_LSP_PATH_CONTRACT_QA' ;;
+    rename) printf '%s' 'OMC_LSP_RENAME_QA' ;;
+    diagnostics-freshness) printf '%s' 'OMC_LSP_DIAGNOSTICS_FRESHNESS_QA' ;;
+    *) printf '%s' 'OMC_LSP_PATH_CONTRACT_QA' ;;
   esac
 }
 
 scenario_prompt() {
   case "$1" in
     rename)
-      printf '%s' 'OMO_LSP_RENAME_QA: call the available LSP rename tool once for source.ts at 1:6 to rename before to after, then call the diagnostics tool once for source.ts, then report completion.'
+      printf '%s' 'OMC_LSP_RENAME_QA: call the available LSP rename tool once for source.ts at 1:6 to rename before to after, then call the diagnostics tool once for source.ts, then report completion.'
       ;;
     diagnostics-freshness)
-      printf '%s' 'OMO_LSP_DIAGNOSTICS_FRESHNESS_QA: call the available LSP diagnostics tool exactly once for source.ts, then report completion.'
+      printf '%s' 'OMC_LSP_DIAGNOSTICS_FRESHNESS_QA: call the available LSP diagnostics tool exactly once for source.ts, then report completion.'
       ;;
     *)
-      printf '%s' 'OMO_LSP_PATH_CONTRACT_QA: call the available LSP status tool exactly once, then report completion.'
+      printf '%s' 'OMC_LSP_PATH_CONTRACT_QA: call the available LSP status tool exactly once, then report completion.'
       ;;
   esac
 }
@@ -2911,13 +2911,13 @@ run_normal() {
   export OPENCODE_TEST_HOME="$SANDBOX_ROOT/home"
   export OPENCODE_DISABLE_AUTOUPDATE=1
   export OPENCODE_DISABLE_MODELS_FETCH=1
-  export OMO_DISABLE_POSTHOG=1
-  export OMO_LSP_DAEMON_DIR="$SANDBOX_ROOT/omo/lsp-daemon"
-  export LSP_TOOLS_MCP_PROJECT_CONFIG="$SANDBOX_ROOT/project/.opencode/lsp.json:$SANDBOX_ROOT/project/.omo/lsp.json:$SANDBOX_ROOT/project/.omo/lsp-client.json"
+  export OMC_DISABLE_POSTHOG=1
+  export OMC_LSP_DAEMON_DIR="$SANDBOX_ROOT/omc/lsp-daemon"
+  export LSP_TOOLS_MCP_PROJECT_CONFIG="$SANDBOX_ROOT/project/.opencode/lsp.json:$SANDBOX_ROOT/project/.omc/lsp.json:$SANDBOX_ROOT/project/.omc/lsp-client.json"
   export LSP_TOOLS_MCP_USER_CONFIG="$XDG_CONFIG_HOME/opencode/lsp.json"
   export LSP_TOOLS_MCP_INSTALL_DECISIONS="$XDG_CONFIG_HOME/opencode/lsp-install-decisions.json"
-  unset OMO_LSP_DAEMON_CLI OMO_LSP_DAEMON_VERSION
-  OMO_TEST_ROOT="$OMO_LSP_DAEMON_DIR"
+  unset OMC_LSP_DAEMON_CLI OMC_LSP_DAEMON_VERSION
+  OMC_TEST_ROOT="$OMC_LSP_DAEMON_DIR"
   EXPECTED_DAEMON_CLI="$REPO_ROOT/packages/lsp-daemon/dist/cli.js"
   export QA_SCENARIO="$SCENARIO"
   export QA_SOURCE_FILE="source.ts"
@@ -2935,8 +2935,8 @@ process.stdout.write(packageJson.version);
 NODE
 )"
   [ -n "$EXPECTED_DAEMON_VERSION" ] || { fail "built daemon version is missing"; return 1; }
-  export OMO_LSP_DAEMON_CLI="$EXPECTED_DAEMON_CLI"
-  export OMO_LSP_DAEMON_VERSION="$EXPECTED_DAEMON_VERSION"
+  export OMC_LSP_DAEMON_CLI="$EXPECTED_DAEMON_CLI"
+  export OMC_LSP_DAEMON_VERSION="$EXPECTED_DAEMON_VERSION"
 
   write_path_contract_probe "$SANDBOX_ROOT/contract" "$EVIDENCE_DIR/path-contract.json" || {
     fail "path-contract probe failed (see path-contract-probe.log)"

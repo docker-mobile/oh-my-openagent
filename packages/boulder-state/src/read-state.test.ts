@@ -16,7 +16,7 @@ function createTempDirectory(): string {
 }
 
 function writeState(directory: string, state: BoulderState): void {
-  const boulderDirectory = join(directory, ".omo")
+  const boulderDirectory = join(directory, ".omc")
   mkdirSync(boulderDirectory, { recursive: true })
   writeFileSync(join(boulderDirectory, "boulder.json"), JSON.stringify(state), "utf-8")
 }
@@ -29,7 +29,7 @@ function createWork(input: {
 }): BoulderWorkState {
   return {
     work_id: input.workId,
-    active_plan: `.omo/plans/${input.workId}.md`,
+    active_plan: `.omc/plans/${input.workId}.md`,
     plan_name: input.workId,
     status: "active",
     started_at: input.startedAt,
@@ -74,7 +74,7 @@ describe("readBoulderState", () => {
   test("#given malformed state json #when reading state #then null is returned", () => {
     // given
     const directory = createTempDirectory()
-    const boulderDirectory = join(directory, ".omo")
+    const boulderDirectory = join(directory, ".omc")
     mkdirSync(boulderDirectory, { recursive: true })
     writeFileSync(join(boulderDirectory, "boulder.json"), "{not-json", "utf-8")
 
@@ -88,7 +88,7 @@ describe("readBoulderState", () => {
   test("#given non-object state json #when reading state #then null is returned", () => {
     // given
     const directory = createTempDirectory()
-    const boulderDirectory = join(directory, ".omo")
+    const boulderDirectory = join(directory, ".omc")
     mkdirSync(boulderDirectory, { recursive: true })
     writeFileSync(join(boulderDirectory, "boulder.json"), "[]", "utf-8")
 
@@ -102,7 +102,7 @@ describe("readBoulderState", () => {
   test("#given empty object state json #when reading state #then null is returned", () => {
     // given
     const directory = createTempDirectory()
-    const boulderDirectory = join(directory, ".omo")
+    const boulderDirectory = join(directory, ".omc")
     mkdirSync(boulderDirectory, { recursive: true })
     writeFileSync(join(boulderDirectory, "boulder.json"), "{}", "utf-8")
 
@@ -257,7 +257,7 @@ describe("getWorkForSession", () => {
     const directory = createTempDirectory()
     writeState(directory, {
       schema_version: 2,
-      active_plan: ".omo/plans/mirror.md",
+      active_plan: ".omc/plans/mirror.md",
       plan_name: "mirror",
       status: "active",
       started_at: "2026-06-05T01:00:00.000Z",

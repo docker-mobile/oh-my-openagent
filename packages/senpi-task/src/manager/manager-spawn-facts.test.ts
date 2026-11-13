@@ -16,7 +16,7 @@ function runningRecord(overrides: Partial<TaskRecord> = {}): TaskRecord {
     root_session_id: "parent-1",
     depth: 1,
     execution_mode: "process",
-    model: "omo-mock/mock-1",
+    model: "omc-mock/mock-1",
     status: "running",
     residency_state: "resident",
     created_at: "2026-07-07T00:00:00.000Z",

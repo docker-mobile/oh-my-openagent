@@ -3,7 +3,7 @@ import {
 	type ComputerCallPolicy,
 	type ComputerCallStep,
 	isReadOnlyComputerCall,
-} from "@oh-my-opencode/senpi-desktop-protocol";
+} from "@oh-my-cybersecurity/senpi-desktop-protocol";
 
 /** The permission-system `PermissionRequest` shape (`permission-system/parsers.ts`), declared structurally. */
 export interface PermissionRequest {

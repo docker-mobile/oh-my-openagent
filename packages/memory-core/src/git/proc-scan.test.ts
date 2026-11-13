@@ -7,7 +7,7 @@ import { join } from "node:path"
 import { scanProcFdHolders } from "./open-file-holders"
 import { scanProcCwdUsers } from "./repo-in-use"
 
-// Platform contract (omo #10199 r5 LOW 4 / LOW 5 / HIGH 1): the Linux /proc scans fail closed.
+// Platform contract (omc #10199 r5 LOW 4 / LOW 5 / HIGH 1): the Linux /proc scans fail closed.
 // A /proc that lists no processes (present but not mounted, a sandbox) or that does not list this
 // very process is UNAVAILABLE, never "no holders"; a per-entry error other than "it vanished" is
 // INDETERMINATE. No real host can produce an unmounted /proc on demand, so these drive the scan

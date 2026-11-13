@@ -1,4 +1,4 @@
-/* omo.dev home: doriterm.com's landing system (doriterm docs/design/landing/DESIGN-LANDING.md) with OmO's teal
+/* omc.nga.hm home: doriterm.com's landing system (doriterm docs/design/landing/DESIGN-LANDING.md) with OmC's teal
    accent. The palette itself lives in app/styles/design-system.css; this file adds the landing's type, space and motion. */
 /* Type, space, radius and motion: the whole home page, plus the shared nav and footer on every other page (scoped so
    the docs site keeps its own spacing scale). */

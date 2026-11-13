@@ -1,8 +1,8 @@
 import type { BuiltinCategoryDefinition } from "./types"
-import { LATEST_MODEL_BY_FAMILY } from "@oh-my-opencode/model-core/latest-models"
-import { FABLE_55_LAUNCH, isLaunchGatedModel, launchDefaultModelId } from "@oh-my-opencode/model-core"
+import { LATEST_MODEL_BY_FAMILY } from "@oh-my-cybersecurity/model-core/latest-models"
+import { FABLE_55_LAUNCH, isLaunchGatedModel, launchDefaultModelId } from "@oh-my-cybersecurity/model-core"
 
-// Ported from packages/omo-opencode/src/tools/delegate-task/anthropic-categories.ts.
+// Ported from packages/omc-opencode/src/tools/delegate-task/anthropic-categories.ts.
 // unspecified-high lives in openai-categories.ts even though its default is claude-opus-5-5 again:
 // that file owns the GPT-6 Astra prompt-append hook the category still carries for a user override
 // onto a GPT-6 model (#8616).

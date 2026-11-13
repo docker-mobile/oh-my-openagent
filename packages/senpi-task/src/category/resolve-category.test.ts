@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test"
 
 import { BUILTIN_CATEGORY_DEFAULTS, BUILTIN_CATEGORY_REQUIRES_MODEL, resolveCategory } from "./index"
-import { FABLE_55_RELEASED } from "@oh-my-opencode/model-core"
+import { FABLE_55_RELEASED } from "@oh-my-cybersecurity/model-core"
 
 type FakeModel = {
   readonly provider: string
@@ -68,7 +68,7 @@ const gpt56CategoryCases = [
 ] as const
 
 describe("resolveCategory", () => {
-  test("#given a builtin category and omo overlay #when resolved #then user config wins and prompt text is appended", () => {
+  test("#given a builtin category and omc overlay #when resolved #then user config wins and prompt text is appended", () => {
     // given
     const models = registry([model("anthropic", "claude-opus-4-7")])
 
@@ -96,7 +96,7 @@ describe("resolveCategory", () => {
     expect(resolved.spec.prompt_append).toEndWith("\n\nfixture-overlay")
   })
 
-  test("#given a disabled omo category overlay #when resolved #then a disabled result explains the reason", () => {
+  test("#given a disabled omc category overlay #when resolved #then a disabled result explains the reason", () => {
     // given
     const models = registry([model("openai", "gpt-5.5")])
 
@@ -114,7 +114,7 @@ describe("resolveCategory", () => {
     expect(result.availableCategories).toContain("ultrabrain")
   })
 
-  test("#given primary model is unavailable and omo fallback exists #when resolved #then delegate-core fallback reaches the registry model", () => {
+  test("#given primary model is unavailable and omc fallback exists #when resolved #then delegate-core fallback reaches the registry model", () => {
     // given
     const models = registry([model("google", "gemini-3.1-pro")])
 
@@ -427,7 +427,7 @@ describe("resolveCategory", () => {
     expect(result.nearestFallback).toBeUndefined()
   })
 
-  test("#given category params in omo overlay #when resolved #then child spec carries generation params and prompt append", () => {
+  test("#given category params in omc overlay #when resolved #then child spec carries generation params and prompt append", () => {
     // given
     const models = registry([model("chatgpt-subscription", "gpt-6-luna-fast")])
 

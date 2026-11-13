@@ -19,15 +19,15 @@ Every phase classifies evidence and risk across:
 
 | Release Layer | Scope | Required version decision |
 |---|---|---|
-| `omo pure components` | Core packages, MCP packages, shared skills, reusable scripts, platform binary inputs | Patch/minor/major impact for shared logic consumed by adapters. |
-| `omo opencode` | Root `oh-my-opencode` / `oh-my-openagent`, `src/`, OpenCode plugin hooks/tools/CLI/config/docs, `.opencode/`, `.agents/` | Semver bump for the OpenCode/OpenAgent npm release. |
-| `omo codex` | `packages/omo-codex`, `lazycodex-ai`, Codex plugin metadata/hooks, bundled MCP runtimes, `code-yeongyu/lazycodex` marketplace payload | Codex adapter bump, LazyCodex npm publish risk, and marketplace/GitHub release need. |
+| `omc pure components` | Core packages, MCP packages, shared skills, reusable scripts, platform binary inputs | Patch/minor/major impact for shared logic consumed by adapters. |
+| `omc opencode` | Root `oh-my-cybersecurity` / `oh-my-cybersecurity`, `src/`, OpenCode plugin hooks/tools/CLI/config/docs, `.opencode/`, `.agents/` | Semver bump for the OpenCode/OpenAgent npm release. |
+| `omc codex` | `packages/omc-codex`, `lazycodex-ai`, Codex plugin metadata/hooks, bundled MCP runtimes, `code-yeongyu/lazycodex` marketplace payload | Codex adapter bump, LazyCodex npm publish risk, and marketplace/GitHub release need. |
 
 ---
 
 ## Phase 0: Detect Unpublished Changes
 
-Run `/get-unpublished-changes` FIRST. This is the single source of truth for what changed and must include `omo pure components`, `omo opencode`, and `omo codex` layer-specific version recommendations.
+Run `/get-unpublished-changes` FIRST. This is the single source of truth for what changed and must include `omc pure components`, `omc opencode`, and `omc codex` layer-specific version recommendations.
 
 ```
 skill(name="get-unpublished-changes")
@@ -47,7 +47,7 @@ Then capture raw data needed by agent prompts:
 
 ```bash
 # Extract versions (already in /get-unpublished-changes output)
-PUBLISHED=$(npm view oh-my-opencode version 2>/dev/null || echo "not published")
+PUBLISHED=$(npm view oh-my-cybersecurity version 2>/dev/null || echo "not published")
 LOCAL=$(node -p "require('./package.json').version" 2>/dev/null || echo "unknown")
 
 # Raw data for agents (diffs, file lists)
@@ -71,7 +71,7 @@ Use the `/get-unpublished-changes` output as the starting point — it already g
 3. Target **up to 10 groups**. If fewer than 10 commits, each commit is its own group. If more than 10 logical areas, merge the smallest groups.
 4. For each group, extract:
    - **Group name**: Short descriptive label (e.g., "agent-model-resolution", "hook-system-refactor")
-   - **Release layer(s)**: `omo pure components`, `omo opencode`, `omo codex`
+   - **Release layer(s)**: `omc pure components`, `omc opencode`, `omc codex`
    - **Commits**: List of commit hashes and messages
    - **Files**: Changed files in this group
    - **Diff**: The relevant portion of the full diff (`git diff v${PUBLISHED}..HEAD -- {group files}`)
@@ -97,7 +97,7 @@ task(
 <review_type>PER-CHANGE DEEP ANALYSIS</review_type>
 <change_group>{GROUP_NAME}</change_group>
 
-<project>oh-my-opencode (npm package)</project>
+<project>oh-my-cybersecurity (npm package)</project>
 <published_version>{PUBLISHED}</published_version>
 <target_version>{LOCAL}</target_version>
 
@@ -173,7 +173,7 @@ task(
   prompt="""
 Run /review-work on the unpublished changes between v{PUBLISHED} and HEAD.
 
-GOAL: Review all changes heading into npm publish of oh-my-opencode. These changes span {COMMIT_COUNT} commits across {FILE_COUNT} files.
+GOAL: Review all changes heading into npm publish of oh-my-cybersecurity. These changes span {COMMIT_COUNT} commits across {FILE_COUNT} files.
 
 CONSTRAINTS:
 - This is a plugin published to npm — public API stability matters
@@ -182,7 +182,7 @@ CONSTRAINTS:
 - Factory pattern (createXXX) for tools, hooks, agents
 - kebab-case files, barrel exports, no catch-all files
 
-BACKGROUND: Pre-publish review of oh-my-opencode, an OpenCode plugin with 1268 TypeScript files, 160k LOC. Changes since v{PUBLISHED} are about to be published.
+BACKGROUND: Pre-publish review of oh-my-cybersecurity, an OpenCode plugin with 1268 TypeScript files, 160k LOC. Changes since v{PUBLISHED} are about to be published.
 
 The diff base is: git diff v{PUBLISHED}..HEAD
 
@@ -204,7 +204,7 @@ task(
   prompt="""
 <review_type>RELEASE SYNTHESIS — OVERALL ASSESSMENT</review_type>
 
-<project>oh-my-opencode (npm package)</project>
+<project>oh-my-cybersecurity (npm package)</project>
 <published_version>{PUBLISHED}</published_version>
 <local_version>{LOCAL}</local_version>
 
@@ -270,7 +270,7 @@ SYNTHESIS CHECKLIST:
 OUTPUT FORMAT:
 <verdict>SAFE / CAUTION / RISKY / BLOCK</verdict>
 <recommended_version_bump>PATCH / MINOR / MAJOR</recommended_version_bump>
-<layer_specific_version_bump>omo pure components: PATCH/MINOR/MAJOR; omo opencode: PATCH/MINOR/MAJOR; omo codex: PATCH/MINOR/MAJOR</layer_specific_version_bump>
+<layer_specific_version_bump>omc pure components: PATCH/MINOR/MAJOR; omc opencode: PATCH/MINOR/MAJOR; omc codex: PATCH/MINOR/MAJOR</layer_specific_version_bump>
 <version_bump_justification>Why this bump level</version_bump_justification>
 <release_coherence>Assessment of whether changes belong in one release</release_coherence>
 <breaking_changes>
@@ -340,7 +340,7 @@ Do NOT deliver the final report until ALL agents have completed.
 Compile the final report:
 
 ```markdown
-# Pre-Publish Review — oh-my-opencode
+# Pre-Publish Review — oh-my-cybersecurity
 
 ## Release: v{PUBLISHED} -> v{LOCAL}
 **Commits:** {COMMIT_COUNT} | **Files Changed:** {FILE_COUNT} | **Agents:** {AGENT_COUNT}
@@ -356,9 +356,9 @@ Compile the final report:
 
 | Layer | Recommendation | Reason |
 |---|---|---|
-| omo pure components | PATCH/MINOR/MAJOR | ... |
-| omo opencode | PATCH/MINOR/MAJOR | ... |
-| omo codex | PATCH/MINOR/MAJOR | ... |
+| omc pure components | PATCH/MINOR/MAJOR | ... |
+| omc opencode | PATCH/MINOR/MAJOR | ... |
+| omc codex | PATCH/MINOR/MAJOR | ... |
 
 ---
 

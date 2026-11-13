@@ -2,7 +2,7 @@
 // that hosts the engine exported. An inherited GIT_CONFIG_COUNT/KEY_n/VALUE_n or GIT_CONFIG_PARAMETERS
 // outranks the repository's config: `core.hooksPath=/dev/null` there made every memory commit skip the
 // installed pre-commit, commit-msg and post-commit hooks (no validation, no mirror push) without an error
-// (omo #12354). GIT_DIR, GIT_WORK_TREE and the rest point git at another repository altogether.
+// (omc #12354). GIT_DIR, GIT_WORK_TREE and the rest point git at another repository altogether.
 //
 // The names are git's own repository-local list (`git rev-parse --local-env-vars`), which git itself clears
 // when it moves into another repository, plus GIT_NAMESPACE, which would move every ref the memory repository

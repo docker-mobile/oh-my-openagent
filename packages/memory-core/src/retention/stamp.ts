@@ -2,7 +2,7 @@
 // store walk's cursor and, in its own `cap` field, the size cap's resume point; it is written only
 // when one of them stopped early and deleted when neither did. The cap's resume point is read only by
 // the cap, so it never makes the store walk skip a store (#12538 review r4 M). The completion stamp
-// lives in the memory repo's git config (`omo.retentionAt`), written by the caller. A cap resume point
+// lives in the memory repo's git config (`omc.retentionAt`), written by the caller. A cap resume point
 // whose pass could not even measure runtime/ inside the budget is marked `capStalled`: it waits for the
 // next interval instead of the next bind (#12538 review r5 L1).
 
@@ -13,7 +13,7 @@ import { readFile, rename, rm, writeFile } from "../fs/resilient"
 import type { RetentionCursor } from "./budget"
 import type { RuntimeCapCursor } from "./cap"
 
-export const RETENTION_STAMP_CONFIG_KEY = "omo.retentionAt"
+export const RETENTION_STAMP_CONFIG_KEY = "omc.retentionAt"
 const CURSOR_FILE = "retention.json"
 
 export function retentionCursorPath(runtimeDir: string): string {

@@ -4,7 +4,7 @@ import { getTranslations } from "next-intl/server"
 import { SectionHead } from "@/components/home/section-head"
 import { MODEL_PROFILES } from "@/components/landing/story-data"
 
-/** The tuned profiles OmO ships, as one wrapping list of chips: a list you can read, not a marquee. */
+/** The tuned profiles OmC ships, as one wrapping list of chips: a list you can read, not a marquee. */
 export async function ModelsSection(): Promise<JSX.Element> {
   const t = await getTranslations("home.models")
 

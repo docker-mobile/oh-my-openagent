@@ -4,7 +4,7 @@ import { existsSync, mkdirSync, mkdtempSync, rmSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 
-import { OmoTaskSettingsSchema } from "@oh-my-opencode/omo-config-core"
+import { OmoTaskSettingsSchema } from "@oh-my-cybersecurity/omc-config-core"
 import { loadSenpiBarrel } from "../../packages/senpi-task/src/lazy/senpi-barrel"
 import { createKernelToolBindings } from "../../packages/senpi-task/src/kernel-tools/bindings"
 import type { KernelToolInvokeOptions, KernelToolsCapability } from "../../packages/senpi-task/src/kernel-tools/contract"
@@ -12,7 +12,7 @@ import { createTaskManager } from "../../packages/senpi-task/src/manager/manager
 import { createInProcessManagedRunner } from "../../packages/senpi-task/src/manager/runner"
 import { InProcessRunner } from "../../packages/senpi-task/src/runners/in-process"
 import { createTaskLifecycle, NO_HOST_ENDPOINT } from "../../packages/senpi-task/src/lifecycle"
-import { createManagerResidencyRegistry } from "../../packages/omo-senpi/src/components/task/residency-registry"
+import { createManagerResidencyRegistry } from "../../packages/omc-senpi/src/components/task/residency-registry"
 import { createTaskRecordStore } from "../../packages/senpi-task/src/store"
 import { createTaskTool } from "../../packages/senpi-task/src/tools/task"
 import { createWorkpoolTool } from "../../packages/senpi-task/src/tools/workpool"
@@ -69,7 +69,7 @@ export type ProducerKernel = {
   readonly capability: KernelToolsCapability
   readonly sha: string
   readonly verified_by: string
-  // REAL counts taken at the capability boundary omo owns: how many invocations were attempted and
+  // REAL counts taken at the capability boundary omc owns: how many invocations were attempted and
   // how many actually returned a closure value. `since()` snapshots, so a case can count what
   // happened after a reset without subtracting by hand.
   invocations(): KernelInvocationCounts
@@ -82,7 +82,7 @@ export type ProducerKernel = {
   runEvalAgent(args: unknown, options: Record<string, unknown>): Promise<{ text: string }>
 }
 
-/** A REAL producer JS worker kernel plus the exported structural capability omo consumes. */
+/** A REAL producer JS worker kernel plus the exported structural capability omc consumes. */
 export async function openProducerKernel(sessionId: string): Promise<ProducerKernel> {
   const { dir, sha, verified_by } = producerCheckout()
   const { JavaScriptKernel } = (await import(
@@ -101,7 +101,7 @@ export async function openProducerKernel(sessionId: string): Promise<ProducerKer
     close(): Promise<void>
   }
   // The marker the INJECTED checkout exports, or nothing when it predates the per-call invoke scope
-  // (senpi#1731). Forwarded verbatim so omo's runtime detection sees exactly what the engine says.
+  // (senpi#1731). Forwarded verbatim so omc's runtime detection sees exactly what the engine says.
   const capabilities = await producerCapabilities(dir)
   const counts = { attempted: 0, succeeded: 0 }
   return {
@@ -175,7 +175,7 @@ function providerServer(turn: ProviderTurnDecider) {
 
 export type ChildEnv = Awaited<ReturnType<typeof openChildEnv>>
 
-// The agent definitions the denial cases exercise, in the same shape omo resolves from omo.json.
+// The agent definitions the denial cases exercise, in the same shape omc resolves from omc.json.
 export const QA_AGENTS = {
   "rpc-worker": { name: "rpc-worker", executionMode: "process" },
   "restricted-writer": { name: "restricted-writer", disallowedTools: ["write"] },
@@ -195,7 +195,7 @@ export type ChildEnvOptions = {
   readonly childToolNames?: readonly string[]
 }
 
-/** Real omo engine: real store, manager, in-process runner, task and workpool tool definitions. */
+/** Real omc engine: real store, manager, in-process runner, task and workpool tool definitions. */
 export async function openChildEnv(turn: ProviderTurnDecider, options: ChildEnvOptions = {}) {
   const { ModelRegistry, ModelRuntime } = await loadSenpiBarrel()
   const root = mkdtempSync(join(tmpdir(), "omp-item6-"))

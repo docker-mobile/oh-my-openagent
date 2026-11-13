@@ -107,7 +107,7 @@ export function extractUnreleasedSection(changelog: string): string {
  * Returns error on conflict (backfill marker already exists for this manifest).
  */
 export function backfillChangelog(changelog: string, backfillSection: string, manifestTimestamp: string): { changelog: string; error?: string } {
-  const marker = `<!-- omo-live-backfill-${manifestTimestamp} -->`
+  const marker = `<!-- omc-live-backfill-${manifestTimestamp} -->`
   if (changelog.includes(marker)) {
     return { changelog, error: `backfill already applied for manifest ${manifestTimestamp}` }
   }

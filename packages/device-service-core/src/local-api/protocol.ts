@@ -112,7 +112,7 @@ export type DeviceAdopt = {
   readonly device: DeviceRef;
   readonly signing_private_key: string;
   readonly sealing_private_key: string;
-  /** omo addition: sent only to a service at or above ADOPT_ACCOUNT_MIN_SERVICE_VERSION (device-service.ts). */
+  /** omc addition: sent only to a service at or above ADOPT_ACCOUNT_MIN_SERVICE_VERSION (device-service.ts). */
   readonly account?: string;
 };
 export type DeviceForget = { readonly id: string; readonly type: "device.forget" };

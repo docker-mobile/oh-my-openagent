@@ -71,7 +71,7 @@ test.skipIf(!dataset)("fs-integration zfs clone publication, COW and restart-saf
     expect(await readFile(join(handle.mergedDir, "content"), "utf8")).toBe("lower")
     await writeFile(join(handle.mergedDir, "content"), "merged")
     expect(await readFile(join(lower, "content"), "utf8")).toBe("lower")
-    expect((await checked(io, ["zfs", "get", "-H", "-o", "value", "mountpoint", `${dataset}/omo-integration-zfs`])).stdout.trim()).toBe(handle.mergedDir)
+    expect((await checked(io, ["zfs", "get", "-H", "-o", "value", "mountpoint", `${dataset}/omc-integration-zfs`])).stdout.trim()).toBe(handle.mergedDir)
   } finally {
     await new ZfsBackend(io).stop(handle.mergedDir)
     await rm(handle.baseDir, { recursive: true, force: true })

@@ -1,4 +1,4 @@
-// Crash injection for recovery tests: `OMO_MEMORY_KILL_POINT=<point>` makes the process that reaches that
+// Crash injection for recovery tests: `OMC_MEMORY_KILL_POINT=<point>` makes the process that reaches that
 // point kill itself without cleanup. The variable is read at call time, so the only isolation is the
 // process boundary: set it in a child's own environment, never in a process that runs maintenance code.
 
@@ -20,11 +20,11 @@ export interface KillPointOptions {
 }
 
 /**
- * Kills this process when `OMO_MEMORY_KILL_POINT` names `point`. Returns how it killed (a POSIX
+ * Kills this process when `OMC_MEMORY_KILL_POINT` names `point`. Returns how it killed (a POSIX
  * `SIGKILL`, or Windows `TerminateProcess` through `process.kill(pid)`), or undefined when it did not.
  */
 export function maybeKillAt(point: MemoryKillPoint, options: KillPointOptions = {}): "signal" | "terminate" | undefined {
-  if (process.env.OMO_MEMORY_KILL_POINT !== point) return undefined
+  if (process.env.OMC_MEMORY_KILL_POINT !== point) return undefined
   const kill = options.kill ?? ((pid: number, signal?: NodeJS.Signals) => { process.kill(pid, signal) })
   if ((options.platform ?? process.platform) === "win32") {
     kill(process.pid)

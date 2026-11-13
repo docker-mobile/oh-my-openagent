@@ -17,7 +17,7 @@ function printedLines(source: string, pattern: RegExp): readonly string[] {
 }
 
 describe("telemetry install disclosure shipped copies", () => {
-  // Shipped-copy equality: the shell installers and `omo setup` cannot import telemetry-core.
+  // Shipped-copy equality: the shell installers and `omc setup` cannot import telemetry-core.
   test("#given install.sh #when its printed lines are read #then the disclosure block equals the source", () => {
     const source = readFileSync(join(repoRoot, "packages", "get-worker", "scripts", "install.sh"), "utf8")
 
@@ -30,8 +30,8 @@ describe("telemetry install disclosure shipped copies", () => {
     expect(disclosureBlock(printedLines(source, /^\s*Write-OmoSay '(.*)'\r?$/gm))).toEqual(TELEMETRY_INSTALL_DISCLOSURE_LINES)
   })
 
-  test("#given omo setup #when its telemetry notice is loaded #then it equals the source", async () => {
-    const setupSummary = pathToFileURL(join(repoRoot, "packages", "omo-native", "bin", "lib", "setup-summary.js")).href
+  test("#given omc setup #when its telemetry notice is loaded #then it equals the source", async () => {
+    const setupSummary = pathToFileURL(join(repoRoot, "packages", "omc-native", "bin", "lib", "setup-summary.js")).href
     const { TELEMETRY_NOTICE } = await import(setupSummary)
 
     expect(TELEMETRY_NOTICE).toBe(TELEMETRY_INSTALL_DISCLOSURE_LINES.join("\n"))

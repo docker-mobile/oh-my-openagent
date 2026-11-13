@@ -1,9 +1,9 @@
 import { statSync } from "node:fs";
 import { isAbsolute } from "node:path";
 
-export const OMO_LSP_DAEMON_DIR = "OMO_LSP_DAEMON_DIR";
-export const OMO_LSP_DAEMON_CLI = "OMO_LSP_DAEMON_CLI";
-export const OMO_LSP_DAEMON_VERSION = "OMO_LSP_DAEMON_VERSION";
+export const OMC_LSP_DAEMON_DIR = "OMC_LSP_DAEMON_DIR";
+export const OMC_LSP_DAEMON_CLI = "OMC_LSP_DAEMON_CLI";
+export const OMC_LSP_DAEMON_VERSION = "OMC_LSP_DAEMON_VERSION";
 
 const DAEMON_VERSION_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$/;
 
@@ -49,15 +49,15 @@ export function validateDaemonVersion(version: string): string {
 }
 
 export function resolveDaemonRuntime(env: NodeJS.ProcessEnv, defaults: DaemonRuntimeDefaults): DaemonRuntime {
-	const cliOverride = env[OMO_LSP_DAEMON_CLI];
-	const versionOverride = env[OMO_LSP_DAEMON_VERSION];
+	const cliOverride = env[OMC_LSP_DAEMON_CLI];
+	const versionOverride = env[OMC_LSP_DAEMON_VERSION];
 	const hasCliOverride = cliOverride !== undefined;
 	const hasVersionOverride = versionOverride !== undefined;
 
 	if (hasCliOverride !== hasVersionOverride) {
 		throw new InvalidRuntimeOverrideError(
 			"paired_values_required",
-			`${OMO_LSP_DAEMON_CLI} and ${OMO_LSP_DAEMON_VERSION} must be set together`,
+			`${OMC_LSP_DAEMON_CLI} and ${OMC_LSP_DAEMON_VERSION} must be set together`,
 		);
 	}
 
@@ -74,7 +74,7 @@ export function resolveDaemonRuntime(env: NodeJS.ProcessEnv, defaults: DaemonRun
 	if (!isAbsolute(cliOverride)) {
 		throw new InvalidRuntimeOverrideError(
 			"cli_must_be_absolute",
-			`${OMO_LSP_DAEMON_CLI} must be an absolute path to an existing regular file`,
+			`${OMC_LSP_DAEMON_CLI} must be an absolute path to an existing regular file`,
 		);
 	}
 
@@ -85,11 +85,11 @@ export function resolveDaemonRuntime(env: NodeJS.ProcessEnv, defaults: DaemonRun
 		if (!(error instanceof Error)) throw error;
 		throw new InvalidRuntimeOverrideError(
 			"cli_not_found",
-			`${OMO_LSP_DAEMON_CLI} must name an existing regular file`,
+			`${OMC_LSP_DAEMON_CLI} must name an existing regular file`,
 		);
 	}
 	if (!cliStats.isFile()) {
-		throw new InvalidRuntimeOverrideError("cli_not_file", `${OMO_LSP_DAEMON_CLI} must name an existing regular file`);
+		throw new InvalidRuntimeOverrideError("cli_not_file", `${OMC_LSP_DAEMON_CLI} must name an existing regular file`);
 	}
 
 	return { cliPath: cliOverride, version: validateDaemonVersion(versionOverride) };

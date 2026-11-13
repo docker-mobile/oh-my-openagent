@@ -1,69 +1,69 @@
 [English](README.md) | [简体中文](README.zh-cn.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [한국어](README.ko.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Português (Brasil)](README.pt-br.md) | [Italiano](README.it.md)
 
 > [!NOTE]
-> **OmO 5.0: OmO ❤️ Pi**
-> Install it with `curl -fsSL https://get.omo.dev/install.sh | bash`. Memory system, CodeMode, Anthropic subscriptions, all covered.
-> [![OmO Herdr DAG - live OmO workflow DAGs in a Herdr side pane](./.github/assets/omo-herdr-dag.png)](https://github.com/jc01rho/omo-herdr-dag)
-> *Just type "mass ulw" with your prompt - now you are the master of graph engineering. Multi-model ultracode, together with a better memory system. (The right panel is [omo-herdr-dag](https://github.com/jc01rho/omo-herdr-dag).)*
+> **OmC 5.0: OmC ❤️ Pi**
+> Install it with `curl -fsSL https://get.omc.nga.hm/install.sh | bash`. Memory system, CodeMode, Anthropic subscriptions, all covered.
+> [![OmC Herdr DAG - live OmC workflow DAGs in a Herdr side pane](./.github/assets/omc-herdr-dag.png)](https://github.com/jc01rho/omc-herdr-dag)
+> *Just type "mass ulw" with your prompt - now you are the master of graph engineering. Multi-model ultracode, together with a better memory system. (The right panel is [omc-herdr-dag](https://github.com/jc01rho/omc-herdr-dag).)*
 
 > **Sponsors**
-> These are our sponsors. They help keep OmO going as a personal side project.
-> | [<img alt="OpenGateway" src="./.github/assets/opengateway-logo.svg" width="156px" />](https://opengateway.ai/) | **[OpenGateway](https://opengateway.ai/)** sponsors OmO. An OpenAI-compatible gateway that puts many model providers behind one API. Thank you for backing open source. |
+> These are our sponsors. They help keep OmC going as a personal side project.
+> | [<img alt="OpenGateway" src="./.github/assets/opengateway-logo.svg" width="156px" />](https://opengateway.ai/) | **[OpenGateway](https://opengateway.ai/)** sponsors OmC. An OpenAI-compatible gateway that puts many model providers behind one API. Thank you for backing open source. |
 > | :-----| :----- |
 
 
 > [!TIP]
 > Be with us!
 >
-> | [<img alt="Discord link" src="https://img.shields.io/discord/1452487457085063218?color=5865F2&label=discord&labelColor=black&logo=discord&logoColor=white&style=flat-square" width="156px" />](https://discord.gg/PUwSMR9XNk) | Join our [Discord community](https://discord.gg/PUwSMR9XNk) to connect with contributors and fellow OmO users. |
+> | [<img alt="Discord link" src="https://img.shields.io/discord/1452487457085063218?color=5865F2&label=discord&labelColor=black&logo=discord&logoColor=white&style=flat-square" width="156px" />](https://discord.gg/PUwSMR9XNk) | Join our [Discord community](https://discord.gg/PUwSMR9XNk) to connect with contributors and fellow OmC users. |
 > | :-----| :----- |
-> | [<img alt="X link" src="https://img.shields.io/badge/Follow-%40justsisyphus-00CED1?style=flat-square&logo=x&labelColor=black" width="156px" />](https://x.com/justsisyphus) | Updates for OmO used to be posted on my X account. <br /> Since it was mistakenly suspended, [@justsisyphus](https://x.com/justsisyphus) now posts updates on my behalf. |
+> | [<img alt="X link" src="https://img.shields.io/badge/Follow-%40justsisyphus-00CED1?style=flat-square&logo=x&labelColor=black" width="156px" />](https://x.com/justsisyphus) | Updates for OmC used to be posted on my X account. <br /> Since it was mistakenly suspended, [@justsisyphus](https://x.com/justsisyphus) now posts updates on my behalf. |
 > | [<img alt="GitHub Follow" src="https://img.shields.io/github/followers/code-yeongyu?style=flat-square&logo=github&labelColor=black&color=24292f" width="156px" />](https://github.com/code-yeongyu) | Follow [@code-yeongyu](https://github.com/code-yeongyu) on GitHub for more projects. |
 
 <!-- <CENTERED SECTION FOR GITHUB DISPLAY> -->
 
 <div align="center">
 
-<a href="https://omo.dev"><img src="./.github/assets/omo-icon-light.svg" alt="OmO" width="200" /></a>
+<a href="https://omc.nga.hm"><img src="./.github/assets/omc-icon-light.svg" alt="OmC" width="200" /></a>
 
-# OmO
+# OmC
 
 **Your tool for real work. But it's an agent.**
 
-[![GitHub Release](https://img.shields.io/github/v/release/code-yeongyu/oh-my-openagent?color=369eff&labelColor=black&logo=github&style=flat-square)](https://github.com/code-yeongyu/oh-my-openagent/releases)
-[![downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Fomo.dev%2Fapi%2Fdownloads&style=flat-square)](https://omo.dev)
-[![GitHub Contributors](https://img.shields.io/github/contributors/code-yeongyu/oh-my-openagent?color=c4f042&labelColor=black&style=flat-square)](https://github.com/code-yeongyu/oh-my-openagent/graphs/contributors)
-[![GitHub Stars](https://img.shields.io/github/stars/code-yeongyu/oh-my-openagent?color=ffcb47&labelColor=black&style=flat-square)](https://github.com/code-yeongyu/oh-my-openagent/stargazers)
-[![License](https://img.shields.io/badge/license-SUL--1.0-white?labelColor=black&style=flat-square)](https://github.com/code-yeongyu/oh-my-openagent/blob/dev/LICENSE.md)
-[![Docs](https://img.shields.io/badge/docs-omo.dev-369eff?labelColor=black&logo=readthedocs&logoColor=white&style=flat-square)](https://omo.dev/docs)
+[![GitHub Release](https://img.shields.io/github/v/release/code-yeongyu/oh-my-cybersecurity?color=369eff&labelColor=black&logo=github&style=flat-square)](https://github.com/code-yeongyu/oh-my-cybersecurity/releases)
+[![downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Fomc.nga.hm%2Fapi%2Fdownloads&style=flat-square)](https://omc.nga.hm)
+[![GitHub Contributors](https://img.shields.io/github/contributors/code-yeongyu/oh-my-cybersecurity?color=c4f042&labelColor=black&style=flat-square)](https://github.com/code-yeongyu/oh-my-cybersecurity/graphs/contributors)
+[![GitHub Stars](https://img.shields.io/github/stars/code-yeongyu/oh-my-cybersecurity?color=ffcb47&labelColor=black&style=flat-square)](https://github.com/code-yeongyu/oh-my-cybersecurity/stargazers)
+[![License](https://img.shields.io/badge/license-SUL--1.0-white?labelColor=black&style=flat-square)](https://github.com/code-yeongyu/oh-my-cybersecurity/blob/dev/LICENSE.md)
+[![Docs](https://img.shields.io/badge/docs-omc.nga.hm-369eff?labelColor=black&logo=readthedocs&logoColor=white&style=flat-square)](https://omc.nga.hm/docs)
 
 
 </div>
 
 <!-- </CENTERED SECTION FOR GITHUB DISPLAY> -->
 
-OmO is one `omo` command that turns your tokens into finished work: research across ten thousand sources, a deck people actually get, backends, frontends, code. It runs on senpi, our fork of [pi](https://github.com/badlogic/pi-mono), with everything below built in.
+OmC is one `omc` command that turns your tokens into finished work: research across ten thousand sources, a deck people actually get, backends, frontends, code. It runs on senpi, our fork of [pi](https://github.com/badlogic/pi-mono), with everything below built in.
 
 ## Install
 
 ```bash
-curl -fsSL https://get.omo.dev/install.sh | bash
-omo
+curl -fsSL https://get.omc.nga.hm/install.sh | bash
+omc
 ```
 
-On Windows, in PowerShell: `irm https://get.omo.dev/install.ps1 | iex`. The script installs the native `omo` binary for your OS and CPU into `~/.local/bin`, checks it against the release checksums, and falls back to GitHub Releases when the mirror is unreachable. Add `-s -- beta` (or a version such as `-s -- 5.1.1`) after `bash` to pick another channel. Windows CMD, fixing your `PATH`, updating and uninstalling are covered at [omo.dev/docs/install](https://omo.dev/docs/install).
+On Windows, in PowerShell: `irm https://get.omc.nga.hm/install.ps1 | iex`. The script installs the native `omc` binary for your OS and CPU into `~/.local/bin`, checks it against the release checksums, and falls back to GitHub Releases when the mirror is unreachable. Add `-s -- beta` (or a version such as `-s -- 5.1.1`) after `bash` to pick another channel. Windows CMD, fixing your `PATH`, updating and uninstalling are covered at [omc.nga.hm/docs/install](https://omc.nga.hm/docs/install).
 
-Prefer a package manager? `bun add -g omo-ai` (or `npm i -g omo-ai`) installs the same OmO. The package is `omo-ai`; the unrelated `omo` package on npm is someone else's.
+Prefer a package manager? `bun add -g omc-ai` (or `npm i -g omc-ai`) installs the same OmC. The package is `omc-ai`; the unrelated `omc` package on npm is someone else's.
 
-Open your project, run `omo`, describe the job. That's the whole setup.
+Open your project, run `omc`, describe the job. That's the whole setup.
 
-In a session, `/thinking <level>` sets how hard the model thinks (`/thinking` alone opens a picker), `Shift+Tab` cycles through the levels, and `/efforts <level>` sets the reasoning effort directly on models with effort grades. To pick up earlier work, `/resume` (or `/sessions`) opens your past sessions; from the shell, `omo -c` continues the last one and `omo -r` opens the picker. `/help` lists everything else.
+In a session, `/thinking <level>` sets how hard the model thinks (`/thinking` alone opens a picker), `Shift+Tab` cycles through the levels, and `/efforts <level>` sets the reasoning effort directly on models with effort grades. To pick up earlier work, `/resume` (or `/sessions`) opens your past sessions; from the shell, `omc -c` continues the last one and `omc -r` opens the picker. `/help` lists everything else.
 
-Coming from the OpenCode edition or LazyCodex? Run `omo setup` once. It carries your provider keys, custom providers, MCP servers, skills and model picks across. `omo doctor` then shows which task categories your providers can run and what the old install left behind, and `omo doctor --models` shows which model each category and agent runs and in what order (keep one out everywhere with [`exclude_models`](docs/reference/omo-json.md#exclude_models-native-harness)). The full walkthrough is [Migrating from OpenCode](docs/guide/migrating-from-opencode.md).
+Coming from the OpenCode edition or LazyCodex? Run `omc setup` once. It carries your provider keys, custom providers, MCP servers, skills and model picks across. `omc doctor` then shows which task categories your providers can run and what the old install left behind, and `omc doctor --models` shows which model each category and agent runs and in what order (keep one out everywhere with [`exclude_models`](docs/reference/omc-json.md#exclude_models-native-harness)). The full walkthrough is [Migrating from OpenCode](docs/guide/migrating-from-opencode.md).
 
-To update, run the install line again (a package-manager install updates with `omo update`). `rm ~/.local/bin/omo` removes the binary install; `bun remove -g omo-ai` (or `npm uninstall -g omo-ai`) removes the package install.
+To update, run the install line again (a package-manager install updates with `omc update`). `rm ~/.local/bin/omc` removes the binary install; `bun remove -g omc-ai` (or `npm uninstall -g omc-ai`) removes the package install.
 
-## Why OmO
+## Why OmC
 
 **ultrawork.** Skip the study. If a task feels hard, add `ultrawork` (or `ulw`) to your prompt. The agent reads the codebase before touching a line, plans, proves each step before moving on, checks the result on the real surface, and stops when it's done.
 
@@ -73,17 +73,17 @@ To update, run the install line again (a package-manager install updates with `o
 
 **Mix models without thinking about it.** Use the frontier models you love together with the cheap ones. Just sign in: `/login` covers Claude, ChatGPT, Kimi and GLM subscriptions. Every model ships with a system prompt tuned for it, so you never pick the wrong one.
 
-**High-quality skills, only the ones you need.** Your model is smart, but it still doesn't know a lot about solving real-world problems. OmO ships the missing knowledge as skills, browser use included, and loads only what the task needs.
+**High-quality skills, only the ones you need.** Your model is smart, but it still doesn't know a lot about solving real-world problems. OmC ships the missing knowledge as skills, browser use included, and loads only what the task needs.
 
 **Everything else is crafted.** Independent tool calls run together in one small program, so twenty reads are one round trip. Malformed tool arguments are repaired before they run. Waiting on a build or a deploy is a subscription, not polling. Long work keeps a record of what was checked, so a restarted session picks up where it stopped. Config, skills and prompts reload live.
 
 ## Configuration
 
-Opinionated defaults, adjustable if you insist. Your settings live in `~/.omo/omo.jsonc`, and a project can add its own `.omo/omo.jsonc`; the closest file wins. Every key is in the [configuration reference](docs/reference/configuration.md).
+Opinionated defaults, adjustable if you insist. Your settings live in `~/.omc/omc.jsonc`, and a project can add its own `.omc/omc.jsonc`; the closest file wins. Every key is in the [configuration reference](docs/reference/configuration.md).
 
 ## Docs
 
-- [omo.dev/docs](https://omo.dev/docs)
+- [omc.nga.hm/docs](https://omc.nga.hm/docs)
 - [Migrating from OpenCode](docs/guide/migrating-from-opencode.md)
 - [Configuration reference](docs/reference/configuration.md)
 - [Features](docs/reference/features.md)
@@ -92,25 +92,25 @@ Opinionated defaults, adjustable if you insist. Your settings live in `~/.omo/om
 
 ## Reporting a bug
 
-The fastest way to report a bug is `/bug` inside a session (available in the omo app). It lists what it includes and lets you see the exact report before you send it, then sends it to the OmO team: the recent engine log, your environment and config with secrets blanked, the session transcript, and identity lines - your device name and, when telemetry is on, an install id and a session hash, plus your account details (email, name, account, user and device ids, plan, device name) when you report from the desktop app, so we can reply. Everything but the identity lines goes through the upload redactor. GitHub issues stay open for anyone who cannot use the in-app report.
+The fastest way to report a bug is `/bug` inside a session (available in the omc app). It lists what it includes and lets you see the exact report before you send it, then sends it to the OmC team: the recent engine log, your environment and config with secrets blanked, the session transcript, and identity lines - your device name and, when telemetry is on, an install id and a session hash, plus your account details (email, name, account, user and device ids, plan, device name) when you report from the desktop app, so we can reply. Everything but the identity lines goes through the upload redactor. GitHub issues stay open for anyone who cannot use the in-app report.
 
 ## Reviews
 
 > "It made me cancel my Cursor subscription. Unbelievable things are happening in the open source community." - [Arthur Guiot](https://x.com/arthur_guiot/status/2008736347092382053?s=20)
 
-> "If Claude Code does in 7 days what a human does in 3 months, OmO does it in 1 hour." <br/>- B, Quant Researcher
+> "If Claude Code does in 7 days what a human does in 3 months, OmC does it in 1 hour." <br/>- B, Quant Researcher
 
 > "You guys should pull this into core and recruit him. Seriously. It's really, really, really good." <br/>- Henning Kilset
 
 ## Author's Note
 
-When I have to take the wheel back from an agent, that isn't teamwork. The system failed. OmO is built on that idea. You say what you want; the agent researches, plans, writes code you couldn't tell from a senior engineer's, verifies it, and keeps going until it's finished. It spends tokens when they buy real speed and routes the easy parts to cheap models.
+When I have to take the wheel back from an agent, that isn't teamwork. The system failed. OmC is built on that idea. You say what you want; the agent researches, plans, writes code you couldn't tell from a senior engineer's, verifies it, and keeps going until it's finished. It spends tokens when they buy real speed and routes the easy parts to cheap models.
 
-I'm this project's most obsessive user. Which model has the sharpest logic? Who writes the best prose? What did everyone else ship this week? OmO is where those answers land. Have a better way? PRs welcome.
+I'm this project's most obsessive user. Which model has the sharpest logic? Who writes the best prose? What did everyone else ship this week? OmC is where those answers land. Have a better way? PRs welcome.
 
 The goal is an agent you stop noticing. You flip the switch, the light turns on. The long version is the [Ultrawork Manifesto](docs/manifesto.md).
 
-No affiliation with any project or model mentioned. The Ultragoal and UltraQA ideas come from [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex), reimplemented from concept for OmO.
+No affiliation with any project or model mentioned. The Ultragoal and UltraQA ideas come from [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex), reimplemented from concept for OmC.
 
 ## Loved by professionals at
 

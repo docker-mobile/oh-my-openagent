@@ -4,7 +4,7 @@ import { join } from "node:path"
 
 import { runtimeSlug } from "./sg-manifest"
 
-export const AST_GREP_BIN_DIR_ENV_KEY = "OMO_AST_GREP_BIN_DIR"
+export const AST_GREP_BIN_DIR_ENV_KEY = "OMC_AST_GREP_BIN_DIR"
 export const KILL_GRACE_MS = 1_000
 const AST_GREP_INSTALL_TIMEOUT_MS = 30_000
 

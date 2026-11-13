@@ -16,7 +16,7 @@ function settledYet(outcome: Promise<RunnerOutcome>): Promise<boolean> {
   return Promise.race([outcome.then(() => true), Promise.resolve().then(() => false)])
 }
 
-describe("host session turn settlement follows the session, not the first agent_end (omo#9069)", () => {
+describe("host session turn settlement follows the session, not the first agent_end (omc#9069)", () => {
   test("#given a run a stream rule aborted #when the rule's nudge continues the same session #then the outcome is the continuation's result, not the abort", async () => {
     // given
     const port = fakeSessionPort()
@@ -88,7 +88,7 @@ describe("host session turn settlement follows the session, not the first agent_
   })
 })
 
-describe("a reopened session's finished transcript settles only an idle session (omo#9069)", () => {
+describe("a reopened session's finished transcript settles only an idle session (omc#9069)", () => {
   test("#given a finished-looking transcript #when the reopened session still has a follow-up queued #then the turn is not settled from the transcript", async () => {
     // given
     const port = fakeSessionPort()

@@ -14,7 +14,7 @@ type FetchLike = (input: RequestInfo | URL, init?: RequestInit) => Promise<Respo
 
 const GITHUB = /api\.github\.com\/repos\//
 const RELEASES_PAGE =
-  /api\.github\.com\/repos\/code-yeongyu\/oh-my-openagent\/releases\?per_page=30&page=(\d+)$/
+  /api\.github\.com\/repos\/code-yeongyu\/oh-my-cybersecurity\/releases\?per_page=30&page=(\d+)$/
 const NPM_POINT = /api\.npmjs\.org\/downloads\/point\/([^/]+)\/([^/?]+)/
 
 function json(body: unknown, status = 200): Response {
@@ -41,12 +41,12 @@ function installFetch(script: NpmScript): { calls: () => readonly string[] } {
       const out = script.onReleasesPage?.(Number(releasesPage[1])) ?? []
       return out instanceof Response ? out : json(out)
     }
-    if (url === "https://get.omo.dev/stats/downloads") {
+    if (url === "https://get.omc.nga.hm/stats/downloads") {
       const out = script.onInstallerStats?.() ?? { uncountedByGitHub: 0 }
       return out instanceof Response ? out : json(out)
     }
     if (GITHUB.test(url)) {
-      return json({ stargazers_count: 69_000, description: "OmO" })
+      return json({ stargazers_count: 69_000, description: "OmC" })
     }
     const match = NPM_POINT.exec(url)
     if (!match) throw new Error(`unexpected fetch ${url}`)
@@ -94,7 +94,7 @@ describe("getStats aggregation is all-or-nothing", () => {
     let failOnce = true
     installFetch({
       onPoint: (_period, pkg) => {
-        if (failOnce && pkg === "oh-my-openagent") {
+        if (failOnce && pkg === "oh-my-cybersecurity") {
           failOnce = false
           return json({ error: "upstream" }, 500)
         }
@@ -127,10 +127,10 @@ describe("getStats aggregation is all-or-nothing", () => {
     expect(calls().length).toBeLessThan(40)
   })
 
-  test("omo-ai is part of the download aggregate", async () => {
+  test("omc-ai is part of the download aggregate", async () => {
     const { calls } = installFetch({ onPoint: () => 1 })
     await getStats()
-    expect(calls().some((url) => /[/,]omo-ai(,|$)/.test(url))).toBe(true)
+    expect(calls().some((url) => /[/,]omc-ai(,|$)/.test(url))).toBe(true)
   })
 
   test("the Codex edition lazycodex-ai is part of the download aggregate", async () => {
@@ -146,19 +146,19 @@ function release(...assets: readonly (readonly [string, number])[]) {
 }
 
 describe("compiled binary downloads from GitHub releases", () => {
-  test("only omo-* binaries on every page are added to the total, never to the npm figure", async () => {
+  test("only omc-* binaries on every page are added to the total, never to the npm figure", async () => {
     const { calls } = installFetch({
       onPoint: () => 1,
       onReleasesPage: (page) =>
         page === 1
           ? Array.from({ length: 30 }, () =>
               release(
-                ["omo-linux-x64", 1],
+                ["omc-linux-x64", 1],
                 ["SHA256SUMS", 50],
                 ["senpi-desktop-engine-darwin-arm64", 7],
               ),
             )
-          : [release(["omo-windows-x64-baseline.exe", 5])],
+          : [release(["omc-windows-x64-baseline.exe", 5])],
     })
 
     const stats = await getStats()
@@ -168,11 +168,11 @@ describe("compiled binary downloads from GitHub releases", () => {
     expect(calls().filter((url) => RELEASES_PAGE.test(url))).toHaveLength(2)
   })
 
-  test("installs served by the get.omo.dev mirror join the total once, GitHub redirects do not", async () => {
+  test("installs served by the get.omc.nga.hm mirror join the total once, GitHub redirects do not", async () => {
     installFetch({
       onPoint: () => 100,
       onReleasesPage: (page) =>
-        page === 1 ? [{ assets: [{ name: "omo-linux-x64", download_count: 50 }] }] : [],
+        page === 1 ? [{ assets: [{ name: "omc-linux-x64", download_count: 50 }] }] : [],
       onInstallerStats: () => ({ uncountedByGitHub: 7, redirectedToGitHub: 30 }),
     })
 
@@ -182,7 +182,7 @@ describe("compiled binary downloads from GitHub releases", () => {
     expect(stats.totalDownloads).toBe(stats.npmTotalDownloads + 50 + 7)
   })
 
-  test("a malformed get.omo.dev stats reply rejects the refresh instead of counting zero", async () => {
+  test("a malformed get.omc.nga.hm stats reply rejects the refresh instead of counting zero", async () => {
     installFetch({ onPoint: () => 100, onInstallerStats: () => ({ uncountedByGitHub: -3 }) })
 
     await expect(getStats()).rejects.toThrow("uncountedByGitHub")
@@ -193,8 +193,8 @@ describe("compiled binary downloads from GitHub releases", () => {
       onPoint: () => 1,
       onReleasesPage: (page) =>
         page === 1
-          ? Array.from({ length: 30 }, () => release(["omo-darwin-arm64", 2]))
-          : Array.from({ length: 30 }, () => release(["oh-my-opencode-darwin-arm64.tgz", 9])),
+          ? Array.from({ length: 30 }, () => release(["omc-darwin-arm64", 2]))
+          : Array.from({ length: 30 }, () => release(["oh-my-cybersecurity-darwin-arm64.tgz", 9])),
     })
 
     const stats = await getStats()
@@ -206,7 +206,7 @@ describe("compiled binary downloads from GitHub releases", () => {
   test("a release page without download counts rejects instead of counting it as zero", async () => {
     installFetch({
       onPoint: () => 1,
-      onReleasesPage: () => [{ assets: [{ name: "omo-linux-x64" }] }],
+      onReleasesPage: () => [{ assets: [{ name: "omc-linux-x64" }] }],
     })
 
     await expect(getStats()).rejects.toThrow()
@@ -240,7 +240,7 @@ describe("shared last-known-good copy (#9820)", () => {
     resetStatsCacheForTests() // a new isolate: no in-memory cache
     installFetch({
       onPoint: (_period, pkg) =>
-        pkg === "oh-my-openagent" ? json({ error: "upstream" }, 500) : 100,
+        pkg === "oh-my-cybersecurity" ? json({ error: "upstream" }, 500) : 100,
     })
     expect(await getStats()).toEqual(good)
   })
@@ -252,7 +252,7 @@ describe("shared last-known-good copy (#9820)", () => {
     setStatsStoreForTests(store)
     installFetch({
       onPoint: (_period, pkg) =>
-        pkg === "oh-my-openagent" ? json({ error: "upstream" }, 500) : 100,
+        pkg === "oh-my-cybersecurity" ? json({ error: "upstream" }, 500) : 100,
     })
     expect((await getStats()).stars).toBe(70_000)
     // Upstreams recover: the 2-hour-old copy is past the in-memory TTL, so the next request refreshes at once
@@ -267,7 +267,7 @@ describe("shared last-known-good copy (#9820)", () => {
     setStatsStoreForTests(store)
     installFetch({
       onPoint: (_period, pkg) =>
-        pkg === "oh-my-openagent" ? json({ error: "upstream" }, 500) : 100,
+        pkg === "oh-my-cybersecurity" ? json({ error: "upstream" }, 500) : 100,
     })
     await expect(getStats()).rejects.toThrow()
     expect(store.entries()).toBe(0)
@@ -277,7 +277,7 @@ describe("shared last-known-good copy (#9820)", () => {
     setStatsStoreForTests(memoryStore())
     installFetch({
       onPoint: (_period, pkg) =>
-        pkg === "oh-my-openagent" ? json({ error: "upstream" }, 500) : 100,
+        pkg === "oh-my-cybersecurity" ? json({ error: "upstream" }, 500) : 100,
     })
     await expect(getStats()).rejects.toThrow()
   })
@@ -297,7 +297,7 @@ describe("shared last-known-good copy (#9820)", () => {
     resetStatsCacheForTests()
     installFetch({
       onPoint: (_period, pkg) =>
-        pkg === "oh-my-openagent" ? json({ error: "upstream" }, 500) : 100,
+        pkg === "oh-my-cybersecurity" ? json({ error: "upstream" }, 500) : 100,
     })
     // The caller sees the upstream failure, not the cache's.
     const failure = await getStats().then(
@@ -330,14 +330,14 @@ describe("the Cache API store (#9820)", () => {
     fake.install()
     installFetch({ onPoint: () => 100 })
     const good = await getStats()
-    expect([...fake.kept.keys()]).toEqual(["https://omo.dev/__stats/last-known-good/v1"])
+    expect([...fake.kept.keys()]).toEqual(["https://omc.nga.hm/__stats/last-known-good/v1"])
     expect(
-      fake.kept.get("https://omo.dev/__stats/last-known-good/v1")?.headers.get("cache-control"),
+      fake.kept.get("https://omc.nga.hm/__stats/last-known-good/v1")?.headers.get("cache-control"),
     ).toBe("public, max-age=604800")
     resetStatsCacheForTests()
     installFetch({
       onPoint: (_period, pkg) =>
-        pkg === "oh-my-openagent" ? json({ error: "upstream" }, 500) : 100,
+        pkg === "oh-my-cybersecurity" ? json({ error: "upstream" }, 500) : 100,
     })
     expect(await getStats()).toEqual(good)
   })
@@ -354,12 +354,12 @@ describe("the Cache API store (#9820)", () => {
       const fake = fakeCaches()
       fake.install()
       fake.kept.set(
-        "https://omo.dev/__stats/last-known-good/v1",
+        "https://omc.nga.hm/__stats/last-known-good/v1",
         new Response(JSON.stringify(entry)),
       )
       installFetch({
         onPoint: (_period, pkg) =>
-          pkg === "oh-my-openagent" ? json({ error: "upstream" }, 500) : 100,
+          pkg === "oh-my-cybersecurity" ? json({ error: "upstream" }, 500) : 100,
       })
       await expect(getStats()).rejects.toThrow()
     }
@@ -369,12 +369,12 @@ describe("the Cache API store (#9820)", () => {
     const fake = fakeCaches()
     fake.install()
     fake.kept.set(
-      "https://omo.dev/__stats/last-known-good/v1",
+      "https://omc.nga.hm/__stats/last-known-good/v1",
       new Response(JSON.stringify({ data: { stars: "lots" }, timestamp: 1 })),
     )
     installFetch({
       onPoint: (_period, pkg) =>
-        pkg === "oh-my-openagent" ? json({ error: "upstream" }, 500) : 100,
+        pkg === "oh-my-cybersecurity" ? json({ error: "upstream" }, 500) : 100,
     })
     await expect(getStats()).rejects.toThrow()
   })

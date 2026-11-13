@@ -57,11 +57,11 @@ describe("resolveMemoryIdentity auto mode", () => {
     expect(identity.id).toBe(`my-proj-${expectedHash(resolve(cwd))}`)
   })
 
-  it("#given no root override #when resolved #then paths live under ~/.omo/memory/agents/<id>", () => {
+  it("#given no root override #when resolved #then paths live under ~/.omc/memory/agents/<id>", () => {
     // given / when
     const identity = resolveMemoryIdentity("auto", "/repo/alpha", {})
     // then
-    const expectedRoot = join(homedir(), ".omo", "memory", AGENTS_DIRNAME, identity.id)
+    const expectedRoot = join(homedir(), ".omc", "memory", AGENTS_DIRNAME, identity.id)
     expect(identity.paths.root).toBe(expectedRoot)
     expect(identity.paths.repo).toBe(join(expectedRoot, "repo"))
   })
@@ -76,7 +76,7 @@ describe("resolveMemoryIdentity explicit mode", () => {
     expect(identity.safeSlug).toBe("backend-lead")
     expect(identity.id).toBe(expectedId)
     expect(identity.paths.root).toBe(
-      join(homedir(), ".omo", "memory", AGENTS_DIRNAME, expectedId),
+      join(homedir(), ".omc", "memory", AGENTS_DIRNAME, expectedId),
     )
   })
 
@@ -101,7 +101,7 @@ describe("resolveMemoryIdentity explicit mode", () => {
 })
 
 describe("resolveMemoryIdentity root override", () => {
-  it("#given OMO_MEMORY_HOME #when resolved #then paths honor it and sanitization still applies", () => {
+  it("#given OMC_MEMORY_HOME #when resolved #then paths honor it and sanitization still applies", () => {
     // given (tmpdir() is absolute on every platform, so "verbatim" holds on Windows too)
     const overrideRoot = join(tmpdir(), "qa-memory-home")
     const env = { [MEMORY_ROOT_ENV_VAR]: overrideRoot }
@@ -115,7 +115,7 @@ describe("resolveMemoryIdentity root override", () => {
     expect(identity.paths.pushQueue).toBe(join(identity.paths.root, "runtime", "push-queue"))
   })
 
-  it("#given a relative OMO_MEMORY_HOME #when resolved #then it resolves against the cwd argument", () => {
+  it("#given a relative OMC_MEMORY_HOME #when resolved #then it resolves against the cwd argument", () => {
     // given
     const env = { [MEMORY_ROOT_ENV_VAR]: "qa-home" }
     // when
@@ -126,7 +126,7 @@ describe("resolveMemoryIdentity root override", () => {
     )
   })
 
-  it("#given no env argument #when OMO_MEMORY_HOME is set in the process env #then the default env read honors it", () => {
+  it("#given no env argument #when OMC_MEMORY_HOME is set in the process env #then the default env read honors it", () => {
     // given
     const previous = process.env[MEMORY_ROOT_ENV_VAR]
     process.env[MEMORY_ROOT_ENV_VAR] = join(tmpdir(), "qa-process-env-home")

@@ -66,7 +66,7 @@ export function createColdReviveTrace(collectModules = false) {
     const launch = ++launches
     mark("connect", { launch })
     const child = spawn(command, [...args], collectModules
-      ? { ...options, env: { ...options.env, OMO_QA_MEMBER_BOOT_MODULES: "1" } }
+      ? { ...options, env: { ...options.env, OMC_QA_MEMBER_BOOT_MODULES: "1" } }
       : options)
     child.once("spawn", () => mark("process_spawned", { launch }))
     child.once("error", error => mark("process_error", { launch, message: error.message }))

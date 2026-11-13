@@ -8,7 +8,7 @@ import {
   type HostSessionReattachRefused,
 } from "./reattach"
 import type { HostParkReason, HostSessionCommand } from "./session-client"
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 import type { HostTurnReconciliation } from "./reconcile-turn"
 import { armRecoveryBound, isTransportRecoveryExpired, withinBound, type RecoveryBound, type TransportRecoveryOptions } from "./transport-recovery"
 import { InputUncertainError } from "../input-effects"
@@ -58,7 +58,7 @@ type ReattachAnswer = HostSessionReattached | HostSessionReattachRefused | undef
  * when the loss hits is NOT a turn the host lost - its retry is the delivery - so recovery's in-flight
  * verdict ignores turns while a delivery is pending, whichever reaction runs first.
  *
- * Every recovery is BOUNDED (omo#9403): when the bound runs out first the child parks for respawn
+ * Every recovery is BOUNDED (omc#9403): when the bound runs out first the child parks for respawn
  * and whatever connection a late reattach still produces ends the session on the host, so the
  * child's processes go with it. A stop asked for while the transport is down is applied on the
  * recovered connection before anything else, and never continues the turn.
@@ -107,7 +107,7 @@ export function createHandleRecovery(host: HandleRecoveryHost): HandleRecovery {
   }
 
   // A lost transport is recoverable while this child still owns a running session and the runner
-  // gave it a way back (omo#8563).
+  // gave it a way back (omc#8563).
   const onTransportGone = (lost: HostSessionPort): void => {
     if (host.port() !== lost) return
     const reattach = host.reattach
@@ -134,7 +134,7 @@ export function createHandleRecovery(host: HandleRecoveryHost): HandleRecovery {
         turnResumed: host.turnResumed,
         reconcile: host.reconcile,
         // A stop recorded while the reattached session was being read must run before any continuation:
-        // the turn is not re-driven, and the recovery's end stops the adopted session (omo#9403).
+        // the turn is not re-driven, and the recovery's end stops the adopted session (omc#9403).
         continueTurn: async (prompt) => {
           if (host.stopRequested()) return
           host.beginContinuation()

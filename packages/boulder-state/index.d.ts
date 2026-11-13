@@ -1,9 +1,9 @@
-export declare const BOULDER_DIR: ".omo"
+export declare const BOULDER_DIR: ".omc"
 export declare const BOULDER_FILE: "boulder.json"
-export declare const BOULDER_STATE_PATH: ".omo/boulder.json"
+export declare const BOULDER_STATE_PATH: ".omc/boulder.json"
 export declare const NOTEPAD_DIR: "notepads"
-export declare const NOTEPAD_BASE_PATH: ".omo/notepads"
-export declare const PROMETHEUS_PLANS_DIR: ".omo/plans"
+export declare const NOTEPAD_BASE_PATH: ".omc/notepads"
+export declare const PROMETHEUS_PLANS_DIR: ".omc/plans"
 
 export type BoulderSessionOrigin = "direct" | "appended"
 export type BoulderWorkStatus = "active" | "completed" | "paused" | "abandoned"
@@ -181,7 +181,7 @@ export declare function getWorkResumeOptions(directory: string): BoulderWorkResu
 export declare function normalizeSessionId(sessionId: string, platform?: "codex" | "opencode" | "senpi"): string
 export declare function readBoulderState(directory: string): BoulderState | null
 export declare const DEFAULT_STALE_WORK_THRESHOLD_MS: number
-export declare const STALE_WORK_THRESHOLD_ENV_KEY: "OMO_BOULDER_STALE_WORK_THRESHOLD_MS"
+export declare const STALE_WORK_THRESHOLD_ENV_KEY: "OMC_BOULDER_STALE_WORK_THRESHOLD_MS"
 export declare function isWorkStale(input: {
   lastActivityMs: number | null
   nowMs: number

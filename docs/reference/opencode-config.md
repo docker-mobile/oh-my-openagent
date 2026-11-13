@@ -1,6 +1,6 @@
 # OpenCode edition configuration (legacy)
 
-This page documents the `[opencode]` keys and hooks that only the OpenCode edition reads; omo-senpi ignores every one of them. The sections below were moved verbatim from [configuration.md](./configuration.md) and [features.md](./features.md).
+This page documents the `[opencode]` keys and hooks that only the OpenCode edition reads; omc-senpi ignores every one of them. The sections below were moved verbatim from [configuration.md](./configuration.md) and [features.md](./features.md).
 
 ---
 
@@ -448,7 +448,7 @@ Switches the session to Atlas (Sisyphus if Atlas is unregistered), injects Prome
 
 | Hook                        | Event      | Description                                                |
 | --------------------------- | ---------- | ---------------------------------------------------------- |
-| **prometheus-md-only**      | PreToolUse | Restricts Prometheus write/edit tools to `.omo/*.md` plan files.      |
+| **prometheus-md-only**      | PreToolUse | Restricts Prometheus write/edit tools to `.omc/*.md` plan files.      |
 | **no-sisyphus-gpt**         | Message    | Prevents Sisyphus from running on incompatible GPT models. |
 | **no-hephaestus-non-gpt**   | Message    | Prevents Hephaestus from running on non-GPT models.        |
 | **sisyphus-junior-notepad** | PreToolUse | Manages notepad state for Sisyphus-Junior agents.          |

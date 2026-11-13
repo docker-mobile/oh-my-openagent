@@ -3,7 +3,7 @@
 The app-server is how a host (IDE, our QA harness) drives Codex programmatically.
 We speak its protocol directly so we can read the **structured notification
 stream** — including `hook/started` / `hook/completed`, which is the
-authoritative proof that an omo plugin hook fired in a live turn.
+authoritative proof that an omc plugin hook fired in a live turn.
 
 Verified against `codex-cli 0.139.0`. Source citations are `path:line` under
 `../codex/codex-rs/`.
@@ -56,7 +56,7 @@ defaults false). The driver injects the provider via `-c` overrides — see
 
 ## Observed result on 0.139.0
 
-With omo installed in an isolated `CODEX_HOME`, one `ulw: say hello` turn emits
+With omc installed in an isolated `CODEX_HOME`, one `ulw: say hello` turn emits
 `hook/*` for `sessionStart` (rules, telemetry, bootstrap, auto-update),
 `userPromptSubmit` (rules, ultrawork, ulw-loop), and `stop`
 (start-work-continuation), then the mock assistant message and `turn/completed`.

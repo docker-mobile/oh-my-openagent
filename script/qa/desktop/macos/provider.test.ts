@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 
-import type { MockStep } from "../../../../packages/omo-senpi/scripts/qa/mock-provider/index"
+import type { MockStep } from "../../../../packages/omc-senpi/scripts/qa/mock-provider/index"
 import { chooseStep, QA_PROMPT_PREFIX } from "./provider"
 
 const script: MockStep[] = [

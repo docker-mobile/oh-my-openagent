@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * Live macOS computer-use QA: real Senpi RPC + packaged OmO extension + real desktop engine.
+ * Live macOS computer-use QA: real Senpi RPC + packaged OmC extension + real desktop engine.
  * Run inside an unlocked Aqua session with Accessibility and Screen Recording granted to the
  * responsible launcher. The driver owns and terminates TextEdit between scenarios.
  *

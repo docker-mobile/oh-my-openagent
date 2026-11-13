@@ -1,5 +1,5 @@
 import type { RpcExtensionUIResponse } from "@code-yeongyu/senpi"
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import { answerChildUiRequest, type ChildDialogForwarder } from "./child-dialogs/forwarder"
 import type { AutoAnswerableUiRequest } from "./rpc/ui-auto-answer"

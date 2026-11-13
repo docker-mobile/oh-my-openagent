@@ -2,7 +2,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 
-import { OmoTaskSettingsSchema } from "@oh-my-opencode/omo-config-core"
+import { OmoTaskSettingsSchema } from "@oh-my-cybersecurity/omc-config-core"
 
 import { createCompletionNotifier } from "../completion"
 import type { CompletionNotifier, CompletionRetrySchedule } from "../completion"

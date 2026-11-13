@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 import { isFallbackHandoff } from "../lifecycle/fallback-handoff"
 import { withDroppedSteeringNotice } from "../state/queued-steering"
 import type { TaskRecordStore } from "../store"

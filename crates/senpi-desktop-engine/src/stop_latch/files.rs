@@ -10,7 +10,7 @@ use std::{
 
 #[cfg(test)]
 pub(super) const MARKER: &str = "global-stop";
-const STOPPED: &[u8] = b"omo-global-stop-v1\n";
+const STOPPED: &[u8] = b"omc-global-stop-v1\n";
 
 pub(super) fn validate(metadata: &Metadata, uid: u32, mode: u32) -> io::Result<()> {
     if metadata.uid() != uid {

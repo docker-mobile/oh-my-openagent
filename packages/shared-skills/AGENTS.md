@@ -4,7 +4,7 @@
 
 ## OVERVIEW
 
-Hand-authored, cross-harness skill bundle shared between the OpenCode and Codex editions. Mostly authored skill data, with skill-owned scripts/assets when required and no transform inside the package. `index.mjs` exports `sharedSkillsRootPath()` returning the absolute path to `skills/`; it probes `SKILLS_PROBE_SPECIFIERS` (`./skills/`, `../skills/`, `../../skills/`) nearest-first and returns the first that exists, falling back to the sibling path. The three levels cover `dist/index.js` (sibling), `dist/cli/index.js` (parent), and the Codex marketplace layout `plugins/omo/dist/cli/` (grandparent). Package: `@oh-my-opencode/shared-skills` (`files`: `index.mjs`, `index.d.ts`, `skills`).
+Hand-authored, cross-harness skill bundle shared between the OpenCode and Codex editions. Mostly authored skill data, with skill-owned scripts/assets when required and no transform inside the package. `index.mjs` exports `sharedSkillsRootPath()` returning the absolute path to `skills/`; it probes `SKILLS_PROBE_SPECIFIERS` (`./skills/`, `../skills/`, `../../skills/`) nearest-first and returns the first that exists, falling back to the sibling path. The three levels cover `dist/index.js` (sibling), `dist/cli/index.js` (parent), and the Codex marketplace layout `plugins/omc/dist/cli/` (grandparent). Package: `@oh-my-cybersecurity/shared-skills` (`files`: `index.mjs`, `index.d.ts`, `skills`).
 
 ## SKILLS (19 under `skills/<name>/`)
 
@@ -14,7 +14,7 @@ Hand-authored, cross-harness skill bundle shared between the OpenCode and Codex 
 
 `ultimate-browsing` is the one skill carrying a real sub-project: `skills/ultimate-browsing/engine/` is a 13-file Python package (11 modules plus `__init__` and `__main__`) with its own CLI, config schemas, and test suite. It is a deliberately pinned, locally diverged snapshot of `fivetaku/insane-search`, not a follow-HEAD mirror. Before changing or re-importing it, read [`skills/ultimate-browsing/engine/AGENTS.md` §UPSTREAM BASELINE AND VERSION POLICY](skills/ultimate-browsing/engine/AGENTS.md#upstream-baseline-and-version-policy).
 
-The Codex-only `lcx-report-bug`, `lcx-contribute-bug-fix`, and `lcx-doctor` skills live under `packages/omo-codex/plugin/components/lcx/skills/`; they are no longer authored in this package.
+The Codex-only `lcx-report-bug`, `lcx-contribute-bug-fix`, and `lcx-doctor` skills live under `packages/omc-codex/plugin/components/lcx/skills/`; they are no longer authored in this package.
 
 Per-skill layout: `SKILL.md` (YAML frontmatter `name:` + single-line `description:` with triggers) + optional `references/` (the real content; SKILL.md is a router/index) + optional `scripts/` + optional `agents/openai.yaml` (3 skills carry the Codex agent role declaration). `ulw-research/scripts/` is a zero-dependency Node CLI (`report-tools.mjs`) for the deliverable phase, documented in `skills/ulw-research/AGENTS.md`; the senpi native `ulw-research` skill has no copy of it and receives `scripts/` plus `references/report-gates.md`, `references/deliverable-phase.md`, `references/report-visualization.md`, `references/fact-ledger-grammar.md`, `references/fidelity-claim-kinds.md`, and `references/unit-rules.md` byte-for-byte at senpi sync time.
 
@@ -24,13 +24,13 @@ Per-skill layout: `SKILL.md` (YAML frontmatter `name:` + single-line `descriptio
 skills/ (source)
   ├─ build:shared-skills-assets (root) → cp -R skills dist/skills          # literal copy, no transform
   ├─ skills-loader-core → loadSkillsFromDir(sharedSkillsRootPath(), scope:"shared")   # OpenCode runtime
-  └─ omo-codex/plugin/scripts/sync-skills.mjs → plugin/skills/             # the only transformer
-        1. copies 10 omo-codex COMPONENT skills FIRST (comment-checker, lcx-*, lsp, rules,
+  └─ omc-codex/plugin/scripts/sync-skills.mjs → plugin/skills/             # the only transformer
+        1. copies 10 omc-codex COMPONENT skills FIRST (comment-checker, lcx-*, lsp, rules,
            teammode, ulw-loop, ulw-plan, ultrawork from plugin/components/*/skills/*); same-named
            shared skills are skipped → ulw-plan/ultrawork in Codex come from components, NOT from here
         2. copies remaining shared skills
         3. adaptSkillForCodex(): inserts Codex Harness Tool Compatibility sections; overlays
-           ulw-execute/review-work; writes agents/openai.yaml display metadata with the "(OmO) "
+           ulw-execute/review-work; writes agents/openai.yaml display metadata with the "(OmC) "
            prefix; filters out tests, caches, and source metadata
         → ships to ~/.codex/.../skills/
 ```
@@ -43,7 +43,7 @@ The `frontend` skill's brand / taste-skill / ui-ux-db / designpowers references 
 upstreams/{open-design,taste-skill,ui-ux-pro-max,designpowers}   # pinned submodules (provenance, build input)
   └─ packages/shared-skills/scripts/frontend-refs-manifest.mjs   # single source of truth: partition + upstream path map
        └─ packages/shared-skills/scripts/materialize-frontend-refs.mjs   # path-mapped copy + SKILL.md description quoting → references/{design,ui-ux-db}
-            └─ chokepoint: packages/omo-codex/plugin/scripts/materialize-shared-upstreams.mjs  (submodule init + materialize)
+            └─ chokepoint: packages/omc-codex/plugin/scripts/materialize-shared-upstreams.mjs  (submodule init + materialize)
                  • PREPENDED to the codex plugin build chain BEFORE sync-skills.mjs (every ship path runs it)
                  • root build:shared-skills-assets + root prepack also run it
 ```
@@ -56,8 +56,8 @@ upstreams/{open-design,taste-skill,ui-ux-pro-max,designpowers}   # pinned submod
 ## CONSUMERS
 
 - `skills-loader-core` (`workspace:*`) — default `skillsRootPath` for builtin/shared skill loading.
-- `omo-opencode/src/cli/install-ast-grep-sg.ts` — finds the ast-grep skill dir for binary install.
-- `omo-codex/plugin` (`file:` dep) — `sync-skills.mjs` is the only transformer.
+- `omc-opencode/src/cli/install-ast-grep-sg.ts` — finds the ast-grep skill dir for binary install.
+- `omc-codex/plugin` (`file:` dep) — `sync-skills.mjs` is the only transformer.
 
 ## NOTES
 
@@ -65,7 +65,7 @@ upstreams/{open-design,taste-skill,ui-ux-pro-max,designpowers}   # pinned submod
 - **Test files, caches, and source metadata are excluded** when Codex copies skills.
 - **Bundled scripts never write next to themselves** (#11373): the skills tree ships inside the signed desktop app, where one new file breaks the code signature. Python entries set `sys.dont_write_bytecode` before importing a sibling module and documented commands pass `-B` (a `python3 -m` entry is only safe with `-B`, because the interpreter compiles the package before any of its code runs); downloads and caches go to a user cache dir. `bundled-skill-scripts-write-nothing.test.ts` runs every bundled Python entry against a writable shipped copy and fails on any added or changed file.
 - **`lcx-` prefix = Codex-only** (no OpenCode counterpart). Frontmatter has NO `location:` field (unlike `.agents/skills/`).
-- **Packaging is pinned** by `omo-opencode/src/shared-skills-package.test.ts` (workspace inclusion + `files` entries + every skill parses).
-- **Skill CONTENT is PROSE — do NOT pin its wording with a test.** A skill body is instructions the model reads; asserting what it *says* (`toContain` a sentence, `not.toContain` old wording, word/char counts) guards a diff, not behavior, and blocks every legitimate edit — see `.omo/rules/test-discipline.md` §PROMPT TESTS. Guard only what a MACHINE consumes: packaging (`omo-opencode/src/shared-skills-package.test.ts`, above), personal-token scrubbing (`depersonalization-gate.test.ts` — a security exclusion), the third-party manifest (`frontend-thirdparty-manifest.test.ts`), the root-path probe (`shared-skills-root-path.test.ts`), `upstreams.test.ts`, the stylegallery routing membership (`frontend-stylegallery-routing.test.ts`), and the ultimate-browsing runtime pins (`ultimate-browsing-runtime-pins.test.ts`). A pure-prose skill edit ships on review with NO new test; the prose-pinning contract tests that used to sit here were removed as pretend-coverage.
-- **ulw-plan is dual-maintained by hand** (here AND `omo-codex/plugin/components/ultrawork/skills/ulw-plan/`) — sync-skills does NOT copy the shared version to Codex; keep both in step.
+- **Packaging is pinned** by `omc-opencode/src/shared-skills-package.test.ts` (workspace inclusion + `files` entries + every skill parses).
+- **Skill CONTENT is PROSE — do NOT pin its wording with a test.** A skill body is instructions the model reads; asserting what it *says* (`toContain` a sentence, `not.toContain` old wording, word/char counts) guards a diff, not behavior, and blocks every legitimate edit — see `.omc/rules/test-discipline.md` §PROMPT TESTS. Guard only what a MACHINE consumes: packaging (`omc-opencode/src/shared-skills-package.test.ts`, above), personal-token scrubbing (`depersonalization-gate.test.ts` — a security exclusion), the third-party manifest (`frontend-thirdparty-manifest.test.ts`), the root-path probe (`shared-skills-root-path.test.ts`), `upstreams.test.ts`, the stylegallery routing membership (`frontend-stylegallery-routing.test.ts`), and the ultimate-browsing runtime pins (`ultimate-browsing-runtime-pins.test.ts`). A pure-prose skill edit ships on review with NO new test; the prose-pinning contract tests that used to sit here were removed as pretend-coverage.
+- **ulw-plan is dual-maintained by hand** (here AND `omc-codex/plugin/components/ultrawork/skills/ulw-plan/`) — sync-skills does NOT copy the shared version to Codex; keep both in step.
 - Parent: [`packages/AGENTS.md`](../AGENTS.md).

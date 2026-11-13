@@ -15,7 +15,7 @@ export interface ChildSessionContext {
  * an opaque context dict for the senpi daemon's session metadata.
  *
  * Returns ONLY plain identity strings: no env-looking keys pass through.
- * Forbidden pattern: /^(PATH|.*_API_KEY|SENPI_|OMO_|PI_)/
+ * Forbidden pattern: /^(PATH|.*_API_KEY|SENPI_|OMC_|PI_)/
  */
 export type ChildContextSpec = RpcSpawnSpec & {
   readonly treeKey?: string

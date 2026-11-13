@@ -10,14 +10,14 @@ describe("built omowright runtime probe (CI)", () => {
       ci: "true",
     })
     expect(
-      verdict.failures.some((line) => line.includes("packages/omo-codex/plugin/skills/browser/runtime/omowright/index.js")),
+      verdict.failures.some((line) => line.includes("packages/omc-codex/plugin/skills/browser/runtime/omowright/index.js")),
       JSON.stringify(verdict),
     ).toBe(true)
     expect(verdict.scanned).toEqual([])
   })
 
   test("#given CI and a staged runtime file missing from KNOWN_BUILT_RUNTIMES #when probed #then the failure names the file", () => {
-    const staged = "packages/omo-codex/plugin/skills/browser/runtime/omowright/worker.js"
+    const staged = "packages/omc-codex/plugin/skills/browser/runtime/omowright/worker.js"
     const verdict = evaluateBuiltRuntimeProbe({
       known: KNOWN_BUILT_RUNTIMES,
       present: () => true,
@@ -34,7 +34,7 @@ describe("built omowright runtime probe (CI)", () => {
     const verdict = evaluateBuiltRuntimeProbe({
       known: KNOWN_BUILT_RUNTIMES,
       present: (file) => file === KNOWN_BUILT_RUNTIMES[0],
-      discovered: [KNOWN_BUILT_RUNTIMES[0], "packages/omo-codex/plugin/skills/browser/runtime/omowright/worker.js"],
+      discovered: [KNOWN_BUILT_RUNTIMES[0], "packages/omc-codex/plugin/skills/browser/runtime/omowright/worker.js"],
       ci: undefined,
     })
     expect(verdict).toEqual({ scanned: [KNOWN_BUILT_RUNTIMES[0]], failures: [] })

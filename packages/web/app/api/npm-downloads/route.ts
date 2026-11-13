@@ -3,7 +3,7 @@ import { getStats } from "@/lib/stats"
 
 /**
  * Shields.io endpoint badge for combined NPM downloads.
- * Usage: https://img.shields.io/endpoint?url=https://omo.dev/api/npm-downloads
+ * Usage: https://img.shields.io/endpoint?url=https://omc.nga.hm/api/npm-downloads
  *
  * Combines downloads across the package lineage (see lib/stats.ts). The all-channel figure,
  * npm plus the release binaries, is served by /api/downloads.

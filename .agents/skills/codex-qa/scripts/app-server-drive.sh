@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # app-server-drive.sh - FIRST-PARTY codex QA: drive a real `codex app-server`
 # turn against an ISOLATED CODEX_HOME + a LOCAL mock model, and read the
-# structured notification stream. This is how you prove the omo plugin behaves
+# structured notification stream. This is how you prove the omc plugin behaves
 # in a live Codex session without scripting the TUI and without a real API call.
 #
 # Modes:
 #   --self-test   Bare isolated home (no plugin). Proves the driver works: a
 #                 turn runs and the assistant message comes back from the mock.
 #                 Fast; no install.
-#   --plugin      Install THIS repo's local omo build into the isolated home,
+#   --plugin      Install THIS repo's local omc build into the isolated home,
 #                 then drive a turn and PROVE the plugin hooks fire by asserting
 #                 hook/completed notifications for the expected events.
 #                 Heavier (runs install-local).
@@ -20,7 +20,7 @@
 #                      "sessionStart,userPromptSubmit")
 #   --keep             do not delete the isolated home (for inspection)
 #
-# The captured JSON summary IS the evidence; redirect it into .omo/evidence/.
+# The captured JSON summary IS the evidence; redirect it into .omc/evidence/.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 . "$SCRIPT_DIR/lib/common.sh"
@@ -31,12 +31,12 @@ cqa_drive() {
   cqa_guard_real_home
   cqa_mk_isolated_home
   if [ "$plugin" = "1" ]; then
-    cqa_log "installing local omo build into $CODEX_HOME (this builds the plugin)..."
+    cqa_log "installing local omc build into $CODEX_HOME (this builds the plugin)..."
     if ! cqa_install_local_omo; then
       cqa_log "install failed; tail:"; tail -20 "$CQA_HOME_ROOT/install.log" >&2 2>/dev/null
       return 1
     fi
-    grep -q 'omo@sisyphuslabs' "$CODEX_HOME/config.toml" || { cqa_fail "omo not enabled in isolated config.toml"; return 1; }
+    grep -q 'omc@sisyphuslabs' "$CODEX_HOME/config.toml" || { cqa_fail "omc not enabled in isolated config.toml"; return 1; }
   fi
   cqa_start_mock || return 1
   local out

@@ -2,7 +2,7 @@ export type DesignatedChainNotHeldReason = "unsupported" | "refused" | "timeout"
 
 /**
  * A child's engine did not take its designated model chain, so the child is never prompted (#12759).
- * `models` comes from the child's own spec (omo-computed), never from engine output; the engine's own
+ * `models` comes from the child's own spec (omc-computed), never from engine output; the engine's own
  * refusal text stays in `message` only, which the start-failure description never copies.
  */
 export class DesignatedChainNotHeldError extends Error {

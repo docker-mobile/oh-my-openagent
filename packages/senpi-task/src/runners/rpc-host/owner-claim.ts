@@ -1,5 +1,5 @@
 import type { EnsureHostInput, TaskDaemonHostPort } from "../../lazy/senpi-barrel"
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import { isOwnerClaimRefusal } from "./ensure-failure"
 

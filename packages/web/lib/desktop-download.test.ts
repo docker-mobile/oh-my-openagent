@@ -33,35 +33,35 @@ function stableManifest(overrides: Record<string, unknown> = {}): Record<string,
     version: "0.1.0",
     date: "2026-11-10T08:00:00Z",
     stagingPercentage: 100,
-    notesUrl: "https://get.omo.dev/stable/0.1.0/RELEASE-NOTES.md",
+    notesUrl: "https://get.omc.nga.hm/stable/0.1.0/RELEASE-NOTES.md",
     platforms: {
       "mac-arm64": {
-        url: "https://get.omo.dev/stable/0.1.0/OmO-0.1.0-arm64.dmg",
+        url: "https://get.omc.nga.hm/stable/0.1.0/OmC-0.1.0-arm64.dmg",
         sha256: HASH_A,
         size: 212_000_000,
         kind: "dmg",
       },
       "mac-x64": {
-        url: "https://get.omo.dev/stable/0.1.0/OmO-0.1.0-x64.dmg",
+        url: "https://get.omc.nga.hm/stable/0.1.0/OmC-0.1.0-x64.dmg",
         sha256: HASH_B,
         size: 224_500_000,
         kind: "dmg",
       },
       "win-x64": {
-        url: "https://get.omo.dev/stable/0.1.0/OmO-0.1.0-x64.exe",
+        url: "https://get.omc.nga.hm/stable/0.1.0/OmC-0.1.0-x64.exe",
         sha256: HASH_C,
         size: 198_300_000,
         kind: "exe",
       },
       "linux-x64": [
         {
-          url: "https://get.omo.dev/stable/0.1.0/OmO-0.1.0-x64.AppImage",
+          url: "https://get.omc.nga.hm/stable/0.1.0/OmC-0.1.0-x64.AppImage",
           sha256: HASH_E,
           size: 205_000_000,
           kind: "appimage",
         },
         {
-          url: "https://get.omo.dev/stable/0.1.0/OmO-0.1.0-amd64.deb",
+          url: "https://get.omc.nga.hm/stable/0.1.0/OmC-0.1.0-amd64.deb",
           sha256: HASH_D,
           size: 190_000_000,
           kind: "deb",
@@ -94,7 +94,7 @@ describe("which installer a visitor is offered first", () => {
     const choice = chooseInstallers(release, visitor)
 
     // then
-    expect(choice.primary?.fileName).toBe("OmO-0.1.0-arm64.dmg")
+    expect(choice.primary?.fileName).toBe("OmC-0.1.0-arm64.dmg")
     expect(choice.archAssumed).toBe(false)
   })
 
@@ -109,7 +109,7 @@ describe("which installer a visitor is offered first", () => {
     const choice = chooseInstallers(release, visitor)
 
     // then
-    expect(choice.primary?.fileName).toBe("OmO-0.1.0-x64.dmg")
+    expect(choice.primary?.fileName).toBe("OmC-0.1.0-x64.dmg")
   })
 
   test("a Mac whose browser hides the CPU gets Apple silicon first and the Intel build is still listed", () => {
@@ -123,7 +123,7 @@ describe("which installer a visitor is offered first", () => {
     // then
     expect(choice.primary?.arch).toBe("arm64")
     expect(choice.archAssumed).toBe(true)
-    expect(choice.rest.map((installer) => installer.fileName)).toContain("OmO-0.1.0-x64.dmg")
+    expect(choice.rest.map((installer) => installer.fileName)).toContain("OmC-0.1.0-x64.dmg")
   })
 
   test("a Windows PC gets the exe, even when its browser reports an ARM CPU", () => {
@@ -137,7 +137,7 @@ describe("which installer a visitor is offered first", () => {
     const choice = chooseInstallers(release, visitor)
 
     // then
-    expect(choice.primary?.fileName).toBe("OmO-0.1.0-x64.exe")
+    expect(choice.primary?.fileName).toBe("OmC-0.1.0-x64.exe")
   })
 
   test("a Linux PC gets the deb before the AppImage and keeps the AppImage in the list", () => {
@@ -149,8 +149,8 @@ describe("which installer a visitor is offered first", () => {
     const choice = chooseInstallers(release, visitor)
 
     // then
-    expect(choice.primary?.fileName).toBe("OmO-0.1.0-amd64.deb")
-    expect(choice.rest[0]?.fileName).toBe("OmO-0.1.0-x64.AppImage")
+    expect(choice.primary?.fileName).toBe("OmC-0.1.0-amd64.deb")
+    expect(choice.rest[0]?.fileName).toBe("OmC-0.1.0-x64.AppImage")
   })
 
   test("a Linux visitor is offered the AppImage when no deb is published", () => {
@@ -158,7 +158,7 @@ describe("which installer a visitor is offered first", () => {
     const release = readyRelease({
       platforms: {
         "linux-x64": {
-          url: "https://get.omo.dev/stable/0.1.0/OmO-0.1.0-x64.AppImage",
+          url: "https://get.omc.nga.hm/stable/0.1.0/OmC-0.1.0-x64.AppImage",
           sha256: HASH_E,
           size: 205_000_000,
           kind: "appimage",
@@ -198,7 +198,7 @@ describe("visitors the app cannot serve with one button", () => {
     const release = readyRelease({
       platforms: {
         "mac-arm64": {
-          url: "https://get.omo.dev/stable/0.1.0/OmO-0.1.0-arm64.dmg",
+          url: "https://get.omc.nga.hm/stable/0.1.0/OmC-0.1.0-arm64.dmg",
           sha256: HASH_A,
           size: 212_000_000,
           kind: "dmg",
@@ -269,8 +269,8 @@ describe("what the page reads from the manifest", () => {
     if (state.status !== "ready") return
     expect(state.release.version).toBe("0.1.0")
     expect(state.release.installers).toHaveLength(5)
-    expect(state.release.notesUrl).toBe("https://get.omo.dev/stable/0.1.0/RELEASE-NOTES.md")
-    expect(state.release.checksumsUrl).toBe("https://get.omo.dev/stable/0.1.0/SHA256SUMS")
+    expect(state.release.notesUrl).toBe("https://get.omc.nga.hm/stable/0.1.0/RELEASE-NOTES.md")
+    expect(state.release.checksumsUrl).toBe("https://get.omc.nga.hm/stable/0.1.0/SHA256SUMS")
   })
 
   test("an installer hosted on GitHub is never shown, whatever the manifest says", () => {
@@ -278,13 +278,13 @@ describe("what the page reads from the manifest", () => {
     const manifest = stableManifest({
       platforms: {
         "win-x64": {
-          url: "https://github.com/code-yeongyu/omo-desktop-app/releases/download/v0.1.0/OmO.exe",
+          url: "https://github.com/code-yeongyu/omc-desktop-app/releases/download/v0.1.0/OmC.exe",
           sha256: HASH_C,
           size: 198_300_000,
           kind: "exe",
         },
         "mac-arm64": {
-          url: "https://get.omo.dev/stable/0.1.0/OmO-0.1.0-arm64.dmg",
+          url: "https://get.omc.nga.hm/stable/0.1.0/OmC-0.1.0-arm64.dmg",
           sha256: HASH_A,
           size: 212_000_000,
           kind: "dmg",
@@ -306,7 +306,7 @@ describe("what the page reads from the manifest", () => {
     const state = parseChannelManifest(
       "stable",
       stableManifest({
-        notesUrl: "https://github.com/code-yeongyu/omo-desktop-app/releases/tag/v0.1.0",
+        notesUrl: "https://github.com/code-yeongyu/omc-desktop-app/releases/tag/v0.1.0",
       }),
     )
 
@@ -321,13 +321,13 @@ describe("what the page reads from the manifest", () => {
     const manifest = stableManifest({
       platforms: {
         "win-x64": {
-          url: "https://get.omo.dev/stable/0.1.0/OmO-0.1.0-x64.exe",
+          url: "https://get.omc.nga.hm/stable/0.1.0/OmC-0.1.0-x64.exe",
           sha256: "not-a-checksum",
           size: 198_300_000,
           kind: "exe",
         },
         "mac-arm64": {
-          url: "https://get.omo.dev/stable/0.1.0/OmO-0.1.0-arm64.dmg",
+          url: "https://get.omc.nga.hm/stable/0.1.0/OmC-0.1.0-arm64.dmg",
           sha256: HASH_A.toUpperCase(),
           size: 212_000_000,
           kind: "dmg",
@@ -372,23 +372,23 @@ describe("what the page reads from the manifest", () => {
   })
 
   test.each([
-    ["an URL that cannot be decoded", "https://get.omo.dev/stable/0.1.0/OmO-%E0%A4%A.exe"],
+    ["an URL that cannot be decoded", "https://get.omc.nga.hm/stable/0.1.0/OmC-%E0%A4%A.exe"],
     [
       "a file name that hides a path",
-      "https://get.omo.dev/stable/0.1.0/x%2F..%2FOmO-0.1.0-x64.exe",
+      "https://get.omc.nga.hm/stable/0.1.0/x%2F..%2FOmO-0.1.0-x64.exe",
     ],
-    ["a file name with a space", "https://get.omo.dev/stable/0.1.0/OmO%20setup.exe"],
-    ["a file from another release", "https://get.omo.dev/stable/0.0.9/OmO-0.1.0-x64.exe"],
-    ["a file from another channel", "https://get.omo.dev/beta/0.1.0/OmO-0.1.0-x64.exe"],
-    ["a port on the download host", "https://get.omo.dev:8443/stable/0.1.0/OmO-0.1.0-x64.exe"],
-    ["credentials in the URL", "https://user:pass@get.omo.dev/stable/0.1.0/OmO-0.1.0-x64.exe"],
+    ["a file name with a space", "https://get.omc.nga.hm/stable/0.1.0/OmC%20setup.exe"],
+    ["a file from another release", "https://get.omc.nga.hm/stable/0.0.9/OmC-0.1.0-x64.exe"],
+    ["a file from another channel", "https://get.omc.nga.hm/beta/0.1.0/OmC-0.1.0-x64.exe"],
+    ["a port on the download host", "https://get.omc.nga.hm:8443/stable/0.1.0/OmC-0.1.0-x64.exe"],
+    ["credentials in the URL", "https://user:pass@get.omc.nga.hm/stable/0.1.0/OmC-0.1.0-x64.exe"],
   ])("an installer with %s is dropped and the rest of the release stays", (_label, url) => {
     // given
     const manifest = stableManifest({
       platforms: {
         "win-x64": { url, sha256: HASH_C, size: 198_300_000, kind: "exe" },
         "mac-arm64": {
-          url: "https://get.omo.dev/stable/0.1.0/OmO-0.1.0-arm64.dmg",
+          url: "https://get.omc.nga.hm/stable/0.1.0/OmC-0.1.0-arm64.dmg",
           sha256: HASH_A,
           size: 212_000_000,
           kind: "dmg",
@@ -403,7 +403,7 @@ describe("what the page reads from the manifest", () => {
     expect(state.status).toBe("ready")
     if (state.status !== "ready") return
     expect(state.release.installers.map((installer) => installer.fileName)).toEqual([
-      "OmO-0.1.0-arm64.dmg",
+      "OmC-0.1.0-arm64.dmg",
     ])
   })
 
@@ -428,7 +428,7 @@ function jsonResponse(body: unknown, status = 200): Response {
 }
 
 describe("loading a channel's manifest from the download host", () => {
-  const baseUrl = "https://get.omo.dev"
+  const baseUrl = "https://get.omc.nga.hm"
 
   /** SHA256SUMS as the release publisher writes it: `<sha256>  <file name>` per installer. */
   function sumsFor(manifest: Record<string, unknown>): string {
@@ -470,8 +470,8 @@ describe("loading a channel's manifest from the download host", () => {
 
     // then
     expect(requested).toEqual([
-      "https://get.omo.dev/stable/manifest.json",
-      "https://get.omo.dev/stable/0.1.0/SHA256SUMS",
+      "https://get.omc.nga.hm/stable/manifest.json",
+      "https://get.omc.nga.hm/stable/0.1.0/SHA256SUMS",
     ])
     expect(state.status === "ready" && state.release.installers.length).toBe(5)
   })
@@ -494,8 +494,8 @@ describe("loading a channel's manifest from the download host", () => {
 
     // then
     expect(requested).toEqual([
-      "https://get.omo.dev/beta/manifest.json",
-      "https://get.omo.dev/beta/0.1.1-beta.2/SHA256SUMS",
+      "https://get.omc.nga.hm/beta/manifest.json",
+      "https://get.omc.nga.hm/beta/0.1.1-beta.2/SHA256SUMS",
     ])
     expect(state.status === "ready" && state.release.channel).toBe("beta")
   })
@@ -504,8 +504,8 @@ describe("loading a channel's manifest from the download host", () => {
     // given: the Intel disk image's line carries another hash and the exe's line is gone
     const manifest = stableManifest()
     const sums = sumsFor(manifest)
-      .replace(`${HASH_B}  OmO-0.1.0-x64.dmg`, `${"f".repeat(64)}  OmO-0.1.0-x64.dmg`)
-      .replace(`${HASH_C}  OmO-0.1.0-x64.exe\n`, "")
+      .replace(`${HASH_B}  OmC-0.1.0-x64.dmg`, `${"f".repeat(64)}  OmC-0.1.0-x64.dmg`)
+      .replace(`${HASH_C}  OmC-0.1.0-x64.exe\n`, "")
     const { fetchImpl } = publishedStable(manifest, sums)
 
     // when
@@ -514,9 +514,9 @@ describe("loading a channel's manifest from the download host", () => {
     // then
     const files = state.status === "ready" ? state.release.installers.map((i) => i.fileName) : []
     expect(files.sort()).toEqual([
-      "OmO-0.1.0-amd64.deb",
-      "OmO-0.1.0-arm64.dmg",
-      "OmO-0.1.0-x64.AppImage",
+      "OmC-0.1.0-amd64.deb",
+      "OmC-0.1.0-arm64.dmg",
+      "OmC-0.1.0-x64.AppImage",
     ])
   })
 
@@ -548,7 +548,7 @@ describe("loading a channel's manifest from the download host", () => {
   test("a SHA256SUMS that names one file twice is not trusted at all", async () => {
     // given: two lines for the same disk image, the second with another hash
     const manifest = stableManifest()
-    const sums = `${sumsFor(manifest)}${"f".repeat(64)}  OmO-0.1.0-arm64.dmg\n`
+    const sums = `${sumsFor(manifest)}${"f".repeat(64)}  OmC-0.1.0-arm64.dmg\n`
     const { fetchImpl } = publishedStable(manifest, sums)
 
     // when
@@ -609,14 +609,14 @@ describe("loading a channel's manifest from the download host", () => {
 })
 
 describe("reading channels across requests", () => {
-  const baseUrl = "https://get.omo.dev"
+  const baseUrl = "https://get.omc.nga.hm"
   const manifest = {
     channel: "stable",
     version: "0.1.0",
     date: "2026-11-10T08:00:00Z",
     platforms: {
       "mac-arm64": {
-        url: "https://get.omo.dev/stable/0.1.0/OmO-0.1.0-arm64.dmg",
+        url: "https://get.omc.nga.hm/stable/0.1.0/OmC-0.1.0-arm64.dmg",
         sha256: HASH_A,
         size: 212_000_000,
         kind: "dmg",
@@ -630,7 +630,7 @@ describe("reading channels across requests", () => {
       requests += 1
       if (status !== 200) return new Response("no", { status })
       return String(input).endsWith("SHA256SUMS")
-        ? new Response(`${HASH_A}  OmO-0.1.0-arm64.dmg\n`)
+        ? new Response(`${HASH_A}  OmC-0.1.0-arm64.dmg\n`)
         : jsonResponse(manifest)
     }
     return { fetchImpl, requests: () => requests }

@@ -12,7 +12,7 @@ import { ControlsShowcase } from "./_showcase/controls"
 import { LedgerShowcase } from "./_showcase/ledger"
 
 /**
- * Primitive showcase (DESIGN.md §5, §13). Gated on OMO_WEB_SHOWCASE=1 rather than NODE_ENV
+ * Primitive showcase (DESIGN.md §5, §13). Gated on OMC_WEB_SHOWCASE=1 rather than NODE_ENV
  * so it can be screenshotted against `next start`; read per request so the flag is honoured
  * at runtime. Not localized, not in the sitemap, disallowed in robots while enabled.
  */
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 }
 
 export default function DesignPage(): JSX.Element {
-  if (process.env.OMO_WEB_SHOWCASE !== "1") {
+  if (process.env.OMC_WEB_SHOWCASE !== "1") {
     notFound()
   }
 

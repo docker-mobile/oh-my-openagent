@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import type { TaskRecord } from "../state"
 import { reconciliationActive, type LifecycleContext } from "./context"
@@ -111,7 +111,7 @@ const retrying = new WeakMap<LifecycleContext, Set<string>>()
  * A reconcile that deferred a daemon-hosted child (its daemon did not answer, or a draining
  * generation still holds its session path) used to leave the record `running` + `rpc_detached`
  * until the NEXT parent session start, so the child's work was never observed and a DAG waited on
- * it forever (omo#9069). Each such child now gets one bounded background retry through the same
+ * it forever (omc#9069). Each such child now gets one bounded background retry through the same
  * single-flight revival a reconcile uses, against its RECORDED session; it stops as soon as the
  * record is revived, terminal, killed, or claimed elsewhere.
  */

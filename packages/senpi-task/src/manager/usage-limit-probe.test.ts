@@ -58,7 +58,7 @@ async function runChild(manager: TaskManager, spec?: Partial<ManagerStartSpec>):
 const calls = (): readonly string[] => world?.calls.map((call) => call.model) ?? []
 
 // The engine walks the same chain first and, reading this wording as account-wide, exhausts it without trying the
-// sibling (the senpi half of #11383); every rung here shares the spent provider, as in the incident, so omo's own walk
+// sibling (the senpi half of #11383); every rung here shares the spent provider, as in the incident, so omc's own walk
 // is what runs the one probe.
 describe("an ambiguous usage limit's same-provider probe (#11383)", () => {
   test("#given one child's probe confirmed its provider's account limit #when a second child hits a limit on that provider #then it is refused without calling the provider again", async () => {

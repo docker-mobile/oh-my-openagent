@@ -273,11 +273,11 @@
         "disallowTypeAnnotations": false
       }
     ],
-    "omo/no-enum": "error",
+    "omc/no-enum": "error",
     "typescript/consistent-type-exports": "off",
     "typescript/no-invalid-void-type": "error",
-    "omo/no-implicit-any-let": "error",
-    "omo/no-string-case-mismatch": "error",
+    "omc/no-implicit-any-let": "error",
+    "omc/no-string-case-mismatch": "error",
     "typescript/no-unsafe-type-assertion": "off"
   },
   "ignorePatterns": [

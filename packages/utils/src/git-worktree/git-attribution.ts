@@ -87,12 +87,12 @@ export function shouldSuppressGitAttribution(options: GitAttributionCheckOptions
     return { suppressed: true, reason: "env_disabled" }
   }
 
-  const omoNoCommitAttribution = env.OMO_NO_COMMIT_ATTRIBUTION
+  const omoNoCommitAttribution = env.OMC_NO_COMMIT_ATTRIBUTION
   if (omoNoCommitAttribution !== undefined && omoNoCommitAttribution !== "" && omoNoCommitAttribution !== "0" && omoNoCommitAttribution.toLowerCase() !== "false") {
     return { suppressed: true, reason: "env_disabled" }
   }
 
-  const omoGitAttribution = parseGitBoolean(env.OMO_GIT_ATTRIBUTION)
+  const omoGitAttribution = parseGitBoolean(env.OMC_GIT_ATTRIBUTION)
   if (omoGitAttribution === false) {
     return { suppressed: true, reason: "env_disabled" }
   }
@@ -104,7 +104,7 @@ export function shouldSuppressGitAttribution(options: GitAttributionCheckOptions
   const readConfig = options.gitConfigReader ?? defaultGitConfigReader
   const cwd = options.cwd ?? process.cwd()
 
-  const omoAttribution = parseGitBoolean(readConfig("omo.attribution", cwd))
+  const omoAttribution = parseGitBoolean(readConfig("omc.attribution", cwd))
   if (omoAttribution === false) {
     return { suppressed: true, reason: "git_config_disabled" }
   }
@@ -145,7 +145,7 @@ export function resolveGitAttribution<T extends GitAttributionConfigLike>(
     }
   }
 
-  const omoNoCommitAttribution = env.OMO_NO_COMMIT_ATTRIBUTION
+  const omoNoCommitAttribution = env.OMC_NO_COMMIT_ATTRIBUTION
   if (omoNoCommitAttribution !== undefined && omoNoCommitAttribution !== "" && omoNoCommitAttribution !== "0" && omoNoCommitAttribution.toLowerCase() !== "false") {
     return {
       commitFooter: customFooterOrFalse(config),
@@ -155,7 +155,7 @@ export function resolveGitAttribution<T extends GitAttributionConfigLike>(
     }
   }
 
-  const omoGitAttribution = parseGitBoolean(env.OMO_GIT_ATTRIBUTION)
+  const omoGitAttribution = parseGitBoolean(env.OMC_GIT_ATTRIBUTION)
   if (omoGitAttribution === false) {
     return {
       commitFooter: customFooterOrFalse(config),
@@ -177,7 +177,7 @@ export function resolveGitAttribution<T extends GitAttributionConfigLike>(
   const readConfig = options.gitConfigReader ?? defaultGitConfigReader
   const cwd = options.cwd ?? process.cwd()
 
-  const omoAttribution = parseGitBoolean(readConfig("omo.attribution", cwd))
+  const omoAttribution = parseGitBoolean(readConfig("omc.attribution", cwd))
   if (omoAttribution === false) {
     return {
       commitFooter: customFooterOrFalse(config),

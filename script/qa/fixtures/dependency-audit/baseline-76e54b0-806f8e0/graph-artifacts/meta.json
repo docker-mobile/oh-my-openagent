@@ -1,6 +1,6 @@
 {
   "inputs": {
-    "packages/omo-native/compile-entry.ts": {
+    "packages/omc-native/compile-entry.ts": {
       "bytes": 13857,
       "imports": [
         {
@@ -33,47 +33,47 @@
           "external": true
         },
         {
-          "path": "packages/omo-native/compile-runtime.ts",
+          "path": "packages/omc-native/compile-runtime.ts",
           "kind": "import-statement",
           "original": "./compile-runtime"
         },
         {
-          "path": "packages/omo-native/bin/lib/child-process.js",
+          "path": "packages/omc-native/bin/lib/child-process.js",
           "kind": "import-statement",
           "original": "./bin/lib/child-process.js"
         },
         {
-          "path": "packages/omo-native/build-info.ts",
+          "path": "packages/omc-native/build-info.ts",
           "kind": "import-statement",
           "original": "./build-info"
         },
         {
-          "path": "packages/omo-native/bin/lib/legacy-bun-global-migration.js",
+          "path": "packages/omc-native/bin/lib/legacy-bun-global-migration.js",
           "kind": "import-statement",
           "original": "./bin/lib/legacy-bun-global-migration.js"
         },
         {
-          "path": "packages/omo-native/bin/lib/agent-dir.js",
+          "path": "packages/omc-native/bin/lib/agent-dir.js",
           "kind": "import-statement",
           "original": "./bin/lib/agent-dir.js"
         },
         {
-          "path": "packages/omo-native/bin/lib/package-paths.js",
+          "path": "packages/omc-native/bin/lib/package-paths.js",
           "kind": "import-statement",
           "original": "./bin/lib/package-paths.js"
         },
         {
-          "path": "packages/omo-native/bin/lib/doctor.js",
+          "path": "packages/omc-native/bin/lib/doctor.js",
           "kind": "import-statement",
           "original": "./bin/lib/doctor.js"
         },
         {
-          "path": "packages/omo-native/bin/lib/setup-detect.js",
+          "path": "packages/omc-native/bin/lib/setup-detect.js",
           "kind": "import-statement",
           "original": "./bin/lib/setup-detect.js"
         },
         {
-          "path": "packages/omo-native/bin/lib/setup-report.js",
+          "path": "packages/omc-native/bin/lib/setup-report.js",
           "kind": "import-statement",
           "original": "./bin/lib/setup-report.js"
         },
@@ -201,7 +201,7 @@
       ],
       "format": "esm"
     },
-    "packages/omo-native/build-info.ts": {
+    "packages/omc-native/build-info.ts": {
       "bytes": 2705,
       "imports": [],
       "format": "esm"
@@ -271,7 +271,7 @@
       ],
       "format": "esm"
     },
-    "packages/omo-native/bin/lib/child-process.js": {
+    "packages/omc-native/bin/lib/child-process.js": {
       "bytes": 4046,
       "imports": [
         {
@@ -283,7 +283,7 @@
       ],
       "format": "esm"
     },
-    "packages/omo-native/compile-runtime.ts": {
+    "packages/omc-native/compile-runtime.ts": {
       "bytes": 5197,
       "imports": [
         {
@@ -363,7 +363,7 @@
       ],
       "format": "esm"
     },
-    "packages/omo-native/bin/lib/setup-detect.js": {
+    "packages/omc-native/bin/lib/setup-detect.js": {
       "bytes": 6851,
       "imports": [
         {
@@ -385,12 +385,12 @@
           "external": true
         },
         {
-          "path": "packages/omo-native/bin/lib/agent-dir.js",
+          "path": "packages/omc-native/bin/lib/agent-dir.js",
           "kind": "import-statement",
           "original": "./agent-dir.js"
         },
         {
-          "path": "packages/omo-native/bin/lib/sqlite-rows.js",
+          "path": "packages/omc-native/bin/lib/sqlite-rows.js",
           "kind": "import-statement",
           "original": "./sqlite-rows.js"
         },
@@ -402,7 +402,7 @@
       ],
       "format": "esm"
     },
-    "packages/omo-native/bin/lib/doctor.js": {
+    "packages/omc-native/bin/lib/doctor.js": {
       "bytes": 15954,
       "imports": [
         {
@@ -430,24 +430,24 @@
           "external": true
         },
         {
-          "path": "packages/omo-native/bin/lib/agent-dir.js",
+          "path": "packages/omc-native/bin/lib/agent-dir.js",
           "kind": "import-statement",
           "original": "./agent-dir.js"
         },
         {
-          "path": "packages/omo-native/bin/lib/package-paths.js",
+          "path": "packages/omc-native/bin/lib/package-paths.js",
           "kind": "import-statement",
           "original": "./package-paths.js"
         },
         {
-          "path": "packages/omo-native/bin/lib/setup-detect.js",
+          "path": "packages/omc-native/bin/lib/setup-detect.js",
           "kind": "import-statement",
           "original": "./setup-detect.js"
         }
       ],
       "format": "esm"
     },
-    "packages/omo-native/bin/lib/package-paths.js": {
+    "packages/omc-native/bin/lib/package-paths.js": {
       "bytes": 3472,
       "imports": [
         {
@@ -471,12 +471,12 @@
       ],
       "format": "esm"
     },
-    "packages/omo-native/bin/lib/setup-report.js": {
+    "packages/omc-native/bin/lib/setup-report.js": {
       "bytes": 937,
       "imports": [],
       "format": "esm"
     },
-    "packages/omo-native/bin/lib/agent-dir.js": {
+    "packages/omc-native/bin/lib/agent-dir.js": {
       "bytes": 5075,
       "imports": [
         {
@@ -500,7 +500,7 @@
       ],
       "format": "esm"
     },
-    "packages/omo-native/bin/lib/legacy-bun-global-migration.js": {
+    "packages/omc-native/bin/lib/legacy-bun-global-migration.js": {
       "bytes": 749,
       "imports": [
         {
@@ -522,7 +522,7 @@
           "external": true
         },
         {
-          "path": "packages/omo-native/bin/lib/package-paths.js",
+          "path": "packages/omc-native/bin/lib/package-paths.js",
           "kind": "import-statement",
           "original": "./package-paths.js"
         }
@@ -1952,7 +1952,7 @@
       ],
       "format": "esm"
     },
-    "packages/omo-native/bin/lib/sqlite-rows.js": {
+    "packages/omc-native/bin/lib/sqlite-rows.js": {
       "bytes": 1604,
       "imports": [],
       "format": "esm"
@@ -3556,9 +3556,9 @@
           "original": "proper-lockfile"
         },
         {
-          "path": "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omo-local-update.js",
+          "path": "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omc-local-update.js",
           "kind": "import-statement",
-          "original": "./beta/omo-local-update.js"
+          "original": "./beta/omc-local-update.js"
         },
         {
           "path": "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/cli/config-selector.js",
@@ -6201,7 +6201,7 @@
       ],
       "format": "esm"
     },
-    "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omo-local-update.js": {
+    "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omc-local-update.js": {
       "bytes": 28946,
       "imports": [
         {
@@ -6249,19 +6249,19 @@
           "original": "../utils/shell.js"
         },
         {
-          "path": "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omo-local-update-artifacts.js",
+          "path": "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omc-local-update-artifacts.js",
           "kind": "import-statement",
-          "original": "./omo-local-update-artifacts.js"
+          "original": "./omc-local-update-artifacts.js"
         },
         {
-          "path": "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omo-local-update-fingerprint.js",
+          "path": "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omc-local-update-fingerprint.js",
           "kind": "import-statement",
-          "original": "./omo-local-update-fingerprint.js"
+          "original": "./omc-local-update-fingerprint.js"
         },
         {
-          "path": "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omo-local-update-worker.js",
+          "path": "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omc-local-update-worker.js",
           "kind": "import-statement",
-          "original": "./omo-local-update-worker.js"
+          "original": "./omc-local-update-worker.js"
         }
       ],
       "format": "esm"
@@ -15342,7 +15342,7 @@
       ],
       "format": "esm"
     },
-    "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omo-local-update-artifacts.js": {
+    "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omc-local-update-artifacts.js": {
       "bytes": 2770,
       "imports": [
         {
@@ -15360,7 +15360,7 @@
       ],
       "format": "esm"
     },
-    "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omo-local-update-worker.js": {
+    "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omc-local-update-worker.js": {
       "bytes": 2217,
       "imports": [
         {
@@ -15395,7 +15395,7 @@
       ],
       "format": "esm"
     },
-    "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omo-local-update-fingerprint.js": {
+    "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omc-local-update-fingerprint.js": {
       "bytes": 2009,
       "imports": [
         {
@@ -93575,37 +93575,37 @@
     }
   },
   "outputs": {
-    "packages/omo-native/compile-entry.js": {
+    "packages/omc-native/compile-entry.js": {
       "bytes": 22184679,
       "inputs": {
-        "packages/omo-native/compile-runtime.ts": {
+        "packages/omc-native/compile-runtime.ts": {
           "bytesInOutput": 3465
         },
-        "packages/omo-native/bin/lib/child-process.js": {
+        "packages/omc-native/bin/lib/child-process.js": {
           "bytesInOutput": 1369
         },
-        "packages/omo-native/build-info.ts": {
+        "packages/omc-native/build-info.ts": {
           "bytesInOutput": 1577
         },
-        "packages/omo-native/bin/lib/package-paths.js": {
+        "packages/omc-native/bin/lib/package-paths.js": {
           "bytesInOutput": 2429
         },
-        "packages/omo-native/bin/lib/legacy-bun-global-migration.js": {
+        "packages/omc-native/bin/lib/legacy-bun-global-migration.js": {
           "bytesInOutput": 643
         },
-        "packages/omo-native/bin/lib/agent-dir.js": {
+        "packages/omc-native/bin/lib/agent-dir.js": {
           "bytesInOutput": 2660
         },
-        "packages/omo-native/bin/lib/sqlite-rows.js": {
+        "packages/omc-native/bin/lib/sqlite-rows.js": {
           "bytesInOutput": 454
         },
-        "packages/omo-native/bin/lib/setup-detect.js": {
+        "packages/omc-native/bin/lib/setup-detect.js": {
           "bytesInOutput": 5381
         },
-        "packages/omo-native/bin/lib/doctor.js": {
+        "packages/omc-native/bin/lib/doctor.js": {
           "bytesInOutput": 10800
         },
-        "packages/omo-native/bin/lib/setup-report.js": {
+        "packages/omc-native/bin/lib/setup-report.js": {
           "bytesInOutput": 781
         },
         "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/node_modules/@earendil-works/pi-ai/dist/utils/provider-env.js": {
@@ -105968,16 +105968,16 @@
         "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/modes/rpc/multi-session-host.js": {
           "bytesInOutput": 10269
         },
-        "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omo-local-update-artifacts.js": {
+        "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omc-local-update-artifacts.js": {
           "bytesInOutput": 2069
         },
-        "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omo-local-update-fingerprint.js": {
+        "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omc-local-update-fingerprint.js": {
           "bytesInOutput": 941
         },
-        "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omo-local-update-worker.js": {
+        "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omc-local-update-worker.js": {
           "bytesInOutput": 1321
         },
-        "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omo-local-update.js": {
+        "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omc-local-update.js": {
           "bytesInOutput": 14788
         },
         "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/modes/interactive/components/config-selector.js": {
@@ -106001,7 +106001,7 @@
         "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/cli.js": {
           "bytesInOutput": 2875
         },
-        "packages/omo-native/compile-entry.ts": {
+        "packages/omc-native/compile-entry.ts": {
           "bytesInOutput": 8037
         }
       },
@@ -106018,7 +106018,7 @@
         "updateLine",
         "versionLine"
       ],
-      "entryPoint": "packages/omo-native/compile-entry.ts"
+      "entryPoint": "packages/omc-native/compile-entry.ts"
     },
     "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/modes/rpc/session-worker.js": {
       "bytes": 22062443,
@@ -118311,16 +118311,16 @@
         "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/modes/rpc/multi-session-host.js": {
           "bytesInOutput": 10268
         },
-        "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omo-local-update-artifacts.js": {
+        "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omc-local-update-artifacts.js": {
           "bytesInOutput": 2069
         },
-        "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omo-local-update-fingerprint.js": {
+        "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omc-local-update-fingerprint.js": {
           "bytesInOutput": 941
         },
-        "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omo-local-update-worker.js": {
+        "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omc-local-update-worker.js": {
           "bytesInOutput": 1321
         },
-        "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omo-local-update.js": {
+        "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/beta/omc-local-update.js": {
           "bytesInOutput": 14788
         },
         "node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/modes/interactive/components/config-selector.js": {

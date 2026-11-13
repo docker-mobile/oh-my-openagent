@@ -26,7 +26,7 @@ const IOREG = `+-o J316sAP  <class IOPlatformExpertDevice, id 0x100000110, regis
 const REG = `\r\nHKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Cryptography\r\n    MachineGuid    REG_SZ    ${WIN_GUID}\r\n\r\n`
 const NO_ENV = Object.freeze({}) as Readonly<Record<string, string | undefined>>
 
-const expectedHash = (rawId: string): string => createHash("sha256").update("omo:device:v1\u0000").update(rawId).digest("hex")
+const expectedHash = (rawId: string): string => createHash("sha256").update("omc:device:v1\u0000").update(rawId).digest("hex")
 
 afterEach(() => {
   __resetTelemetryDeviceHashCacheForTesting()
@@ -67,18 +67,18 @@ describe("getTelemetryDeviceHash", () => {
     expect(getTelemetryDeviceHash({ ...deps, env: NO_ENV })).toBeUndefined()
   })
 
-  test("#given OMO_TELEMETRY_DEVICE_ID=off #when a readable machine id exists #then no device identity is produced", () => {
+  test("#given OMC_TELEMETRY_DEVICE_ID=off #when a readable machine id exists #then no device identity is produced", () => {
     expect(getTelemetryDeviceHash({ platform: "darwin", runCommand: () => IOREG, env: { [TELEMETRY_DEVICE_ID_ENV]: "off" } })).toBeUndefined()
   })
 
-  test("#given a hex OMO_TELEMETRY_DEVICE_ID #when hashed #then the override replaces the OS read", () => {
+  test("#given a hex OMC_TELEMETRY_DEVICE_ID #when hashed #then the override replaces the OS read", () => {
     let ran = false
     const hash = getTelemetryDeviceHash({ platform: "darwin", runCommand: () => { ran = true; return IOREG }, env: { [TELEMETRY_DEVICE_ID_ENV]: WIN_GUID.toUpperCase() } })
     expect(hash).toBe(expectedHash(WIN_GUID))
     expect(ran).toBe(false)
   })
 
-  test("#given a malformed OMO_TELEMETRY_DEVICE_ID #when hashed #then it is ignored and the OS id is used", () => {
+  test("#given a malformed OMC_TELEMETRY_DEVICE_ID #when hashed #then it is ignored and the OS id is used", () => {
     expect(getTelemetryDeviceHash({ platform: "darwin", runCommand: () => IOREG, env: { [TELEMETRY_DEVICE_ID_ENV]: "my-laptop" } })).toBe(expectedHash(MAC_UUID))
   })
 

@@ -24,7 +24,7 @@ afterEach(async () => {
 })
 
 async function createRepo(agentId = "seed-agent"): Promise<{ dir: string; repo: GitMemoryRepo }> {
-  const dir = realpathSync.native(await mkdtemp(join(tmpdir(), "omo-seeds-")))
+  const dir = realpathSync.native(await mkdtemp(join(tmpdir(), "omc-seeds-")))
   tempDirs.push(dir)
   return { dir, repo: new GitMemoryRepo({ dir, agentId }) }
 }

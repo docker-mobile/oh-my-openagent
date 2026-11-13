@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test"
 
 /**
- * The production setup: a build without OMO_WEB_DESKTOP_DOWNLOAD. Runs only the flag-off spec, on
+ * The production setup: a build without OMC_WEB_DESKTOP_DOWNLOAD. Runs only the flag-off spec, on
  * its own port and its own build; `test:e2e` runs it before the main suite.
  */
 export default defineConfig({
@@ -21,6 +21,6 @@ export default defineConfig({
     url: "http://127.0.0.1:3200",
     reuseExistingServer: false,
     timeout: 180000,
-    env: { OMO_WEB_DESKTOP_DOWNLOAD: "" },
+    env: { OMC_WEB_DESKTOP_DOWNLOAD: "" },
   },
 })

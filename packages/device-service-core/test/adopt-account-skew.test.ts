@@ -57,7 +57,7 @@ describe("device.adopt account, gated on welcome.service_version", () => {
     expect(owner.state.adoptRequests.map(request => request["account"])).toEqual(["acct_42"])
   })
 
-  // 0.1.2 shipped without omo-relay-daemon#730: it must get today's exact request.
+  // 0.1.2 shipped without omc-relay-daemon#730: it must get today's exact request.
   test.each(["0.1.0", "0.1.1", "0.1.2", "0.1.3-rc.1"])("new client + old relayd %s: no account field, and the shipped validator accepts the adopt", async version => {
     const { owner, service } = await serviceAt(version)
     expect(await service.adopt(credential("acct_42"))).toEqual({ id: "dev-self", name: "This Mac" })

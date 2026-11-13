@@ -3,7 +3,7 @@ import { afterEach, describe, expect, test } from "bun:test"
 
 import { createTaskRecordStore } from "../store"
 import { spawnFakeChild } from "../runners/rpc/__fixtures__/spawn-fake"
-import { OMO_SENPI_TASK_TRACEPARENT } from "../runners/rpc/spawn"
+import { OMC_SENPI_TASK_TRACEPARENT } from "../runners/rpc/spawn"
 import { readSessionTraceparent } from "../runners/rpc-host/session-role"
 import { terminateRpcChild } from "../runners/rpc/terminate"
 import { RpcProcessRunner } from "../runners/rpc-process"
@@ -19,7 +19,7 @@ afterEach(async () => {
 })
 
 describe("delegating turn trace context across the task bridge", () => {
-  test("#given a parent session with a live turn #when it starts a process child #then the child process is launched with that turn's traceparent and reads it back as an omo child", async () => {
+  test("#given a parent session with a live turn #when it starts a process child #then the child process is launched with that turn's traceparent and reads it back as an omc child", async () => {
     // given
     const delegating = "00-4bf92f3577b34da6a3ce929d0e0e4736-b7ad6b7169203331-01"
     const project = tempProject()
@@ -63,7 +63,7 @@ describe("delegating turn trace context across the task bridge", () => {
     // then
     expect(started.kind).toBe("started")
     expect(asked).toEqual(["parent-1"])
-    expect(env[OMO_SENPI_TASK_TRACEPARENT]).toBe(delegating)
+    expect(env[OMC_SENPI_TASK_TRACEPARENT]).toBe(delegating)
     expect(readSessionTraceparent({}, env)).toBe(delegating)
   })
 })

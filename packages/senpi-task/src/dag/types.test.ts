@@ -105,7 +105,7 @@ describe("dag domain types", () => {
     }
 
     // when / then
-    expect(DAG_ACTIVITY_CHANNEL).toBe("omo.dag.activity")
+    expect(DAG_ACTIVITY_CHANNEL).toBe("omc.dag.activity")
     expect("seq" in activity).toBe(false)
     expectTypeOf<DagActivityEvent>().not.toHaveProperty("seq")
     expectTypeOf<DagActivityEvent>().not.toHaveProperty("payload")

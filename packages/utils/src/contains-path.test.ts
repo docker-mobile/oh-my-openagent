@@ -18,7 +18,7 @@ afterEach(() => {
 describe("containsPath", () => {
   test("#given realpath fails for a missing candidate ancestor #when checking containment #then falls back to the resolved ancestor path", async () => {
     // given
-    const root = mkdtempSync(join(tmpdir(), "omo-contains-path-"))
+    const root = mkdtempSync(join(tmpdir(), "omc-contains-path-"))
     tempDirectories.push(root)
     const missingCandidate = join(root, "missing", "file.txt")
 

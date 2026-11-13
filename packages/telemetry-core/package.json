@@ -1,9 +1,9 @@
 {
-  "name": "@oh-my-opencode/telemetry-core",
+  "name": "@oh-my-cybersecurity/telemetry-core",
   "version": "0.1.0",
   "type": "module",
   "private": true,
-  "description": "Harness-neutral telemetry primitives for oh-my-opencode products.",
+  "description": "Harness-neutral telemetry primitives for oh-my-cybersecurity products.",
   "imports": {
     "#telemetry-immediate-send": "./src/posthog-immediate-send.ts"
   },
@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@bufbuild/protobuf": "2.16.0",
-    "@oh-my-opencode/utils": "workspace:*",
+    "@oh-my-cybersecurity/utils": "workspace:*",
     "@opentelemetry/api": "1.9.1",
     "@opentelemetry/api-logs": "0.223.0",
     "@opentelemetry/context-async-hooks": "2.12.0",

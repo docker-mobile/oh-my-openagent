@@ -9,7 +9,7 @@
           "send": {
             "id": "1",
             "type": "refresher.register",
-            "binary_path": "/usr/local/bin/omo",
+            "binary_path": "/usr/local/bin/omc",
             "version": "2.0.0"
           }
         },
@@ -31,7 +31,7 @@
           "send": {
             "id": "1",
             "type": "refresher.register",
-            "binary_path": "bin/omo",
+            "binary_path": "bin/omc",
             "version": "2.0.0"
           }
         },
@@ -55,7 +55,7 @@
           "send": {
             "id": "1",
             "type": "refresher.register",
-            "binary_path": "/usr/local/bin/omo",
+            "binary_path": "/usr/local/bin/omc",
             "version": "latest"
           }
         },

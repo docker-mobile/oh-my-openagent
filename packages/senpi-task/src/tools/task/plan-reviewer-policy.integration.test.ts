@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test } from "bun:test"
 
-import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
+import type { OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import { AGENT_INTERACTION_POLICIES } from "../../agents"
 import type { SkillInvocationState } from "../../agents"
@@ -9,15 +9,15 @@ import type { TaskManager } from "../../manager"
 import { buildTaskExecute } from "./execute"
 import type { TaskToolContext, TaskToolDeps } from "./types"
 
-const OMO_CONFIG: OmoConfig = { categories: {}, agents: {} }
+const OMC_CONFIG: OmoConfig = { categories: {}, agents: {} }
 
 const CTX: TaskToolContext = {
   cwd: "/work/project",
   sessionManager: { getSessionId: () => "parent-session-1" },
 }
 
-const PLAN_A = ".omo/plans/alpha-plan.md"
-const PLAN_B = ".omo/plans/beta-plan.md"
+const PLAN_A = ".omc/plans/alpha-plan.md"
+const PLAN_B = ".omc/plans/beta-plan.md"
 
 function canonical(path: string): string {
   return `Review the work plan at ${path} for contradictions and blocking issues.`
@@ -38,7 +38,7 @@ function openSessionResolver(): (sessionId: string) => SkillInvocationState {
 function deps(manager: TaskManager): TaskToolDeps {
   return {
     manager,
-    omoConfig: OMO_CONFIG,
+    omoConfig: OMC_CONFIG,
     agents: {},
     loadSkills: () => ({ prepend: "", resolved: [], missing: [] }),
     resolveSkillInvocations: openSessionResolver(),

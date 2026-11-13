@@ -4,8 +4,8 @@ import { existsSync, readFileSync, realpathSync, writeFileSync } from "node:fs"
 import { pathToFileURL } from "node:url"
 import { resolve } from "node:path"
 
-import { buildBatches, decodeBatch } from "../../../../packages/omo-opencode/src/features/pr-watch/fingerprints.mjs"
-export { buildBatches, decodeBatch, parsePullRequest } from "../../../../packages/omo-opencode/src/features/pr-watch/fingerprints.mjs"
+import { buildBatches, decodeBatch } from "../../../../packages/omc-opencode/src/features/pr-watch/fingerprints.mjs"
+export { buildBatches, decodeBatch, parsePullRequest } from "../../../../packages/omc-opencode/src/features/pr-watch/fingerprints.mjs"
 
 export function runCli(argv) {
   const keys = []

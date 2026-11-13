@@ -1,6 +1,6 @@
 # What Is Oh My OpenAgent?
 
-Oh My OpenAgent is a multi-model agent orchestration harness. This guide covers OmO Native, the standalone `omo` command; the OpenCode and Codex editions ship separately. It turns a single AI agent into a coordinated development team that actually ships code.
+Oh My OpenAgent is a multi-model agent orchestration harness. This guide covers OmC Native, the standalone `omc` command; the OpenCode and Codex editions ship separately. It turns a single AI agent into a coordinated development team that actually ships code.
 
 Not locked to Claude. Not locked to OpenAI. Not locked to anyone.
 
@@ -15,8 +15,8 @@ Just better results, cheaper models, real orchestration.
 Paste this into your LLM agent session:
 
 ```
-Install and configure oh-my-openagent by following the instructions here:
-https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/refs/heads/dev/docs/guide/installation.md
+Install and configure oh-my-cybersecurity by following the instructions here:
+https://raw.githubusercontent.com/code-yeongyu/oh-my-cybersecurity/refs/heads/dev/docs/guide/installation.md
 ```
 
 Or read the full [Installation Guide](./installation.md) for manual setup, provider authentication, and troubleshooting.
@@ -37,20 +37,20 @@ Want more control? Run `/ulw-plan` for interview-based planning, then `/ulw-exec
 
 ## Pick a profile
 
-You don't have to know model names to get a good main agent. Pick a profile by intent and omo picks the model:
+You don't have to know model names to get a good main agent. Pick a profile by intent and omc picks the model:
 
 - **Capable**: the strongest generalist you have. Claude Fable 5.1, then Claude Opus 5.5, then Kimi K3, then GLM 5.3.
 - **Deep work**: maximum reasoning for hard problems. GPT-6 Astra, then GPT-6 Sol.
 
-Set one key in `omo.json`:
+Set one key in `omc.json`:
 
 ```jsonc
 { "model_profile": "capable" }
 ```
 
-At session start omo walks the chain and applies the first model your connected providers serve, then prints a notice naming the pick and the rungs it skipped. The switch is session-scoped: nothing is written to `settings.json`. Mid-session failures follow Senpi's own retry chains, not the profile.
+At session start omc walks the chain and applies the first model your connected providers serve, then prints a notice naming the pick and the rungs it skipped. The switch is session-scoped: nothing is written to `settings.json`. Mid-session failures follow Senpi's own retry chains, not the profile.
 
-Want one exact model instead? Put it in the same key: `"model_profile": "anthropic/claude-opus-5-5"`. Anything with a `/` is a pin. The precedence is simple: a `--model` flag or scoped model wins, then a pinned model, then a profile, then Senpi's own default. Leave the key unset and omo doesn't touch the session model at all. Profiles pick the main session model only; categories and curated agents keep their own chains. Full detail in the [omo.json reference](../reference/omo-json.md#model-profiles-native-harness).
+Want one exact model instead? Put it in the same key: `"model_profile": "anthropic/claude-opus-5-5"`. Anything with a `/` is a pin. The precedence is simple: a `--model` flag or scoped model wins, then a pinned model, then a profile, then Senpi's own default. Leave the key unset and omc doesn't touch the session model at all. Profiles pick the main session model only; categories and curated agents keep their own chains. Full detail in the [omc.json reference](../reference/omc-json.md#model-profiles-native-harness).
 
 ---
 
@@ -93,7 +93,7 @@ For a deep dive into how the pieces collaborate, see the [Orchestration System G
 
 ---
 
-## How OmO Native delegates
+## How OmC Native delegates
 
 ### The main agent
 
@@ -153,11 +153,11 @@ The main agent runs on your session model, chosen by a profile, a pin, or `/mode
 
 ### Custom Model Configuration
 
-Override specific categories or curated agents in `omo.json`:
+Override specific categories or curated agents in `omc.json`:
 
 ```jsonc
 {
-  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/omo.schema.json",
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-cybersecurity/dev/assets/omc.schema.json",
 
   "agents": {
     // Planning helpers: Claude for the gap analysis, GPT for the review
@@ -231,11 +231,11 @@ Claude Code is good. But it's a single agent running a single model doing everyt
 
 Oh My OpenAgent turns that into a coordinated team:
 
-**Parallel execution.** Claude Code processes one thing at a time. OmO fires background agents in parallel: research, implementation, and verification happening simultaneously. Like having 5 engineers instead of 1.
+**Parallel execution.** Claude Code processes one thing at a time. OmC fires background agents in parallel: research, implementation, and verification happening simultaneously. Like having 5 engineers instead of 1.
 
-**Hash-anchored edits.** Claude Code's edit tool fails when the model can't reproduce lines exactly. Hash-anchored `LINE#ID` edits are opt-in (`hashline_edit: true`). When enabled, OmO's `LINE#ID` hashing validates every edit before applying.
+**Hash-anchored edits.** Claude Code's edit tool fails when the model can't reproduce lines exactly. Hash-anchored `LINE#ID` edits are opt-in (`hashline_edit: true`). When enabled, OmC's `LINE#ID` hashing validates every edit before applying.
 
-**IntentGate.** Claude Code takes your prompt and runs. OmO uses regex detectors for explicit mode keywords: `ultrawork`/`ulw`, the Team Mode spellings, `hyperplan`, and the adjacent hyperplan-ultrawork combo. Matching text injects the corresponding mode prompt.
+**IntentGate.** Claude Code takes your prompt and runs. OmC uses regex detectors for explicit mode keywords: `ultrawork`/`ulw`, the Team Mode spellings, `hyperplan`, and the adjacent hyperplan-ultrawork combo. Matching text injects the corresponding mode prompt.
 
 **LSP + AST tools.** Workspace-level rename, go-to-definition, find-references, pre-build diagnostics, AST-aware code rewrites. IDE precision that vanilla Claude Code doesn't have.
 

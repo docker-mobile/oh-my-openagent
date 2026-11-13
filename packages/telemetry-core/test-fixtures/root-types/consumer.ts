@@ -1,4 +1,4 @@
-import type * as Root from "@oh-my-opencode/telemetry-core"
+import type * as Root from "@oh-my-cybersecurity/telemetry-core"
 
 import type * as Runtime from "../../src/types"
 

@@ -44,7 +44,7 @@ type CacheEntry = {
   readonly warnings: readonly string[]
 }
 
-/** What the store keeps resident, read by the on-demand memory report (oh-my-openagent#9442). */
+/** What the store keeps resident, read by the on-demand memory report (oh-my-cybersecurity#9442). */
 export type TaskRecordStoreResidentFigures = {
   readonly cachedRecords: number
   /** On-disk size of the cached records' files. */

@@ -26,7 +26,7 @@ afterEach(async () => {
 if (process.platform === "win32") setDefaultTimeout(30000)
 
 async function fixture() {
-  const root = realpathSync.native(await mkdtemp(join(tmpdir(), "omo-memory-update-description-")))
+  const root = realpathSync.native(await mkdtemp(join(tmpdir(), "omc-memory-update-description-")))
   roots.push(root)
   const repo = new GitMemoryRepo({ dir: join(root, "repo"), agentId: AUTHOR.agentId })
   await repo.init({ authorName: AUTHOR.authorName })

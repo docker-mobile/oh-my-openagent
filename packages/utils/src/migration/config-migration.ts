@@ -118,7 +118,7 @@ export function migrateConfigFile(
       ? Object.keys(copy.lsp as Record<string, unknown>)
       : []
     log(
-      "Removed obsolete 'lsp' config key from oh-my-opencode config. Custom LSP servers are now configured in .opencode/lsp.json at the project root (consumed by the 'lsp' MCP server). Move any server definitions there to restore them.",
+      "Removed obsolete 'lsp' config key from oh-my-cybersecurity config. Custom LSP servers are now configured in .opencode/lsp.json at the project root (consumed by the 'lsp' MCP server). Move any server definitions there to restore them.",
       { configPath, droppedServers },
     )
     delete copy.lsp

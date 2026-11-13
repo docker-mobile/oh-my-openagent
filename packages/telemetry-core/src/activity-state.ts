@@ -1,8 +1,8 @@
 import { existsSync, mkdirSync, readFileSync } from "node:fs"
 import { basename, join } from "node:path"
-import { writeFileAtomically } from "@oh-my-opencode/utils/atomic-write"
-import { resolveXdgDataDir } from "@oh-my-opencode/utils/xdg-data-dir"
-import type { XdgOsProvider } from "@oh-my-opencode/utils/xdg-data-dir"
+import { writeFileAtomically } from "@oh-my-cybersecurity/utils/atomic-write"
+import { resolveXdgDataDir } from "@oh-my-cybersecurity/utils/xdg-data-dir"
+import type { XdgOsProvider } from "@oh-my-cybersecurity/utils/xdg-data-dir"
 
 import { claimUtcDay } from "./day-claim"
 import type { TelemetryDiagnosticInput, TelemetryProductConfig } from "./types"

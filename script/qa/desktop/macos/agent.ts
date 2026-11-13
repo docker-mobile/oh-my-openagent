@@ -5,10 +5,10 @@ import { dirname, join, resolve } from "node:path"
 import { createInterface } from "node:readline"
 import { fileURLToPath } from "node:url"
 
-import { withTelemetryOptOut } from "../../../../packages/omo-senpi/scripts/qa/telemetry-opt-out-env.mjs"
+import { withTelemetryOptOut } from "../../../../packages/omc-senpi/scripts/qa/telemetry-opt-out-env.mjs"
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), "../../../..")
-const plugin = join(repo, "packages/omo-senpi/plugin")
+const plugin = join(repo, "packages/omc-senpi/plugin")
 const provider = join(dirname(fileURLToPath(import.meta.url)), "provider.ts")
 const DEADLINE = 120_000
 
@@ -49,16 +49,16 @@ export function sandboxEnvironment(source: NodeJS.ProcessEnv, home: string, agen
     XDG_CONFIG_HOME: join(home, "config"),
     XDG_DATA_HOME: join(home, "data"),
     XDG_CACHE_HOME: join(home, "cache"),
-    OMO_CODING_AGENT_DIR: agentDir,
+    OMC_CODING_AGENT_DIR: agentDir,
     SENPI_CODING_AGENT_DIR: agentDir,
     PI_CODING_AGENT_DIR: agentDir,
     PI_OFFLINE: "1",
-    OMO_SENPI_QA: "1",
+    OMC_SENPI_QA: "1",
   })
 }
 
 export function createSandbox(computer: Json, enginePath?: string): Sandbox {
-  const root = mkdtempSync(join(tmpdir(), "omo-qa-macos-"))
+  const root = mkdtempSync(join(tmpdir(), "omc-qa-macos-"))
   const cwd = join(root, "project")
   const agentDir = join(root, "agent")
   const home = join(root, "home")
@@ -73,8 +73,8 @@ export function createSandbox(computer: Json, enginePath?: string): Sandbox {
     retry: { enabled: false },
   }))
   writeFileSync(join(agentDir, "trust.json"), JSON.stringify({ [cwd]: true }))
-  mkdirSync(join(cwd, ".omo"), { recursive: true })
-  writeFileSync(join(cwd, ".omo", "omo.jsonc"), JSON.stringify({
+  mkdirSync(join(cwd, ".omc"), { recursive: true })
+  writeFileSync(join(cwd, ".omc", "omc.jsonc"), JSON.stringify({
     computer: { ...computer, ...(enginePath === undefined ? {} : { engine_path: enginePath }) },
   }))
   return { root, cwd, agentDir, home, env }
@@ -84,8 +84,8 @@ export function agentArgs(): readonly string[] {
   return [
     "--mode", "rpc", "--offline", "--no-context-files", "--no-extensions",
     "--no-skills", "--no-prompt-templates", "--no-themes",
-    "-e", join(plugin, "extensions/omo.js"),
-    "-e", provider, "--provider", "omo-mock", "--model", "mock-1",
+    "-e", join(plugin, "extensions/omc.js"),
+    "-e", provider, "--provider", "omc-mock", "--model", "mock-1",
     "--permission", "computer:read=allow", "--permission", "computer:exec=allow",
   ]
 }
@@ -117,7 +117,7 @@ function outcome(event: Json): ToolOutcome {
 /** The only confirm this QA approves: the foreground-control grant's (#9651 B5). */
 const CONTROL_CONFIRM_TITLE = "Allow foreground computer control?"
 
-/** The real Senpi RPC process loads the packaged OmO extension and the scripted provider. */
+/** The real Senpi RPC process loads the packaged OmC extension and the scripted provider. */
 export class AgentSession {
   readonly #sandbox: Sandbox
   readonly #child
@@ -239,25 +239,25 @@ export function selfTestSandbox(): Json {
   try {
     const settings: unknown = JSON.parse(readFileSync(join(sandbox.agentDir, "settings.json"), "utf8"))
     if (!isRecord(settings) || !Array.isArray(settings.packages) || settings.packages[0] !== plugin)
-      throw new Error("OmO package not installed into sandbox")
-    if (!existsSync(provider) || !existsSync(join(plugin, "extensions/omo.js")))
-      throw new Error("built OmO extension or mock provider absent")
-    if ([sandbox.env.OMO_CODING_AGENT_DIR, sandbox.env.SENPI_CODING_AGENT_DIR, sandbox.env.PI_CODING_AGENT_DIR]
+      throw new Error("OmC package not installed into sandbox")
+    if (!existsSync(provider) || !existsSync(join(plugin, "extensions/omc.js")))
+      throw new Error("built OmC extension or mock provider absent")
+    if ([sandbox.env.OMC_CODING_AGENT_DIR, sandbox.env.SENPI_CODING_AGENT_DIR, sandbox.env.PI_CODING_AGENT_DIR]
       .some((dir) => dir !== sandbox.agentDir))
       throw new Error("coding-agent directories are not isolated")
-    if (sandbox.env.HOME === homedir() || sandbox.env.OMO_PACKAGE_DIR !== undefined)
+    if (sandbox.env.HOME === homedir() || sandbox.env.OMC_PACKAGE_DIR !== undefined)
       throw new Error("real home or package override leaked")
-    if (!agentArgs().includes(join(plugin, "extensions/omo.js")))
-      throw new Error("OmO extension not explicitly loaded")
+    if (!agentArgs().includes(join(plugin, "extensions/omc.js")))
+      throw new Error("OmC extension not explicitly loaded")
     return { isolated: true, plugin, provider, cliArgs: agentArgs() }
   } finally {
     rmSync(sandbox.root, { recursive: true, force: true })
   }
 }
 
-/** Real Senpi + packaged OmO + mock model + protocol fake, with no Aqua or TCC access. */
+/** Real Senpi + packaged OmC + mock model + protocol fake, with no Aqua or TCC access. */
 export async function selfTestBinary(bin: string): Promise<Json> {
-  const directory = mkdtempSync(join(tmpdir(), "omo-macos-fake-engine-"))
+  const directory = mkdtempSync(join(tmpdir(), "omc-macos-fake-engine-"))
   const fake = join(repo, "packages/senpi-desktop-service/test/fake-engine.mjs")
   const wrapper = join(directory, "engine.sh")
   writeFileSync(wrapper, `#!/bin/sh\nexec /usr/bin/env bun '${fake}' "$@"\n`)
@@ -266,11 +266,11 @@ export async function selfTestBinary(bin: string): Promise<Json> {
   try {
     session = new AgentSession({}, bin, wrapper)
     const enabled = await session.command("on")
-    if (!enabled.includes("Computer use on")) throw new Error(`OmO computer command unavailable: ${enabled}`)
+    if (!enabled.includes("Computer use on")) throw new Error(`OmC computer command unavailable: ${enabled}`)
     const result = await session.call({ action: "capabilities" })
     const capabilities = isRecord(result.details.value) ? result.details.value : {}
     if (result.isError || capabilities.backend !== "fake")
-      throw new Error(`OmO computer tool did not reach fake engine: ${result.text}`)
+      throw new Error(`OmC computer tool did not reach fake engine: ${result.text}`)
     return { realSenpi: bin, engineBackend: capabilities.backend, command: "on",
       tool: "computer", isolated: true }
   } finally {

@@ -4,7 +4,7 @@ import type { InspectedLogRecord, InspectedSpan } from "./otlp-inspect"
 import type { Signal } from "./otlp-spool-file"
 import type { CreateOtlpTelemetryTransportInput, OtlpTelemetryTransport } from "./otlp-transport-types"
 
-// The `@oh-my-opencode/telemetry-core/otlp` entry. It reads the opt-outs and consent with no OpenTelemetry or
+// The `@oh-my-cybersecurity/telemetry-core/otlp` entry. It reads the opt-outs and consent with no OpenTelemetry or
 // protobuf code loaded; only an enabled, consented run imports the sender. A disabled run creates nothing
 // on disk and deletes what earlier consented runs left in the spool (see `purgeSpool` for the race rules).
 

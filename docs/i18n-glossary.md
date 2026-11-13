@@ -1,10 +1,10 @@
 # Translation glossary
 
-Translations in this repository (the README files and the omo.dev site catalogs in packages/web/messages) use these terms so every language stays consistent. Machine translations are drafted with one model and reviewed for meaning by a second model; edit this file first when a term changes, then update the translations.
+Translations in this repository (the README files and the omc.nga.hm site catalogs in packages/web/messages) use these terms so every language stays consistent. Machine translations are drafted with one model and reviewed for meaning by a second model; edit this file first when a term changes, then update the translations.
 
 ## Never translated
 
-OmO, OmO Native, Sisyphus Labs, Sisyphus, Hephaestus, Prometheus, Atlas, Oracle, Momus, senpi, pi, pi-mono, CodeMode, ultrawork, ulw, mass ulw, ultracode, IntentGate, Team Mode, Ralph Loop, Herdr, OpenCode, Claude Code, Codex, Cursor, Grok Build, GitHub, Discord, npm, Bun, Node.js, Electron, T3 Code, Vite+, MCP, LSP, CLI, API.
+OmC, OmC Native, Sisyphus Labs, Sisyphus, Hephaestus, Prometheus, Atlas, Oracle, Momus, senpi, pi, pi-mono, CodeMode, ultrawork, ulw, mass ulw, ultracode, IntentGate, Team Mode, Ralph Loop, Herdr, OpenCode, Claude Code, Codex, Cursor, Grok Build, GitHub, Discord, npm, Bun, Node.js, Electron, T3 Code, Vite+, MCP, LSP, CLI, API.
 
 ## Preferred terms
 

@@ -1,5 +1,5 @@
 {
-  "name": "@oh-my-opencode/team-core",
+  "name": "@oh-my-cybersecurity/team-core",
   "version": "0.1.0",
   "type": "module",
   "private": true,
@@ -48,9 +48,9 @@
     "test": "bun test src/*.test.ts src/**/*.test.ts"
   },
   "dependencies": {
-    "@oh-my-opencode/memory-core": "workspace:*",
-    "@oh-my-opencode/tmux-core": "workspace:*",
-    "@oh-my-opencode/utils": "workspace:*",
+    "@oh-my-cybersecurity/memory-core": "workspace:*",
+    "@oh-my-cybersecurity/tmux-core": "workspace:*",
+    "@oh-my-cybersecurity/utils": "workspace:*",
     "zod": "^4.6.5"
   },
   "sideEffects": false

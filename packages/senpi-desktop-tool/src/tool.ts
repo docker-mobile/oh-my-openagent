@@ -4,14 +4,14 @@ import {
 	type ComputerDisplay,
 	type ComputerScreenshot,
 	isReadOnlyComputerCall,
-} from "@oh-my-opencode/senpi-desktop-protocol";
+} from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import {
 	type ComputerRunSandbox,
 	DesktopEngineRpcError,
 	DesktopLaunchContextError,
 	type ExecuteTool,
 	runComputerCode,
-} from "@oh-my-opencode/senpi-desktop-service";
+} from "@oh-my-cybersecurity/senpi-desktop-service";
 import type { ComputerHandle } from "./activation";
 import { Check } from "typebox/value";
 import { actionBranches, argumentsError } from "./action-schema";

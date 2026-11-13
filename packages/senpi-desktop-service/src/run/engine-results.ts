@@ -1,4 +1,4 @@
-import type { EngineMethod } from "@oh-my-opencode/senpi-desktop-protocol";
+import type { EngineMethod } from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import { type FieldSpec, isRecord, isStringArray, matches } from "../service/parse";
 import { DesktopServiceError } from "../service/rpc-client";
 

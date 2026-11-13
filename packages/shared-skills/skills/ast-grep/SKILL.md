@@ -11,9 +11,9 @@ This skill ships a Python wrapper at `scripts/ast_grep_helper.py` and platform i
 
 ---
 
-## OmO native: the ast-grep MCP tools (fastest path, no CLI needed)
+## OmC native: the ast-grep MCP tools (fastest path, no CLI needed)
 
-OmO native also registers a bundled ast-grep MCP server. Its three tools are **deferred**: they are absent from the resident tool list and activate automatically the first time you call them by name — no `tool_search` round trip needed.
+OmC native also registers a bundled ast-grep MCP server. Its three tools are **deferred**: they are absent from the resident tool list and activate automatically the first time you call them by name — no `tool_search` round trip needed.
 
 - `mcp__ast_grep_search({ pattern, language, paths })` — AST-shape search, the MCP equivalent of `sg run -p`. Prefer this over shelling out to `sg` for one-off lookups: no install, no PATH issues.
 - `mcp__ast_grep_rewrite({ pattern, rewrite, language, paths, apply })` — preview matches (`apply: false`, the default) or apply the rewrite (`apply: true`). Same two-pass discipline as `sg run -r`: preview first, then apply.
@@ -90,7 +90,7 @@ Flags:
 - `-C 3` (context lines)
 - `--json-out` (raw JSON instead of human format)
 
-Custom languages registered under `customLanguages` in the nearest `sgconfig.yml` are accepted and passed through to `sg`. For explicit session-level additions, set `OMO_AST_GREP_EXTRA_LANGUAGES=systemverilog,mojo`.
+Custom languages registered under `customLanguages` in the nearest `sgconfig.yml` are accepted and passed through to `sg`. For explicit session-level additions, set `OMC_AST_GREP_EXTRA_LANGUAGES=systemverilog,mojo`.
 
 ### `replace` — rewrite by pattern, dry-run by default
 

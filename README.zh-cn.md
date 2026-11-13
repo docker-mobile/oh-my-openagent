@@ -1,70 +1,70 @@
 [English](README.md) | [简体中文](README.zh-cn.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [한국어](README.ko.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Português (Brasil)](README.pt-br.md) | [Italiano](README.it.md)
 
 > [!NOTE]
-> **OmO 测试版: OmO ❤️ Pi**
-> 使用 `curl -fsSL https://get.omo.dev/install.sh | bash` 安装。记忆系统、CodeMode、Anthropic 订阅,全部支持。
-> [![OmO Herdr DAG - live OmO workflow DAGs in a Herdr side pane](./.github/assets/omo-herdr-dag.png)](https://github.com/jc01rho/omo-herdr-dag)
-> *只需在提示词中输入 "mass ulw" - 你就是图工程的大师。多模型 ultracode,搭配更出色的记忆系统。(右侧面板是 [omo-herdr-dag](https://github.com/jc01rho/omo-herdr-dag))*
+> **OmC 测试版: OmC ❤️ Pi**
+> 使用 `curl -fsSL https://get.omc.nga.hm/install.sh | bash` 安装。记忆系统、CodeMode、Anthropic 订阅,全部支持。
+> [![OmC Herdr DAG - live OmC workflow DAGs in a Herdr side pane](./.github/assets/omc-herdr-dag.png)](https://github.com/jc01rho/omc-herdr-dag)
+> *只需在提示词中输入 "mass ulw" - 你就是图工程的大师。多模型 ultracode,搭配更出色的记忆系统。(右侧面板是 [omc-herdr-dag](https://github.com/jc01rho/omc-herdr-dag))*
 
 
 > **Sponsors**
 > 以下是我们的赞助商,支持着这个个人副业项目的持续开发。
-> | [<img alt="OpenGateway" src="./.github/assets/opengateway-logo.svg" width="156px" />](https://opengateway.ai/) | **[OpenGateway](https://opengateway.ai/)** 赞助了 OmO。它是一个兼容 OpenAI 的网关,通过一个 API 即可使用多家模型提供商。感谢对开源的支持。 |
+> | [<img alt="OpenGateway" src="./.github/assets/opengateway-logo.svg" width="156px" />](https://opengateway.ai/) | **[OpenGateway](https://opengateway.ai/)** 赞助了 OmC。它是一个兼容 OpenAI 的网关,通过一个 API 即可使用多家模型提供商。感谢对开源的支持。 |
 > | :-----| :----- |
 
 
 > [!TIP]
 > 加入我们！
 >
-> | [<img alt="Discord link" src="https://img.shields.io/discord/1452487457085063218?color=5865F2&label=discord&labelColor=black&logo=discord&logoColor=white&style=flat-square" width="156px" />](https://discord.gg/PUwSMR9XNk) | 加入我们的 [Discord 社区](https://discord.gg/PUwSMR9XNk)，与贡献者及其他 OmO 用户交流。 |
+> | [<img alt="Discord link" src="https://img.shields.io/discord/1452487457085063218?color=5865F2&label=discord&labelColor=black&logo=discord&logoColor=white&style=flat-square" width="156px" />](https://discord.gg/PUwSMR9XNk) | 加入我们的 [Discord 社区](https://discord.gg/PUwSMR9XNk)，与贡献者及其他 OmC 用户交流。 |
 > | :-----| :----- |
-> | [<img alt="X link" src="https://img.shields.io/badge/Follow-%40justsisyphus-00CED1?style=flat-square&logo=x&labelColor=black" width="156px" />](https://x.com/justsisyphus) | 关于 OmO 的更新过去发布在我的 X 账号上。<br /> 因为账号被意外停用，现在由 [@justsisyphus](https://x.com/justsisyphus) 代为发布更新。 |
+> | [<img alt="X link" src="https://img.shields.io/badge/Follow-%40justsisyphus-00CED1?style=flat-square&logo=x&labelColor=black" width="156px" />](https://x.com/justsisyphus) | 关于 OmC 的更新过去发布在我的 X 账号上。<br /> 因为账号被意外停用，现在由 [@justsisyphus](https://x.com/justsisyphus) 代为发布更新。 |
 > | [<img alt="GitHub Follow" src="https://img.shields.io/github/followers/code-yeongyu?style=flat-square&logo=github&labelColor=black&color=24292f" width="156px" />](https://github.com/code-yeongyu) | 在 GitHub 上关注 [@code-yeongyu](https://github.com/code-yeongyu) 获取更多项目信息。 |
 
 <!-- <CENTERED SECTION FOR GITHUB DISPLAY> -->
 
 <div align="center">
 
-<a href="https://omo.dev"><img src="./.github/assets/omo-icon-light.svg" alt="OmO" width="200" /></a>
+<a href="https://omc.nga.hm"><img src="./.github/assets/omc-icon-light.svg" alt="OmC" width="200" /></a>
 
-# OmO
+# OmC
 
 **Your tool for real work. But it's an agent.**
 
-[![GitHub Release](https://img.shields.io/github/v/release/code-yeongyu/oh-my-openagent?color=369eff&labelColor=black&logo=github&style=flat-square)](https://github.com/code-yeongyu/oh-my-openagent/releases)
-[![downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Fomo.dev%2Fapi%2Fdownloads&style=flat-square)](https://omo.dev)
-[![GitHub Contributors](https://img.shields.io/github/contributors/code-yeongyu/oh-my-openagent?color=c4f042&labelColor=black&style=flat-square)](https://github.com/code-yeongyu/oh-my-openagent/graphs/contributors)
-[![GitHub Stars](https://img.shields.io/github/stars/code-yeongyu/oh-my-openagent?color=ffcb47&labelColor=black&style=flat-square)](https://github.com/code-yeongyu/oh-my-openagent/stargazers)
-[![License](https://img.shields.io/badge/license-SUL--1.0-white?labelColor=black&style=flat-square)](https://github.com/code-yeongyu/oh-my-openagent/blob/dev/LICENSE.md)
-[![Docs](https://img.shields.io/badge/docs-omo.dev-369eff?labelColor=black&logo=readthedocs&logoColor=white&style=flat-square)](https://omo.dev/docs)
+[![GitHub Release](https://img.shields.io/github/v/release/code-yeongyu/oh-my-cybersecurity?color=369eff&labelColor=black&logo=github&style=flat-square)](https://github.com/code-yeongyu/oh-my-cybersecurity/releases)
+[![downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Fomc.nga.hm%2Fapi%2Fdownloads&style=flat-square)](https://omc.nga.hm)
+[![GitHub Contributors](https://img.shields.io/github/contributors/code-yeongyu/oh-my-cybersecurity?color=c4f042&labelColor=black&style=flat-square)](https://github.com/code-yeongyu/oh-my-cybersecurity/graphs/contributors)
+[![GitHub Stars](https://img.shields.io/github/stars/code-yeongyu/oh-my-cybersecurity?color=ffcb47&labelColor=black&style=flat-square)](https://github.com/code-yeongyu/oh-my-cybersecurity/stargazers)
+[![License](https://img.shields.io/badge/license-SUL--1.0-white?labelColor=black&style=flat-square)](https://github.com/code-yeongyu/oh-my-cybersecurity/blob/dev/LICENSE.md)
+[![Docs](https://img.shields.io/badge/docs-omc.nga.hm-369eff?labelColor=black&logo=readthedocs&logoColor=white&style=flat-square)](https://omc.nga.hm/docs)
 
 
 </div>
 
 <!-- </CENTERED SECTION FOR GITHUB DISPLAY> -->
 
-OmO 就是一个 `omo` 命令，把你的 token 变成真正完成的工作：上万个来源的研究、一看就懂的演示、后端、前端、编程。它运行在 senpi 上，这是我们基于 [pi](https://github.com/badlogic/pi-mono) 的分支，下面的一切都已内置。
+OmC 就是一个 `omc` 命令，把你的 token 变成真正完成的工作：上万个来源的研究、一看就懂的演示、后端、前端、编程。它运行在 senpi 上，这是我们基于 [pi](https://github.com/badlogic/pi-mono) 的分支，下面的一切都已内置。
 
 ## 安装
 
 ```bash
-curl -fsSL https://get.omo.dev/install.sh | bash
-omo
+curl -fsSL https://get.omc.nga.hm/install.sh | bash
+omc
 ```
 
-Windows 请在 PowerShell 中运行 `irm https://get.omo.dev/install.ps1 | iex`。脚本会为你的系统和 CPU 安装原生 `omo` 到 `~/.local/bin`，并用发布的校验和验证。想用包管理器的话，`bun add -g omo-ai`(或 `npm i -g omo-ai`)安装的是同一个 OmO。包名是 `omo-ai`；npm 上那个无关的 `omo` 包属于别人。Windows CMD、`PATH` 修复、更新和卸载见 [omo.dev/docs/install](https://omo.dev/docs/install)。
+Windows 请在 PowerShell 中运行 `irm https://get.omc.nga.hm/install.ps1 | iex`。脚本会为你的系统和 CPU 安装原生 `omc` 到 `~/.local/bin`，并用发布的校验和验证。想用包管理器的话，`bun add -g omc-ai`(或 `npm i -g omc-ai`)安装的是同一个 OmC。包名是 `omc-ai`；npm 上那个无关的 `omc` 包属于别人。Windows CMD、`PATH` 修复、更新和卸载见 [omc.nga.hm/docs/install](https://omc.nga.hm/docs/install)。
 
-打开项目，运行 `omo`，说出要做的事。设置就这么多。
+打开项目，运行 `omc`，说出要做的事。设置就这么多。
 
-在会话里，`/thinking <level>` 设置模型思考的深度（只输入 `/thinking` 会打开选择器），`Shift+Tab` 依次切换级别，`/efforts <level>` 在有强度分级的模型上直接设置推理强度。想接着之前的工作，用 `/resume`（或 `/sessions`）打开过去的会话；在 shell 里，`omo -c` 继续上一个会话，`omo -r` 打开会话列表。其余命令都在 `/help` 里。
+在会话里，`/thinking <level>` 设置模型思考的深度（只输入 `/thinking` 会打开选择器），`Shift+Tab` 依次切换级别，`/efforts <level>` 在有强度分级的模型上直接设置推理强度。想接着之前的工作，用 `/resume`（或 `/sessions`）打开过去的会话；在 shell 里，`omc -c` 继续上一个会话，`omc -r` 打开会话列表。其余命令都在 `/help` 里。
 
-从 OpenCode 版或 LazyCodex 迁移过来？运行一次 `omo setup`。它会把你的提供商密钥、自定义提供商、MCP 服务器、技能和模型选择一并带过来。
+从 OpenCode 版或 LazyCodex 迁移过来？运行一次 `omc setup`。它会把你的提供商密钥、自定义提供商、MCP 服务器、技能和模型选择一并带过来。
 
-之后运行 `omo doctor`，可以看到你的提供商能跑哪些任务类别，以及旧安装留下了什么。完整步骤见 [从 OpenCode 迁移](docs/guide/migrating-from-opencode.md)。
+之后运行 `omc doctor`，可以看到你的提供商能跑哪些任务类别，以及旧安装留下了什么。完整步骤见 [从 OpenCode 迁移](docs/guide/migrating-from-opencode.md)。
 
-`omo update` 原地更新。`bun remove -g omo-ai`（或 `npm uninstall -g omo-ai`）即可卸载。
+`omc update` 原地更新。`bun remove -g omc-ai`（或 `npm uninstall -g omc-ai`）即可卸载。
 
-## 为什么选 OmO
+## 为什么选 OmC
 
 **ultrawork。** 不必学习。觉得任务很难，就在提示词里加上 `ultrawork`（或 `ulw`）。
 
@@ -84,7 +84,7 @@ Windows 请在 PowerShell 中运行 `irm https://get.omo.dev/install.ps1 | iex`�
 
 **高质量技能，只给你需要的那一点。** 你的模型很聪明，但解决现实问题时仍有很多不知道的事。
 
-OmO 把缺失的知识做成技能，包括浏览器操作，只加载当前任务需要的部分。
+OmC 把缺失的知识做成技能，包括浏览器操作，只加载当前任务需要的部分。
 
 **其余的一切都经过精心打造。** 彼此独立的工具调用放进一个小程序里一起执行，二十次读取只需一次往返。格式错误的工具参数在执行前被修好。
 
@@ -92,13 +92,13 @@ OmO 把缺失的知识做成技能，包括浏览器操作，只加载当前任�
 
 ## 配置
 
-默认值自有主张，你坚持的话也可以调整。你的设置在 `~/.omo/omo.jsonc`，项目也可以添加自己的 `.omo/omo.jsonc`；离得最近的文件优先。
+默认值自有主张，你坚持的话也可以调整。你的设置在 `~/.omc/omc.jsonc`，项目也可以添加自己的 `.omc/omc.jsonc`；离得最近的文件优先。
 
 所有配置项见 [配置参考](docs/reference/configuration.md)。
 
 ## 文档
 
-- [omo.dev/docs](https://omo.dev/docs)
+- [omc.nga.hm/docs](https://omc.nga.hm/docs)
 - [从 OpenCode 迁移](docs/guide/migrating-from-opencode.md)
 - [配置参考](docs/reference/configuration.md)
 - [功能](docs/reference/features.md)
@@ -109,21 +109,21 @@ OmO 把缺失的知识做成技能，包括浏览器操作，只加载当前任�
 
 > "It made me cancel my Cursor subscription. Unbelievable things are happening in the open source community." - [Arthur Guiot](https://x.com/arthur_guiot/status/2008736347092382053?s=20)
 
-> "If Claude Code does in 7 days what a human does in 3 months, OmO does it in 1 hour." <br/>- B, Quant Researcher
+> "If Claude Code does in 7 days what a human does in 3 months, OmC does it in 1 hour." <br/>- B, Quant Researcher
 
 > "You guys should pull this into core and recruit him. Seriously. It's really, really, really good." <br/>- Henning Kilset
 
 ## 作者的话
 
-如果我不得不从代理手里把方向盘拿回来，那不是团队协作，而是系统失败了。OmO 就建立在这个理念之上。
+如果我不得不从代理手里把方向盘拿回来，那不是团队协作，而是系统失败了。OmC 就建立在这个理念之上。
 
 你说出想要什么；代理负责研究、规划，写出与资深工程师难以区分的代码，验证它，一直推进到完成。它在能换来真正速度时才花 token，把简单的部分交给便宜的模型。
 
-我是这个项目最着迷的用户。哪个模型逻辑最敏锐？谁的文字写得最好？这周别人都发布了什么？这些答案最终都落在 OmO 里。有更好的办法？欢迎 PR。
+我是这个项目最着迷的用户。哪个模型逻辑最敏锐？谁的文字写得最好？这周别人都发布了什么？这些答案最终都落在 OmC 里。有更好的办法？欢迎 PR。
 
 目标是一个你不再察觉到的代理。按下开关，灯就亮了。完整版本见 [Ultrawork 宣言](docs/manifesto.md)。
 
-与文中提到的任何项目或模型均无关联。Ultragoal 和 UltraQA 的思路来自 [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex)，并按其概念为 OmO 重新实现。
+与文中提到的任何项目或模型均无关联。Ultragoal 和 UltraQA 的思路来自 [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex)，并按其概念为 OmC 重新实现。
 
 ## 这些公司的专业人士在用
 

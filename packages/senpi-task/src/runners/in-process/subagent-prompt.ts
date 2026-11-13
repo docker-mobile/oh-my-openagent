@@ -12,7 +12,7 @@ export type SubagentPromptInput = {
 // then the agent/category instructions, then the task text.
 export function buildSubagentPrompt(input: SubagentPromptInput): string {
   const lines = [
-    `You are running as an omo senpi-task child${input.agentType ? ` "${input.agentType}"` : ""}.`,
+    `You are running as an omc senpi-task child${input.agentType ? ` "${input.agentType}"` : ""}.`,
     `Task id: ${input.taskId}.`,
     `Parent session: ${input.parentSessionId}.`,
     `Root session: ${input.rootSessionId}.`,

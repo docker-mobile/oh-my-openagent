@@ -5,20 +5,20 @@ import { describe, expect, test } from "bun:test"
 const TEAM_DIR = import.meta.dir
 
 const ALLOWED_TEAM_CORE_SUBPATHS: ReadonlySet<string> = new Set([
-  "@oh-my-opencode/team-core/team-registry",
-  "@oh-my-opencode/team-core/team-mailbox",
-  "@oh-my-opencode/team-core/team-tasklist",
-  "@oh-my-opencode/team-core/team-state-store",
-  "@oh-my-opencode/team-core/types",
-  "@oh-my-opencode/team-core/config",
+  "@oh-my-cybersecurity/team-core/team-registry",
+  "@oh-my-cybersecurity/team-core/team-mailbox",
+  "@oh-my-cybersecurity/team-core/team-tasklist",
+  "@oh-my-cybersecurity/team-core/team-state-store",
+  "@oh-my-cybersecurity/team-core/types",
+  "@oh-my-cybersecurity/team-core/config",
 ])
 
 const FORBIDDEN_SPECIFIERS: readonly string[] = [
-  "@oh-my-opencode/team-core/team-worktree",
-  "@oh-my-opencode/team-core/team-layout-tmux",
-  "@oh-my-opencode/team-core/team-state-store/session-liveness",
-  "@oh-my-opencode/team-core/team-mailbox/pending-delivery-recovery",
-  "@oh-my-opencode/tmux-core",
+  "@oh-my-cybersecurity/team-core/team-worktree",
+  "@oh-my-cybersecurity/team-core/team-layout-tmux",
+  "@oh-my-cybersecurity/team-core/team-state-store/session-liveness",
+  "@oh-my-cybersecurity/team-core/team-mailbox/pending-delivery-recovery",
+  "@oh-my-cybersecurity/tmux-core",
 ]
 
 function listTeamSourceFiles(): readonly string[] {
@@ -52,11 +52,11 @@ describe("team layer import discipline", () => {
       for (const specifier of extractImportSpecifiers(source)) {
         const isForbidden =
           FORBIDDEN_SPECIFIERS.includes(specifier) ||
-          specifier === "@oh-my-opencode/team-core" ||
+          specifier === "@oh-my-cybersecurity/team-core" ||
           specifier.includes("/team-core/src/") ||
           specifier.includes("team-mode") ||
           specifier.startsWith("@opencode-ai/") ||
-          specifier === "@oh-my-opencode/omo-opencode"
+          specifier === "@oh-my-cybersecurity/omc-opencode"
         if (isForbidden) violations.push(`${file}: ${specifier}`)
       }
     }
@@ -74,7 +74,7 @@ describe("team layer import discipline", () => {
     for (const file of files) {
       const source = readFileSync(file, "utf8")
       for (const specifier of extractImportSpecifiers(source)) {
-        if (specifier.startsWith("@oh-my-opencode/team-core") && !ALLOWED_TEAM_CORE_SUBPATHS.has(specifier)) {
+        if (specifier.startsWith("@oh-my-cybersecurity/team-core") && !ALLOWED_TEAM_CORE_SUBPATHS.has(specifier)) {
           disallowed.push(`${file}: ${specifier}`)
         }
       }

@@ -15,14 +15,14 @@ async function startedChild() {
   return { manager, store, fake, taskId: started.task_id }
 }
 
-describe("a child that resumes on its own after its turn settled (omo#9069)", () => {
+describe("a child that resumes on its own after its turn settled (omc#9069)", () => {
   test("#given a completed resident child #when its monitor wakes it #then the record runs again under the next epoch and its end is a second completion marked as a resumed turn", async () => {
     // given
     const { manager, store, fake, taskId } = await startedChild()
     fake.settle({ status: "completed", finalResponse: "waiting for the test run monitor" })
     await flush()
     expect(store.load(taskId)?.status).toBe("completed")
-    // A DAG node that folded the first completion re-watches the task from here (omo#10487).
+    // A DAG node that folded the first completion re-watches the task from here (omc#10487).
     const announced: (string | undefined)[] = []
     if (manager.subscribeSelfResumed === undefined) throw new Error("the manager announces no self-resumed turns")
     manager.subscribeSelfResumed(taskId, () => announced.push(store.load(taskId)?.status))

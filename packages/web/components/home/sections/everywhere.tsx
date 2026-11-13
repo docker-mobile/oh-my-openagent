@@ -11,7 +11,7 @@ const CARDS: ReadonlyArray<readonly [string, IconName]> = [
   ["chat", "chat"],
 ]
 
-/** Where OmO runs today, and the chat apps being wired in; the chat card says plainly that it is coming. */
+/** Where OmC runs today, and the chat apps being wired in; the chat card says plainly that it is coming. */
 export async function EverywhereSection(): Promise<JSX.Element> {
   const t = await getTranslations("home.everywhere")
 

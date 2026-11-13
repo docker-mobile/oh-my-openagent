@@ -410,7 +410,7 @@ describe("respawn of a daemon-hosted child", () => {
     expect(prompts(host)).toEqual([])
   })
 
-  test("#given a turn that finished while no parent was attached #when respawn reopens the session #then the child's outcome is that final answer, not a wait for an agent_end that already happened (omo#9069)", async () => {
+  test("#given a turn that finished while no parent was attached #when respawn reopens the session #then the child's outcome is that final answer, not a wait for an agent_end that already happened (omc#9069)", async () => {
     // given
     const project = tempProject()
     const transcript = completedTranscript(project)

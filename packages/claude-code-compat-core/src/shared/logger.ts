@@ -1,4 +1,4 @@
-import { createLogger, type LoggerTestOverrides } from "@oh-my-opencode/utils"
+import { createLogger, type LoggerTestOverrides } from "@oh-my-cybersecurity/utils"
 
 import { LOG_FILENAME } from "./plugin-identity"
 

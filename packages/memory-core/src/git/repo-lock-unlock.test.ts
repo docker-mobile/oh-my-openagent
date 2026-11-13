@@ -13,7 +13,7 @@ import { exitedWithin } from "../locks/process-liveness.test-support"
 import { StrandedGitLockError } from "./repo-lock-sweep"
 import { inspectStrandedGitLock, unlockStrandedGitLock, type UnlockScans } from "./repo-lock-unlock"
 
-// omo #10199: a kept stranded git lock must give the user a way out. /memory unlock re-checks the
+// omc #10199: a kept stranded git lock must give the user a way out. /memory unlock re-checks the
 // one lock with the sweep's own gates, refuses while a live holder is visible, and removes only
 // that file after confirmation. The scans are injected so the verdict logic never depends on the
 // host's process table (a desktop with non-dumpable same-uid processes answers "unknown").
@@ -60,7 +60,7 @@ async function writerRecord(paths: IdentityPaths, pid: number): Promise<void> {
   }), "utf8")
 }
 
-describe("the kept stranded-lock error gives a way out (omo #10199)", () => {
+describe("the kept stranded-lock error gives a way out (omc #10199)", () => {
   test("#given a kept lock #when the error renders #then it names the path, the reason in plain words and the unlock command", () => {
     // #given
     const lockPath = "/memory/agents/a/repo/.git/index.lock"
@@ -75,7 +75,7 @@ describe("the kept stranded-lock error gives a way out (omo #10199)", () => {
   })
 })
 
-describe("/memory unlock re-checks one stranded git lock (omo #10199)", () => {
+describe("/memory unlock re-checks one stranded git lock (omc #10199)", () => {
   test("#given a memory writer in THIS process holding the memory-write lock #when the lock is inspected and unlocked #then both refuse and the lock stays", async () => {
     // #given
     const paths = await identity("unlock-same-process-writer")

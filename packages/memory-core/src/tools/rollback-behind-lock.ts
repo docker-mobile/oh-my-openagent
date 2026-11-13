@@ -8,7 +8,7 @@ import { restoreWorktreeFromHead } from "../git/worktree-restore"
 import { MemoryToolError } from "./tool-errors"
 
 // A write that fails behind a kept git lock must not leave its change behind, or every later write
-// hits "uncommitted changes" even after /memory unlock (omo #10199). Whether `git add` already
+// hits "uncommitted changes" even after /memory unlock (omc #10199). Whether `git add` already
 // staged it depends on WHEN the lock appeared, not on which lock it is, so the decision reads the
 // index itself. A staged change cannot be unstaged while index.lock exists; it is recorded inside
 // .git, and GitMemoryRepo unstages it (index only) at the next write once the lock is gone.

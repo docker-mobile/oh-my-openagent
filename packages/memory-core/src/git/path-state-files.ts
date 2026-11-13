@@ -15,7 +15,7 @@ export async function writeWorktreeFile(
   if (!exclusive) await assertReplaceableTarget(target)
   await mkdir(dirname(target), { recursive: true })
   await assertSafeParents(root, path)
-  const temporary = join(dirname(target), `.${basename(target)}.omo-${process.pid}-${randomUUID()}`)
+  const temporary = join(dirname(target), `.${basename(target)}.omc-${process.pid}-${randomUUID()}`)
   const file = await open(temporary, "wx", mode)
   try {
     await writeHandleAll(file, content, "utf8")
@@ -49,7 +49,7 @@ export async function moveWorktreeFile(root: string, path: string): Promise<stri
   try {
     const stat = await lstat(target)
     if (!stat.isFile()) throw unsupportedWorktree(path, stat.isSymbolicLink() ? "symlink" : "non-file")
-    const moved = join(dirname(target), `.${basename(target)}.omo-moved-${process.pid}-${randomUUID()}`)
+    const moved = join(dirname(target), `.${basename(target)}.omc-moved-${process.pid}-${randomUUID()}`)
     await rename(target, moved)
     return moved
   } catch (error) {
@@ -91,7 +91,7 @@ export async function reserveMovedWorktreeDeletion(
   const marker = randomUUID()
   try {
     await mkdir(target, { mode: 0o700 })
-    await writeFile(join(target, ".omo-reservation"), marker, "utf8")
+    await writeFile(join(target, ".omc-reservation"), marker, "utf8")
   } catch (error) {
     if (errorCode(error) === "EEXIST") return undefined
     throw error
@@ -108,14 +108,14 @@ export async function reserveMovedWorktreeDeletion(
       }
       if (!current.isDirectory() || current.dev !== reserved.dev || current.ino !== reserved.ino) return undefined
       try {
-        if (await readFile(join(target, ".omo-reservation"), "utf8") !== marker) return undefined
+        if (await readFile(join(target, ".omc-reservation"), "utf8") !== marker) return undefined
       } catch (error) {
         if (errorCode(error) === "ENOENT") return undefined
         throw error
       }
       return {
         finish: async () => {
-          const claimed = join(dirname(target), `.${basename(target)}.omo-reserved-${process.pid}-${randomUUID()}`)
+          const claimed = join(dirname(target), `.${basename(target)}.omc-reserved-${process.pid}-${randomUUID()}`)
           try {
             await rename(target, claimed)
           } catch (error) {
@@ -126,7 +126,7 @@ export async function reserveMovedWorktreeDeletion(
           let ownedMarker: string | undefined
           if (owned.isDirectory()) {
             try {
-              ownedMarker = await readFile(join(claimed, ".omo-reservation"), "utf8")
+              ownedMarker = await readFile(join(claimed, ".omc-reservation"), "utf8")
             } catch (error) {
               if (errorCode(error) !== "ENOENT") throw error
             }

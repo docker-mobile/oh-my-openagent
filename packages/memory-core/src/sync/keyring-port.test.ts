@@ -135,7 +135,7 @@ describe("DeviceKeyring", () => {
     const keyring = createInMemoryDeviceKeyring("fixture-device")
     const digest31 = new Uint8Array(31)
     const withoutT = new TextEncoder().encode('{"account":"acc"}')
-    const wrongPrefix = new TextEncoder().encode('{"t":"omo-other/v1/record"}')
+    const wrongPrefix = new TextEncoder().encode('{"t":"omc-other/v1/record"}')
     const digestTagAsRecord = new TextEncoder().encode('{"t":"omo-sync/v1/object-digest"}')
     const nonCanonical = new TextEncoder().encode('{ "t":"omo-sync/v1/record" }')
     const unknownPurpose = { purpose: "anything", digest: new Uint8Array(32) } as unknown as Parameters<typeof keyring.sign>[0]
@@ -168,7 +168,7 @@ describe("DeviceKeyring", () => {
     const keyring = createInMemoryDeviceKeyring("fixture-device")
     // Spec preimage (docs/sync-design.md @21e075732e76 §6 compaction): canonical JSON of the
     // full signed object {t, account, author, covers_seq, digest, link, keyring_head}; author
-    // included. Field values mirror fixtures/sync-v1/snapshot.json (omo-service, synthetic);
+    // included. Field values mirror fixtures/sync-v1/snapshot.json (omc-service, synthetic);
     // author is flattened to the device principal id, as the wire signs it.
     const author = "HcahOcBrYYAu1Uf5BVu8YQ"
     const canonicalJson = new TextEncoder().encode(
@@ -182,7 +182,7 @@ describe("DeviceKeyring", () => {
   })
 
   test("wrap construction conforms to the spec and the wraps.json golden vectors", async () => {
-    // §8.1 + fixtures/sync-v1/wraps.json (omo-service, fixture commit 67b2dbc): wrap info is
+    // §8.1 + fixtures/sync-v1/wraps.json (omc-service, fixture commit 67b2dbc): wrap info is
     // "omo-sync/v1/wrap" || 0x00 and AAD is JCS{account, epoch, id}; plaintext is the envelope
     // JCS{version:1, account, epoch, id, key_material}. Known upstream divergence (tracked in
     // waves/w3/t13-crypto.md finding 3): the fixture generator's LabeledExpand deviates from
@@ -226,8 +226,8 @@ describe("DeviceKeyring", () => {
     expect(openedText).toBe(jcs({ version: 1, account, epoch, id, key_material: material }))
   })
 
-  // Golden vectors from omo-service fixtures/sync-v1/wraps.json, vendored into this test at
-  // sisyphuslabs/omo-service commit aaf7bb79540953bf9e0502d4a7b898438e22ae2d (branch
+  // Golden vectors from omc-service fixtures/sync-v1/wraps.json, vendored into this test at
+  // sisyphuslabs/omc-service commit aaf7bb79540953bf9e0502d4a7b898438e22ae2d (branch
   // memsync/sync-contract-format, PR #428, which regenerated the file with the RFC 9180 §4
   // LabeledExpand layout; the pre-#428 fixture could not be opened by an RFC-correct
   // construction). Copied here so the test never reads outside this repo. The pre-#428

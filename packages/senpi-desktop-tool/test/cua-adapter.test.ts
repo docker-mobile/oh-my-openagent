@@ -1,4 +1,4 @@
-import type { ExecuteTool } from "@oh-my-opencode/senpi-desktop-service";
+import type { ExecuteTool } from "@oh-my-cybersecurity/senpi-desktop-service";
 import { afterEach, describe, expect, it } from "vitest";
 import type { ComputerActionsInput } from "../src/cua-actions";
 import { ComputerActionsParams } from "../src/cua-actions";

@@ -41,8 +41,8 @@ pub const KWIN_SERVICE: &str = "org.kde.KWin";
 const SCRIPTING_PATH: &str = "/Scripting";
 const SCRIPTING_IFACE: &str = "org.kde.kwin.Scripting";
 const SCRIPT_IFACE: &str = "org.kde.kwin.Script";
-const SINK_IFACE: &str = "dev.omo.SenpiDesktop.KwinGeometry";
-const SINK_PATH_PREFIX: &str = "/dev/omo/SenpiDesktop/KwinGeometry";
+const SINK_IFACE: &str = "dev.omc.SenpiDesktop.KwinGeometry";
+const SINK_PATH_PREFIX: &str = "/dev/omc/SenpiDesktop/KwinGeometry";
 /// Bound on each bus call and on the script's reply, so a stuck compositor
 /// cannot hang capabilities or input.
 const CALL_TIMEOUT: Duration = Duration::from_secs(2);
@@ -283,7 +283,7 @@ struct Sink {
     reply: Mutex<Option<oneshot::Sender<String>>>,
 }
 
-#[zbus::interface(name = "dev.omo.SenpiDesktop.KwinGeometry")]
+#[zbus::interface(name = "dev.omc.SenpiDesktop.KwinGeometry")]
 impl Sink {
     fn windows(&self, #[zbus(header)] header: Header<'_>, json: String) -> zbus::fdo::Result<()> {
         if header.sender().map(|sender| sender.as_str()) != Some(self.kwin.as_str()) {

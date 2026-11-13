@@ -1,4 +1,4 @@
-/** Deferral reasons a resumed session retries for its own child (omo#9498). */
+/** Deferral reasons a resumed session retries for its own child (omc#9498). */
 export const SCOPED_RETRY_REASONS: ReadonlySet<string> = new Set([
   "capacity", "lock_contended", "model_unavailable", "session_unavailable",
   "rollback_failed", "foreign_live_owner",

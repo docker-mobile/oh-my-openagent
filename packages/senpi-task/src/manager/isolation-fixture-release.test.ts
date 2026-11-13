@@ -17,7 +17,7 @@ describe("isolation fixture teardown", () => {
     const runtime = createIsolationRuntime({ homeDir: fixture.homeDir })
     const handle = await runtime.ensure({ repoRoot: fixture.repoRoot, id: "st_release1", preferred: "auto" })
     const retained = await runtime.retain(handle, "not-applied")
-    const worktrees = join(fixture.homeDir, ".omo", "wt")
+    const worktrees = join(fixture.homeDir, ".omc", "wt")
 
     expect(existsSync(retained)).toBe(true)
     expect(readdirSync(worktrees).length).toBeGreaterThan(0)
@@ -32,7 +32,7 @@ describe("isolation fixture teardown", () => {
     const fixture = tempGitRepo()
     const runtime = createIsolationRuntime({ homeDir: fixture.homeDir })
     const handle = await runtime.ensure({ repoRoot: fixture.repoRoot, id: "st_release2", preferred: "auto" })
-    const worktrees = join(fixture.homeDir, ".omo", "wt")
+    const worktrees = join(fixture.homeDir, ".omc", "wt")
 
     expect(existsSync(handle.baseDir)).toBe(true)
 

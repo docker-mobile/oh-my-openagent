@@ -6,7 +6,7 @@ export function pythonCommandForPlatform(platform: NodeJS.Platform): string {
 }
 
 const PYTHON_COMMAND = pythonCommandForPlatform(process.platform);
-const PYTHON_DIAGNOSTICS = process.env.OMO_DESKTOP_PRELUDE_PYTHON_DIAGNOSTICS === "1";
+const PYTHON_DIAGNOSTICS = process.env.OMC_DESKTOP_PRELUDE_PYTHON_DIAGNOSTICS === "1";
 
 if (PYTHON_DIAGNOSTICS) {
 	const lookupCommand = process.platform === "win32" ? "where.exe" : "which";

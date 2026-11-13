@@ -127,9 +127,9 @@ describe("isServerRunning", () => {
     expect(result).toBe(false)
   })
 
-  test("counts a password-protected server (401/403) as running (omo#11367)", async () => {
+  test("counts a password-protected server (401/403) as running (omc#11367)", async () => {
     for (const status of [401, 403]) {
-      // given: omo run gives its server a per-run password the probing process does not hold
+      // given: omc run gives its server a per-run password the probing process does not hold
       const state = createServerHealthStateForTesting()
       const fetchMock = createFetchRecorder(async () => new Response(null, { status }))
 
@@ -207,7 +207,7 @@ describe("resetServerCheck", () => {
 })
 
 describe("markServerRunningInProcess", () => {
-  const SERVER_RUNNING_KEY = Symbol.for("oh-my-opencode:server-running-in-process")
+  const SERVER_RUNNING_KEY = Symbol.for("oh-my-cybersecurity:server-running-in-process")
 
   beforeEach(() => {
     resetServerCheck()

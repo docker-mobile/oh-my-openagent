@@ -6,15 +6,15 @@ import { fileURLToPath } from "node:url";
 
 import {
 	type DaemonRuntimeDefaults,
-	OMO_LSP_DAEMON_DIR,
+	OMC_LSP_DAEMON_DIR,
 	resolveDaemonRuntime,
 	validateDaemonVersion,
 } from "./runtime-contract.js";
 
 export {
 	InvalidDaemonVersionError,
-	OMO_LSP_DAEMON_DIR,
-	OMO_LSP_DAEMON_VERSION,
+	OMC_LSP_DAEMON_DIR,
+	OMC_LSP_DAEMON_VERSION,
 	validateDaemonVersion,
 } from "./runtime-contract.js";
 
@@ -41,7 +41,7 @@ export class InvalidDaemonDirectoryError extends Error {
 	readonly directory: string;
 
 	constructor(directory: string) {
-		super(`${OMO_LSP_DAEMON_DIR} must be an absolute path`);
+		super(`${OMC_LSP_DAEMON_DIR} must be an absolute path`);
 		this.name = "InvalidDaemonDirectoryError";
 		this.directory = directory;
 	}
@@ -88,12 +88,12 @@ export function daemonBaseDir(
 	env: NodeJS.ProcessEnv = process.env,
 	platform: DaemonPlatform = defaultDaemonPlatform(),
 ): string {
-	const override = env[OMO_LSP_DAEMON_DIR];
+	const override = env[OMC_LSP_DAEMON_DIR];
 	if (override !== undefined) {
 		if (!platform.path.isAbsolute(override)) throw new InvalidDaemonDirectoryError(override);
 		return platform.path.resolve(override);
 	}
-	return platform.path.resolve(platform.path.join(platform.homedir(), ".omo", "lsp-daemon"));
+	return platform.path.resolve(platform.path.join(platform.homedir(), ".omc", "lsp-daemon"));
 }
 
 export function daemonPaths(
@@ -134,12 +134,12 @@ function resolveSocketPath(dir: string, version: string, platform: DaemonPlatfor
 	if (platform.platform === "win32") {
 		const currentUserDiscriminator = `${platform.getuid() ?? "win"}:${platform.username()}:${platform.path.resolve(platform.homedir())}`;
 		const digest = shortDigest(`${canonicalVersionDir}\0${currentUserDiscriminator}`);
-		return `\\\\.\\pipe\\omo-lsp-${version}-${digest}`;
+		return `\\\\.\\pipe\\omc-lsp-${version}-${digest}`;
 	}
 
 	const natural = platform.path.join(canonicalVersionDir, "daemon.sock");
 	if (natural.length < MAX_SOCKET_PATH_LENGTH) return natural;
-	return platform.path.join(platform.tmpdir(), `omo-lsp-${version}-${shortDigest(canonicalVersionDir)}`, "daemon.sock");
+	return platform.path.join(platform.tmpdir(), `omc-lsp-${version}-${shortDigest(canonicalVersionDir)}`, "daemon.sock");
 }
 
 function shortDigest(value: string): string {

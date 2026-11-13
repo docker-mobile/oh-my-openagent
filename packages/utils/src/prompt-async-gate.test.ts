@@ -1096,7 +1096,7 @@ describe("dispatchInternalPrompt shared gate behavior", () => {
             },
             {
               info: { id: "msg_internal_user", role: "user" },
-              parts: [{ type: "text", text: "wake\n<!-- OMO_INTERNAL_INITIATOR -->" }],
+              parts: [{ type: "text", text: "wake\n<!-- OMC_INTERNAL_INITIATOR -->" }],
             },
           ],
         }),
@@ -1185,7 +1185,7 @@ describe("dispatchInternalPrompt shared gate behavior", () => {
             {
               info: { id: "msg_mixed_user", role: "user" },
               parts: [
-                { type: "text", text: "wake\n<!-- OMO_INTERNAL_INITIATOR -->" },
+                { type: "text", text: "wake\n<!-- OMC_INTERNAL_INITIATOR -->" },
                 { type: "text", text: "real user follow-up" },
               ],
             },

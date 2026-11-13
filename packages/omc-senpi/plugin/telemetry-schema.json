@@ -1,0 +1,3861 @@
+{
+  "artifact_format": 1,
+  "product": "omc-senpi",
+  "schema_version": 4,
+  "proto_tag": "v1.7.0",
+  "identity": "install",
+  "relay": true,
+  "semconv_map_sha256": "2cf8b859a1fbad492a3ee51864f73762ea7263f34423d4965e7a557184d1f053",
+  "resource": {
+    "host.arch": {
+      "type": "string",
+      "values": [
+        "amd64",
+        "arm64",
+        "x86",
+        "arm32",
+        "other"
+      ],
+      "required": true,
+      "posthog_name": "arch"
+    },
+    "omc.ci": {
+      "type": "boolean",
+      "required": true,
+      "posthog_name": "ci"
+    },
+    "omc.install.hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "required": true,
+      "posthog_name": "install_hash"
+    },
+    "omc.schema.version": {
+      "type": "number",
+      "integer": true,
+      "min": 1,
+      "max": 1000,
+      "required": true,
+      "posthog_name": "schema_version"
+    },
+    "omc.surface": {
+      "type": "string",
+      "values": [
+        "cli",
+        "desktop"
+      ],
+      "required": true,
+      "posthog_name": "surface"
+    },
+    "os.type": {
+      "type": "string",
+      "values": [
+        "darwin",
+        "linux",
+        "windows"
+      ],
+      "required": true,
+      "posthog_name": "$os"
+    },
+    "os.version": {
+      "type": "string",
+      "pattern": "^[0-9]{1,6}(\\.[0-9]{1,6}){1,3}$",
+      "required": false,
+      "posthog_name": "$os_version"
+    },
+    "service.instance.id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$",
+      "required": true
+    },
+    "service.name": {
+      "type": "string",
+      "values": [
+        "omc-senpi"
+      ],
+      "required": true,
+      "posthog_name": "product"
+    },
+    "service.version": {
+      "type": "string",
+      "pattern": "^[0-9]{1,6}\\.[0-9]{1,6}\\.[0-9]{1,6}(-(alpha|beta|rc|dfa)\\.[0-9]{1,6}|-(nightly|preview)\\.[0-9]{8}\\.[0-9]{1,6}|-[0-9]{1,6})?$",
+      "required": true,
+      "posthog_name": "package_version"
+    },
+    "telemetry.sdk.language": {
+      "type": "string",
+      "values": [
+        "nodejs"
+      ],
+      "required": true
+    },
+    "telemetry.sdk.name": {
+      "type": "string",
+      "values": [
+        "opentelemetry",
+        "omc-otel-minimal"
+      ],
+      "required": true
+    },
+    "telemetry.sdk.version": {
+      "type": "string",
+      "pattern": "^[0-9]{1,6}\\.[0-9]{1,6}\\.[0-9]{1,6}(-(alpha|beta|rc|dfa)\\.[0-9]{1,6}|-(nightly|preview)\\.[0-9]{8}\\.[0-9]{1,6}|-[0-9]{1,6})?$",
+      "required": true
+    }
+  },
+  "scope": {
+    "name": [
+      "omc-senpi"
+    ],
+    "version": "^[0-9]{1,6}\\.[0-9]{1,6}\\.[0-9]{1,6}(-(alpha|beta|rc|dfa)\\.[0-9]{1,6}|-(nightly|preview)\\.[0-9]{8}\\.[0-9]{1,6}|-[0-9]{1,6})?$"
+  },
+  "events": {
+    "omc.category_config": {
+      "log.record.uid": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+        "required": true,
+        "posthog_name": "event_id"
+      },
+      "omc.builtin_overridden_count": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "builtin_overridden_count"
+      },
+      "omc.cat_architect": {
+        "type": "string",
+        "values": [
+          "qwen3.6-flash",
+          "qwen3.8-max-preview",
+          "claude-fable-5-5",
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-4-5",
+          "claude-haiku-5-5",
+          "claude-opus-4-6",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "qwen3.7-plus",
+          "gpt-5.6-luna-fast",
+          "gpt-5.6-sol",
+          "gpt-5.6-sol-fast",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-luna-fast",
+          "gpt-6-sol",
+          "gpt-6-sol-fast",
+          "gpt-6.1-sol",
+          "gpt-6.1-sol-fast",
+          "deepseek-flash",
+          "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "gemini-3.1-pro",
+          "gemini-3.6-flash",
+          "gemini-4-argon",
+          "grok-4.6",
+          "grok-4.7",
+          "k3",
+          "k3.1-pro",
+          "k3.1-pro-highspeed",
+          "kimi-for-coding-highspeed",
+          "kimi-k3",
+          "kimi-k3.1-pro",
+          "kimi-k3.1-pro-highspeed",
+          "glm-5.2",
+          "glm-5.3",
+          "mimo-v2.5-pro",
+          "mimo-v2.6-pro",
+          "minimax-m2.7",
+          "minimax-m3",
+          "grok-4.20-0309-non-reasoning",
+          "mimo-v2.6-flash",
+          "glm-5.3-flash",
+          "custom"
+        ],
+        "required": false,
+        "posthog_name": "cat_architect"
+      },
+      "omc.cat_artistry": {
+        "type": "string",
+        "values": [
+          "qwen3.6-flash",
+          "qwen3.8-max-preview",
+          "claude-fable-5-5",
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-4-5",
+          "claude-haiku-5-5",
+          "claude-opus-4-6",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "qwen3.7-plus",
+          "gpt-5.6-luna-fast",
+          "gpt-5.6-sol",
+          "gpt-5.6-sol-fast",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-luna-fast",
+          "gpt-6-sol",
+          "gpt-6-sol-fast",
+          "gpt-6.1-sol",
+          "gpt-6.1-sol-fast",
+          "deepseek-flash",
+          "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "gemini-3.1-pro",
+          "gemini-3.6-flash",
+          "gemini-4-argon",
+          "grok-4.6",
+          "grok-4.7",
+          "k3",
+          "k3.1-pro",
+          "k3.1-pro-highspeed",
+          "kimi-for-coding-highspeed",
+          "kimi-k3",
+          "kimi-k3.1-pro",
+          "kimi-k3.1-pro-highspeed",
+          "glm-5.2",
+          "glm-5.3",
+          "mimo-v2.5-pro",
+          "mimo-v2.6-pro",
+          "minimax-m2.7",
+          "minimax-m3",
+          "grok-4.20-0309-non-reasoning",
+          "mimo-v2.6-flash",
+          "glm-5.3-flash",
+          "custom"
+        ],
+        "required": false,
+        "posthog_name": "cat_artistry"
+      },
+      "omc.cat_deep_high": {
+        "type": "string",
+        "values": [
+          "qwen3.6-flash",
+          "qwen3.8-max-preview",
+          "claude-fable-5-5",
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-4-5",
+          "claude-haiku-5-5",
+          "claude-opus-4-6",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "qwen3.7-plus",
+          "gpt-5.6-luna-fast",
+          "gpt-5.6-sol",
+          "gpt-5.6-sol-fast",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-luna-fast",
+          "gpt-6-sol",
+          "gpt-6-sol-fast",
+          "gpt-6.1-sol",
+          "gpt-6.1-sol-fast",
+          "deepseek-flash",
+          "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "gemini-3.1-pro",
+          "gemini-3.6-flash",
+          "gemini-4-argon",
+          "grok-4.6",
+          "grok-4.7",
+          "k3",
+          "k3.1-pro",
+          "k3.1-pro-highspeed",
+          "kimi-for-coding-highspeed",
+          "kimi-k3",
+          "kimi-k3.1-pro",
+          "kimi-k3.1-pro-highspeed",
+          "glm-5.2",
+          "glm-5.3",
+          "mimo-v2.5-pro",
+          "mimo-v2.6-pro",
+          "minimax-m2.7",
+          "minimax-m3",
+          "grok-4.20-0309-non-reasoning",
+          "mimo-v2.6-flash",
+          "glm-5.3-flash",
+          "custom"
+        ],
+        "required": false,
+        "posthog_name": "cat_deep_high"
+      },
+      "omc.cat_deep_low": {
+        "type": "string",
+        "values": [
+          "qwen3.6-flash",
+          "qwen3.8-max-preview",
+          "claude-fable-5-5",
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-4-5",
+          "claude-haiku-5-5",
+          "claude-opus-4-6",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "qwen3.7-plus",
+          "gpt-5.6-luna-fast",
+          "gpt-5.6-sol",
+          "gpt-5.6-sol-fast",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-luna-fast",
+          "gpt-6-sol",
+          "gpt-6-sol-fast",
+          "gpt-6.1-sol",
+          "gpt-6.1-sol-fast",
+          "deepseek-flash",
+          "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "gemini-3.1-pro",
+          "gemini-3.6-flash",
+          "gemini-4-argon",
+          "grok-4.6",
+          "grok-4.7",
+          "k3",
+          "k3.1-pro",
+          "k3.1-pro-highspeed",
+          "kimi-for-coding-highspeed",
+          "kimi-k3",
+          "kimi-k3.1-pro",
+          "kimi-k3.1-pro-highspeed",
+          "glm-5.2",
+          "glm-5.3",
+          "mimo-v2.5-pro",
+          "mimo-v2.6-pro",
+          "minimax-m2.7",
+          "minimax-m3",
+          "grok-4.20-0309-non-reasoning",
+          "mimo-v2.6-flash",
+          "glm-5.3-flash",
+          "custom"
+        ],
+        "required": false,
+        "posthog_name": "cat_deep_low"
+      },
+      "omc.cat_quick": {
+        "type": "string",
+        "values": [
+          "qwen3.6-flash",
+          "qwen3.8-max-preview",
+          "claude-fable-5-5",
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-4-5",
+          "claude-haiku-5-5",
+          "claude-opus-4-6",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "qwen3.7-plus",
+          "gpt-5.6-luna-fast",
+          "gpt-5.6-sol",
+          "gpt-5.6-sol-fast",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-luna-fast",
+          "gpt-6-sol",
+          "gpt-6-sol-fast",
+          "gpt-6.1-sol",
+          "gpt-6.1-sol-fast",
+          "deepseek-flash",
+          "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "gemini-3.1-pro",
+          "gemini-3.6-flash",
+          "gemini-4-argon",
+          "grok-4.6",
+          "grok-4.7",
+          "k3",
+          "k3.1-pro",
+          "k3.1-pro-highspeed",
+          "kimi-for-coding-highspeed",
+          "kimi-k3",
+          "kimi-k3.1-pro",
+          "kimi-k3.1-pro-highspeed",
+          "glm-5.2",
+          "glm-5.3",
+          "mimo-v2.5-pro",
+          "mimo-v2.6-pro",
+          "minimax-m2.7",
+          "minimax-m3",
+          "grok-4.20-0309-non-reasoning",
+          "mimo-v2.6-flash",
+          "glm-5.3-flash",
+          "custom"
+        ],
+        "required": false,
+        "posthog_name": "cat_quick"
+      },
+      "omc.cat_ultrabrain": {
+        "type": "string",
+        "values": [
+          "qwen3.6-flash",
+          "qwen3.8-max-preview",
+          "claude-fable-5-5",
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-4-5",
+          "claude-haiku-5-5",
+          "claude-opus-4-6",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "qwen3.7-plus",
+          "gpt-5.6-luna-fast",
+          "gpt-5.6-sol",
+          "gpt-5.6-sol-fast",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-luna-fast",
+          "gpt-6-sol",
+          "gpt-6-sol-fast",
+          "gpt-6.1-sol",
+          "gpt-6.1-sol-fast",
+          "deepseek-flash",
+          "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "gemini-3.1-pro",
+          "gemini-3.6-flash",
+          "gemini-4-argon",
+          "grok-4.6",
+          "grok-4.7",
+          "k3",
+          "k3.1-pro",
+          "k3.1-pro-highspeed",
+          "kimi-for-coding-highspeed",
+          "kimi-k3",
+          "kimi-k3.1-pro",
+          "kimi-k3.1-pro-highspeed",
+          "glm-5.2",
+          "glm-5.3",
+          "mimo-v2.5-pro",
+          "mimo-v2.6-pro",
+          "minimax-m2.7",
+          "minimax-m3",
+          "grok-4.20-0309-non-reasoning",
+          "mimo-v2.6-flash",
+          "glm-5.3-flash",
+          "custom"
+        ],
+        "required": false,
+        "posthog_name": "cat_ultrabrain"
+      },
+      "omc.cat_unspecified_high": {
+        "type": "string",
+        "values": [
+          "qwen3.6-flash",
+          "qwen3.8-max-preview",
+          "claude-fable-5-5",
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-4-5",
+          "claude-haiku-5-5",
+          "claude-opus-4-6",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "qwen3.7-plus",
+          "gpt-5.6-luna-fast",
+          "gpt-5.6-sol",
+          "gpt-5.6-sol-fast",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-luna-fast",
+          "gpt-6-sol",
+          "gpt-6-sol-fast",
+          "gpt-6.1-sol",
+          "gpt-6.1-sol-fast",
+          "deepseek-flash",
+          "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "gemini-3.1-pro",
+          "gemini-3.6-flash",
+          "gemini-4-argon",
+          "grok-4.6",
+          "grok-4.7",
+          "k3",
+          "k3.1-pro",
+          "k3.1-pro-highspeed",
+          "kimi-for-coding-highspeed",
+          "kimi-k3",
+          "kimi-k3.1-pro",
+          "kimi-k3.1-pro-highspeed",
+          "glm-5.2",
+          "glm-5.3",
+          "mimo-v2.5-pro",
+          "mimo-v2.6-pro",
+          "minimax-m2.7",
+          "minimax-m3",
+          "grok-4.20-0309-non-reasoning",
+          "mimo-v2.6-flash",
+          "glm-5.3-flash",
+          "custom"
+        ],
+        "required": false,
+        "posthog_name": "cat_unspecified_high"
+      },
+      "omc.cat_unspecified_low": {
+        "type": "string",
+        "values": [
+          "qwen3.6-flash",
+          "qwen3.8-max-preview",
+          "claude-fable-5-5",
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-4-5",
+          "claude-haiku-5-5",
+          "claude-opus-4-6",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "qwen3.7-plus",
+          "gpt-5.6-luna-fast",
+          "gpt-5.6-sol",
+          "gpt-5.6-sol-fast",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-luna-fast",
+          "gpt-6-sol",
+          "gpt-6-sol-fast",
+          "gpt-6.1-sol",
+          "gpt-6.1-sol-fast",
+          "deepseek-flash",
+          "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "gemini-3.1-pro",
+          "gemini-3.6-flash",
+          "gemini-4-argon",
+          "grok-4.6",
+          "grok-4.7",
+          "k3",
+          "k3.1-pro",
+          "k3.1-pro-highspeed",
+          "kimi-for-coding-highspeed",
+          "kimi-k3",
+          "kimi-k3.1-pro",
+          "kimi-k3.1-pro-highspeed",
+          "glm-5.2",
+          "glm-5.3",
+          "mimo-v2.5-pro",
+          "mimo-v2.6-pro",
+          "minimax-m2.7",
+          "minimax-m3",
+          "grok-4.20-0309-non-reasoning",
+          "mimo-v2.6-flash",
+          "glm-5.3-flash",
+          "custom"
+        ],
+        "required": false,
+        "posthog_name": "cat_unspecified_low"
+      },
+      "omc.cat_visual_engineering": {
+        "type": "string",
+        "values": [
+          "qwen3.6-flash",
+          "qwen3.8-max-preview",
+          "claude-fable-5-5",
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-4-5",
+          "claude-haiku-5-5",
+          "claude-opus-4-6",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "qwen3.7-plus",
+          "gpt-5.6-luna-fast",
+          "gpt-5.6-sol",
+          "gpt-5.6-sol-fast",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-luna-fast",
+          "gpt-6-sol",
+          "gpt-6-sol-fast",
+          "gpt-6.1-sol",
+          "gpt-6.1-sol-fast",
+          "deepseek-flash",
+          "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "gemini-3.1-pro",
+          "gemini-3.6-flash",
+          "gemini-4-argon",
+          "grok-4.6",
+          "grok-4.7",
+          "k3",
+          "k3.1-pro",
+          "k3.1-pro-highspeed",
+          "kimi-for-coding-highspeed",
+          "kimi-k3",
+          "kimi-k3.1-pro",
+          "kimi-k3.1-pro-highspeed",
+          "glm-5.2",
+          "glm-5.3",
+          "mimo-v2.5-pro",
+          "mimo-v2.6-pro",
+          "minimax-m2.7",
+          "minimax-m3",
+          "grok-4.20-0309-non-reasoning",
+          "mimo-v2.6-flash",
+          "glm-5.3-flash",
+          "custom"
+        ],
+        "required": false,
+        "posthog_name": "cat_visual_engineering"
+      },
+      "omc.cat_writing": {
+        "type": "string",
+        "values": [
+          "qwen3.6-flash",
+          "qwen3.8-max-preview",
+          "claude-fable-5-5",
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-4-5",
+          "claude-haiku-5-5",
+          "claude-opus-4-6",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "qwen3.7-plus",
+          "gpt-5.6-luna-fast",
+          "gpt-5.6-sol",
+          "gpt-5.6-sol-fast",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-luna-fast",
+          "gpt-6-sol",
+          "gpt-6-sol-fast",
+          "gpt-6.1-sol",
+          "gpt-6.1-sol-fast",
+          "deepseek-flash",
+          "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "gemini-3.1-pro",
+          "gemini-3.6-flash",
+          "gemini-4-argon",
+          "grok-4.6",
+          "grok-4.7",
+          "k3",
+          "k3.1-pro",
+          "k3.1-pro-highspeed",
+          "kimi-for-coding-highspeed",
+          "kimi-k3",
+          "kimi-k3.1-pro",
+          "kimi-k3.1-pro-highspeed",
+          "glm-5.2",
+          "glm-5.3",
+          "mimo-v2.5-pro",
+          "mimo-v2.6-pro",
+          "minimax-m2.7",
+          "minimax-m3",
+          "grok-4.20-0309-non-reasoning",
+          "mimo-v2.6-flash",
+          "glm-5.3-flash",
+          "custom"
+        ],
+        "required": false,
+        "posthog_name": "cat_writing"
+      },
+      "omc.combo_fingerprint": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{16}$",
+        "required": false,
+        "posthog_name": "combo_fingerprint"
+      },
+      "omc.config_generation": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "config_generation"
+      },
+      "omc.custom_category_count": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "custom_category_count"
+      },
+      "omc.source": {
+        "type": "string",
+        "values": [
+          "startup",
+          "reload",
+          "new",
+          "resume",
+          "fork"
+        ],
+        "required": false,
+        "posthog_name": "source"
+      },
+      "session.id": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$",
+        "required": true,
+        "posthog_name": "$session_id"
+      }
+    },
+    "omc.computer_use_activation": {
+      "log.record.uid": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+        "required": true,
+        "posthog_name": "event_id"
+      },
+      "omc.active": {
+        "type": "boolean",
+        "required": false,
+        "posthog_name": "active"
+      },
+      "omc.backend": {
+        "type": "string",
+        "values": [
+          "quartz",
+          "x11",
+          "wayland",
+          "win32",
+          "fake",
+          "unavailable",
+          "other"
+        ],
+        "required": false,
+        "posthog_name": "backend"
+      },
+      "omc.host_platform": {
+        "type": "string",
+        "values": [
+          "darwin",
+          "linux",
+          "win32",
+          "other"
+        ],
+        "required": false,
+        "posthog_name": "host_platform"
+      },
+      "omc.source": {
+        "type": "string",
+        "values": [
+          "tool_call",
+          "command_on",
+          "command_off",
+          "other"
+        ],
+        "required": false,
+        "posthog_name": "source"
+      },
+      "session.id": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$",
+        "required": true,
+        "posthog_name": "$session_id"
+      }
+    },
+    "omc.computer_use_engine_error": {
+      "log.record.uid": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+        "required": true,
+        "posthog_name": "event_id"
+      },
+      "omc.backend": {
+        "type": "string",
+        "values": [
+          "quartz",
+          "x11",
+          "wayland",
+          "win32",
+          "fake",
+          "unavailable",
+          "other"
+        ],
+        "required": false,
+        "posthog_name": "backend"
+      },
+      "omc.code": {
+        "type": "string",
+        "values": [
+          "PermissionDenied",
+          "CaptureFailed",
+          "InputFailed",
+          "BackgroundUnavailable",
+          "WindowNotFound",
+          "InvalidTarget",
+          "InvalidKey",
+          "InvalidCoordinateFrame",
+          "StaleRef",
+          "AxUnsupported",
+          "AxFailed",
+          "Timeout",
+          "Closed",
+          "Internal",
+          "StopPathUnavailable",
+          "Suspended",
+          "ScreenLocked",
+          "Cancelled",
+          "CursorRestoreFailed",
+          "FocusRestoreFailed",
+          "TransactionFailed",
+          "InputBusy",
+          "ControlRequired",
+          "CaptureUnavailable",
+          "UserIntervened",
+          "AxUnconfirmed",
+          "SpaceUnsupported",
+          "SpaceMoveDenied",
+          "AmbiguousTarget",
+          "CaptureConsentRequired",
+          "ProtectedProcess",
+          "native-unavailable",
+          "quarantined",
+          "abi-mismatch",
+          "other"
+        ],
+        "required": false,
+        "posthog_name": "code"
+      },
+      "omc.host_platform": {
+        "type": "string",
+        "values": [
+          "darwin",
+          "linux",
+          "win32",
+          "other"
+        ],
+        "required": false,
+        "posthog_name": "host_platform"
+      },
+      "session.id": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$",
+        "required": true,
+        "posthog_name": "$session_id"
+      }
+    },
+    "omc.computer_use_permission_denied": {
+      "log.record.uid": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+        "required": true,
+        "posthog_name": "event_id"
+      },
+      "omc.backend": {
+        "type": "string",
+        "values": [
+          "quartz",
+          "x11",
+          "wayland",
+          "win32",
+          "fake",
+          "unavailable",
+          "other"
+        ],
+        "required": false,
+        "posthog_name": "backend"
+      },
+      "omc.host_platform": {
+        "type": "string",
+        "values": [
+          "darwin",
+          "linux",
+          "win32",
+          "other"
+        ],
+        "required": false,
+        "posthog_name": "host_platform"
+      },
+      "omc.permission": {
+        "type": "string",
+        "values": [
+          "capture",
+          "input",
+          "ax",
+          "read",
+          "exec"
+        ],
+        "required": false,
+        "posthog_name": "permission"
+      },
+      "omc.scope": {
+        "type": "string",
+        "values": [
+          "os",
+          "tier"
+        ],
+        "required": false,
+        "posthog_name": "scope"
+      },
+      "session.id": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$",
+        "required": true,
+        "posthog_name": "$session_id"
+      }
+    },
+    "omc.daily_active": {
+      "log.record.uid": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+        "required": true,
+        "posthog_name": "event_id"
+      },
+      "omc.day_utc": {
+        "type": "string",
+        "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+        "required": false,
+        "posthog_name": "day_utc"
+      },
+      "omc.start_trigger": {
+        "type": "string",
+        "values": [
+          "session_start"
+        ],
+        "required": false,
+        "posthog_name": "start_trigger"
+      },
+      "session.id": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$",
+        "required": true,
+        "posthog_name": "$session_id"
+      }
+    },
+    "omc.delegation_completed": {
+      "log.record.uid": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+        "required": true,
+        "posthog_name": "event_id"
+      },
+      "omc.agent_type": {
+        "type": "string",
+        "values": [
+          "explore",
+          "librarian",
+          "plan-consultant",
+          "plan-reviewer",
+          "custom",
+          "none"
+        ],
+        "required": false,
+        "posthog_name": "agent_type"
+      },
+      "omc.background_mode": {
+        "type": "string",
+        "values": [
+          "foreground",
+          "background",
+          "promoted",
+          "unknown"
+        ],
+        "required": false,
+        "posthog_name": "background_mode"
+      },
+      "omc.cache_read_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "cache_read_tokens"
+      },
+      "omc.cache_write_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "cache_write_tokens"
+      },
+      "omc.category": {
+        "type": "string",
+        "values": [
+          "visual-engineering",
+          "artistry",
+          "ultrabrain",
+          "deep-low",
+          "deep-high",
+          "quick",
+          "unspecified-low",
+          "unspecified-high",
+          "architect",
+          "writing",
+          "custom",
+          "none"
+        ],
+        "required": false,
+        "posthog_name": "category"
+      },
+      "omc.config_generation": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "config_generation"
+      },
+      "omc.cost_status": {
+        "type": "string",
+        "values": [
+          "reported",
+          "partial",
+          "unavailable",
+          "invalid"
+        ],
+        "required": false,
+        "posthog_name": "cost_status"
+      },
+      "omc.cost_usd": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000,
+        "required": false,
+        "posthog_name": "cost_usd"
+      },
+      "omc.duration_ms": {
+        "type": "number",
+        "min": 0,
+        "max": 10000000000,
+        "required": false,
+        "posthog_name": "duration_ms"
+      },
+      "omc.duration_status": {
+        "type": "string",
+        "values": [
+          "monotonic",
+          "wall_clock",
+          "unavailable"
+        ],
+        "required": false,
+        "posthog_name": "duration_status"
+      },
+      "omc.execution_mode": {
+        "type": "string",
+        "values": [
+          "in-process",
+          "process"
+        ],
+        "required": false,
+        "posthog_name": "execution_mode"
+      },
+      "omc.fallback_attempts": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "fallback_attempts"
+      },
+      "omc.input_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "input_tokens"
+      },
+      "omc.model_id": {
+        "type": "string",
+        "values": [
+          "qwen3.6-flash",
+          "qwen3.8-max-preview",
+          "claude-fable-5-5",
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-4-5",
+          "claude-haiku-5-5",
+          "claude-opus-4-6",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "qwen3.7-plus",
+          "gpt-5.6-luna-fast",
+          "gpt-5.6-sol",
+          "gpt-5.6-sol-fast",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-luna-fast",
+          "gpt-6-sol",
+          "gpt-6-sol-fast",
+          "gpt-6.1-sol",
+          "gpt-6.1-sol-fast",
+          "deepseek-flash",
+          "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "gemini-3.1-pro",
+          "gemini-3.6-flash",
+          "gemini-4-argon",
+          "grok-4.6",
+          "grok-4.7",
+          "k3",
+          "k3.1-pro",
+          "k3.1-pro-highspeed",
+          "kimi-for-coding-highspeed",
+          "kimi-k3",
+          "kimi-k3.1-pro",
+          "kimi-k3.1-pro-highspeed",
+          "glm-5.2",
+          "glm-5.3",
+          "mimo-v2.5-pro",
+          "mimo-v2.6-pro",
+          "minimax-m2.7",
+          "minimax-m3",
+          "grok-4.20-0309-non-reasoning",
+          "mimo-v2.6-flash",
+          "glm-5.3-flash",
+          "custom"
+        ],
+        "required": false,
+        "posthog_name": "model_id"
+      },
+      "omc.model_source": {
+        "type": "string",
+        "values": [
+          "category",
+          "explicit",
+          "agent",
+          "none"
+        ],
+        "required": false,
+        "posthog_name": "model_source"
+      },
+      "omc.output_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "output_tokens"
+      },
+      "omc.owner_kind": {
+        "type": "string",
+        "values": [
+          "plain_child",
+          "dag_node",
+          "team_member",
+          "unknown"
+        ],
+        "required": false,
+        "posthog_name": "owner_kind"
+      },
+      "omc.provider": {
+        "type": "string",
+        "values": [
+          "alibaba-token-plan",
+          "alibaba-token-plan-cn",
+          "anthropic",
+          "anthropic-api",
+          "anthropic-subscription",
+          "bailian-coding-plan",
+          "chatgpt-subscription",
+          "claude-sdk-oauth",
+          "deepseek",
+          "google",
+          "google-vertex",
+          "github-copilot",
+          "kimi-coding",
+          "kimi-for-coding",
+          "moonshotai",
+          "openai",
+          "openai-codex",
+          "opencode",
+          "opencode-go",
+          "qwen-token-plan",
+          "qwen-token-plan-cn",
+          "vercel",
+          "xai",
+          "xiaomi",
+          "zai",
+          "zai-coding-cn",
+          "zai-coding-plan",
+          "custom"
+        ],
+        "required": false,
+        "posthog_name": "provider"
+      },
+      "omc.reasoning_effort": {
+        "type": "string",
+        "values": [
+          "off",
+          "minimal",
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max",
+          "other",
+          "none"
+        ],
+        "required": false,
+        "posthog_name": "reasoning_effort"
+      },
+      "omc.run_epoch": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "run_epoch"
+      },
+      "omc.start_trigger": {
+        "type": "string",
+        "values": [
+          "initial_spawn",
+          "runtime_fallback",
+          "session_resume",
+          "dag_retry",
+          "revive_after_completed",
+          "revive_after_error",
+          "revive_after_cancelled",
+          "revive_after_interrupted",
+          "revive_after_lost",
+          "unknown"
+        ],
+        "required": false,
+        "posthog_name": "start_trigger"
+      },
+      "omc.stats_status": {
+        "type": "string",
+        "values": [
+          "complete",
+          "partial",
+          "unavailable"
+        ],
+        "required": false,
+        "posthog_name": "stats_status"
+      },
+      "omc.status": {
+        "type": "string",
+        "values": [
+          "completed",
+          "error",
+          "cancelled",
+          "interrupted",
+          "lost"
+        ],
+        "required": false,
+        "posthog_name": "status"
+      },
+      "omc.task_send_queued_count": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "task_send_queued_count"
+      },
+      "omc.task_send_running_count": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "task_send_running_count"
+      },
+      "omc.task_seq": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "task_seq"
+      },
+      "omc.token_status": {
+        "type": "string",
+        "values": [
+          "complete",
+          "partial",
+          "unavailable"
+        ],
+        "required": false,
+        "posthog_name": "token_status"
+      },
+      "omc.tool_calls": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "tool_calls"
+      },
+      "omc.total_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "total_tokens"
+      },
+      "omc.turns": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "turns"
+      },
+      "session.id": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$",
+        "required": true,
+        "posthog_name": "$session_id"
+      }
+    },
+    "omc.delegation_started": {
+      "log.record.uid": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+        "required": true,
+        "posthog_name": "event_id"
+      },
+      "omc.background": {
+        "type": "boolean",
+        "required": false,
+        "posthog_name": "background"
+      },
+      "omc.batch_size_bucket": {
+        "type": "string",
+        "values": [
+          "1",
+          "2_4",
+          "5_plus"
+        ],
+        "required": false,
+        "posthog_name": "batch_size_bucket"
+      },
+      "omc.kind": {
+        "type": "string",
+        "values": [
+          "category",
+          "subagent"
+        ],
+        "required": false,
+        "posthog_name": "kind"
+      },
+      "omc.name": {
+        "type": "string",
+        "values": [
+          "visual-engineering",
+          "artistry",
+          "ultrabrain",
+          "deep-low",
+          "deep-high",
+          "quick",
+          "unspecified-low",
+          "unspecified-high",
+          "architect",
+          "writing",
+          "explore",
+          "librarian",
+          "plan-consultant",
+          "plan-reviewer",
+          "custom"
+        ],
+        "required": false,
+        "posthog_name": "name"
+      },
+      "session.id": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$",
+        "required": true,
+        "posthog_name": "$session_id"
+      }
+    },
+    "omc.feature_used": {
+      "log.record.uid": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+        "required": true,
+        "posthog_name": "event_id"
+      },
+      "omc.feature": {
+        "type": "string",
+        "values": [
+          "goal_tool",
+          "team_create",
+          "memory_tool"
+        ],
+        "required": false,
+        "posthog_name": "feature"
+      },
+      "session.id": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$",
+        "required": true,
+        "posthog_name": "$session_id"
+      }
+    },
+    "omc.handoff_hint": {
+      "log.record.uid": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+        "required": true,
+        "posthog_name": "event_id"
+      },
+      "omc.action": {
+        "type": "string",
+        "values": [
+          "shown",
+          "accepted",
+          "dismissed"
+        ],
+        "required": false,
+        "posthog_name": "action"
+      },
+      "omc.context_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "context_tokens"
+      },
+      "omc.fresh_usd": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "fresh_usd"
+      },
+      "omc.model_id": {
+        "type": "string",
+        "values": [
+          "qwen3.6-flash",
+          "qwen3.8-max-preview",
+          "claude-fable-5-5",
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-4-5",
+          "claude-haiku-5-5",
+          "claude-opus-4-6",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "qwen3.7-plus",
+          "gpt-5.6-luna-fast",
+          "gpt-5.6-sol",
+          "gpt-5.6-sol-fast",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-luna-fast",
+          "gpt-6-sol",
+          "gpt-6-sol-fast",
+          "gpt-6.1-sol",
+          "gpt-6.1-sol-fast",
+          "deepseek-flash",
+          "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "gemini-3.1-pro",
+          "gemini-3.6-flash",
+          "gemini-4-argon",
+          "grok-4.6",
+          "grok-4.7",
+          "k3",
+          "k3.1-pro",
+          "k3.1-pro-highspeed",
+          "kimi-for-coding-highspeed",
+          "kimi-k3",
+          "kimi-k3.1-pro",
+          "kimi-k3.1-pro-highspeed",
+          "glm-5.2",
+          "glm-5.3",
+          "mimo-v2.5-pro",
+          "mimo-v2.6-pro",
+          "minimax-m2.7",
+          "minimax-m3",
+          "grok-4.20-0309-non-reasoning",
+          "mimo-v2.6-flash",
+          "glm-5.3-flash",
+          "custom"
+        ],
+        "required": false,
+        "posthog_name": "model_id"
+      },
+      "omc.next_reply_usd": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "next_reply_usd"
+      },
+      "omc.provider": {
+        "type": "string",
+        "values": [
+          "alibaba-token-plan",
+          "alibaba-token-plan-cn",
+          "anthropic",
+          "anthropic-api",
+          "anthropic-subscription",
+          "bailian-coding-plan",
+          "chatgpt-subscription",
+          "claude-sdk-oauth",
+          "deepseek",
+          "google",
+          "google-vertex",
+          "github-copilot",
+          "kimi-coding",
+          "kimi-for-coding",
+          "moonshotai",
+          "openai",
+          "openai-codex",
+          "opencode",
+          "opencode-go",
+          "qwen-token-plan",
+          "qwen-token-plan-cn",
+          "vercel",
+          "xai",
+          "xiaomi",
+          "zai",
+          "zai-coding-cn",
+          "zai-coding-plan",
+          "custom"
+        ],
+        "required": false,
+        "posthog_name": "provider"
+      },
+      "omc.saving_usd": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "saving_usd"
+      },
+      "omc.subscription": {
+        "type": "boolean",
+        "required": false,
+        "posthog_name": "subscription"
+      },
+      "session.id": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$",
+        "required": true,
+        "posthog_name": "$session_id"
+      }
+    },
+    "omc.kibitzer_summary": {
+      "log.record.uid": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+        "required": true,
+        "posthog_name": "event_id"
+      },
+      "omc.buffered_cooldown": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "buffered_cooldown"
+      },
+      "omc.buffered_no_new_candidate": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "buffered_no_new_candidate"
+      },
+      "omc.cache_read_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "cache_read_tokens"
+      },
+      "omc.cache_write_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "cache_write_tokens"
+      },
+      "omc.candidates_total": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "candidates_total"
+      },
+      "omc.first_nudge_wake": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "first_nudge_wake"
+      },
+      "omc.generations": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "generations"
+      },
+      "omc.input_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "input_tokens"
+      },
+      "omc.model_top": {
+        "type": "string",
+        "values": [
+          "qwen3.6-flash",
+          "qwen3.8-max-preview",
+          "claude-fable-5-5",
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-4-5",
+          "claude-haiku-5-5",
+          "claude-opus-4-6",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "qwen3.7-plus",
+          "gpt-5.6-luna-fast",
+          "gpt-5.6-sol",
+          "gpt-5.6-sol-fast",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-luna-fast",
+          "gpt-6-sol",
+          "gpt-6-sol-fast",
+          "gpt-6.1-sol",
+          "gpt-6.1-sol-fast",
+          "deepseek-flash",
+          "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "gemini-3.1-pro",
+          "gemini-3.6-flash",
+          "gemini-4-argon",
+          "grok-4.6",
+          "grok-4.7",
+          "k3",
+          "k3.1-pro",
+          "k3.1-pro-highspeed",
+          "kimi-for-coding-highspeed",
+          "kimi-k3",
+          "kimi-k3.1-pro",
+          "kimi-k3.1-pro-highspeed",
+          "glm-5.2",
+          "glm-5.3",
+          "mimo-v2.5-pro",
+          "mimo-v2.6-pro",
+          "minimax-m2.7",
+          "minimax-m3",
+          "grok-4.20-0309-non-reasoning",
+          "mimo-v2.6-flash",
+          "glm-5.3-flash",
+          "custom"
+        ],
+        "required": false,
+        "posthog_name": "model_top"
+      },
+      "omc.nudge_gap_ms_median": {
+        "type": "number",
+        "min": 0,
+        "max": 10000000000,
+        "required": false,
+        "posthog_name": "nudge_gap_ms_median"
+      },
+      "omc.nudge_gap_ms_p90": {
+        "type": "number",
+        "min": 0,
+        "max": 10000000000,
+        "required": false,
+        "posthog_name": "nudge_gap_ms_p90"
+      },
+      "omc.nudges_delivered": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "nudges_delivered"
+      },
+      "omc.offers_total": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "offers_total"
+      },
+      "omc.output_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "output_tokens"
+      },
+      "omc.slot_wait_ms_total": {
+        "type": "number",
+        "min": 0,
+        "max": 10000000000,
+        "required": false,
+        "posthog_name": "slot_wait_ms_total"
+      },
+      "omc.tool_calls_total": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "tool_calls_total"
+      },
+      "omc.wake_duration_ms_total": {
+        "type": "number",
+        "min": 0,
+        "max": 10000000000,
+        "required": false,
+        "posthog_name": "wake_duration_ms_total"
+      },
+      "omc.wake_span_ms": {
+        "type": "number",
+        "min": 0,
+        "max": 10000000000,
+        "required": false,
+        "posthog_name": "wake_span_ms"
+      },
+      "omc.wakes_deadline": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "wakes_deadline"
+      },
+      "omc.wakes_failed": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "wakes_failed"
+      },
+      "omc.wakes_tool_budget": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "wakes_tool_budget"
+      },
+      "omc.wakes_total": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "wakes_total"
+      },
+      "omc.wakes_with_nudge": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "wakes_with_nudge"
+      },
+      "session.id": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$",
+        "required": true,
+        "posthog_name": "$session_id"
+      }
+    },
+    "omc.parallelism_summary": {
+      "log.record.uid": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+        "required": true,
+        "posthog_name": "event_id"
+      },
+      "omc.clock_anomalies": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "clock_anomalies"
+      },
+      "omc.dropped_calls": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "dropped_calls"
+      },
+      "omc.eval_execution_detached_count": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "eval_execution_detached_count"
+      },
+      "omc.eval_execution_event_bus_available": {
+        "type": "boolean",
+        "required": false,
+        "posthog_name": "eval_execution_event_bus_available"
+      },
+      "omc.eval_execution_event_count": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "eval_execution_event_count"
+      },
+      "omc.eval_execution_event_rejected_count": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "eval_execution_event_rejected_count"
+      },
+      "omc.eval_execution_ok_count": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "eval_execution_ok_count"
+      },
+      "omc.eval_nested_tool_call_count": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "eval_nested_tool_call_count"
+      },
+      "omc.eval_nested_tool_call_error_count": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "eval_nested_tool_call_error_count"
+      },
+      "omc.eval_nested_tool_call_ok_count": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "eval_nested_tool_call_ok_count"
+      },
+      "omc.eval_nested_tool_call_pending_count": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "eval_nested_tool_call_pending_count"
+      },
+      "omc.eval_only_duration_ms": {
+        "type": "number",
+        "min": 0,
+        "max": 10000000000,
+        "required": false,
+        "posthog_name": "eval_only_duration_ms"
+      },
+      "omc.eval_only_waves": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "eval_only_waves"
+      },
+      "omc.eval_outer_joined_calls": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "eval_outer_joined_calls"
+      },
+      "omc.eval_tool_aggregate_truncated_execution_count": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "eval_tool_aggregate_truncated_execution_count"
+      },
+      "omc.incomplete_calls": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "incomplete_calls"
+      },
+      "omc.measured_eval_execution_duration_ms_sum": {
+        "type": "number",
+        "min": 0,
+        "max": 10000000000,
+        "required": false,
+        "posthog_name": "measured_eval_execution_duration_ms_sum"
+      },
+      "omc.measured_eval_nested_tool_duration_ms_sum": {
+        "type": "number",
+        "min": 0,
+        "max": 10000000000,
+        "required": false,
+        "posthog_name": "measured_eval_nested_tool_duration_ms_sum"
+      },
+      "omc.measured_turn_duration_ms_total": {
+        "type": "number",
+        "min": 0,
+        "max": 10000000000,
+        "required": false,
+        "posthog_name": "measured_turn_duration_ms_total"
+      },
+      "omc.mixed_non_eval_joined_calls": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "mixed_non_eval_joined_calls"
+      },
+      "omc.mixed_waves": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "mixed_waves"
+      },
+      "omc.modeled_wallclock_saved_ms": {
+        "type": "number",
+        "min": 0,
+        "max": 10000000000,
+        "required": false,
+        "posthog_name": "modeled_wallclock_saved_ms"
+      },
+      "omc.non_eval_joined_calls": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "non_eval_joined_calls"
+      },
+      "omc.non_eval_saved_round_trips": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "non_eval_saved_round_trips"
+      },
+      "omc.non_eval_waves_multi": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "non_eval_waves_multi"
+      },
+      "omc.non_eval_waves_total": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "non_eval_waves_total"
+      },
+      "omc.schema_kind": {
+        "type": "string",
+        "values": [
+          "parallelism_v1",
+          "parallelism_v2"
+        ],
+        "required": false,
+        "posthog_name": "schema_kind"
+      },
+      "omc.upper_bound_saved_ms": {
+        "type": "number",
+        "min": 0,
+        "max": 10000000000,
+        "required": false,
+        "posthog_name": "upper_bound_saved_ms"
+      },
+      "session.id": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$",
+        "required": true,
+        "posthog_name": "$session_id"
+      }
+    },
+    "omc.process_crashed": {
+      "log.record.uid": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+        "required": true,
+        "posthog_name": "event_id"
+      },
+      "omc.crashed_bun_version": {
+        "type": "string",
+        "pattern": "^[0-9]{1,6}\\.[0-9]{1,6}\\.[0-9]{1,6}(-(alpha|beta|rc|dfa)\\.[0-9]{1,6}|-(nightly|preview)\\.[0-9]{8}\\.[0-9]{1,6}|-[0-9]{1,6})?$",
+        "required": false,
+        "posthog_name": "crashed_bun_version"
+      },
+      "omc.crashed_engine_version": {
+        "type": "string",
+        "pattern": "^[0-9]{1,6}\\.[0-9]{1,6}\\.[0-9]{1,6}(-(alpha|beta|rc|dfa)\\.[0-9]{1,6}|-(nightly|preview)\\.[0-9]{8}\\.[0-9]{1,6}|-[0-9]{1,6})?$",
+        "required": false,
+        "posthog_name": "crashed_engine_version"
+      },
+      "omc.crashed_omo_version": {
+        "type": "string",
+        "pattern": "^[0-9]{1,6}\\.[0-9]{1,6}\\.[0-9]{1,6}(-(alpha|beta|rc|dfa)\\.[0-9]{1,6}|-(nightly|preview)\\.[0-9]{8}\\.[0-9]{1,6}|-[0-9]{1,6})?$",
+        "required": false,
+        "posthog_name": "crashed_omo_version"
+      },
+      "omc.detection": {
+        "type": "string",
+        "values": [
+          "supervisor",
+          "parent",
+          "unclean_exit",
+          "unknown"
+        ],
+        "required": false,
+        "posthog_name": "detection"
+      },
+      "omc.process_kind": {
+        "type": "string",
+        "values": [
+          "interactive",
+          "print",
+          "json",
+          "rpc-host",
+          "task-child",
+          "unknown"
+        ],
+        "required": false,
+        "posthog_name": "process_kind"
+      },
+      "omc.shard_kind": {
+        "type": "string",
+        "values": [
+          "p",
+          "i",
+          "none",
+          "unknown"
+        ],
+        "required": false,
+        "posthog_name": "shard_kind"
+      },
+      "omc.signal": {
+        "type": "string",
+        "values": [
+          "SIGSEGV",
+          "SIGBUS",
+          "SIGILL",
+          "SIGTRAP",
+          "SIGABRT",
+          "SIGFPE",
+          "SIGKILL",
+          "SIGTERM",
+          "SIGHUP",
+          "SIGINT",
+          "SIGQUIT",
+          "SIGSYS",
+          "other",
+          "none",
+          "unknown"
+        ],
+        "required": false,
+        "posthog_name": "signal"
+      },
+      "omc.uptime_bucket": {
+        "type": "string",
+        "values": [
+          "lt_1m",
+          "1_10m",
+          "10_60m",
+          "1_6h",
+          "6_24h",
+          "24h_plus"
+        ],
+        "required": false,
+        "posthog_name": "uptime_bucket"
+      },
+      "omc.uptime_ms": {
+        "type": "number",
+        "min": 0,
+        "max": 10000000000,
+        "required": false,
+        "posthog_name": "uptime_ms"
+      },
+      "process.exit.code": {
+        "type": "number",
+        "integer": true,
+        "min": -2147483648,
+        "max": 4294967295,
+        "required": false,
+        "posthog_name": "exit_code"
+      }
+    },
+    "omc.prompt_submitted": {
+      "log.record.uid": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+        "required": true,
+        "posthog_name": "event_id"
+      },
+      "omc.input_source": {
+        "type": "string",
+        "values": [
+          "interactive",
+          "rpc",
+          "extension"
+        ],
+        "required": false,
+        "posthog_name": "input_source"
+      },
+      "omc.invocation_stage": {
+        "type": "string",
+        "values": [
+          "none",
+          "first_arm",
+          "remention",
+          "post_compact_rearm"
+        ],
+        "required": false,
+        "posthog_name": "invocation_stage"
+      },
+      "omc.is_effective_ultrawork_invocation": {
+        "type": "boolean",
+        "required": false,
+        "posthog_name": "is_effective_ultrawork_invocation"
+      },
+      "omc.is_turn_start": {
+        "type": "boolean",
+        "required": false,
+        "posthog_name": "is_turn_start"
+      },
+      "omc.keyword_any": {
+        "type": "boolean",
+        "required": false,
+        "posthog_name": "keyword_any"
+      },
+      "omc.keyword_occurrence_bucket": {
+        "type": "string",
+        "values": [
+          "1",
+          "2",
+          "3_5",
+          "6_plus"
+        ],
+        "required": false,
+        "posthog_name": "keyword_occurrence_bucket"
+      },
+      "omc.keyword_ultrawork_full": {
+        "type": "boolean",
+        "required": false,
+        "posthog_name": "keyword_ultrawork_full"
+      },
+      "omc.keyword_ulw_abbrev": {
+        "type": "boolean",
+        "required": false,
+        "posthog_name": "keyword_ulw_abbrev"
+      },
+      "omc.keyword_variant": {
+        "type": "string",
+        "values": [
+          "none",
+          "ulw",
+          "ultrawork",
+          "both"
+        ],
+        "required": false,
+        "posthog_name": "keyword_variant"
+      },
+      "omc.prompt.is_real_user": {
+        "type": "boolean",
+        "required": false,
+        "posthog_name": "is_real_user"
+      },
+      "omc.prompt_length_bucket": {
+        "type": "string",
+        "values": [
+          "lt_100",
+          "100_500",
+          "500_2000",
+          "gte_2000"
+        ],
+        "required": false,
+        "posthog_name": "prompt_length_bucket"
+      },
+      "omc.queue_mode": {
+        "type": "string",
+        "values": [
+          "immediate",
+          "follow_up",
+          "steer",
+          "other"
+        ],
+        "required": false,
+        "posthog_name": "queue_mode"
+      },
+      "omc.real_prompt_ordinal_bucket": {
+        "type": "string",
+        "values": [
+          "1",
+          "2_3",
+          "4_10",
+          "11_25",
+          "26_plus"
+        ],
+        "required": false,
+        "posthog_name": "real_prompt_ordinal_bucket"
+      },
+      "omc.suppression_cause": {
+        "type": "string",
+        "values": [
+          "none",
+          "no_keyword",
+          "identifier_reference",
+          "negated_mention",
+          "extension_source",
+          "child_session",
+          "embedded_directive",
+          "skill_expansion",
+          "skill_name_only"
+        ],
+        "required": false,
+        "posthog_name": "suppression_cause"
+      },
+      "session.id": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$",
+        "required": true,
+        "posthog_name": "$session_id"
+      }
+    },
+    "omc.session_started": {
+      "log.record.uid": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+        "required": true,
+        "posthog_name": "event_id"
+      },
+      "omc.configured_provider_count": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "configured_provider_count"
+      },
+      "omc.cpu_count": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "cpu_count"
+      },
+      "omc.default_model": {
+        "type": "string",
+        "values": [
+          "qwen3.6-flash",
+          "qwen3.8-max-preview",
+          "claude-fable-5-5",
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-4-5",
+          "claude-haiku-5-5",
+          "claude-opus-4-6",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "qwen3.7-plus",
+          "gpt-5.6-luna-fast",
+          "gpt-5.6-sol",
+          "gpt-5.6-sol-fast",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-luna-fast",
+          "gpt-6-sol",
+          "gpt-6-sol-fast",
+          "gpt-6.1-sol",
+          "gpt-6.1-sol-fast",
+          "deepseek-flash",
+          "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "gemini-3.1-pro",
+          "gemini-3.6-flash",
+          "gemini-4-argon",
+          "grok-4.6",
+          "grok-4.7",
+          "k3",
+          "k3.1-pro",
+          "k3.1-pro-highspeed",
+          "kimi-for-coding-highspeed",
+          "kimi-k3",
+          "kimi-k3.1-pro",
+          "kimi-k3.1-pro-highspeed",
+          "glm-5.2",
+          "glm-5.3",
+          "mimo-v2.5-pro",
+          "mimo-v2.6-pro",
+          "minimax-m2.7",
+          "minimax-m3",
+          "grok-4.20-0309-non-reasoning",
+          "mimo-v2.6-flash",
+          "glm-5.3-flash",
+          "custom"
+        ],
+        "required": false,
+        "posthog_name": "default_model"
+      },
+      "omc.default_provider": {
+        "type": "string",
+        "values": [
+          "alibaba-token-plan",
+          "alibaba-token-plan-cn",
+          "anthropic",
+          "anthropic-api",
+          "anthropic-subscription",
+          "bailian-coding-plan",
+          "chatgpt-subscription",
+          "claude-sdk-oauth",
+          "deepseek",
+          "google",
+          "google-vertex",
+          "github-copilot",
+          "kimi-coding",
+          "kimi-for-coding",
+          "moonshotai",
+          "openai",
+          "openai-codex",
+          "opencode",
+          "opencode-go",
+          "qwen-token-plan",
+          "qwen-token-plan-cn",
+          "vercel",
+          "xai",
+          "xiaomi",
+          "zai",
+          "zai-coding-cn",
+          "zai-coding-plan",
+          "custom"
+        ],
+        "required": false,
+        "posthog_name": "default_provider"
+      },
+      "omc.memory_bucket": {
+        "type": "string",
+        "values": [
+          "lt_8_gb",
+          "8_15_gb",
+          "16_31_gb",
+          "32_63_gb",
+          "64_plus_gb"
+        ],
+        "required": false,
+        "posthog_name": "memory_bucket"
+      },
+      "omc.model_count": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "model_count"
+      },
+      "omc.provider_count": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "provider_count"
+      },
+      "omc.session.role": {
+        "type": "string",
+        "values": [
+          "root",
+          "child",
+          "unknown"
+        ],
+        "required": false,
+        "posthog_name": "session_role"
+      },
+      "omc.signed_in_provider_count": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "signed_in_provider_count"
+      },
+      "omc.start_trigger": {
+        "type": "string",
+        "values": [
+          "startup",
+          "reload",
+          "new",
+          "resume",
+          "fork"
+        ],
+        "required": false,
+        "posthog_name": "start_trigger"
+      },
+      "session.id": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$",
+        "required": true,
+        "posthog_name": "$session_id"
+      }
+    },
+    "omc.session_summary": {
+      "log.record.uid": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+        "required": true,
+        "posthog_name": "event_id"
+      },
+      "omc.aborted_turns": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "aborted_turns"
+      },
+      "omc.cache_read_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "cache_read_tokens"
+      },
+      "omc.cache_write_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "cache_write_tokens"
+      },
+      "omc.cost.usd_1e4": {
+        "type": "number",
+        "integer": true,
+        "min": 0,
+        "max": 10000000000,
+        "required": false
+      },
+      "omc.custom_model_turns": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "custom_model_turns"
+      },
+      "omc.dropped_events": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "dropped_events"
+      },
+      "omc.ended_by": {
+        "type": "string",
+        "values": [
+          "checkpoint",
+          "shutdown",
+          "reload",
+          "recovered"
+        ],
+        "required": false,
+        "posthog_name": "ended_by"
+      },
+      "omc.error_turns": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "error_turns"
+      },
+      "omc.first_turn_index": {
+        "type": "number",
+        "integer": true,
+        "min": 0,
+        "max": 10000000,
+        "required": false,
+        "posthog_name": "first_turn_index"
+      },
+      "omc.input_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "input_tokens"
+      },
+      "omc.invalid_usage_turns": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "invalid_usage_turns"
+      },
+      "omc.is_final": {
+        "type": "boolean",
+        "required": false,
+        "posthog_name": "is_final"
+      },
+      "omc.last_turn_index": {
+        "type": "number",
+        "integer": true,
+        "min": 0,
+        "max": 10000000,
+        "required": false,
+        "posthog_name": "last_turn_index"
+      },
+      "omc.m1_cost_usd": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000,
+        "required": false,
+        "posthog_name": "m1_cost_usd"
+      },
+      "omc.m1_input_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "m1_input_tokens"
+      },
+      "omc.m1_model": {
+        "type": "string",
+        "values": [
+          "qwen3.6-flash",
+          "qwen3.8-max-preview",
+          "claude-fable-5-5",
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-4-5",
+          "claude-haiku-5-5",
+          "claude-opus-4-6",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "qwen3.7-plus",
+          "gpt-5.6-luna-fast",
+          "gpt-5.6-sol",
+          "gpt-5.6-sol-fast",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-luna-fast",
+          "gpt-6-sol",
+          "gpt-6-sol-fast",
+          "gpt-6.1-sol",
+          "gpt-6.1-sol-fast",
+          "deepseek-flash",
+          "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "gemini-3.1-pro",
+          "gemini-3.6-flash",
+          "gemini-4-argon",
+          "grok-4.6",
+          "grok-4.7",
+          "k3",
+          "k3.1-pro",
+          "k3.1-pro-highspeed",
+          "kimi-for-coding-highspeed",
+          "kimi-k3",
+          "kimi-k3.1-pro",
+          "kimi-k3.1-pro-highspeed",
+          "glm-5.2",
+          "glm-5.3",
+          "mimo-v2.5-pro",
+          "mimo-v2.6-pro",
+          "minimax-m2.7",
+          "minimax-m3",
+          "grok-4.20-0309-non-reasoning",
+          "mimo-v2.6-flash",
+          "glm-5.3-flash",
+          "custom",
+          "none"
+        ],
+        "required": false,
+        "posthog_name": "m1_model"
+      },
+      "omc.m1_output_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "m1_output_tokens"
+      },
+      "omc.m1_provider": {
+        "type": "string",
+        "values": [
+          "alibaba-token-plan",
+          "alibaba-token-plan-cn",
+          "anthropic",
+          "anthropic-api",
+          "anthropic-subscription",
+          "bailian-coding-plan",
+          "chatgpt-subscription",
+          "claude-sdk-oauth",
+          "deepseek",
+          "google",
+          "google-vertex",
+          "github-copilot",
+          "kimi-coding",
+          "kimi-for-coding",
+          "moonshotai",
+          "openai",
+          "openai-codex",
+          "opencode",
+          "opencode-go",
+          "qwen-token-plan",
+          "qwen-token-plan-cn",
+          "vercel",
+          "xai",
+          "xiaomi",
+          "zai",
+          "zai-coding-cn",
+          "zai-coding-plan",
+          "custom",
+          "none"
+        ],
+        "required": false,
+        "posthog_name": "m1_provider"
+      },
+      "omc.m1_total_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "m1_total_tokens"
+      },
+      "omc.m1_turns": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "m1_turns"
+      },
+      "omc.m2_cost_usd": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000,
+        "required": false,
+        "posthog_name": "m2_cost_usd"
+      },
+      "omc.m2_input_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "m2_input_tokens"
+      },
+      "omc.m2_model": {
+        "type": "string",
+        "values": [
+          "qwen3.6-flash",
+          "qwen3.8-max-preview",
+          "claude-fable-5-5",
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-4-5",
+          "claude-haiku-5-5",
+          "claude-opus-4-6",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "qwen3.7-plus",
+          "gpt-5.6-luna-fast",
+          "gpt-5.6-sol",
+          "gpt-5.6-sol-fast",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-luna-fast",
+          "gpt-6-sol",
+          "gpt-6-sol-fast",
+          "gpt-6.1-sol",
+          "gpt-6.1-sol-fast",
+          "deepseek-flash",
+          "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "gemini-3.1-pro",
+          "gemini-3.6-flash",
+          "gemini-4-argon",
+          "grok-4.6",
+          "grok-4.7",
+          "k3",
+          "k3.1-pro",
+          "k3.1-pro-highspeed",
+          "kimi-for-coding-highspeed",
+          "kimi-k3",
+          "kimi-k3.1-pro",
+          "kimi-k3.1-pro-highspeed",
+          "glm-5.2",
+          "glm-5.3",
+          "mimo-v2.5-pro",
+          "mimo-v2.6-pro",
+          "minimax-m2.7",
+          "minimax-m3",
+          "grok-4.20-0309-non-reasoning",
+          "mimo-v2.6-flash",
+          "glm-5.3-flash",
+          "custom",
+          "none"
+        ],
+        "required": false,
+        "posthog_name": "m2_model"
+      },
+      "omc.m2_output_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "m2_output_tokens"
+      },
+      "omc.m2_provider": {
+        "type": "string",
+        "values": [
+          "alibaba-token-plan",
+          "alibaba-token-plan-cn",
+          "anthropic",
+          "anthropic-api",
+          "anthropic-subscription",
+          "bailian-coding-plan",
+          "chatgpt-subscription",
+          "claude-sdk-oauth",
+          "deepseek",
+          "google",
+          "google-vertex",
+          "github-copilot",
+          "kimi-coding",
+          "kimi-for-coding",
+          "moonshotai",
+          "openai",
+          "openai-codex",
+          "opencode",
+          "opencode-go",
+          "qwen-token-plan",
+          "qwen-token-plan-cn",
+          "vercel",
+          "xai",
+          "xiaomi",
+          "zai",
+          "zai-coding-cn",
+          "zai-coding-plan",
+          "custom",
+          "none"
+        ],
+        "required": false,
+        "posthog_name": "m2_provider"
+      },
+      "omc.m2_total_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "m2_total_tokens"
+      },
+      "omc.m2_turns": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "m2_turns"
+      },
+      "omc.m3_cost_usd": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000,
+        "required": false,
+        "posthog_name": "m3_cost_usd"
+      },
+      "omc.m3_input_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "m3_input_tokens"
+      },
+      "omc.m3_model": {
+        "type": "string",
+        "values": [
+          "qwen3.6-flash",
+          "qwen3.8-max-preview",
+          "claude-fable-5-5",
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-4-5",
+          "claude-haiku-5-5",
+          "claude-opus-4-6",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "qwen3.7-plus",
+          "gpt-5.6-luna-fast",
+          "gpt-5.6-sol",
+          "gpt-5.6-sol-fast",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-luna-fast",
+          "gpt-6-sol",
+          "gpt-6-sol-fast",
+          "gpt-6.1-sol",
+          "gpt-6.1-sol-fast",
+          "deepseek-flash",
+          "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "gemini-3.1-pro",
+          "gemini-3.6-flash",
+          "gemini-4-argon",
+          "grok-4.6",
+          "grok-4.7",
+          "k3",
+          "k3.1-pro",
+          "k3.1-pro-highspeed",
+          "kimi-for-coding-highspeed",
+          "kimi-k3",
+          "kimi-k3.1-pro",
+          "kimi-k3.1-pro-highspeed",
+          "glm-5.2",
+          "glm-5.3",
+          "mimo-v2.5-pro",
+          "mimo-v2.6-pro",
+          "minimax-m2.7",
+          "minimax-m3",
+          "grok-4.20-0309-non-reasoning",
+          "mimo-v2.6-flash",
+          "glm-5.3-flash",
+          "custom",
+          "none"
+        ],
+        "required": false,
+        "posthog_name": "m3_model"
+      },
+      "omc.m3_output_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "m3_output_tokens"
+      },
+      "omc.m3_provider": {
+        "type": "string",
+        "values": [
+          "alibaba-token-plan",
+          "alibaba-token-plan-cn",
+          "anthropic",
+          "anthropic-api",
+          "anthropic-subscription",
+          "bailian-coding-plan",
+          "chatgpt-subscription",
+          "claude-sdk-oauth",
+          "deepseek",
+          "google",
+          "google-vertex",
+          "github-copilot",
+          "kimi-coding",
+          "kimi-for-coding",
+          "moonshotai",
+          "openai",
+          "openai-codex",
+          "opencode",
+          "opencode-go",
+          "qwen-token-plan",
+          "qwen-token-plan-cn",
+          "vercel",
+          "xai",
+          "xiaomi",
+          "zai",
+          "zai-coding-cn",
+          "zai-coding-plan",
+          "custom",
+          "none"
+        ],
+        "required": false,
+        "posthog_name": "m3_provider"
+      },
+      "omc.m3_total_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "m3_total_tokens"
+      },
+      "omc.m3_turns": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "m3_turns"
+      },
+      "omc.model_count": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "model_count"
+      },
+      "omc.other_cost_usd": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000,
+        "required": false,
+        "posthog_name": "other_cost_usd"
+      },
+      "omc.other_total_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "other_total_tokens"
+      },
+      "omc.other_turns": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "other_turns"
+      },
+      "omc.output_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "output_tokens"
+      },
+      "omc.raw_turns_sampled": {
+        "type": "boolean",
+        "required": false,
+        "posthog_name": "raw_turns_sampled"
+      },
+      "omc.reasoning_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "reasoning_tokens"
+      },
+      "omc.sample_rate": {
+        "type": "number",
+        "min": 0,
+        "max": 1,
+        "required": false,
+        "posthog_name": "sample_rate"
+      },
+      "omc.session.role": {
+        "type": "string",
+        "values": [
+          "root",
+          "child",
+          "unknown"
+        ],
+        "required": false,
+        "posthog_name": "session_role"
+      },
+      "omc.summary_epoch": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{16}$",
+        "required": false,
+        "posthog_name": "summary_epoch"
+      },
+      "omc.summary_seq": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "summary_seq"
+      },
+      "omc.tool_error_count": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "tool_error_count"
+      },
+      "omc.tool_result_count": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "tool_result_count"
+      },
+      "omc.total_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "total_tokens"
+      },
+      "omc.total_tokens_max": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "total_tokens_max"
+      },
+      "omc.total_tokens_p50": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "total_tokens_p50"
+      },
+      "omc.total_tokens_p95": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": false,
+        "posthog_name": "total_tokens_p95"
+      },
+      "omc.turns": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000,
+        "required": false,
+        "posthog_name": "turns"
+      },
+      "omc.window_ms": {
+        "type": "number",
+        "min": 0,
+        "max": 10000000000,
+        "required": false,
+        "posthog_name": "window_ms"
+      },
+      "session.id": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$",
+        "required": true,
+        "posthog_name": "$session_id"
+      }
+    },
+    "omc.skill_loaded": {
+      "log.record.uid": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+        "required": true,
+        "posthog_name": "event_id"
+      },
+      "omc.skill_name": {
+        "type": "string",
+        "values": [
+          "ast-grep",
+          "browser",
+          "coding-agent-sessions",
+          "dag-library",
+          "data-scientist",
+          "debugging",
+          "eval-integrity",
+          "frontend",
+          "git-master",
+          "give-me-tips",
+          "hyperplan",
+          "init-deep",
+          "lsp-setup",
+          "mass-ulw",
+          "onboarding",
+          "programming",
+          "refactor",
+          "remove-ai-slops",
+          "review-work",
+          "ulw-execute",
+          "ultimate-browsing",
+          "ultrawork",
+          "ulw-loop",
+          "ulw-plan",
+          "ulw-research",
+          "visual-qa",
+          "visualize"
+        ],
+        "required": false,
+        "posthog_name": "skill_name"
+      },
+      "session.id": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$",
+        "required": true,
+        "posthog_name": "$session_id"
+      }
+    },
+    "omc.turn_completed": {
+      "gen_ai.provider.name": {
+        "type": "string",
+        "values": [
+          "alibaba-token-plan",
+          "alibaba-token-plan-cn",
+          "anthropic",
+          "anthropic-api",
+          "anthropic-subscription",
+          "bailian-coding-plan",
+          "chatgpt-subscription",
+          "claude-sdk-oauth",
+          "deepseek",
+          "gcp.gemini",
+          "gcp.vertex_ai",
+          "github-copilot",
+          "kimi-coding",
+          "kimi-for-coding",
+          "moonshotai",
+          "openai",
+          "openai-codex",
+          "opencode",
+          "opencode-go",
+          "qwen-token-plan",
+          "qwen-token-plan-cn",
+          "vercel",
+          "x_ai",
+          "xiaomi",
+          "zai",
+          "zai-coding-cn",
+          "zai-coding-plan",
+          "custom"
+        ],
+        "required": true
+      },
+      "gen_ai.request.model": {
+        "type": "string",
+        "values": [
+          "qwen3.6-flash",
+          "qwen3.8-max-preview",
+          "claude-fable-5-5",
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-4-5",
+          "claude-haiku-5-5",
+          "claude-opus-4-6",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "qwen3.7-plus",
+          "gpt-5.6-luna-fast",
+          "gpt-5.6-sol",
+          "gpt-5.6-sol-fast",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-luna-fast",
+          "gpt-6-sol",
+          "gpt-6-sol-fast",
+          "gpt-6.1-sol",
+          "gpt-6.1-sol-fast",
+          "deepseek-flash",
+          "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "gemini-3.1-pro",
+          "gemini-3.6-flash",
+          "gemini-4-argon",
+          "grok-4.6",
+          "grok-4.7",
+          "k3",
+          "k3.1-pro",
+          "k3.1-pro-highspeed",
+          "kimi-for-coding-highspeed",
+          "kimi-k3",
+          "kimi-k3.1-pro",
+          "kimi-k3.1-pro-highspeed",
+          "glm-5.2",
+          "glm-5.3",
+          "mimo-v2.5-pro",
+          "mimo-v2.6-pro",
+          "minimax-m2.7",
+          "minimax-m3",
+          "grok-4.20-0309-non-reasoning",
+          "mimo-v2.6-flash",
+          "glm-5.3-flash",
+          "custom"
+        ],
+        "required": false,
+        "posthog_name": "request_model_id"
+      },
+      "gen_ai.response.model": {
+        "type": "string",
+        "values": [
+          "qwen3.6-flash",
+          "qwen3.8-max-preview",
+          "claude-fable-5-5",
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-4-5",
+          "claude-haiku-5-5",
+          "claude-opus-4-6",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "qwen3.7-plus",
+          "gpt-5.6-luna-fast",
+          "gpt-5.6-sol",
+          "gpt-5.6-sol-fast",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-luna-fast",
+          "gpt-6-sol",
+          "gpt-6-sol-fast",
+          "gpt-6.1-sol",
+          "gpt-6.1-sol-fast",
+          "deepseek-flash",
+          "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "gemini-3.1-pro",
+          "gemini-3.6-flash",
+          "gemini-4-argon",
+          "grok-4.6",
+          "grok-4.7",
+          "k3",
+          "k3.1-pro",
+          "k3.1-pro-highspeed",
+          "kimi-for-coding-highspeed",
+          "kimi-k3",
+          "kimi-k3.1-pro",
+          "kimi-k3.1-pro-highspeed",
+          "glm-5.2",
+          "glm-5.3",
+          "mimo-v2.5-pro",
+          "mimo-v2.6-pro",
+          "minimax-m2.7",
+          "minimax-m3",
+          "grok-4.20-0309-non-reasoning",
+          "mimo-v2.6-flash",
+          "glm-5.3-flash",
+          "custom"
+        ],
+        "required": false,
+        "posthog_name": "response_model_id"
+      },
+      "gen_ai.usage.cache_creation.input_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": true,
+        "posthog_name": "cache_write_tokens"
+      },
+      "gen_ai.usage.cache_read.input_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": true,
+        "posthog_name": "cache_read_tokens"
+      },
+      "gen_ai.usage.input_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": true,
+        "posthog_name": "input_tokens"
+      },
+      "gen_ai.usage.output_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": true,
+        "posthog_name": "output_tokens"
+      },
+      "gen_ai.usage.reasoning.output_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": true,
+        "posthog_name": "reasoning_tokens"
+      },
+      "log.record.uid": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+        "required": true,
+        "posthog_name": "event_id"
+      },
+      "omc.cost.usd_1e4": {
+        "type": "number",
+        "integer": true,
+        "min": 0,
+        "max": 10000000000,
+        "required": true
+      },
+      "omc.model_id": {
+        "type": "string",
+        "values": [
+          "qwen3.6-flash",
+          "qwen3.8-max-preview",
+          "claude-fable-5-5",
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-4-5",
+          "claude-haiku-5-5",
+          "claude-opus-4-6",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "qwen3.7-plus",
+          "gpt-5.6-luna-fast",
+          "gpt-5.6-sol",
+          "gpt-5.6-sol-fast",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-luna-fast",
+          "gpt-6-sol",
+          "gpt-6-sol-fast",
+          "gpt-6.1-sol",
+          "gpt-6.1-sol-fast",
+          "deepseek-flash",
+          "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "gemini-3.1-pro",
+          "gemini-3.6-flash",
+          "gemini-4-argon",
+          "grok-4.6",
+          "grok-4.7",
+          "k3",
+          "k3.1-pro",
+          "k3.1-pro-highspeed",
+          "kimi-for-coding-highspeed",
+          "kimi-k3",
+          "kimi-k3.1-pro",
+          "kimi-k3.1-pro-highspeed",
+          "glm-5.2",
+          "glm-5.3",
+          "mimo-v2.5-pro",
+          "mimo-v2.6-pro",
+          "minimax-m2.7",
+          "minimax-m3",
+          "grok-4.20-0309-non-reasoning",
+          "mimo-v2.6-flash",
+          "glm-5.3-flash",
+          "custom"
+        ],
+        "required": true,
+        "posthog_name": "model_id"
+      },
+      "omc.provider": {
+        "type": "string",
+        "values": [
+          "alibaba-token-plan",
+          "alibaba-token-plan-cn",
+          "anthropic",
+          "anthropic-api",
+          "anthropic-subscription",
+          "bailian-coding-plan",
+          "chatgpt-subscription",
+          "claude-sdk-oauth",
+          "deepseek",
+          "google",
+          "google-vertex",
+          "github-copilot",
+          "kimi-coding",
+          "kimi-for-coding",
+          "moonshotai",
+          "openai",
+          "openai-codex",
+          "opencode",
+          "opencode-go",
+          "qwen-token-plan",
+          "qwen-token-plan-cn",
+          "vercel",
+          "xai",
+          "xiaomi",
+          "zai",
+          "zai-coding-cn",
+          "zai-coding-plan",
+          "custom"
+        ],
+        "required": true,
+        "posthog_name": "provider"
+      },
+      "omc.sample_rate": {
+        "type": "number",
+        "min": 0,
+        "max": 1,
+        "required": true,
+        "posthog_name": "sample_rate"
+      },
+      "omc.session.role": {
+        "type": "string",
+        "values": [
+          "root",
+          "child",
+          "unknown"
+        ],
+        "required": false,
+        "posthog_name": "session_role"
+      },
+      "omc.turn.index": {
+        "type": "number",
+        "integer": true,
+        "min": 0,
+        "max": 10000000,
+        "required": true,
+        "posthog_name": "turn_index"
+      },
+      "omc.usage.total_tokens": {
+        "type": "number",
+        "min": 0,
+        "max": 1000000000000,
+        "required": true,
+        "posthog_name": "total_tokens"
+      },
+      "session.id": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$",
+        "required": true,
+        "posthog_name": "$session_id"
+      }
+    }
+  },
+  "spans": {
+    "omc.turn": {
+      "gen_ai.operation.name": {
+        "type": "string",
+        "values": [
+          "chat"
+        ],
+        "required": true
+      },
+      "gen_ai.provider.name": {
+        "type": "string",
+        "values": [
+          "alibaba-token-plan",
+          "alibaba-token-plan-cn",
+          "anthropic",
+          "anthropic-api",
+          "anthropic-subscription",
+          "bailian-coding-plan",
+          "chatgpt-subscription",
+          "claude-sdk-oauth",
+          "deepseek",
+          "gcp.gemini",
+          "gcp.vertex_ai",
+          "github-copilot",
+          "kimi-coding",
+          "kimi-for-coding",
+          "moonshotai",
+          "openai",
+          "openai-codex",
+          "opencode",
+          "opencode-go",
+          "qwen-token-plan",
+          "qwen-token-plan-cn",
+          "vercel",
+          "x_ai",
+          "xiaomi",
+          "zai",
+          "zai-coding-cn",
+          "zai-coding-plan",
+          "custom"
+        ],
+        "required": true
+      },
+      "gen_ai.request.model": {
+        "type": "string",
+        "values": [
+          "qwen3.6-flash",
+          "qwen3.8-max-preview",
+          "claude-fable-5-5",
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-4-5",
+          "claude-haiku-5-5",
+          "claude-opus-4-6",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "qwen3.7-plus",
+          "gpt-5.6-luna-fast",
+          "gpt-5.6-sol",
+          "gpt-5.6-sol-fast",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-luna-fast",
+          "gpt-6-sol",
+          "gpt-6-sol-fast",
+          "gpt-6.1-sol",
+          "gpt-6.1-sol-fast",
+          "deepseek-flash",
+          "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "gemini-3.1-pro",
+          "gemini-3.6-flash",
+          "gemini-4-argon",
+          "grok-4.6",
+          "grok-4.7",
+          "k3",
+          "k3.1-pro",
+          "k3.1-pro-highspeed",
+          "kimi-for-coding-highspeed",
+          "kimi-k3",
+          "kimi-k3.1-pro",
+          "kimi-k3.1-pro-highspeed",
+          "glm-5.2",
+          "glm-5.3",
+          "mimo-v2.5-pro",
+          "mimo-v2.6-pro",
+          "minimax-m2.7",
+          "minimax-m3",
+          "grok-4.20-0309-non-reasoning",
+          "mimo-v2.6-flash",
+          "glm-5.3-flash",
+          "custom"
+        ],
+        "required": false
+      },
+      "gen_ai.response.model": {
+        "type": "string",
+        "values": [
+          "qwen3.6-flash",
+          "qwen3.8-max-preview",
+          "claude-fable-5-5",
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-4-5",
+          "claude-haiku-5-5",
+          "claude-opus-4-6",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "qwen3.7-plus",
+          "gpt-5.6-luna-fast",
+          "gpt-5.6-sol",
+          "gpt-5.6-sol-fast",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-luna-fast",
+          "gpt-6-sol",
+          "gpt-6-sol-fast",
+          "gpt-6.1-sol",
+          "gpt-6.1-sol-fast",
+          "deepseek-flash",
+          "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "gemini-3.1-pro",
+          "gemini-3.6-flash",
+          "gemini-4-argon",
+          "grok-4.6",
+          "grok-4.7",
+          "k3",
+          "k3.1-pro",
+          "k3.1-pro-highspeed",
+          "kimi-for-coding-highspeed",
+          "kimi-k3",
+          "kimi-k3.1-pro",
+          "kimi-k3.1-pro-highspeed",
+          "glm-5.2",
+          "glm-5.3",
+          "mimo-v2.5-pro",
+          "mimo-v2.6-pro",
+          "minimax-m2.7",
+          "minimax-m3",
+          "grok-4.20-0309-non-reasoning",
+          "mimo-v2.6-flash",
+          "glm-5.3-flash",
+          "custom"
+        ],
+        "required": false
+      },
+      "omc.model_id": {
+        "type": "string",
+        "values": [
+          "qwen3.6-flash",
+          "qwen3.8-max-preview",
+          "claude-fable-5-5",
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-4-5",
+          "claude-haiku-5-5",
+          "claude-opus-4-6",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "qwen3.7-plus",
+          "gpt-5.6-luna-fast",
+          "gpt-5.6-sol",
+          "gpt-5.6-sol-fast",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-luna-fast",
+          "gpt-6-sol",
+          "gpt-6-sol-fast",
+          "gpt-6.1-sol",
+          "gpt-6.1-sol-fast",
+          "deepseek-flash",
+          "deepseek-v4-flash",
+          "deepseek-v4-pro",
+          "gemini-3.1-pro",
+          "gemini-3.6-flash",
+          "gemini-4-argon",
+          "grok-4.6",
+          "grok-4.7",
+          "k3",
+          "k3.1-pro",
+          "k3.1-pro-highspeed",
+          "kimi-for-coding-highspeed",
+          "kimi-k3",
+          "kimi-k3.1-pro",
+          "kimi-k3.1-pro-highspeed",
+          "glm-5.2",
+          "glm-5.3",
+          "mimo-v2.5-pro",
+          "mimo-v2.6-pro",
+          "minimax-m2.7",
+          "minimax-m3",
+          "grok-4.20-0309-non-reasoning",
+          "mimo-v2.6-flash",
+          "glm-5.3-flash",
+          "custom"
+        ],
+        "required": true
+      },
+      "omc.provider": {
+        "type": "string",
+        "values": [
+          "alibaba-token-plan",
+          "alibaba-token-plan-cn",
+          "anthropic",
+          "anthropic-api",
+          "anthropic-subscription",
+          "bailian-coding-plan",
+          "chatgpt-subscription",
+          "claude-sdk-oauth",
+          "deepseek",
+          "google",
+          "google-vertex",
+          "github-copilot",
+          "kimi-coding",
+          "kimi-for-coding",
+          "moonshotai",
+          "openai",
+          "openai-codex",
+          "opencode",
+          "opencode-go",
+          "qwen-token-plan",
+          "qwen-token-plan-cn",
+          "vercel",
+          "xai",
+          "xiaomi",
+          "zai",
+          "zai-coding-cn",
+          "zai-coding-plan",
+          "custom"
+        ],
+        "required": true
+      },
+      "omc.session.role": {
+        "type": "string",
+        "values": [
+          "root",
+          "child",
+          "unknown"
+        ],
+        "required": true
+      },
+      "omc.turn.index": {
+        "type": "number",
+        "integer": true,
+        "min": 0,
+        "max": 10000000,
+        "required": true
+      },
+      "session.id": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$",
+        "required": true
+      }
+    }
+  },
+  "values": {
+    "gen_ai.provider.name": {
+      "source_key": "omc.provider",
+      "note": "one explicit row per provider id in the engine's model vocabulary; an id with no well-known GenAI value keeps our id",
+      "rows": [
+        {
+          "id": "alibaba-token-plan",
+          "wire": "alibaba-token-plan"
+        },
+        {
+          "id": "alibaba-token-plan-cn",
+          "wire": "alibaba-token-plan-cn"
+        },
+        {
+          "id": "anthropic",
+          "wire": "anthropic"
+        },
+        {
+          "id": "anthropic-api",
+          "wire": "anthropic-api"
+        },
+        {
+          "id": "anthropic-subscription",
+          "wire": "anthropic-subscription"
+        },
+        {
+          "id": "bailian-coding-plan",
+          "wire": "bailian-coding-plan"
+        },
+        {
+          "id": "chatgpt-subscription",
+          "wire": "chatgpt-subscription"
+        },
+        {
+          "id": "claude-sdk-oauth",
+          "wire": "claude-sdk-oauth"
+        },
+        {
+          "id": "deepseek",
+          "wire": "deepseek"
+        },
+        {
+          "id": "google",
+          "wire": "gcp.gemini"
+        },
+        {
+          "id": "google-vertex",
+          "wire": "gcp.vertex_ai"
+        },
+        {
+          "id": "github-copilot",
+          "wire": "github-copilot"
+        },
+        {
+          "id": "kimi-coding",
+          "wire": "kimi-coding"
+        },
+        {
+          "id": "kimi-for-coding",
+          "wire": "kimi-for-coding"
+        },
+        {
+          "id": "moonshotai",
+          "wire": "moonshotai"
+        },
+        {
+          "id": "openai",
+          "wire": "openai"
+        },
+        {
+          "id": "openai-codex",
+          "wire": "openai-codex"
+        },
+        {
+          "id": "opencode",
+          "wire": "opencode"
+        },
+        {
+          "id": "opencode-go",
+          "wire": "opencode-go"
+        },
+        {
+          "id": "qwen-token-plan",
+          "wire": "qwen-token-plan"
+        },
+        {
+          "id": "qwen-token-plan-cn",
+          "wire": "qwen-token-plan-cn"
+        },
+        {
+          "id": "vercel",
+          "wire": "vercel"
+        },
+        {
+          "id": "xai",
+          "wire": "x_ai"
+        },
+        {
+          "id": "xiaomi",
+          "wire": "xiaomi"
+        },
+        {
+          "id": "zai",
+          "wire": "zai"
+        },
+        {
+          "id": "zai-coding-cn",
+          "wire": "zai-coding-cn"
+        },
+        {
+          "id": "zai-coding-plan",
+          "wire": "zai-coding-plan"
+        },
+        {
+          "id": "custom",
+          "wire": "custom"
+        }
+      ]
+    },
+    "host.arch": {
+      "source": "node os.arch()",
+      "rows": [
+        {
+          "id": "x64",
+          "wire": "amd64"
+        },
+        {
+          "id": "arm64",
+          "wire": "arm64"
+        },
+        {
+          "id": "ia32",
+          "wire": "x86"
+        },
+        {
+          "id": "arm",
+          "wire": "arm32"
+        },
+        {
+          "id": "other",
+          "wire": "other"
+        }
+      ]
+    },
+    "os.type": {
+      "source": "node os.platform()",
+      "rows": [
+        {
+          "id": "darwin",
+          "wire": "darwin"
+        },
+        {
+          "id": "linux",
+          "wire": "linux"
+        },
+        {
+          "id": "win32",
+          "wire": "windows"
+        }
+      ]
+    }
+  },
+  "resource_projections": {
+    "omc.process_crashed": {
+      "$os": "os.type",
+      "arch": "host.arch"
+    },
+    "omc.session_started": {
+      "$os": "os.type",
+      "$os_version": "os.version",
+      "arch": "host.arch"
+    }
+  },
+  "derived_properties": {
+    "omc.session_summary": {
+      "cost_usd": {
+        "from": "omc.cost.usd_1e4",
+        "divide_by": 10000
+      }
+    },
+    "omc.turn_completed": {
+      "cost_usd": {
+        "from": "omc.cost.usd_1e4",
+        "divide_by": 10000
+      }
+    }
+  },
+  "sha256": "77a2567eb70626bfbfc79838a559bce33102ef7112c3efd39846595ab943df20"
+}

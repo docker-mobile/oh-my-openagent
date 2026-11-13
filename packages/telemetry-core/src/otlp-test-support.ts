@@ -19,14 +19,14 @@ import {
 } from "./otlp-proto/opentelemetry/proto/collector/trace/v1/trace_service_pb.js"
 import type { AnyValue, KeyValue } from "./otlp-proto/opentelemetry/proto/common/v1/common_pb.js"
 
-export const TEST_SCOPE = { name: "omo-senpi", version: "3.17.0" } as const
+export const TEST_SCOPE = { name: "omc-senpi", version: "3.17.0" } as const
 
 /** Test stand-in for a schema artifact's span allowlist. */
-export const TEST_SPANS = { "omo.turn": ["gen_ai.request.model", "n", "nan"] } as const
+export const TEST_SPANS = { "omc.turn": ["gen_ai.request.model", "n", "nan"] } as const
 
 /**
  * Test stand-in for a schema artifact's projection: `$session_id` maps to the semconv `session.id`, as the
- * artifact's wire keys do, and every other primitive that passes the key rule becomes `omo.<name>`.
+ * artifact's wire keys do, and every other primitive that passes the key rule becomes `omc.<name>`.
  */
 export const testWireProjection: OtlpWireProjection = (_event, properties) => {
   const attributes: WireAttributes = {}
@@ -35,7 +35,7 @@ export const testWireProjection: OtlpWireProjection = (_event, properties) => {
   for (const [key, value] of Object.entries(properties)) {
     if (!isWireAttributeKey(key)) continue
     if (typeof value === "string" || typeof value === "boolean" || (typeof value === "number" && Number.isFinite(value))) {
-      attributes[`omo.${key}`] = value
+      attributes[`omc.${key}`] = value
     }
   }
   return attributes
@@ -43,12 +43,12 @@ export const testWireProjection: OtlpWireProjection = (_event, properties) => {
 
 export function testResource(version = "1.1.0"): Readonly<Record<string, string | number | boolean>> {
   return {
-    "service.name": "omo-senpi",
+    "service.name": "omc-senpi",
     "service.version": version,
     "service.instance.id": "0123456789abcdef0123456789abcdef",
-    "omo.install.hash": "ab".repeat(32),
-    "telemetry.sdk.name": "omo-otel-minimal",
-    "omo.schema.version": 3,
+    "omc.install.hash": "ab".repeat(32),
+    "telemetry.sdk.name": "omc-otel-minimal",
+    "omc.schema.version": 3,
   }
 }
 
@@ -91,7 +91,7 @@ export function makeTransport(
   overrides: Partial<CreateOtlpTelemetryTransportInput> = {},
 ): OtlpTelemetryTransport {
   return createOtlpSender({
-    productEnvPrefix: "OMO_TEST",
+    productEnvPrefix: "OMC_TEST",
     ingestKey: "test-ingest-key",
     spoolDir: dir,
     spoolRoot: dirname(dir),

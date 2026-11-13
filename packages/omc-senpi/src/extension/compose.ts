@@ -1,0 +1,266 @@
+import { join } from "node:path"
+
+import { loadPiTui } from "@oh-my-cybersecurity/senpi-task"
+
+import { defaultCommentCheckerCacheDir } from "../components/comment-checker/resolver"
+
+import { createDagSdkRootProvisioning } from "./dag-sdk-root-provisioning"
+import { installExternalUserInputApi } from "./external-user-input"
+import { isOmoSenpiDisabledByEnv } from "./disable-env"
+import { AGENT_TOOLKIT_SDK_ROOT_ENV, BUNSHIN_TS_SDK_ROOT_ENV, createSdkRootProvisioning } from "./sdk-root-provisioning"
+import { IdleInjectionCoordinator } from "./idle-injection-coordinator"
+import { deliverItems } from "./deliver-items"
+import { publishWakeQueueBaselineOnSessionStart, publishWakeQueueChildWork } from "./wake-queue-source"
+import { createFirstPaintScheduler, createStartupDeferral, type ExtensionPlacement, type StartupWorkScheduler } from "./startup-deferral"
+import { installToolCaptureRegistry } from "./tool-capture-registry"
+import { createPrewarmDiagnostics } from "./prewarm-diagnostics"
+import { absentSenpiSeamsNotice, installRemoteWakeRefusal } from "./senpi-seams"
+import type { ComponentContext, ComponentLogger, OmoSenpiComponent, SenpiExtensionAPI } from "./types"
+import { releaseHerdrAgentHint } from "./herdr-agent-hint"
+
+export interface ComposeOmoSenpiExtensionOptions {
+  logger?: ComponentLogger
+  /** Test seam for the startup deferral; production uses its next-tick scheduler. */
+  scheduleStartupWork?: StartupWorkScheduler
+  env?: NodeJS.ProcessEnv
+  /**
+   * Where this generation runs. senpi does not report its side to an extension yet, so production composes as
+   * "fused" (today); the hand reads it once the host exposes the side of a split session.
+   */
+  placement?: () => ExtensionPlacement
+}
+
+const REQUIRED_CAPABILITIES = [
+  "on",
+  "registerFlag",
+  "getFlag",
+  "registerTool",
+  "registerCommand",
+  "sendMessage",
+  "sendUserMessage",
+] as const
+
+type RequiredCapability = (typeof REQUIRED_CAPABILITIES)[number]
+
+// Batch window for the shared idle-injection flush: everything that becomes ready inside it collapses
+// into ONE steer injection.
+const IDLE_FLUSH_BATCH_WINDOW_MS = 200
+
+// Forward `details` only when present: `console.info(message, undefined)` renders a trailing "undefined".
+function consoleArgs(message: string, details: unknown): [string] | [string, unknown] {
+  return details === undefined ? [message] : [message, details]
+}
+
+// warn/error always write to stderr. info is silent unless OMC_DEBUG is set (then also stderr).
+// A child's stdout is its deliverable - the reflection worker's report is read back from it -
+// so an info line on stdout became the "report" (#8564).
+const defaultLogger: ComponentLogger = {
+  info(message, details) {
+    if (!process.env.OMC_DEBUG) return
+    console.error(...consoleArgs(message, details))
+  },
+  warn(message, details) {
+    console.warn(...consoleArgs(message, details))
+  },
+  error(message, details) {
+    console.error(...consoleArgs(message, details))
+  },
+}
+
+function getMissingCapabilities(pi: unknown): RequiredCapability[] {
+  if (typeof pi !== "object" || pi === null) {
+    return [...REQUIRED_CAPABILITIES]
+  }
+
+  return REQUIRED_CAPABILITIES.filter((capability) => typeof Reflect.get(pi, capability) !== "function")
+}
+
+function isSenpiExtensionAPI(pi: unknown): pi is SenpiExtensionAPI {
+  return getMissingCapabilities(pi).length === 0
+}
+
+export function composeOmoSenpiExtension(
+  components: readonly OmoSenpiComponent[],
+  options: ComposeOmoSenpiExtensionOptions = {},
+): (pi: unknown) => Promise<void> {
+  const logger = options.logger ?? defaultLogger
+  const provisionDagSdkRoot = createDagSdkRootProvisioning({ logger })
+  const runtimeSdkRoot = (envKey: string, dir: string, label?: string) =>
+    createSdkRootProvisioning({ envKey, packagedRelativeDir: `../runtime/${dir}`, sourceTreeRelativeDir: `../../plugin/runtime/${dir}`, logger, label })
+  const provisionAgentToolkitSdkRoot = runtimeSdkRoot(AGENT_TOOLKIT_SDK_ROOT_ENV, "agent-toolkit-sdk")
+  const provisionBunshinTsSdkRoot = runtimeSdkRoot(BUNSHIN_TS_SDK_ROOT_ENV, "bunshin-ts", "bunshin-ts")
+
+  return async (pi: unknown): Promise<void> => {
+    releaseHerdrAgentHint()
+    // Shell children inherit process.env: a bundled skill's Python must not write __pycache__ into a signed app (#11373),
+    // so bytecode goes to <user cache>/omc-senpi/pycache unless the user set either variable, even to an empty string.
+    if (process.env.PYTHONDONTWRITEBYTECODE === undefined) {
+      process.env.PYTHONPYCACHEPREFIX ??= join(defaultCommentCheckerCacheDir(process.platform, process.env, "omc-senpi"), "..", "pycache")
+    }
+    // Publish the dag eval sdk directory so JavaScript cells can import it from OMC_DAG_SDK_ROOT.
+    provisionDagSdkRoot()
+    provisionAgentToolkitSdkRoot()
+    provisionBunshinTsSdkRoot()
+
+    const missing = getMissingCapabilities(pi)
+    if (missing.length > 0 || !isSenpiExtensionAPI(pi)) {
+      logger.warn("omc-senpi ExtensionAPI version mismatch; extension disabled", {
+        expected: [...REQUIRED_CAPABILITIES],
+        missing,
+      })
+      return
+    }
+
+    // Two omc extensions in one senpi process (e.g. a local dev plugin in senpi
+    // settings packages plus the omc launcher's bundled extension) fight over
+    // tool registration and session ctx. The FIRST instance wins; later ones
+    // stand down entirely so the winner owns tool dispatch alone.
+    // See: config-watch's per-component guard only covers config, not tools.
+    if (markOmoSenpiActive()) {
+      logger.warn("omc-senpi duplicate extension instance detected; standing down", {
+        hint: "two omc extensions are loaded in this senpi process (e.g. a local dev plugin in senpi settings packages plus the omc launcher's bundled extension); remove one",
+      })
+      return
+    }
+
+    pi.registerFlag("omc-senpi-disabled", {
+      type: "boolean",
+      default: false,
+      description: "Disable all omc-senpi components.",
+    })
+
+    for (const component of components) {
+      pi.registerFlag(componentDisabledFlag(component.name), {
+        type: "boolean",
+        default: false,
+        description: `Disable the omc-senpi ${component.name} component.`,
+      })
+    }
+
+    if (pi.getFlag("omc-senpi-disabled") === true || isOmoSenpiDisabledByEnv(options.env ?? process.env)) {
+      logger.info("omc-senpi disabled by flag")
+      return
+    }
+
+    const absentSeams = absentSenpiSeamsNotice(pi)
+    if (absentSeams !== undefined) logger.warn(absentSeams)
+    installRemoteWakeRefusal(pi)
+
+    // Install the capture registry and idle coordinator BEFORE the component loop so every component
+    // (lsp registers earlier than task) has its tools captured and shares one injection arbiter.
+    installExternalUserInputApi(pi)
+    const captureRegistry = installToolCaptureRegistry(pi)
+    const prewarmDiagnostics = createPrewarmDiagnostics(pi, logger)
+    // The 200ms batch window: every delivered notification (completions, team messages, the ulw
+    // continuation) defers its flush through this timer, so everything that becomes ready within the
+    // window collapses into ONE steer injection instead of N separate ones. The timer is unref'd and
+    // cancellable like every sibling scheduler in this codebase (lead-poller-lifecycle's interval,
+    // senpi-task's completion retry): retirement cancels the armed handle instead of leaving a live
+    // 200ms timer behind after a `quit` shutdown.
+    const publishChildWork = publishWakeQueueChildWork(pi, logger)
+    const idleCoordinator = new IdleInjectionCoordinator(
+      (message, options) => deliverItems((native, delivery) => pi.sendMessage(native, delivery), { ...options, message }),
+      {
+        scheduleFlush: (flush) => {
+          const timer = setTimeout(flush, IDLE_FLUSH_BATCH_WINDOW_MS)
+          timer.unref?.()
+          return () => clearTimeout(timer)
+        },
+        onChildWorkChange: publishChildWork,
+        onReceiptError: (error) =>
+          logger.warn("omc-senpi idle injection receipt failed", {
+            error: error instanceof Error ? error.message : String(error),
+          }),
+      },
+    )
+    publishWakeQueueBaselineOnSessionStart(pi, () => idleCoordinator.childWorkCount(), publishChildWork)
+    // senpi emits session_shutdown on the old runner before it invalidates that generation; retire the
+    // shared queue there so a 200ms flush armed before a reload cannot call pi.sendMessage on a stale
+    // API and throw out of the timer queue (uncaughtException -> exit 1). Retirement hands every
+    // still-queued injection back to its producer as a delivery failure, so a completion caught inside
+    // the batch window is recorded as undelivered and redelivered after the reload.
+    // See: https://github.com/code-yeongyu/oh-my-cybersecurity/issues/7932
+    // A receipt error must not escape session_shutdown: later shutdown handlers (startup deferral) still run.
+    pi.on("session_shutdown", () => {
+      try {
+        idleCoordinator.retire()
+      } catch (error) {
+        logger.warn("omc-senpi idle injection receipt failed on shutdown", { error: error instanceof Error ? error.message : String(error) })
+      }
+    })
+
+    // Startup work that is not needed before the first user turn (telemetry capture, the init-deep
+    // advisor's git/fs preflight, the LSP project-config notice) is queued here instead of running
+    // on the session_start dispatch path the engine bills under `interactiveMode.init`. The gate
+    // opens on the first post-paint host edge or its backstop timer, never on a bare next tick:
+    // session_start is dispatched from inside that init phase, so a zero-delay macrotask fires
+    // before it returns and the work stays on the critical path. Retired on the same shutdown edge
+    // as the idle coordinator: a session that ends before the gate opens must not start a
+    // half-session's worth of work on a dead API.
+    const startupDeferral = createStartupDeferral({
+      schedule: options.scheduleStartupWork ?? createFirstPaintScheduler({
+        on: (event, handler, registrationOptions) => pi.on(event, handler, registrationOptions),
+        placement: options.placement?.() ?? "fused",
+      }),
+      onError: (label, error) => logger.warn("omc-senpi deferred startup work failed", { label, error }),
+    })
+    pi.on("session_shutdown", () => startupDeferral.retire())
+
+    // Warm the pi-tui lazy boundary once for the whole extension, before any component registers.
+    // Renderers across several components (fallback-architect notices, memory worker entries, task
+    // renderers) read the pi-tui namespace synchronously from render callbacks, and any of those
+    // components can be live while another is disabled by flag or fails to register. Warming here —
+    // not inside one component's register — is what keeps `--omc-senpi-task-disabled` from turning
+    // every other component's notice into a throw. The load is memoized, so this costs one small
+    // module load per process.
+    await loadPiTui()
+
+    const ctx: ComponentContext = {
+      logger,
+      config: {
+        getFlag(name) {
+          return pi.getFlag(name)
+        },
+      },
+      getCapturedTools: () => captureRegistry.getCapturedTools(),
+      idleCoordinator,
+      deferStartupWork: (label, work) => startupDeferral.defer(label, work),
+    }
+
+    for (const component of components) {
+      if (pi.getFlag(componentDisabledFlag(component.name)) === true) {
+        logger.info("omc-senpi component disabled by flag", { component: component.name })
+        continue
+      }
+
+      try {
+        await component.register(prewarmDiagnostics.forComponent(component.name), ctx)
+      } catch (error) {
+        logger.error("omc-senpi component registration failed", { component: component.name, error })
+      }
+    }
+    // The wrapper exists only to collect omc component tools. Senpi loads builtin factories after
+    // path extensions, so leaving it installed would capture raw builtin definitions (including
+    // freeform eval) and inject them as parent custom tools into every in-process child.
+    captureRegistry.stopCapture()
+  }
+}
+
+function componentDisabledFlag(name: string): string {
+  return `omc-senpi-${name}-disabled`
+}
+
+// Process-wide single-winner guard: the first omc-senpi extension instance to
+// activate in this senpi process owns tool dispatch. module state is shared per
+// process, so a second bundled copy (dev plugin + launcher bundle) sees the
+// flag and stands down before registering anything.
+declare global {
+  // eslint-disable-next-line no-var
+  var __omoSenpiActiveInstance: boolean | undefined
+}
+
+function markOmoSenpiActive(): boolean {
+  if (globalThis.__omoSenpiActiveInstance === true) return true
+  globalThis.__omoSenpiActiveInstance = true
+  return false
+}

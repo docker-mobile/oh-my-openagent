@@ -19,7 +19,7 @@ import { createSkillSourceCopyFilter } from "./skill-source-filter.mjs"
 
 const skillsRoot = join(import.meta.dir, "skills")
 const python = process.platform === "win32" ? "python" : "python3"
-const workRoot = mkdtempSync(join(tmpdir(), "omo-skill-writes-"))
+const workRoot = mkdtempSync(join(tmpdir(), "omc-skill-writes-"))
 const shippedRoot = join(workRoot, "skills")
 const pythonEnv: Record<string, string | undefined> = { ...process.env }
 delete pythonEnv.PYTHONDONTWRITEBYTECODE

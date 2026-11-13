@@ -9,7 +9,7 @@ async function main(): Promise<void> {
     return;
   }
 
-  stderr.write("Usage: omo-git-bash [mcp]\n");
+  stderr.write("Usage: omc-git-bash [mcp]\n");
   process.exitCode = 2;
 }
 

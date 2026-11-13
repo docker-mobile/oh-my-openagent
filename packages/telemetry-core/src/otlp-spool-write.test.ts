@@ -147,7 +147,7 @@ describe("short and failed spool writes", () => {
     // then
     expect(droppedAfterFailure).toBe(1)
     const records = calls.flatMap((c) => logRecordsOf(decodeLogs(c.body))).map((r) => [r.eventName, attributeMap(r.attributes)] as const)
-    expect(records.filter(([name]) => name === "omo.client_dropped").map(([, a]) => [a["omo.dropped.reason"], a["omo.dropped.count"]])).toEqual([["write_failed", 1]])
-    expect(records.filter(([name]) => name === "omo.feature_used").map(([, a]) => a["omo.feature"])).toEqual(["kept"])
+    expect(records.filter(([name]) => name === "omc.client_dropped").map(([, a]) => [a["omc.dropped.reason"], a["omc.dropped.count"]])).toEqual([["write_failed", 1]])
+    expect(records.filter(([name]) => name === "omc.feature_used").map(([, a]) => a["omc.feature"])).toEqual(["kept"])
   })
 })

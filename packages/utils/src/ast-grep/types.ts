@@ -1,4 +1,4 @@
-export const SG_PATH_ENV_KEY = "OMO_AST_GREP_SG_PATH"
+export const SG_PATH_ENV_KEY = "OMC_AST_GREP_SG_PATH"
 
 export type SgRuntimePlatform = "darwin" | "linux" | "win32"
 export type SgRuntimeArch = "arm64" | "x64"
@@ -9,7 +9,7 @@ export interface SgManifestAsset {
   readonly url: string
 }
 
-export type SgResolutionTier = "env-override" | "omo-runtime" | "skill-bin" | "path" | "homebrew"
+export type SgResolutionTier = "env-override" | "omc-runtime" | "skill-bin" | "path" | "homebrew"
 
 export interface SgCandidate {
   readonly path: string

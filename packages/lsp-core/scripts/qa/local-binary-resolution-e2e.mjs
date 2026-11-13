@@ -14,13 +14,13 @@ import { homedir, tmpdir } from "node:os"
 import { delimiter, dirname, join, relative, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 
-import { withTelemetryOptOut } from "../../../omo-senpi/scripts/qa/telemetry-opt-out-env.mjs"
+import { withTelemetryOptOut } from "../../../omc-senpi/scripts/qa/telemetry-opt-out-env.mjs"
 
 const scriptDir = dirname(fileURLToPath(import.meta.url))
 const packageRoot = resolve(scriptDir, "..", "..")
 const repoRoot = resolve(packageRoot, "..", "..")
 const realSenpiAgentDir = join(homedir(), ".senpi", "agent")
-const mockProviderEntry = join(repoRoot, "packages", "omo-senpi", "scripts", "qa", "mock-provider", "index.ts")
+const mockProviderEntry = join(repoRoot, "packages", "omc-senpi", "scripts", "qa", "mock-provider", "index.ts")
 
 function parseArgs(argv) {
   const args = { evidenceDir: undefined, selfTest: false }
@@ -256,7 +256,7 @@ function runSenpiProbe(fixture, pathValue, senpiBin, workRoot, evidenceDir) {
       "--mode",
       "json",
       "--provider",
-      "omo-mock",
+      "omc-mock",
       "--model",
       "mock-1",
       "--session-dir",
@@ -276,7 +276,7 @@ function runSenpiProbe(fixture, pathValue, senpiBin, workRoot, evidenceDir) {
         XDG_CACHE_HOME: join(homeDir, ".cache"),
         SENPI_CODING_AGENT_DIR: agentDir,
         SENPI_CODING_AGENT_SESSION_DIR: sessionDir,
-        OMO_SENPI_QA: "1",
+        OMC_SENPI_QA: "1",
       }),
       timeout: 180_000,
       maxBuffer: 64 * 1024 * 1024,
@@ -293,7 +293,7 @@ function runSenpiProbe(fixture, pathValue, senpiBin, workRoot, evidenceDir) {
     isolatedAgentDir: agentDir,
     toolEvent,
     sessionStarted: events.some((event) => event?.type === "session"),
-    // The packaged omo extension and its daemon runtime are built by another lane, so
+    // The packaged omc extension and its daemon runtime are built by another lane, so
     // this binary is not expected to expose lsp_* tools here. It proves the harness runs
     // against the fixture with a scrubbed PATH; the diagnostics assertion itself comes
     // from runDiagnosticsProbe(), which drives the lsp-core tool runtime this PR changes.

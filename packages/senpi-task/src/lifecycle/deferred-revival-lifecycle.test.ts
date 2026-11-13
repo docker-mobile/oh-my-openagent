@@ -8,7 +8,7 @@ import { cleanupProjects, seedRecord } from "./__fixtures__/lifecycle-fakes"
 
 afterEach(cleanupProjects)
 
-describe("deferred revival retries end with their session (omo#9498 review)", () => {
+describe("deferred revival retries end with their session (omc#9498 review)", () => {
   for (const stop of ["shutdown", "dispose"] as const) {
     test(`a pending retry stops on session ${stop}: the child is neither revived nor marked lost`, async () => {
       const gate = Promise.withResolvers<void>()
@@ -58,7 +58,7 @@ describe("deferred revival retries end with their session (omo#9498 review)", ()
     }
   }, 10_000)
 
-  // Review round 2 of omo#9714 (MEDIUM-1): shutdown lands while a retry is inside its revival attempt.
+  // Review round 2 of omc#9714 (MEDIUM-1): shutdown lands while a retry is inside its revival attempt.
   test("a retry whose revival completes after its session shut down leaves the child suspended, not resident", async () => {
     const inRespawn = Promise.withResolvers<void>()
     const release = Promise.withResolvers<void>()

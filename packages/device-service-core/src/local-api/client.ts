@@ -53,7 +53,7 @@ export type LocalApiClient = {
     params: RequestParams<T>,
   ) => Promise<ResponseData[T]>;
   readonly onEvent: (listener: (event: LocalEvent) => void) => () => void;
-  // omo addition over the vendored client: `route` opts the command into the delegated channel (decision 0018), on
+  // omc addition over the vendored client: `route` opts the command into the delegated channel (decision 0018), on
   // the inline line and on the upload's closing session.command alike.
   readonly command: (
     attach: string,
@@ -61,7 +61,7 @@ export type LocalApiClient = {
     command_id?: string,
     route?: DelegatedRoute,
   ) => Promise<string>;
-  // omo addition (relay daemon #393): the attach-less endpoint command `session.command {device, endpoint, rpc}`,
+  // omc addition (relay daemon #393): the attach-less endpoint command `session.command {device, endpoint, rpc}`,
   // always delegated. Inline only: a record over the inline line limit is refused message_too_long before sending.
   // `locate` asks for an open's new session on its reply (decision 0018 amendment 2026-11-06, `located`).
   readonly endpointCommand: (

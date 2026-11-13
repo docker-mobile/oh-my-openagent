@@ -50,7 +50,7 @@ describe("parseOmobArgs", () => {
 
 	test("accepts ref overrides and keep counts", () => {
 		const parsed = parseOmobArgs(
-			["--senpi-ref", "origin/feat/x", "--omo-ref", "abc1234", "--keep", "5", "--skip-fetch", "--skip-install"],
+			["--senpi-ref", "origin/feat/x", "--omc-ref", "abc1234", "--keep", "5", "--skip-fetch", "--skip-install"],
 			"linux",
 			"x64",
 			"/home/dev",
@@ -329,7 +329,7 @@ describe("ensureCacheClone submodule ordering", () => {
 			const superBare = join(rootDir, "super.git")
 			git(["clone", "-q", "--bare", superWork, superBare], rootDir)
 
-			const cache = join(rootDir, "cache", "omo")
+			const cache = join(rootDir, "cache", "omc")
 			const read = (): string => readFileSync(join(cache, "upstreams", "skill", "SKILL.md"), "utf8").trim()
 			const restoreEnv = { ...process.env }
 			Object.assign(process.env, fixtureEnv)
@@ -363,7 +363,7 @@ describe("ensureCacheClone submodule ordering", () => {
 describe("fetchCacheClones", () => {
 	const specs = [
 		{ url: "https://example.invalid/senpi.git", directory: "/cache/senpi", ref: "origin/main" },
-		{ url: "https://example.invalid/omo.git", directory: "/cache/omo", ref: "origin/dev" },
+		{ url: "https://example.invalid/omc.git", directory: "/cache/omc", ref: "origin/dev" },
 	] as const
 
 	test("#given two independent clones #when the refresh fetches them #then neither waits for the other to finish", async () => {
@@ -377,14 +377,14 @@ describe("fetchCacheClones", () => {
 		expect(events).toHaveLength(4)
 		// Serialized fetches produce start,end,start,end; the launch path pays one network
 		// round trip per repository, so the second start must precede the first end.
-		expect(events.indexOf("start:/cache/omo")).toBeLessThan(events.indexOf("end:/cache/senpi"))
+		expect(events.indexOf("start:/cache/omc")).toBeLessThan(events.indexOf("end:/cache/senpi"))
 	})
 
 	test("#given one failing fetch #when both run #then the failure is reported", async () => {
 		const attempted: string[] = []
 		const failing = fetchCacheClones(specs, async (spec) => {
 			attempted.push(spec.directory)
-			if (spec.directory === "/cache/omo") throw new Error("fetch refused")
+			if (spec.directory === "/cache/omc") throw new Error("fetch refused")
 		})
 		await expect(failing).rejects.toThrow("fetch refused")
 		expect(attempted).toHaveLength(2)
@@ -395,7 +395,7 @@ describe("fetchCacheClones", () => {
 		let releaseSlow: (() => void) | undefined
 		const slow = new Promise<void>((resolve) => { releaseSlow = resolve })
 		const failing = fetchCacheClones(specs, async (spec) => {
-			if (spec.directory === "/cache/omo") throw new Error("fetch refused")
+			if (spec.directory === "/cache/omc") throw new Error("fetch refused")
 			await slow
 			settled.push(spec.directory)
 		})

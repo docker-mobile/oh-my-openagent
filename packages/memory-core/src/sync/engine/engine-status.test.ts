@@ -50,7 +50,7 @@ test("every refusal maps to a closed code; no free-text crypto detail reaches th
   expect(Object.keys(status).sort()).toEqual(["code", "kind", "seq"])
 }, GIT_TEST_TIMEOUT)
 
-test("a cycle stopped by a stranded git lock reports failing with the kept path and the unlock action until a cycle succeeds (omo #10637)", async () => {
+test("a cycle stopped by a stranded git lock reports failing with the kept path and the unlock action until a cycle succeeds (omc #10637)", async () => {
   const { a, b } = await pair()
   await b.engine.runCycle()
   await a.write("one.md", "one\n")
@@ -98,7 +98,7 @@ test("an unexpected cycle error reports failing with a generic reason, never the
 test.each([
   ["a sign-in token that cannot be refreshed", () => new SyncAuthError(new Error("refresh refused"))],
   ["a request the server refuses as unauthorized (401)", () => new SyncHttpError("unauthorized", 401, false)],
-])("%s reports failing as an expired sign-in with the sign-in action until a cycle succeeds (omo #10637)", async (_name, makeError) => {
+])("%s reports failing as an expired sign-in with the sign-in action until a cycle succeeds (omc #10637)", async (_name, makeError) => {
   const { b } = await pair()
   const load = spyOn(b.store, "load").mockImplementation(async () => {
     throw makeError()
@@ -118,7 +118,7 @@ test.each([
 test.each([
   ["an unreachable sync service", () => new SyncNetworkError(new TypeError("fetch failed"))],
   ["a sync service answering 503", () => new SyncHttpError("unavailable", 503, true)],
-])("%s stays quiet while it is a blip, then reports failing as offline with the connection action, and clears on recovery (omo #10637)", async (_name, makeError) => {
+])("%s stays quiet while it is a blip, then reports failing as offline with the connection action, and clears on recovery (omc #10637)", async (_name, makeError) => {
   const { b } = await pair()
   await b.engine.runCycle()
   const lastGood = await b.engine.status()
@@ -145,7 +145,7 @@ test.each([
   expect(await b.engine.status()).toMatchObject({ kind: "synced", at: b.clock.now() })
 }, GIT_TEST_TIMEOUT)
 
-test("the owner hears when the shown failure appears, changes kind or clears, and never for a repeat or a hidden blip (omo #10637)", async () => {
+test("the owner hears when the shown failure appears, changes kind or clears, and never for a repeat or a hidden blip (omc #10637)", async () => {
   const server = new FakeSyncServer()
   let changes = 0
   const b = await makeDevice(server, "b", undefined, { onStatusChange: () => (changes += 1) })
@@ -171,7 +171,7 @@ test("the owner hears when the shown failure appears, changes kind or clears, an
   expect(changes).toBe(3)
 }, GIT_TEST_TIMEOUT)
 
-test("only a successful cycle clears a shown failure: an offline blip right after it keeps it shown and says nothing (omo #10637 review H1)", async () => {
+test("only a successful cycle clears a shown failure: an offline blip right after it keeps it shown and says nothing (omc #10637 review H1)", async () => {
   const server = new FakeSyncServer()
   let changes = 0
   const b = await makeDevice(server, "b", undefined, { onStatusChange: () => (changes += 1) })
@@ -194,7 +194,7 @@ test("only a successful cycle clears a shown failure: an offline blip right afte
   expect(await b.engine.status()).toMatchObject({ kind: "synced" })
 }, GIT_TEST_TIMEOUT)
 
-test("a stranded lock moving to another path is a change the owner hears about, because the action names the path (omo #10637 review L1)", async () => {
+test("a stranded lock moving to another path is a change the owner hears about, because the action names the path (omc #10637 review L1)", async () => {
   const server = new FakeSyncServer()
   let changes = 0
   const b = await makeDevice(server, "b", undefined, { onStatusChange: () => (changes += 1) })
@@ -210,7 +210,7 @@ test("a stranded lock moving to another path is a change the owner hears about, 
   expect(await b.engine.status()).toMatchObject({ failure: { paths: ["/memory/.git/HEAD.lock"] } })
 }, GIT_TEST_TIMEOUT)
 
-test("a listener that throws is logged and never stalls sync: the cycle settles, nextCycle() resolves and the next cycle runs (omo #10637 review M1)", async () => {
+test("a listener that throws is logged and never stalls sync: the cycle settles, nextCycle() resolves and the next cycle runs (omc #10637 review M1)", async () => {
   const server = new FakeSyncServer()
   const b = await makeDevice(server, "b", undefined, { onStatusChange: () => {
     throw new Error("listener boom")

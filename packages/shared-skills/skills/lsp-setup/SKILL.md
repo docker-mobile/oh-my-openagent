@@ -84,8 +84,8 @@ first project file that exists, plus one user file:
 | Harness | Project config | User config |
 |---|---|---|
 | Codex | `.codex/lsp-client.json` | `$CODEX_HOME/lsp-client.json` (default `~/.codex/lsp-client.json`) |
-| OpenCode | `.opencode/lsp.json`, then `.omo/lsp.json`, then `.omo/lsp-client.json` | `lsp.json` in the OpenCode config dir (default `~/.config/opencode/lsp.json`) |
-| OmO native | `.omo/lsp-client.json`, then `.pi/lsp-client.json` | `~/.omo/lsp-client.json` (`~/.pi/lsp-client.json` when only that one exists) |
+| OpenCode | `.opencode/lsp.json`, then `.omc/lsp.json`, then `.omc/lsp-client.json` | `lsp.json` in the OpenCode config dir (default `~/.config/opencode/lsp.json`) |
+| OmC native | `.omc/lsp-client.json`, then `.pi/lsp-client.json` | `~/.omc/lsp-client.json` (`~/.pi/lsp-client.json` when only that one exists) |
 
 On Codex, the two files in its row are read by the post-edit LSP hook (the diagnostics run after
 an edit); the `lsp_*` tools do not read them.
@@ -135,7 +135,7 @@ bun scripts/verify-lsp.ts <file> --timeout=90000
 
 `OK` = the server started and answered. `FAIL: language server not installed`
 = go back to step 2. Other `FAIL` text carries the server/startup error.
-`SKIP` = the engine source could not be located; run from inside the omo
+`SKIP` = the engine source could not be located; run from inside the omc
 repo/worktree, or call the `lsp` MCP `diagnostics` tool directly.
 
 ---

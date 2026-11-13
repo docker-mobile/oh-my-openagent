@@ -8,7 +8,7 @@ Monitor output is treated as untrusted process output. It is never treated as a 
 
 ## Enable Monitor
 
-Monitor is OpenCode-only. Put the block in `~/.omo/omo.jsonc` (or project `.omo/omo.jsonc`) under `"[opencode]"` and set `enabled` to `true`:
+Monitor is OpenCode-only. Put the block in `~/.omc/omc.jsonc` (or project `.omc/omc.jsonc`) under `"[opencode]"` and set `enabled` to `true`:
 
 ```jsonc
 {

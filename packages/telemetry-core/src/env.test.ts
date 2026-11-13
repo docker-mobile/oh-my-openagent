@@ -8,30 +8,30 @@ import {
 
 const OPT_OUT_CASES = [
   ["unset env enables telemetry", {}, false],
-  ["global disable 1", { OMO_DISABLE_POSTHOG: "1" }, true],
-  ["global disable true", { OMO_DISABLE_POSTHOG: "true" }, true],
-  ["global disable yes", { OMO_DISABLE_POSTHOG: "yes" }, true],
-  ["global disable trims and lowercases", { OMO_DISABLE_POSTHOG: " TRUE " }, true],
-  ["global send 0", { OMO_SEND_ANONYMOUS_TELEMETRY: "0" }, true],
-  ["global send false", { OMO_SEND_ANONYMOUS_TELEMETRY: "false" }, true],
-  ["global send no", { OMO_SEND_ANONYMOUS_TELEMETRY: "no" }, true],
-  ["global send trims and lowercases", { OMO_SEND_ANONYMOUS_TELEMETRY: " No " }, true],
-  ["codex disable 1", { OMO_CODEX_DISABLE_POSTHOG: "1" }, true],
-  ["codex disable true", { OMO_CODEX_DISABLE_POSTHOG: "true" }, true],
-  ["codex disable yes", { OMO_CODEX_DISABLE_POSTHOG: "yes" }, true],
-  ["codex disable trims and lowercases", { OMO_CODEX_DISABLE_POSTHOG: " YES " }, true],
-  ["codex send 0", { OMO_CODEX_SEND_ANONYMOUS_TELEMETRY: "0" }, true],
-  ["codex send false", { OMO_CODEX_SEND_ANONYMOUS_TELEMETRY: "false" }, true],
-  ["codex send no", { OMO_CODEX_SEND_ANONYMOUS_TELEMETRY: "no" }, true],
-  ["codex send trims and lowercases", { OMO_CODEX_SEND_ANONYMOUS_TELEMETRY: " FALSE " }, true],
-  ["approved codex send yes convergence", { OMO_CODEX_SEND_ANONYMOUS_TELEMETRY: "yes" }, true],
-  ["invalid disable value", { OMO_CODEX_DISABLE_POSTHOG: "maybe" }, false],
-  ["global telemetry disable 1", { OMO_DISABLE_TELEMETRY: "1" }, true],
-  ["global telemetry disable true", { OMO_DISABLE_TELEMETRY: "true" }, true],
-  ["global telemetry disable yes", { OMO_DISABLE_TELEMETRY: "yes" }, true],
-  ["global telemetry disable trims and lowercases", { OMO_DISABLE_TELEMETRY: " Yes " }, true],
-  ["global telemetry disable 0 keeps telemetry on", { OMO_DISABLE_TELEMETRY: "0" }, false],
-  ["global telemetry disable empty keeps telemetry on", { OMO_DISABLE_TELEMETRY: "" }, false],
+  ["global disable 1", { OMC_DISABLE_POSTHOG: "1" }, true],
+  ["global disable true", { OMC_DISABLE_POSTHOG: "true" }, true],
+  ["global disable yes", { OMC_DISABLE_POSTHOG: "yes" }, true],
+  ["global disable trims and lowercases", { OMC_DISABLE_POSTHOG: " TRUE " }, true],
+  ["global send 0", { OMC_SEND_ANONYMOUS_TELEMETRY: "0" }, true],
+  ["global send false", { OMC_SEND_ANONYMOUS_TELEMETRY: "false" }, true],
+  ["global send no", { OMC_SEND_ANONYMOUS_TELEMETRY: "no" }, true],
+  ["global send trims and lowercases", { OMC_SEND_ANONYMOUS_TELEMETRY: " No " }, true],
+  ["codex disable 1", { OMC_CODEX_DISABLE_POSTHOG: "1" }, true],
+  ["codex disable true", { OMC_CODEX_DISABLE_POSTHOG: "true" }, true],
+  ["codex disable yes", { OMC_CODEX_DISABLE_POSTHOG: "yes" }, true],
+  ["codex disable trims and lowercases", { OMC_CODEX_DISABLE_POSTHOG: " YES " }, true],
+  ["codex send 0", { OMC_CODEX_SEND_ANONYMOUS_TELEMETRY: "0" }, true],
+  ["codex send false", { OMC_CODEX_SEND_ANONYMOUS_TELEMETRY: "false" }, true],
+  ["codex send no", { OMC_CODEX_SEND_ANONYMOUS_TELEMETRY: "no" }, true],
+  ["codex send trims and lowercases", { OMC_CODEX_SEND_ANONYMOUS_TELEMETRY: " FALSE " }, true],
+  ["approved codex send yes convergence", { OMC_CODEX_SEND_ANONYMOUS_TELEMETRY: "yes" }, true],
+  ["invalid disable value", { OMC_CODEX_DISABLE_POSTHOG: "maybe" }, false],
+  ["global telemetry disable 1", { OMC_DISABLE_TELEMETRY: "1" }, true],
+  ["global telemetry disable true", { OMC_DISABLE_TELEMETRY: "true" }, true],
+  ["global telemetry disable yes", { OMC_DISABLE_TELEMETRY: "yes" }, true],
+  ["global telemetry disable trims and lowercases", { OMC_DISABLE_TELEMETRY: " Yes " }, true],
+  ["global telemetry disable 0 keeps telemetry on", { OMC_DISABLE_TELEMETRY: "0" }, false],
+  ["global telemetry disable empty keeps telemetry on", { OMC_DISABLE_TELEMETRY: "" }, false],
 ] as const
 
 describe("telemetry API key configuration", () => {
@@ -50,7 +50,7 @@ describe("opt-out telemetry env matrix", () => {
     "#given %s #when evaluated #then disabled=%p",
     (_name, env, expected) => {
       // given
-      const productPrefix = "OMO_CODEX"
+      const productPrefix = "OMC_CODEX"
 
       // when
       const result = shouldDisableTelemetry({ env, productEnvPrefix: productPrefix })
@@ -64,9 +64,9 @@ describe("opt-out telemetry env matrix", () => {
 describe("DO_NOT_TRACK global opt-out", () => {
   describe("#given DO_NOT_TRACK is 1", () => {
     test.each([
-      ["omo-opencode", "OMO_OPENCODE"],
-      ["omo-codex", "OMO_CODEX"],
-      ["omo-senpi", "OMO_SENPI"],
+      ["omc-opencode", "OMC_OPENCODE"],
+      ["omc-codex", "OMC_CODEX"],
+      ["omc-senpi", "OMC_SENPI"],
     ] as const)("#when evaluated for %s #then telemetry is disabled", (_product, productEnvPrefix) => {
       // when
       const result = shouldDisableTelemetry({
@@ -84,7 +84,7 @@ describe("DO_NOT_TRACK global opt-out", () => {
       // when
       const result = shouldDisableTelemetry({
         env: { DO_NOT_TRACK: " TRUE " },
-        productEnvPrefix: "OMO_SENPI",
+        productEnvPrefix: "OMC_SENPI",
       })
 
       // then
@@ -98,7 +98,7 @@ describe("DO_NOT_TRACK global opt-out", () => {
       ["unset", {}],
     ] as const)("#when the value is %s #then telemetry remains enabled", (_name, env) => {
       // when
-      const result = shouldDisableTelemetry({ env, productEnvPrefix: "OMO_SENPI" })
+      const result = shouldDisableTelemetry({ env, productEnvPrefix: "OMC_SENPI" })
 
       // then
       expect(result).toBe(false)
@@ -111,11 +111,11 @@ describe("DO_NOT_TRACK global opt-out", () => {
       const env: Record<string, string | undefined> = { DO_NOT_TRACK: "false" }
 
       // when
-      const beforeOptOut = shouldDisableTelemetry({ env, productEnvPrefix: "OMO_SENPI" })
+      const beforeOptOut = shouldDisableTelemetry({ env, productEnvPrefix: "OMC_SENPI" })
       env.DO_NOT_TRACK = "yes"
-      const duringOptOut = shouldDisableTelemetry({ env, productEnvPrefix: "OMO_SENPI" })
+      const duringOptOut = shouldDisableTelemetry({ env, productEnvPrefix: "OMC_SENPI" })
       env.DO_NOT_TRACK = ""
-      const afterOptOut = shouldDisableTelemetry({ env, productEnvPrefix: "OMO_SENPI" })
+      const afterOptOut = shouldDisableTelemetry({ env, productEnvPrefix: "OMC_SENPI" })
 
       // then
       expect([beforeOptOut, duringOptOut, afterOptOut]).toEqual([false, true, false])

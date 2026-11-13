@@ -6,7 +6,7 @@ import { readFileSync } from "node:fs"
 import { createHash } from "node:crypto"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
-import { runSenpiInstaller } from "../packages/omo-senpi/src/install/install-senpi"
+import { runSenpiInstaller } from "../packages/omc-senpi/src/install/install-senpi"
 import { BUILD_NODES, selectBuildNodes } from "./build-nodes"
 
 const packageManifestPath = new URL("../package.json", import.meta.url)
@@ -48,18 +48,18 @@ describe("Senpi compatibility test script", () => {
     const prepublishOnlyScript = manifest.scripts?.prepublishOnly ?? ""
 
     // #when
-    const shipsPluginTree = files.includes("packages/omo-senpi/plugin")
+    const shipsPluginTree = files.includes("packages/omc-senpi/plugin")
     const stageSteps = (manifest.scripts?.["build:senpi-plugin:stage"] ?? "").split(" && ")
     // The daemon launch spec is generated at build time so the plugin payload ships the only argv
     // source the task daemon has, so it must run before skill sync packages the payload.
-    const launchSpecIndex = stageSteps.indexOf("node packages/omo-senpi/plugin/scripts/build-daemon-launch-spec.mjs")
-    const syncSkillsIndex = stageSteps.indexOf("node packages/omo-senpi/plugin/scripts/sync-skills.mjs")
+    const launchSpecIndex = stageSteps.indexOf("node packages/omc-senpi/plugin/scripts/build-daemon-launch-spec.mjs")
+    const syncSkillsIndex = stageSteps.indexOf("node packages/omc-senpi/plugin/scripts/sync-skills.mjs")
     const senpiNode = BUILD_NODES.find((node) => node.id === "senpi-plugin")
 
     // #then
     expect(
       shipsPluginTree,
-      "root npm files must NOT ship packages/omo-senpi/plugin while the senpi platform flag is disabled for release",
+      "root npm files must NOT ship packages/omc-senpi/plugin while the senpi platform flag is disabled for release",
     ).toBe(false)
     expect(launchSpecIndex, "the Senpi stage must generate the daemon launch spec").toBeGreaterThanOrEqual(0)
     expect(syncSkillsIndex, "the daemon launch spec must be generated before skill sync").toBeGreaterThan(launchSpecIndex)
@@ -83,10 +83,10 @@ describe("Senpi compatibility test script", () => {
 
   test("#given a packed-layout root with only senpi plugin artifacts #when installer runs #then settings points at that shipped plugin tree", async () => {
     // #given
-    const tempRoot = await mkdtemp(join(tmpdir(), "omo-senpi-packed-root-"))
-    const agentDir = await mkdtemp(join(tmpdir(), "omo-senpi-packed-agent-"))
+    const tempRoot = await mkdtemp(join(tmpdir(), "omc-senpi-packed-root-"))
+    const agentDir = await mkdtemp(join(tmpdir(), "omc-senpi-packed-agent-"))
     try {
-      const pluginRoot = join(tempRoot, "packages", "omo-senpi", "plugin")
+      const pluginRoot = join(tempRoot, "packages", "omc-senpi", "plugin")
       await mkdir(join(pluginRoot, "extensions"), { recursive: true })
       const requiredSkillNames = [
         "ast-grep",
@@ -121,29 +121,29 @@ describe("Senpi compatibility test script", () => {
       // Credential-gated skill: staged outside pi.skills but still a required payload artifact.
       await mkdir(join(pluginRoot, "skills-conditional", "x-search"), { recursive: true })
       await writeFile(join(pluginRoot, "skills-conditional", "x-search", "SKILL.md"), "# x-search\n")
-      await writeFile(join(pluginRoot, "package.json"), JSON.stringify({ name: "@code-yeongyu/omo-senpi" }))
-      await writeFile(join(pluginRoot, "extensions", "omo.js"), "export default {}\n")
-      await writeFile(join(pluginRoot, "extensions", "omo-task.js"), "export const createTaskComponent = () => ({})\n")
-      await writeFile(join(pluginRoot, "extensions", "omo-member.js"), "export const runMember = () => undefined\n")
-      await writeFile(join(pluginRoot, "extensions", "omo-computer-use.js"), "export {}\n")
-      await writeFile(join(pluginRoot, "extensions", "omo-memory-doctor.js"), "export {}\n")
-      await writeFile(join(pluginRoot, "extensions", "omo-memory-memfs.js"), "export {}\n")
-      await writeFile(join(pluginRoot, "extensions", "omo-memory-palace.js"), "export {}\n")
-      await writeFile(join(pluginRoot, "extensions", "omo-device-account.js"), "export {}\n")
-      await writeFile(join(pluginRoot, "extensions", "omo-memory-commands.js"), "export {}\n")
-      await writeFile(join(pluginRoot, "extensions", "omo-session-history.js"), "export {}\n")
-      await writeFile(join(pluginRoot, "extensions", "omo-recall-store.js"), "export {}\n")
-      await writeFile(join(pluginRoot, "extensions", "omo-device-service.js"), "export {}\n")
-      await writeFile(join(pluginRoot, "extensions", "omo-telemetry-posthog.js"), "export {}\n")
-      await writeFile(join(pluginRoot, "extensions", "omo-telemetry-otlp.js"), "export {}\n")
-      await writeFile(join(pluginRoot, "extensions", "omo-memory-sync.js"), "export {}\n")
+      await writeFile(join(pluginRoot, "package.json"), JSON.stringify({ name: "@code-yeongyu/omc-senpi" }))
+      await writeFile(join(pluginRoot, "extensions", "omc.js"), "export default {}\n")
+      await writeFile(join(pluginRoot, "extensions", "omc-task.js"), "export const createTaskComponent = () => ({})\n")
+      await writeFile(join(pluginRoot, "extensions", "omc-member.js"), "export const runMember = () => undefined\n")
+      await writeFile(join(pluginRoot, "extensions", "omc-computer-use.js"), "export {}\n")
+      await writeFile(join(pluginRoot, "extensions", "omc-memory-doctor.js"), "export {}\n")
+      await writeFile(join(pluginRoot, "extensions", "omc-memory-memfs.js"), "export {}\n")
+      await writeFile(join(pluginRoot, "extensions", "omc-memory-palace.js"), "export {}\n")
+      await writeFile(join(pluginRoot, "extensions", "omc-device-account.js"), "export {}\n")
+      await writeFile(join(pluginRoot, "extensions", "omc-memory-commands.js"), "export {}\n")
+      await writeFile(join(pluginRoot, "extensions", "omc-session-history.js"), "export {}\n")
+      await writeFile(join(pluginRoot, "extensions", "omc-recall-store.js"), "export {}\n")
+      await writeFile(join(pluginRoot, "extensions", "omc-device-service.js"), "export {}\n")
+      await writeFile(join(pluginRoot, "extensions", "omc-telemetry-posthog.js"), "export {}\n")
+      await writeFile(join(pluginRoot, "extensions", "omc-telemetry-otlp.js"), "export {}\n")
+      await writeFile(join(pluginRoot, "extensions", "omc-memory-sync.js"), "export {}\n")
       await writeFile(join(pluginRoot, "extensions", "loro_wasm_bg.wasm"), "")
       await writeFile(join(pluginRoot, "extensions", "CaseFolding.txt"), "")
-      await writeFile(join(pluginRoot, "extensions", "omo-thread-client.js"), "export {}\n")
-      await writeFile(join(pluginRoot, "extensions", "omo-telemetry-recovery.js"), "export {}\n")
-      await writeFile(join(pluginRoot, "extensions", "omo-feedback.js"), "export {}\n")
-      await writeFile(join(pluginRoot, "extensions", "omo-desktop-toolkit.js"), "export {}\n")
-      await writeFile(join(pluginRoot, "extensions", "omo-claim-receipt.js"), "export {}\n")
+      await writeFile(join(pluginRoot, "extensions", "omc-thread-client.js"), "export {}\n")
+      await writeFile(join(pluginRoot, "extensions", "omc-telemetry-recovery.js"), "export {}\n")
+      await writeFile(join(pluginRoot, "extensions", "omc-feedback.js"), "export {}\n")
+      await writeFile(join(pluginRoot, "extensions", "omc-desktop-toolkit.js"), "export {}\n")
+      await writeFile(join(pluginRoot, "extensions", "omc-claim-receipt.js"), "export {}\n")
       await writeFile(join(pluginRoot, "extensions", "assets.generated.json"), "{}\n")
       await mkdir(join(pluginRoot, "runtime", "agent-toolkit-sdk"), { recursive: true })
       await writeFile(join(pluginRoot, "runtime", "agent-toolkit-sdk", "sdk.js"), "export {}\n")
@@ -161,7 +161,7 @@ describe("Senpi compatibility test script", () => {
       // packed root without it is genuinely incomplete and the installer is right to reject it.
       await writeFile(join(pluginRoot, "extensions", "memory-run-supervisor.mjs"), "#!/usr/bin/env node\n")
       await writeFile(join(pluginRoot, "extensions", "gateway-store-worker.mjs"), "export {}\n")
-      await writeFile(join(pluginRoot, "extensions", "omo-computer-run-worker.mjs"), "export {}\n")
+      await writeFile(join(pluginRoot, "extensions", "omc-computer-run-worker.mjs"), "export {}\n")
       await writeFile(join(pluginRoot, "extensions", "quickjs.wasm"), "")
       await mkdir(join(pluginRoot, "scripts"), { recursive: true })
       await writeFile(join(pluginRoot, "scripts", "install.mjs"), "#!/usr/bin/env node\n")
@@ -172,14 +172,14 @@ describe("Senpi compatibility test script", () => {
       await writeFile(join(pluginRoot, "runtime", "lsp-daemon", "dist", "daemon-client.js"), "export {}\n")
       await writeFile(join(pluginRoot, "runtime", "lsp-daemon", "dist", "daemon-client.d.ts"), "export {}\n")
       await writeFile(join(pluginRoot, "runtime", "lsp-daemon", "dist", "package.json"), JSON.stringify({ version: "0.1.0" }))
-      await writeFile(join(pluginRoot, "runtime", "lsp-daemon", "dist", ".omo-runtime-manifest.json"), "{}\n")
+      await writeFile(join(pluginRoot, "runtime", "lsp-daemon", "dist", ".omc-runtime-manifest.json"), "{}\n")
       await mkdir(join(pluginRoot, "runtime", "agent-toolkit", "ulw-loop"), { recursive: true })
       await writeFile(join(pluginRoot, "runtime", "agent-toolkit", "cli.js"), "console.log('agent-toolkit')\n")
       await writeFile(join(pluginRoot, "runtime", "agent-toolkit", "ulw-loop", "cli.js"), "console.log('ulw-loop')\n")
-      const toolkitShim = join(pluginRoot, "runtime", "agent-toolkit", "omo-agent-toolkit")
+      const toolkitShim = join(pluginRoot, "runtime", "agent-toolkit", "omc-agent-toolkit")
       await writeFile(toolkitShim, "#!/bin/sh\nexec node \"$(dirname \"$0\")/cli.js\" \"$@\"\n")
       await chmod(toolkitShim, 0o755)
-      await writeFile(join(pluginRoot, "runtime", "agent-toolkit", "omo-agent-toolkit.cmd"), "@echo off\r\nnode \"%~dp0cli.js\" %*\r\n")
+      await writeFile(join(pluginRoot, "runtime", "agent-toolkit", "omc-agent-toolkit.cmd"), "@echo off\r\nnode \"%~dp0cli.js\" %*\r\n")
       await mkdir(join(pluginRoot, "runtime", "ast-grep-mcp"), { recursive: true })
       const astGrepRuntime = join(pluginRoot, "runtime", "ast-grep-mcp", "cli.js")
       const astGrepRuntimeContent = "console.log('ast-grep mcp')\n"
@@ -223,8 +223,8 @@ describe("Senpi compatibility test script", () => {
     // #when
     const expectedCommands = [
       "bun run build:senpi-plugin",
-      "bun check --no-script --all -p packages/omo-senpi/tsconfig.json",
-      "bun test --timeout 20000 packages/omo-senpi",
+      "bun check --no-script --all -p packages/omc-senpi/tsconfig.json",
+      "bun test --timeout 20000 packages/omc-senpi",
     ]
     const commandIndexes = expectedCommands.map((command) => script.indexOf(command))
     let isOrdered = true
@@ -256,13 +256,13 @@ describe("Senpi compatibility test script", () => {
     expect(senpiJob).toContain("bun run build:senpi-plugin")
     expect(senpiJob).toContain("npm pack --pack-destination")
     expect(senpiJob).toContain("npm --prefix packages/lsp-daemon test -- test/daemon-roundtrip.test.ts")
-    expect(senpiJob).toContain("bun check --no-script --all -p packages/omo-senpi/tsconfig.json")
+    expect(senpiJob).toContain("bun check --no-script --all -p packages/omc-senpi/tsconfig.json")
     expect(posixScript).toContain("bun run build:senpi-plugin")
     expect(posixScript).toContain("npm pack --pack-destination")
     expect(posixScript).toContain("npm --prefix packages/lsp-daemon test -- test/daemon-roundtrip.test.ts")
-    expect(posixScript).toContain("bun check --no-script --all -p packages/omo-senpi/tsconfig.json")
+    expect(posixScript).toContain("bun check --no-script --all -p packages/omc-senpi/tsconfig.json")
     expect(posixScript).toContain("bun test ./.agents/skills/senpi-qa/scripts/resolve-evidence-dir.test.mjs")
-    expect(posixScript).toContain("bun test --timeout 20000 packages/omo-senpi")
+    expect(posixScript).toContain("bun test --timeout 20000 packages/omc-senpi")
     expect(senpiJob).not.toContain("senpi install")
     expect(needsReferences.length, "senpi-compatibility must be included in both downstream needs lists").toBeGreaterThanOrEqual(2)
   })

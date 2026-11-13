@@ -4,8 +4,8 @@ import { mkdirSync, rmSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 
 const pluginConfigDetectionOptions = {
-  basenames: ["oh-my-openagent"],
-  legacyBasenames: ["oh-my-opencode"],
+  basenames: ["oh-my-cybersecurity"],
+  legacyBasenames: ["oh-my-cybersecurity"],
 } as const
 
 describe("parseJsonc", () => {
@@ -161,7 +161,7 @@ describe("parseJsonc", () => {
     const jsonc = `\uFEFF{
       // Windows-saved file with BOM
       "$schema": "https://opencode.ai/config.json",
-      "plugin": ["oh-my-openagent@3.15.3"],
+      "plugin": ["oh-my-cybersecurity@3.15.3"],
     }`
 
     // when
@@ -169,7 +169,7 @@ describe("parseJsonc", () => {
 
     // then
     expect(result.$schema).toBe("https://opencode.ai/config.json")
-    expect(result.plugin).toEqual(["oh-my-openagent@3.15.3"])
+    expect(result.plugin).toEqual(["oh-my-cybersecurity@3.15.3"])
   })
 })
 
@@ -270,7 +270,7 @@ describe("readJsoncFile", () => {
     const jsonBytes = Buffer.from(`{
       // Created on Windows with BOM
       "$schema": "https://opencode.ai/config.json",
-      "plugin": ["oh-my-openagent@3.15.3"]
+      "plugin": ["oh-my-cybersecurity@3.15.3"]
     }`)
     writeFileSync(testFile, Buffer.concat([bomBytes, jsonBytes]))
 
@@ -280,7 +280,7 @@ describe("readJsoncFile", () => {
     // then
     expect(result).not.toBeNull()
     expect(result?.$schema).toBe("https://opencode.ai/config.json")
-    expect(result?.plugin).toEqual(["oh-my-openagent@3.15.3"])
+    expect(result?.plugin).toEqual(["oh-my-cybersecurity@3.15.3"])
   })
 })
 
@@ -339,7 +339,7 @@ describe("detectPluginConfigFile", () => {
     clearPluginConfigFileDetectionCache()
   })
 
-  test("prefers oh-my-openagent over oh-my-opencode when both jsonc files exist", () => {
+  test("prefers oh-my-cybersecurity over oh-my-cybersecurity when both jsonc files exist", () => {
     // given
     mkdirSync(testDir, { recursive: true })
     writeFileSync(join(testDir, "oh-my-openagent.jsonc"), "{}")
@@ -354,7 +354,7 @@ describe("detectPluginConfigFile", () => {
     expect(result.legacyPath).toBe(join(testDir, "oh-my-opencode.jsonc"))
   })
 
-  test("falls back to oh-my-opencode when oh-my-openagent doesn't exist", () => {
+  test("falls back to oh-my-cybersecurity when oh-my-cybersecurity doesn't exist", () => {
     // given
     mkdirSync(testDir, { recursive: true })
     writeFileSync(join(testDir, "oh-my-opencode.jsonc"), "{}")
@@ -411,7 +411,7 @@ describe("detectPluginConfigFile", () => {
     expect(result.legacyPath).toBe(join(testDir, "oh-my-opencode.json"))
   })
 
-  test("loads oh-my-openagent when only canonical jsonc exists", () => {
+  test("loads oh-my-cybersecurity when only canonical jsonc exists", () => {
     // given
     mkdirSync(testDir, { recursive: true })
     writeFileSync(join(testDir, "oh-my-openagent.jsonc"), "{}")

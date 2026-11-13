@@ -89,7 +89,7 @@ function recordMessages(socket: Socket, recorder: ReturnType<typeof createMessag
 }
 
 function answerProbe(socket: Socket, message: unknown, paths: DaemonPaths): boolean {
-	if (jsonRpcMethod(message) !== "omo/ping") return false;
+	if (jsonRpcMethod(message) !== "omc/ping") return false;
 	expect(extractToken(message)).toBe(readFileSync(paths.auth, "utf8").trim());
 	socket.write(
 		encodeJsonLine({
@@ -638,9 +638,9 @@ function extractToken(message: unknown): string | null {
 	if (!message || typeof message !== "object" || Array.isArray(message)) return null;
 	const params = Reflect.get(message, "params");
 	if (!params || typeof params !== "object" || Array.isArray(params)) return null;
-	const omo = Reflect.get(params, "_omo");
-	if (!omo || typeof omo !== "object" || Array.isArray(omo)) return null;
+	const omc = Reflect.get(params, "_omo");
+	if (!omc || typeof omc !== "object" || Array.isArray(omc)) return null;
 	const expected = authEnvelope("probe");
-	const token = Reflect.get(omo, "token");
-	return Reflect.get(omo, "protocolVersion") === expected.protocolVersion && typeof token === "string" ? token : null;
+	const token = Reflect.get(omc, "token");
+	return Reflect.get(omc, "protocolVersion") === expected.protocolVersion && typeof token === "string" ? token : null;
 }

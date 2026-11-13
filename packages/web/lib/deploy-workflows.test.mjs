@@ -17,7 +17,7 @@ test("web-deploy passes the missing-history reason only for workflow_dispatch: a
 test("cutover-target-deploy runs the same retain step before its web deploy", async () => {
   const text = await workflow("cutover-target-deploy.yml")
   const retain = text.indexOf(
-    "scripts/retain-static-assets.mjs .open-next/assets https://omo.dev 1800 --bootstrap-current",
+    "scripts/retain-static-assets.mjs .open-next/assets https://omc.nga.hm 1800 --bootstrap-current",
   )
   expect(retain).toBeGreaterThan(0)
   expect(retain).toBeLessThan(text.indexOf("opennextjs-cloudflare deploy"))
@@ -27,8 +27,8 @@ test("cutover-target-deploy runs the same retain step before its web deploy", as
 test("web-deploy skips pushes to master: production deploys from dev only", async () => {
   const parsed = Bun.YAML.parse(await workflow("web-deploy.yml"))
   expect(parsed.jobs.deploy.if).toBe(
-    "github.repository == 'code-yeongyu/oh-my-openagent' && github.ref != 'refs/heads/master'",
+    "github.repository == 'code-yeongyu/oh-my-cybersecurity' && github.ref != 'refs/heads/master'",
   )
-  expect(parsed.jobs.deploy.environment.name).toBe("omo-production")
+  expect(parsed.jobs.deploy.environment.name).toBe("omc-production")
   expect(parsed.on.push.branches).toContain("dev")
 })

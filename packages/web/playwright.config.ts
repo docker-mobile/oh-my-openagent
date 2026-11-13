@@ -58,7 +58,7 @@ export default defineConfig({
     {
       // The launch flag is a build input: only the build sees it, the server does not.
       command:
-        "OMO_WEB_DESKTOP_DOWNLOAD=1 bun run build && OMO_WEB_DESKTOP_DOWNLOAD= bun --bun next start",
+        "OMC_WEB_DESKTOP_DOWNLOAD=1 bun run build && OMC_WEB_DESKTOP_DOWNLOAD= bun --bun next start",
       url: "http://127.0.0.1:3000",
       reuseExistingServer: !process.env.CI,
       timeout: 180000,

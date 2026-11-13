@@ -2,7 +2,7 @@ import { existsSync } from "node:fs"
 import { join } from "node:path"
 import { afterEach, describe, expect, test } from "bun:test"
 
-import { loadRuntimeState } from "@oh-my-opencode/team-core/team-state-store"
+import { loadRuntimeState } from "@oh-my-cybersecurity/team-core/team-state-store"
 
 import { normalizeSenpiTeamSpec } from "./normalize"
 import { SenpiTeamRuntimeError, createTeam } from "./runtime"

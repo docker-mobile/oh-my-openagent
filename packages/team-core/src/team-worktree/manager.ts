@@ -1,5 +1,5 @@
 import path from "node:path"
-import { spawn as bunSpawn } from "@oh-my-opencode/utils/runtime"
+import { spawn as bunSpawn } from "@oh-my-cybersecurity/utils/runtime"
 
 export type TeamModeConfig = {
   worktreeBaseDir?: string

@@ -5,7 +5,7 @@ import { foldRefusal, type ReceivedChain, type ReceiverRefusal } from "./vendor/
 import { createKeyringReceiver, receiveKeyringChain } from "./vendor/sync-format/receive.ts"
 
 /**
- * The merged omo-service receiver (vendored sync-format), run over the client's entries so the
+ * The merged omc-service receiver (vendored sync-format), run over the client's entries so the
  * client refuses exactly what the server's reference receiver refuses (sync-design 8.2): canonical
  * member and wrap order, recovery-join author and enrolment, one veto per join, batch rows without
  * bodies, monotonic sequence, and every fork-resolution's branches and evidence proof.

@@ -148,7 +148,7 @@ describe("LspRequestContext", () => {
 	it("#given standalone MCP env #when translated #then resolves exact defaults and relative paths", () => {
 		const root = tempRoot("lsp-context-standalone-");
 		const home = tempRoot("lsp-context-home-");
-		const absoluteProjectPath = join(root, ".omo", "lsp-client.json");
+		const absoluteProjectPath = join(root, ".omc", "lsp-client.json");
 
 		const context = createStandaloneMcpRequestContext({
 			cwd: root,

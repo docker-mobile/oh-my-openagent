@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 
-import type { OmoTaskTranscriptRetention } from "@oh-my-opencode/omo-config-core"
+import type { OmoTaskTranscriptRetention } from "@oh-my-cybersecurity/omc-config-core"
 
 import { isSpawnSpecV1, type SpawnSpecV1, type TaskRecord } from "../state"
 import {
@@ -104,7 +104,7 @@ describe("composeTaskArchiveContentJsonl", () => {
   test("#given a named task #when composing #then a session_info entry carries a finder-visible name", () => {
     const lines = parseArchiveLines(composeTaskArchiveContentJsonl(input()).text)
     const info = lines.find((line) => line.type === "session_info")
-    expect(info?.name).toBe("omo task deep-dive (completed)")
+    expect(info?.name).toBe("omc task deep-dive (completed)")
   })
 
   test("#given a record #when composing #then the metadata entry carries parent linkage, models, outcome, usage, and dag owner", () => {
@@ -159,11 +159,11 @@ describe("composeTaskArchiveContentJsonl", () => {
     expect(messages[1]?.message?.content).toEqual([{ type: "text", text: "Working on it." }])
     expect(messages[2]?.message?.content).toEqual([{ type: "text", text: "Final answer text" }])
 
-    const toolEntries = lines.filter((line) => line.customType === "omo-senpi.task-tool")
+    const toolEntries = lines.filter((line) => line.customType === "omc-senpi.task-tool")
     expect(toolEntries).toHaveLength(2)
     expect(toolEntries[1]?.data).toEqual({ tool: "bash", is_error: true })
 
-    const errorEntries = lines.filter((line) => line.customType === "omo-senpi.task-error")
+    const errorEntries = lines.filter((line) => line.customType === "omc-senpi.task-error")
     expect(errorEntries).toHaveLength(1)
     expect(errorEntries[0]?.data).toEqual({ message: "turn failed", stop_reason: "error" })
 
@@ -290,7 +290,7 @@ describe("archive redaction", () => {
     const meta = lines.find((line) => line.customType === TASK_ARCHIVE_CUSTOM_TYPE)
     expect(meta?.data?.final_response).toBe("done, token was [REDACTED]")
     expect(meta?.data?.error_message).toBe("failed after auth with [REDACTED]")
-    const tool = lines.find((line) => line.customType === "omo-senpi.task-tool")
+    const tool = lines.find((line) => line.customType === "omc-senpi.task-tool")
     expect(tool?.data).toEqual({ tool: "bash", output: "export KEY=[REDACTED]", is_error: false })
   })
 

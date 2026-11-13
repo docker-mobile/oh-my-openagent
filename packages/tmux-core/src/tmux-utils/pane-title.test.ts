@@ -9,16 +9,16 @@ const itWithTmux = it.skipIf(process.platform === "win32" || tmuxPath === null)
 
 describe("buildSubagentPaneTitle", () => {
   it("#given format syntax in the description #when the title is built #then every # is doubled after the 20-character cut", () => {
-    expect(buildSubagentPaneTitle("#(touch x)#{pane_id} and more")).toBe("omo-subagent-##(touch x)##{pane_id}")
+    expect(buildSubagentPaneTitle("#(touch x)#{pane_id} and more")).toBe("omc-subagent-##(touch x)##{pane_id}")
   })
 
   it("#given a NUL byte #when the title is built #then it is dropped so the tmux spawn does not throw", () => {
-    expect(buildSubagentPaneTitle("a\0b")).toBe("omo-subagent-ab")
+    expect(buildSubagentPaneTitle("a\0b")).toBe("omc-subagent-ab")
   })
 
   itWithTmux("#given a real tmux server #when select-pane -T gets the title #then tmux stores it literally instead of expanding #{} or starting a #() job", () => {
-    const tempDir = mkdtempSync(join(tmpdir(), "omo-tmux-title-"))
-    const socketName = `omo-title-${process.pid}-${Date.now()}`
+    const tempDir = mkdtempSync(join(tmpdir(), "omc-tmux-title-"))
+    const socketName = `omc-title-${process.pid}-${Date.now()}`
     const { TMUX: _outerTmux, ...env } = process.env
     const tmux = (...args: string[]) =>
       Bun.spawnSync([tmuxPath ?? "tmux", "-L", socketName, "-f", "/dev/null", ...args], { stdout: "pipe", stderr: "pipe", env })
@@ -28,7 +28,7 @@ describe("buildSubagentPaneTitle", () => {
 
       expect(tmux("select-pane", "-T", buildSubagentPaneTitle("#{pane_id}#(touch c)")).exitCode).toBe(0)
 
-      expect(tmux("display-message", "-p", "#{pane_title}").stdout.toString().trim()).toBe("omo-subagent-#{pane_id}#(touch c)")
+      expect(tmux("display-message", "-p", "#{pane_title}").stdout.toString().trim()).toBe("omc-subagent-#{pane_id}#(touch c)")
       expect(existsSync(join(tempDir, "c"))).toBe(false)
     } finally {
       tmux("kill-server")
@@ -37,10 +37,10 @@ describe("buildSubagentPaneTitle", () => {
   })
 
   itWithTmux("#given a real tmux server #when split-window -c gets an escaped directory #then the pane opens in the literal directory", () => {
-    const tempDir = mkdtempSync(join(tmpdir(), "omo-tmux-dir-"))
+    const tempDir = mkdtempSync(join(tmpdir(), "omc-tmux-dir-"))
     const literalDir = join(tempDir, "#{session_name}")
     mkdirSync(literalDir)
-    const socketName = `omo-dir-${process.pid}-${Date.now()}`
+    const socketName = `omc-dir-${process.pid}-${Date.now()}`
     const { TMUX: _outerTmux, ...env } = process.env
     const tmux = (...args: string[]) =>
       Bun.spawnSync([tmuxPath ?? "tmux", "-L", socketName, "-f", "/dev/null", ...args], { stdout: "pipe", stderr: "pipe", env })

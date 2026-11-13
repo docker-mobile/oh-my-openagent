@@ -2,7 +2,7 @@
 // One-off maintenance for an installer channel pointer (#11313). `head` prints what R2 holds for channels/<channel>:
 // the status and every response header of a signed HEAD and GET, plus the GET body. `recreate` deletes the pointer
 // and writes it again as a new object, for a key R2 refuses to overwrite. Each request runs once: a failed DELETE
-// or create is reported and exits 1, leaving any restore to a person (get.omo.dev falls back to npm meanwhile).
+// or create is reported and exits 1, leaving any restore to a person (get.omc.nga.hm falls back to npm meanwhile).
 import { parseArgs } from "node:util"
 import { isPrerelease, MirrorPlanError, VERSION_PATTERN } from "./mirror-plan"
 import { credentialRedactor, deleteObject, putVerified, type R2Credentials, signedRequest } from "./r2-signed-put"
@@ -90,7 +90,7 @@ if (import.meta.main) {
       accountId: required("R2_ACCOUNT_ID"),
       accessKeyId: required("R2_ACCESS_KEY_ID"),
       secretAccessKey: required("R2_SECRET_ACCESS_KEY"),
-      bucket: process.env.R2_BUCKET ?? "omo-releases",
+      bucket: process.env.R2_BUCKET ?? "omc-releases",
     }
     if (args.op === "head") await inspectChannel(credentials, args.channel, log)
     else if (args.version !== null) await recreateChannel(credentials, args.channel, args.version, log)

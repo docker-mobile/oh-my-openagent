@@ -1,5 +1,5 @@
 {
-  "extends": "../../packages/omo-opencode/tsconfig.json",
+  "extends": "../../packages/omc-opencode/tsconfig.json",
   "include": [
     "*.ts"
   ],

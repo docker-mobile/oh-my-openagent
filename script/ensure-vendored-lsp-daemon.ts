@@ -47,7 +47,7 @@ export interface EnsureVendoredLspDaemonOptions {
 
 const DEFAULT_TIMEOUT_MS = 300_000
 const LOCK_RECHECK_INTERVAL_MS = 50
-const LOCK_FILE_PREFIX = "omo-test-lsp-build-"
+const LOCK_FILE_PREFIX = "omc-test-lsp-build-"
 
 const defaultRunCommand: RunVendoredLspCommand = async (command, args, options) => {
   const result = spawnSync(command, args, {

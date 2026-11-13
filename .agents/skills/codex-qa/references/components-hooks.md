@@ -1,7 +1,7 @@
-# omo-codex components → events → observable proof
+# omc-codex components → events → observable proof
 
 The plugin's hook wiring lives in
-`packages/omo-codex/plugin/hooks/hooks.json`. Each hook runs
+`packages/omc-codex/plugin/hooks/hooks.json`. Each hook runs
 `node "${PLUGIN_ROOT}/components/<c>/dist/cli.js" hook <event>`, reading the
 event JSON on stdin and writing zero-or-one line of JSON on stdout.
 

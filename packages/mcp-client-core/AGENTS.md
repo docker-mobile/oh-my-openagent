@@ -4,7 +4,7 @@
 
 ## OVERVIEW
 
-Harness-neutral MCP client lifecycle and OAuth primitives. Consumed by `omo-opencode` via `features/skill-mcp-manager` and `features/mcp-oauth` / `cli/mcp-oauth`. Private package `@oh-my-opencode/mcp-client-core`; 30 source files under `src/`.
+Harness-neutral MCP client lifecycle and OAuth primitives. Consumed by `omc-opencode` via `features/skill-mcp-manager` and `features/mcp-oauth` / `cli/mcp-oauth`. Private package `@oh-my-cybersecurity/mcp-client-core`; 58 TS files under `src/` (37 non-test).
 
 ## KEY FILES
 
@@ -31,7 +31,7 @@ Harness-neutral MCP client lifecycle and OAuth primitives. Consumed by `omo-open
 | `mcp-oauth/storage-index.ts` | `index.json` server-URL → token-file index; atomic rename + chmod writes |
 | `mcp-oauth/callback-server.ts` | `findAvailablePort()`, `startCallbackServer()` for local OAuth callback |
 | `mcp-oauth/storage.ts` | `loadToken()` / `saveToken()` — keyed by server URL |
-| `config-dir.ts` / `plugin-identity.ts` / `logger.ts` | realpath-normalized config path resolution; `PLUGIN_NAME` ("oh-my-openagent"); shared logger |
+| `config-dir.ts` / `plugin-identity.ts` / `logger.ts` | realpath-normalized config path resolution; `PLUGIN_NAME` ("oh-my-cybersecurity"); shared logger |
 | `index.ts` | Barrel: re-exports `mcp-oauth/*` and `skill-mcp-manager/*` |
 
 ## NOTES
@@ -41,6 +41,8 @@ Harness-neutral MCP client lifecycle and OAuth primitives. Consumed by `omo-open
 - **OAuth flow:** PKCE + optional DCR. Step-up authentication on 403 merges new scopes and re-authenticates. Refresh mutex prevents concurrent refresh storms.
 - **Env hygiene is a security boundary:** stdio servers never receive npm/pnpm/yarn config vars or secret-bearing env vars (`env-cleaner.ts`); errors leaving the manager are token-redacted (`error-redaction.ts`). Preserve both when touching client construction or error paths.
 - **Cleanup:** idle clients evicted after 5 minutes. Process signal handlers close all transports on SIGINT/SIGTERM. `disconnectAll()` is safe across plugin reloads.
-- **Consumers:** `packages/omo-opencode/src/features/skill-mcp-manager/`, `packages/omo-opencode/src/features/mcp-oauth/`, and `packages/omo-opencode/src/cli/mcp-oauth/` import this Core package.
+- **Consumers:** `packages/omc-opencode/src/features/skill-mcp-manager/`, `packages/omc-opencode/src/features/mcp-oauth/`, and `packages/omc-opencode/src/cli/mcp-oauth/` import this Core package.
+- **Harness-neutral guard:** zero adapter imports, enforced by `script/shared-core-extraction-guard.test.ts` (package list: `script/core-package-paths.ts`).
+- **QA:** `bun run typecheck` + `bun test` in-package.
 
 Parent: [`packages/AGENTS.md`](../AGENTS.md)

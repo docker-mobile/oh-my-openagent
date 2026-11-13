@@ -46,7 +46,7 @@ const spawnArgs = {
   description: "research worker",
   cwd: "/repo",
   serverUrl: "http://127.0.0.1:4096",
-  workspaceLabel: "omo-agents-4242",
+  workspaceLabel: "omc-agents-4242",
 }
 
 // Non-secret test fixture, assembled at runtime so secret scanners do not
@@ -55,8 +55,8 @@ const fixturePassword = ["sek", "ret"].join("")
 
 describe("getHerdrAgentsWorkspaceLabel", () => {
   test("mirrors the tmux isolated session grammar", () => {
-    expect(getHerdrAgentsWorkspaceLabel(4242)).toBe("omo-agents-4242")
-    expect(getHerdrAgentsWorkspaceLabel(4242, "7")).toBe("omo-agents-4242-7")
+    expect(getHerdrAgentsWorkspaceLabel(4242)).toBe("omc-agents-4242")
+    expect(getHerdrAgentsWorkspaceLabel(4242, "7")).toBe("omc-agents-4242-7")
   })
 })
 
@@ -94,7 +94,7 @@ describe("spawnHerdrSubagentTab", () => {
       expect(result.workspaceId).toBe("w9")
 
       const commands = calls.map((call) => `${call[0]} ${call[1] ?? ""}`.trim())
-      // discovery finds no omo-agents workspace, so it creates one
+      // discovery finds no omc-agents workspace, so it creates one
       expect(commands).toEqual([
         "workspace list",
         "workspace create",
@@ -102,7 +102,7 @@ describe("spawnHerdrSubagentTab", () => {
         "pane run",
       ])
       const create = calls[1]
-      expect(create).toEqual(["workspace", "create", "--cwd", "/repo", "--label", "omo-agents-4242", "--no-focus"])
+      expect(create).toEqual(["workspace", "create", "--cwd", "/repo", "--label", "omc-agents-4242", "--no-focus"])
       const tab = calls[2]
       expect(tab.slice(0, 9)).toEqual([
         "tab", "create", "--workspace", "w9", "--cwd", "/repo", "--label", "research worker", "--env",
@@ -144,7 +144,7 @@ describe("spawnHerdrSubagentTab", () => {
     const authPassword = process.env["OPENCODE_SERVER_PASSWORD"]
     process.env["OPENCODE_SERVER_PASSWORD"] = fixturePassword
     const cleanupAuthDirectory = createPaneAuthDirectory()
-    const sandbox = mkdtempSync(join(tmpdir(), "omo-herdr-auth-"))
+    const sandbox = mkdtempSync(join(tmpdir(), "omc-herdr-auth-"))
     let passwordFile: string | undefined
     try {
       const { deps, calls } = fakeOps((args) => {
@@ -208,7 +208,7 @@ describe("spawnHerdrSubagentTab", () => {
     // given
     const { deps, calls } = fakeOps((args) => {
       if (args[0] === "workspace" && args[1] === "list") {
-        return ok(envelope({ workspaces: [{ workspace_id: "w2", label: "omo-agents-4242" }] }))
+        return ok(envelope({ workspaces: [{ workspace_id: "w2", label: "omc-agents-4242" }] }))
       }
       if (args[0] === "tab" && args[1] === "create") {
         return ok(envelope({ tab: { tab_id: "w2:t3" }, root_pane: { pane_id: "w2:p3" } }))
@@ -287,24 +287,24 @@ describe("herdrListWorkspacesByLabelPrefix", () => {
     const { deps } = fakeOps(() => ok(envelope({
       workspaces: [
         { workspace_id: "w1", label: "wb-repricer" },
-        { workspace_id: "w2", label: "omo-team-abc" },
-        { workspace_id: "w3", label: "omo-agents-111" },
-        { workspace_id: "", label: "omo-agents-broken" },
+        { workspace_id: "w2", label: "omc-team-abc" },
+        { workspace_id: "w3", label: "omc-agents-111" },
+        { workspace_id: "", label: "omc-agents-broken" },
       ],
     })))
 
     // when
-    const listed = await herdrListWorkspacesByLabelPrefix("omo-agents-", deps)
+    const listed = await herdrListWorkspacesByLabelPrefix("omc-agents-", deps)
 
     // then
-    expect(listed).toEqual([{ workspaceId: "w3", label: "omo-agents-111" }])
+    expect(listed).toEqual([{ workspaceId: "w3", label: "omc-agents-111" }])
   })
 })
 
 describe("isHerdrBinaryCallable", () => {
   test("accepts an existing pinned binary and a PATH-resolvable herdr", () => {
     // given
-    const dir = mkdtempSync(join(tmpdir(), "omo-herdr-bin-"))
+    const dir = mkdtempSync(join(tmpdir(), "omc-herdr-bin-"))
     try {
       writeFileSync(join(dir, "herdr"), "#!/bin/sh\n")
 
@@ -322,10 +322,10 @@ describe("isHerdrBinaryCallable", () => {
 describe("sweepStaleHerdrAgentsWorkspacesWith", () => {
   const baseDeps = (overrides: Partial<Parameters<typeof sweepStaleHerdrAgentsWorkspacesWith>[0]> = {}) => ({
     listWorkspaces: async () => [
-      { workspaceId: "w1", label: "omo-agents-111" },
-      { workspaceId: "w2", label: "omo-agents-222-3" },
-      { workspaceId: "w3", label: "omo-agents-999" },
-      { workspaceId: "w4", label: "omo-agents-alive" },
+      { workspaceId: "w1", label: "omc-agents-111" },
+      { workspaceId: "w2", label: "omc-agents-222-3" },
+      { workspaceId: "w3", label: "omc-agents-999" },
+      { workspaceId: "w4", label: "omc-agents-alive" },
     ],
     listAgents: async () => [],
     closeWorkspace: async () => undefined,
@@ -349,7 +349,7 @@ describe("sweepStaleHerdrAgentsWorkspacesWith", () => {
     // then
     // w1 (dead pid), w2 (dead pid with manager suffix), w3 (dead pid) close;
     // w4 does not parse (no pid) and is skipped
-    expect(removed).toEqual(["omo-agents-111", "omo-agents-222-3", "omo-agents-999"])
+    expect(removed).toEqual(["omc-agents-111", "omc-agents-222-3", "omc-agents-999"])
     expect(closed).toEqual(["w1", "w2", "w3"])
   })
 
@@ -357,8 +357,8 @@ describe("sweepStaleHerdrAgentsWorkspacesWith", () => {
     // given
     const deps = baseDeps({
       listWorkspaces: async () => [
-        { workspaceId: "w1", label: `omo-agents-777` },
-        { workspaceId: "w2", label: "omo-agents-888" },
+        { workspaceId: "w1", label: `omc-agents-777` },
+        { workspaceId: "w2", label: "omc-agents-888" },
       ],
     })
 
@@ -379,7 +379,7 @@ describe("sweepStaleHerdrAgentsWorkspacesWith", () => {
     const removed = await sweepStaleHerdrAgentsWorkspacesWith(deps)
 
     // then
-    expect(removed).toEqual(["omo-agents-222-3", "omo-agents-999"])
+    expect(removed).toEqual(["omc-agents-222-3", "omc-agents-999"])
   })
 
   test("survives close failures and keeps sweeping", async () => {
@@ -394,6 +394,6 @@ describe("sweepStaleHerdrAgentsWorkspacesWith", () => {
     const removed = await sweepStaleHerdrAgentsWorkspacesWith(deps)
 
     // then
-    expect(removed).toEqual(["omo-agents-222-3", "omo-agents-999"])
+    expect(removed).toEqual(["omc-agents-222-3", "omc-agents-999"])
   })
 })

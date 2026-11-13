@@ -4,7 +4,7 @@
 
 ## OVERVIEW
 
-Harness-neutral LSP engine (`@oh-my-opencode/lsp-core`). Manages language server lifecycle, JSON-RPC transport, configuration merging, and tool definitions. Consumed by the MCP-layer packages [`lsp-tools-mcp`](../lsp-tools-mcp) and [`lsp-daemon`](../lsp-daemon/AGENTS.md). See parent [packages/AGENTS.md](../AGENTS.md).
+Harness-neutral LSP engine (`@oh-my-cybersecurity/lsp-core`). Manages language server lifecycle, JSON-RPC transport, configuration merging, and tool definitions. Consumed by the MCP-layer packages [`lsp-tools-mcp`](../lsp-tools-mcp) and [`lsp-daemon`](../lsp-daemon/AGENTS.md). See parent [packages/AGENTS.md](../AGENTS.md).
 
 ## KEY FILES
 
@@ -41,3 +41,6 @@ Harness-neutral LSP engine (`@oh-my-opencode/lsp-core`). Manages language server
 - **Reaper:** `LspManager` reaps clients idle longer than `IDLE_TIMEOUT_MS` (default 5 min) or stuck initializing past `INIT_TIMEOUT_MS` (default 30 s).
 - **Workspace-edit safety:** paths are canonicalized, prevalidated, simulated, and lease-guarded before commit; client wrappers reject paths outside the request context (`outside-context-workspace.ts`).
 - **Directory diagnostics cancellation:** `aggregateDiagnosticsForDirectory()` accepts an `AbortSignal`; it throws if aborted before acquisition, threads the signal into `manager.getClient()` so a cold acquisition is cancellable, and checks it between files. An aborted cold start rejects with `AbortError` and leaves `clientCount()` at 0.
+- **Engine tree has its own doc:** `src/lsp/` (55 non-test files) is documented in [`src/lsp/AGENTS.md`](src/lsp/AGENTS.md); runtime seams (`TimerProvider`, `SpawnedProcess`, `JsonRpcConnection`) and the workspace-edit pipeline live there.
+- **Harness-neutral guard:** zero `@opencode-ai/` / adapter imports, enforced by `script/shared-core-extraction-guard.test.ts` (package list: `script/core-package-paths.ts`); a raw `session.prompt(` literal also fails it.
+- **QA:** `bun run typecheck` + `bun test` in-package (117 TS files, 79 non-test); consumed from source, no dist build.

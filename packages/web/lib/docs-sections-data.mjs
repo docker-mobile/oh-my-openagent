@@ -16,39 +16,39 @@ export const DOC_SECTIONS_DATA = /** @type {const} */ ([
   { id: "manifesto", file: "manifesto.md", title: "Manifesto" },
 ])
 
-/** Standalone guide pages served at /docs/<slug>; OmO Desktop's help links point at these routes. */
+/** Standalone guide pages served at /docs/<slug>; OmC Desktop's help links point at these routes. */
 export const DOC_GUIDE_PAGES_DATA = /** @type {const} */ ([
   {
     slug: "workflows",
     file: "guide/workflows.md",
     title: "Workflows",
-    description: "Run a large job as parallel tasks with mass ulw, and follow it in OmO Desktop.",
+    description: "Run a large job as parallel tasks with mass ulw, and follow it in OmC Desktop.",
   },
   {
     slug: "agents",
     file: "guide/agents.md",
     title: "Agents",
-    description: "How OmO hands work to background agents, and what the Agents panel shows.",
+    description: "How OmC hands work to background agents, and what the Agents panel shows.",
   },
   {
     slug: "keywords",
     file: "guide/keywords.md",
     title: "Keywords",
-    description: "The words that switch OmO into ultrawork, loops, plans, research and workflows.",
+    description: "The words that switch OmC into ultrawork, loops, plans, research and workflows.",
   },
   {
     slug: "telemetry",
     file: "guide/telemetry.md",
     title: "Telemetry",
     description:
-      "What anonymous usage data OmO sends, what it never sends, and how to turn it off.",
+      "What anonymous usage data OmC sends, what it never sends, and how to turn it off.",
   },
   {
     slug: "desktop-updates",
     file: "guide/desktop-updates.md",
     title: "Desktop updates",
     description:
-      "How OmO Desktop updates, where to read release notes, and the Stable and Nightly tracks.",
+      "How OmC Desktop updates, where to read release notes, and the Stable and Nightly tracks.",
   },
 ])
 

@@ -1,9 +1,9 @@
 export type ExecutionMode = "in-process" | "process"
 
-/** What omo.json may say: either mode, or `auto` = let the shared task daemon decide. */
+/** What omc.json may say: either mode, or `auto` = let the shared task daemon decide. */
 export type ConfiguredExecutionMode = ExecutionMode | "auto"
 
-/** Which runner a `process` child gets (omo.json `task.process_runner`). */
+/** Which runner a `process` child gets (omc.json `task.process_runner`). */
 export type ProcessRunnerKind = "host" | "child-process"
 
 export type ExecutionModeSources = {
@@ -15,7 +15,7 @@ export type ExecutionModeSources = {
   readonly autoMode?: ExecutionMode
 }
 
-// Precedence: spec.execution_mode ?? agentDef.executionMode ?? omo.json task.default_execution_mode
+// Precedence: spec.execution_mode ?? agentDef.executionMode ?? omc.json task.default_execution_mode
 // ?? "in-process". A configured "auto" contributes the parent session's resolved auto mode, so a
 // user-set "in-process"/"process" (and every per-agent override) still wins over the daemon check.
 export function resolveExecutionMode(sources: ExecutionModeSources): ExecutionMode {
@@ -25,7 +25,7 @@ export function resolveExecutionMode(sources: ExecutionModeSources): ExecutionMo
 
 /**
  * What the ensured daemon must advertise before `auto` routes children to it as sessions:
- * `session_context` (the plugin gates itself per session by the role omo attaches) and
+ * `session_context` (the plugin gates itself per session by the role omc attaches) and
  * `generation_handoff` (an engine upgrade parks and reopens children instead of killing them).
  */
 export const AUTO_HOST_CAPABILITIES = ["session_context", "generation_handoff"] as const

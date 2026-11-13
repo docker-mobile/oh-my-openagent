@@ -5,8 +5,8 @@ import {
   getTask,
   listTasks,
   updateTaskStatus,
-} from "@oh-my-opencode/team-core/team-tasklist"
-import type { Task } from "@oh-my-opencode/team-core/types"
+} from "@oh-my-cybersecurity/team-core/team-tasklist"
+import type { Task } from "@oh-my-cybersecurity/team-core/types"
 
 import type { TeamCoreConfig } from "./runtime-config"
 
@@ -15,7 +15,7 @@ export {
   BlockedByError as TeamTaskBlockedByError,
   CrossOwnerUpdateError as TeamTaskCrossOwnerUpdateError,
   InvalidTaskTransitionError as TeamTaskInvalidTransitionError,
-} from "@oh-my-opencode/team-core/team-tasklist"
+} from "@oh-my-cybersecurity/team-core/team-tasklist"
 
 // Binds a team-core tasklist to a single senpi team run: the run id plus the team-core config that
 // pins storage under the senpi state dir. Every orchestration call curries these two so callers

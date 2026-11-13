@@ -1,6 +1,6 @@
 name: Memory takeover trace
 
-# Measurement only (#10959): runs the SIGKILL takeover test N times per OS with the OMO_TAKEOVER_TRACE timeline on,
+# Measurement only (#10959): runs the SIGKILL takeover test N times per OS with the OMC_TAKEOVER_TRACE timeline on,
 # and writes a phase table to the job summary. Windows is the subject; Linux and macOS are the baselines.
 on:
   pull_request:
@@ -63,7 +63,7 @@ jobs:
           mkdir -p "$trace_dir"
           failed=0
           for i in $(seq 1 "$ITERATIONS"); do
-            if OMO_TAKEOVER_TRACE="$trace_dir/run-$i.jsonl" bun test packages/memory-core/src/concurrency/sigkill-takeover.test.ts -t "lands every remaining commit cleanly" > "$trace_dir/run-$i.log" 2>&1; then
+            if OMC_TAKEOVER_TRACE="$trace_dir/run-$i.jsonl" bun test packages/memory-core/src/concurrency/sigkill-takeover.test.ts -t "lands every remaining commit cleanly" > "$trace_dir/run-$i.log" 2>&1; then
               echo "run $i: pass"
             else
               echo "run $i: FAIL"

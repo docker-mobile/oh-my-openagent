@@ -8,7 +8,7 @@ import type { TaskRecord } from "../state"
 import { parseTaskRecord } from "./record-parse"
 import { writeRecord } from "./record-write"
 
-// Verbatim copy of the effective_model parsing a PRE-F12 omo build runs (the base
+// Verbatim copy of the effective_model parsing a PRE-F12 omc build runs (the base
 // `parseOptionalResolvedModel` and its helpers from packages/senpi-task/src/store/
 // record-blocks-parse.ts at ca349abc7a^ - the commit right before #10097's F12 change).
 // Older builds parse effective_model through exactly this logic and rethrow any parse

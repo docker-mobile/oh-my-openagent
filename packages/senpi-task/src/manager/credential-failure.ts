@@ -97,14 +97,14 @@ export function terminalFailureMessage(record: TaskRecord | null | undefined, fa
     const cause = missing
       ? `No credentials for ${provider} were found; sign in to ${provider} (Provider authentication settings on the desktop, /login ${provider} in an interactive session) or add its API key`
       : `Credentials for ${provider} were rejected; re-authenticate ${provider} (Provider authentication settings on the desktop, /login ${provider} in an interactive session) or re-add its API key`
-    return `${failureMessage}\n${cause}, or pin this category to another provider in omo.json.`
+    return `${failureMessage}\n${cause}, or pin this category to another provider in omc.json.`
   }
   if (usageLimitScope(failureMessage) === undefined) return failureMessage
   const model = record.resolved_model === undefined ? record.model : `${provider}/${record.resolved_model.model_id}`
   const exhausted = runtimeFallbackCandidates(record, failureMessage).remaining.length === 0
     ? " No other model in its fallback chain could take over."
     : ""
-  return `${failureMessage}\n${model} reached its usage limit, so this task stopped.${exhausted} Retry once the limit resets, or point this category at another provider or model in omo.json.`
+  return `${failureMessage}\n${model} reached its usage limit, so this task stopped.${exhausted} Retry once the limit resets, or point this category at another provider or model in omc.json.`
 }
 
 export type RuntimeFallbackCandidates = {

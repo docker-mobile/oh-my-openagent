@@ -8,8 +8,8 @@ import type { ManagedChildHandle } from "../../manager/child-handle"
 import type { ManagedStartSpec } from "../../manager/types"
 import { createTaskLifecycle } from "../create"
 import type { ReviveDriftPolicy, ReviveGenerationWarning } from "../revive-policy"
-import { createManagerResidencyRegistry } from "../../../../omo-senpi/src/components/task/residency-registry"
-import { createConfigGenerationStampingStore } from "../../../../omo-senpi/src/components/task/config-generation-store"
+import { createManagerResidencyRegistry } from "../../../../omc-senpi/src/components/task/residency-registry"
+import { createConfigGenerationStampingStore } from "../../../../omc-senpi/src/components/task/config-generation-store"
 import { NO_HOST_ENDPOINT } from "../host-session"
 
 export function coldReviveHarness(options: {

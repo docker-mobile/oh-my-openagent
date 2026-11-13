@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test"
-import { IsolationBackendKindSchema } from "@oh-my-opencode/omo-config-core"
+import { IsolationBackendKindSchema } from "@oh-my-cybersecurity/omc-config-core"
 import {
   BACKGROUND_MODES,
   COST_REPORT_STATUSES,

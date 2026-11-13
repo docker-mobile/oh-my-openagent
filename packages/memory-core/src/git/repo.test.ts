@@ -122,7 +122,7 @@ describe("GitMemoryRepo", () => {
     await exec.run(["init"], { cwd: dir, timeoutMs: 30_000 })
     await exec.run(["config", "--local", "user.email", "operator@example.com"], { cwd: dir, timeoutMs: 30_000 })
     await exec.run(["config", "--local", "user.name", "Operator"], { cwd: dir, timeoutMs: 30_000 })
-    await exec.run(["config", "--local", "omo.agentId", "old-agent"], { cwd: dir, timeoutMs: 30_000 })
+    await exec.run(["config", "--local", "omc.agentId", "old-agent"], { cwd: dir, timeoutMs: 30_000 })
     const repo = new GitMemoryRepo({ dir, agentId: "new-agent" })
 
     // when
@@ -131,7 +131,7 @@ describe("GitMemoryRepo", () => {
     // then
     expect(await repo.configGet("user.email")).toBe("operator@example.com")
     expect(await repo.configGet("user.name")).toBe("Operator")
-    expect(await repo.configGet("omo.agentId")).toBe("new-agent")
+    expect(await repo.configGet("omc.agentId")).toBe("new-agent")
     expect(await repo.configGet("commit.gpgsign")).toBe("false")
     expect(await repo.configGet("gc.auto")).toBe("0")
   })
@@ -173,7 +173,7 @@ describe("GitMemoryRepo", () => {
     // then
     const exec = createNodeGitExec()
     const log = await exec.run(["log", "-1", "--format=%an <%ae>"], { cwd: dir, timeoutMs: 30_000 })
-    expect(log.stdout.trim()).toBe("Correct Agent <agent-one@omo.local>")
+    expect(log.stdout.trim()).toBe("Correct Agent <agent-one@omc.local>")
     expect(await readFile(join(dir, "fact.md"), "utf8")).toBe("fact\n")
   }, 30_000)
 

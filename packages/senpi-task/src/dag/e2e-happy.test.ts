@@ -4,7 +4,7 @@ import * as fs from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 
-import { OmoTaskSettingsSchema } from "@oh-my-opencode/omo-config-core"
+import { OmoTaskSettingsSchema } from "@oh-my-cybersecurity/omc-config-core"
 
 import { createTaskManager } from "../manager/manager"
 import type { ManagedChildHandle } from "../manager/child-handle"
@@ -31,7 +31,7 @@ setDefaultTimeout(process.platform === "win32" ? 60_000 : 20_000)
 const cleanupRoots: string[] = []
 const parentSessionId = "session-e2e-parent"
 const rootSessionId = "session-e2e-root"
-const sdkPath = join(import.meta.dir, "../../../omo-senpi/plugin/runtime/dag/sdk.js")
+const sdkPath = join(import.meta.dir, "../../../omc-senpi/plugin/runtime/dag/sdk.js")
 
 let originalTool: unknown
 

@@ -53,13 +53,13 @@ describe("removeAbandonedRunRoots", () => {
   })
 
   function fixtureRoot(): string {
-    const fixture = mkdtempSync(join(tmpdir(), "omo-root-sweep-"))
+    const fixture = mkdtempSync(join(tmpdir(), "omc-root-sweep-"))
     fixtures.push(fixture)
     return fixture
   }
 
   function abandonedRoot(parent: string, name: string): string {
-    const root = join(parent, `omo-test-run-${name}`)
+    const root = join(parent, `omc-test-run-${name}`)
     mkdirSync(root)
     const old = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
     utimesSync(root, old, old)
@@ -145,10 +145,10 @@ describe("removeRunRootAside (#11630)", () => {
 
   // Stands for the OS temp dir of a lane that keeps its bun caches there, beside one run's root.
   function tempDirWithCachesAndRoot(files: number): { readonly tempDir: string; readonly cache: string; readonly root: string } {
-    const tempDir = mkdtempSync(join(tmpdir(), "omo-aside-"))
+    const tempDir = mkdtempSync(join(tmpdir(), "omc-aside-"))
     fixtures.push(tempDir)
     const cache = join(tempDir, "bun-transpiler")
-    const root = join(tempDir, "omo-test-run-big")
+    const root = join(tempDir, "omc-test-run-big")
     for (const dir of [cache, root]) {
       for (let group = 0; group < 10; group++) {
         mkdirSync(join(dir, `g${group}`), { recursive: true })

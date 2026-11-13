@@ -1,11 +1,11 @@
-import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
+import type { OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { TaskManager } from "../../../manager"
 import { createTaskRecord } from "../../../state"
 import type { TaskRecord } from "../../../state"
 import type { SkillResolution, TaskToolContext, TaskToolDeps } from "../types"
 
-export const OMO_CONFIG: OmoConfig = { categories: {}, agents: {} }
+export const OMC_CONFIG: OmoConfig = { categories: {}, agents: {} }
 
 export const CTX: TaskToolContext = {
   cwd: "/work/project",
@@ -55,7 +55,7 @@ export function makeRecord(overrides: Partial<TaskRecord>): TaskRecord {
 export function makeDeps(manager: TaskManager, extra: Partial<TaskToolDeps> = {}): TaskToolDeps {
   return {
     manager,
-    omoConfig: OMO_CONFIG,
+    omoConfig: OMC_CONFIG,
     agents: {},
     loadSkills: () => ({ prepend: "", resolved: [], missing: [] }) satisfies SkillResolution,
     ...extra,

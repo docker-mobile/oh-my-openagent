@@ -1,6 +1,6 @@
-import { loadRuntimeState } from "@oh-my-opencode/team-core/team-state-store"
-import type { RuntimeState } from "@oh-my-opencode/team-core/types"
-import type { OmoTaskSettings } from "@oh-my-opencode/omo-config-core"
+import { loadRuntimeState } from "@oh-my-cybersecurity/team-core/team-state-store"
+import type { RuntimeState } from "@oh-my-cybersecurity/team-core/types"
+import type { OmoTaskSettings } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { TrustedRespawnLaunchResolver } from "../manager"
 import type { TaskRecord } from "../state"

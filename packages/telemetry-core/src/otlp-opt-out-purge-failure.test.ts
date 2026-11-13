@@ -31,7 +31,7 @@ describe("an opt-out purge that cannot delete its own spool file reports it as a
 
       // when
       const transport = await createOtlpTelemetryTransport({
-        productEnvPrefix: "OMO_TEST",
+        productEnvPrefix: "OMC_TEST",
         ingestKey: "k",
         spoolDir,
         spoolRoot: dirname(spoolDir),

@@ -1,5 +1,5 @@
 import { type ChildProcess, type SpawnOptions, spawn } from "node:child_process"
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import type { RpcChildHandle, RpcRunnerSpec } from "./types"
 import { RunnerError } from "./in-process/runner-error"

@@ -8,7 +8,7 @@ describe("workpool worker inherited extensions", () => {
     // given: the worker used to read argv directly, so a settings-package provider that an ordinary
     // child received was missing from every workpool worker (#8492).
     const launch = await workpoolProcessLaunch("/state", "st_worker", () => [
-      "/installed/omo/plugin",
+      "/installed/omc/plugin",
       "/installed/provider/extensions/zcode.ts",
     ])
 
@@ -19,23 +19,23 @@ describe("workpool worker inherited extensions", () => {
   test("#given the same resolver #when a process worker launches #then the parent scheduler extensions are still excluded", async () => {
     // given: a worker must never load the parent's task engine, whatever the inherited list carries.
     const launch = await workpoolProcessLaunch("/state", "st_worker", () => [
-      "/installed/omo/plugin/extensions/omo.js",
-      "/installed/omo/plugin/extensions/omo-task.js",
+      "/installed/omc/plugin/extensions/omc.js",
+      "/installed/omc/plugin/extensions/omc-task.js",
       "/installed/provider/extensions/zcode.ts",
     ])
 
     // then
-    expect(launch.extensions).not.toContain("/installed/omo/plugin/extensions/omo.js")
-    expect(launch.extensions).not.toContain("/installed/omo/plugin/extensions/omo-task.js")
+    expect(launch.extensions).not.toContain("/installed/omc/plugin/extensions/omc.js")
+    expect(launch.extensions).not.toContain("/installed/omc/plugin/extensions/omc-task.js")
     expect(launch.extensions).toContain("/installed/provider/extensions/zcode.ts")
   })
 
   test("#given no resolver at all #when the inherited list is resolved #then it degrades to the parent argv entries", async () => {
     // given: a wiring with no package manager can only know argv, and that must keep working.
     const originalArgv = process.argv
-    process.argv = ["bun", "omo", "-e", "/installed/omo/plugin"]
+    process.argv = ["bun", "omc", "-e", "/installed/omc/plugin"]
     try {
-      expect(await resolveInheritedExtensionList(undefined)).toEqual(["/installed/omo/plugin"])
+      expect(await resolveInheritedExtensionList(undefined)).toEqual(["/installed/omc/plugin"])
     } finally {
       process.argv = originalArgv
     }

@@ -3,11 +3,11 @@ import registerMockProvider, {
   type MockStep,
   stepToAssistantMessage,
   streamMockStep,
-} from "../../../../packages/omo-senpi/scripts/qa/mock-provider/index"
+} from "../../../../packages/omc-senpi/scripts/qa/mock-provider/index"
 
 export const QA_PROMPT_PREFIX = "macOS computer QA"
 
-const BACKGROUND_REPLY: MockStep = { type: "text", text: "omo macOS QA background reply" }
+const BACKGROUND_REPLY: MockStep = { type: "text", text: "omc macOS QA background reply" }
 
 type ContextMessage = { readonly role?: unknown; readonly content?: unknown }
 

@@ -24,7 +24,7 @@ describe("git_bash MCP timeout resolution", () => {
       },
       {
         platform: "win32",
-        env: { OMO_CODEX_GIT_BASH_PATH: "C:\\Program Files\\Git\\bin\\bash.exe" },
+        env: { OMC_CODEX_GIT_BASH_PATH: "C:\\Program Files\\Git\\bin\\bash.exe" },
         exists: (path) => path === "C:\\Program Files\\Git\\bin\\bash.exe",
         where: () => [],
         runGitBash,
@@ -56,7 +56,7 @@ describe("git_bash MCP timeout resolution", () => {
       },
       {
         platform: "win32",
-        env: { OMO_CODEX_GIT_BASH_PATH: "C:\\Program Files\\Git\\bin\\bash.exe" },
+        env: { OMC_CODEX_GIT_BASH_PATH: "C:\\Program Files\\Git\\bin\\bash.exe" },
         exists: (path) => path === "C:\\Program Files\\Git\\bin\\bash.exe",
         where: () => [],
         runGitBash: async (input) => {
@@ -87,8 +87,8 @@ describe("git_bash MCP timeout resolution", () => {
       {
         platform: "win32",
         env: {
-          OMO_CODEX_GIT_BASH_PATH: "C:\\Program Files\\Git\\bin\\bash.exe",
-          OMO_CODEX_EXEC_COMMAND_TIMEOUT_MS: "65000",
+          OMC_CODEX_GIT_BASH_PATH: "C:\\Program Files\\Git\\bin\\bash.exe",
+          OMC_CODEX_EXEC_COMMAND_TIMEOUT_MS: "65000",
         },
         exists: (path) => path === "C:\\Program Files\\Git\\bin\\bash.exe",
         where: () => [],

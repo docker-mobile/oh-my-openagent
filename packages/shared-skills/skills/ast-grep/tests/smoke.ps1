@@ -46,13 +46,13 @@ try {
     Pass 'langs lists at least 25 languages'
 
     # 2a. custom languages via env and sgconfig.yml
-    $previousExtraLanguages = $env:OMO_AST_GREP_EXTRA_LANGUAGES
+    $previousExtraLanguages = $env:OMC_AST_GREP_EXTRA_LANGUAGES
     try {
-        $env:OMO_AST_GREP_EXTRA_LANGUAGES = 'systemverilog'
+        $env:OMC_AST_GREP_EXTRA_LANGUAGES = 'systemverilog'
         $r = Run @('validate', 'module $M; endmodule', '--lang', 'systemverilog')
     }
     finally {
-        $env:OMO_AST_GREP_EXTRA_LANGUAGES = $previousExtraLanguages
+        $env:OMC_AST_GREP_EXTRA_LANGUAGES = $previousExtraLanguages
     }
     if ($r.ExitCode -ne 0) { Fail "env custom language should validate, got $($r.ExitCode): $($r.Combined)" }
     Pass 'validate accepts env custom language'

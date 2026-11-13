@@ -1,9 +1,9 @@
 {
-  "name": "@oh-my-opencode/comment-checker-core",
+  "name": "@oh-my-cybersecurity/comment-checker-core",
   "version": "0.1.0",
   "type": "module",
   "private": true,
-  "description": "Pure TypeScript comment-checker parsing and runner core for oh-my-opencode.",
+  "description": "Pure TypeScript comment-checker parsing and runner core for oh-my-cybersecurity.",
   "exports": {
     ".": {
       "types": "./index.d.ts",
@@ -16,7 +16,7 @@
     "test": "bun test src/*.test.ts"
   },
   "dependencies": {
-    "@oh-my-opencode/utils": "workspace:*"
+    "@oh-my-cybersecurity/utils": "workspace:*"
   },
   "sideEffects": false
 }

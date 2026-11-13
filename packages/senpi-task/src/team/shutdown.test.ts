@@ -4,13 +4,13 @@ import { join } from "node:path"
 
 import { afterEach, describe, expect, test } from "bun:test"
 
-import { OmoTaskSettingsSchema } from "@oh-my-opencode/omo-config-core"
+import { OmoTaskSettingsSchema } from "@oh-my-cybersecurity/omc-config-core"
 import {
   createRuntimeState,
   loadRuntimeState,
   transitionRuntimeState,
-} from "@oh-my-opencode/team-core/team-state-store"
-import { TeamSpecSchema, type RuntimeStateMember } from "@oh-my-opencode/team-core/types"
+} from "@oh-my-cybersecurity/team-core/team-state-store"
+import { TeamSpecSchema, type RuntimeStateMember } from "@oh-my-cybersecurity/team-core/types"
 
 import { toTeamCoreConfig, type TeamCoreConfig } from "./runtime-config"
 import {

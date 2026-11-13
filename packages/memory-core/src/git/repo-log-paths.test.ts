@@ -150,7 +150,7 @@ describe("GitMemoryRepo log reads under user git config", () => {
     })
     const plain = await read(repo)
     await run(dir, ["config", "log.showSignature", "true"])
-    await rm(join(dir, ".git", "omo-path-commit-times.json"), { force: true })
+    await rm(join(dir, ".git", "omc-path-commit-times.json"), { force: true })
 
     // when
     const configured = await read(new GitMemoryRepo({ dir, agentId: "agent", exec: countingExec().exec }))

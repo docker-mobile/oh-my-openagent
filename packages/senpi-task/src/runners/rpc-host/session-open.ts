@@ -1,6 +1,6 @@
 import { mkdir } from "node:fs/promises"
 import { dirname } from "node:path"
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import { RunnerError } from "../in-process/runner-error"
 import type { CreateHostSessionChannel } from "../rpc-host"

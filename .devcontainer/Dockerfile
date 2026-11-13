@@ -1,4 +1,4 @@
-# Dev container image for oh-my-openagent.
+# Dev container image for oh-my-cybersecurity.
 # Node 24 (npm builds the vendored lsp-tools-mcp / lsp-daemon / git-bash-mcp +
 # codex plugin) + Bun 1.4.4 (the workspace runtime, pinned to CI) + tmux
 # (interactive_bash + team-mode). git ships with the base image.

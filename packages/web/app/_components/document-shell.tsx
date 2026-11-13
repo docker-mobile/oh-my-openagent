@@ -5,7 +5,7 @@ import { jetBrainsMono, timelessSans } from "@/components/home/fonts"
 import { themeInitScript } from "@/components/home/theme-init"
 import { installDetectScript } from "@/lib/install-targets"
 import "../globals.css"
-// The nav and footer every omo.dev page shares with the home page (doriterm-family chrome).
+// The nav and footer every omc.nga.hm page shares with the home page (doriterm-family chrome).
 import "@/components/home/styles/chrome.css"
 
 /**
@@ -23,7 +23,7 @@ export function DocumentShell({
     <html
       lang={lang}
       className={`${timelessSans.variable} ${jetBrainsMono.variable}`}
-      data-omo-build={process.env.OMO_WEB_BUILD_ID || undefined}
+      data-omc-build={process.env.OMC_WEB_BUILD_ID || undefined}
       suppressHydrationWarning
     >
       <head>

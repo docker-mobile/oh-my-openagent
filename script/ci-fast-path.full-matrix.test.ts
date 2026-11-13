@@ -153,8 +153,8 @@ describe("full-matrix classification", () => {
 
   describe("#given a pull request that touches code a test can load but no platform-specific path", () => {
     test.each([
-      ["a package source file (the #7676 shape)", "packages/omo-config-core/src/display/format-path.ts"],
-      ["a prompt or skill shipped from a package src tree", "packages/omo-opencode/src/agents/prompts/README.md"],
+      ["a package source file (the #7676 shape)", "packages/omc-config-core/src/display/format-path.ts"],
+      ["a prompt or skill shipped from a package src tree", "packages/omc-opencode/src/agents/prompts/README.md"],
       ["a package test outside src", "packages/memory-core/test/store.test.ts"],
       ["a skill payload outside src", "packages/shared-skills/skills/frontend/SKILL.md"],
       ["a root script", "script/build.ts"],
@@ -168,8 +168,8 @@ describe("full-matrix classification", () => {
       ["a doc-like name with an unknown extension", "packages/utils/README.rst"],
       ["an unlisted .github file", ".github/CODEOWNERS"],
       ["an in-process senpi-task runner", "packages/senpi-task/src/runners/in-process.ts"],
-      ["a Codex plugin source file", "packages/omo-codex/plugin/src/index.ts"],
-      ["an omo-opencode hook", "packages/omo-opencode/src/hooks/session-start.ts"],
+      ["a Codex plugin source file", "packages/omc-codex/plugin/src/index.ts"],
+      ["an omc-opencode hook", "packages/omc-opencode/src/hooks/session-start.ts"],
     ])("#then %s runs heavy validation on ubuntu only", (_name, changedPath) => {
       // given / when
       const mode = classify({
@@ -189,7 +189,7 @@ describe("full-matrix classification", () => {
     test.each([
       ["root prose", ["README.md", "README.ko.md", "ROADMAP.md"]],
       ["the changelog files", ["CHANGELOG.md", "changes.md"]],
-      ["package docs outside src", ["packages/utils/README.md", "packages/omo-codex/AGENTS.md"]],
+      ["package docs outside src", ["packages/utils/README.md", "packages/omc-codex/AGENTS.md"]],
       ["another workflow and an issue template", [".github/workflows/stats.yml", ".github/ISSUE_TEMPLATE/bug.yml"]],
     ])("#then %s keeps the ubuntu-only fast path", (_name, changedPaths) => {
       // given / when
@@ -267,23 +267,23 @@ describe("full-matrix classification", () => {
       ["the Cargo workspace manifest", "Cargo.toml"],
       ["the Cargo lockfile", "Cargo.lock"],
       ["the Rust toolchain pin", "rust-toolchain.toml"],
-      ["the native launcher package", "packages/omo-native/compile-entry.ts"],
-      ["a darwin platform package", "packages/oh-my-opencode-darwin-arm64/package.json"],
-      ["a windows platform package", "packages/oh-my-opencode-windows-x64/package.json"],
+      ["the native launcher package", "packages/omc-native/compile-entry.ts"],
+      ["a darwin platform package", "packages/oh-my-cybersecurity-darwin-arm64/package.json"],
+      ["a windows platform package", "packages/oh-my-cybersecurity-windows-x64/package.json"],
       ["the platform binary postinstall", "postinstall.mjs"],
-      ["the standalone binary builder", "script/build-omo-binary.ts"],
-      ["the native payload builder", "script/build-omo-native.ts"],
-      ["the native parity smoke", "script/qa/omo-native-parity-smoke.mjs"],
+      ["the standalone binary builder", "script/build-omc-binary.ts"],
+      ["the native payload builder", "script/build-omc-native.ts"],
+      ["the native parity smoke", "script/qa/omc-native-parity-smoke.mjs"],
       ["a macOS desktop QA script", "script/qa/desktop/macos/run.sh"],
-      ["a Codex local installer script", "packages/omo-codex/scripts/install-local.mjs"],
-      ["a platform-suffixed test", "packages/omo-opencode/src/cli/cli-installer.platform.test.ts"],
+      ["a Codex local installer script", "packages/omc-codex/scripts/install-local.mjs"],
+      ["a platform-suffixed test", "packages/omc-opencode/src/cli/cli-installer.platform.test.ts"],
       ["the launcher platform detection", "bin/platform.js"],
-      ["the launcher entry", "bin/oh-my-opencode.js"],
+      ["the launcher entry", "bin/oh-my-cybersecurity.js"],
       ["the platform launcher package generator", "script/build-binaries.ts"],
       ["the Windows Git Bash runtime", "packages/git-bash-mcp/src/index.ts"],
-      ["the Codex installer source", "packages/omo-codex/src/install/codex-agent-config.ts"],
-      ["a Codex platform smoke test", "packages/omo-codex/plugin/test/node-install-surface.test.mjs"],
-      ["the other Codex platform smoke test", "packages/omo-codex/plugin/test/install-time-build-runtime.test.mjs"],
+      ["the Codex installer source", "packages/omc-codex/src/install/codex-agent-config.ts"],
+      ["a Codex platform smoke test", "packages/omc-codex/plugin/test/node-install-surface.test.mjs"],
+      ["the other Codex platform smoke test", "packages/omc-codex/plugin/test/install-time-build-runtime.test.mjs"],
       ["a composite action the legs could use", ".github/actions/setup/action.yml"],
       ["the senpi-task RPC host the Windows shard isolates", "packages/senpi-task/src/runners/rpc-host/host.ts"],
       ["the senpi-task RPC child process", "packages/senpi-task/src/runners/rpc-process.ts"],

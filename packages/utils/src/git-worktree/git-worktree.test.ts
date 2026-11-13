@@ -89,7 +89,7 @@ Deleted files:
   })
 
   test("#given an oversized path outside the displayed prefix #when formatting #then bounds paths and preserves the notepad marker", () => {
-    const notepadPath = `.omo/notepads/${"nested/".repeat(80)}notes.md`
+    const notepadPath = `.omc/notepads/${"nested/".repeat(80)}notes.md`
     const stats = [
       ...Array.from({ length: 20 }, (_, index) => ({
         path: `src/file-${index + 1}.ts`,
@@ -108,27 +108,27 @@ Deleted files:
     expect(summary.length).toBeLessThan(10_000)
   })
 
-  test("#given notepad path #when formatting omo plan changes #then does not report notepad updated", () => {
+  test("#given notepad path #when formatting omc plan changes #then does not report notepad updated", () => {
     const summary = formatFileChanges([
-      { path: ".omo/plans/work.md", added: 1, removed: 0, status: "modified" },
-    ], ".omo/notepads/work/notes.md")
+      { path: ".omc/plans/work.md", added: 1, removed: 0, status: "modified" },
+    ], ".omc/notepads/work/notes.md")
 
     expect(summary).not.toContain("[NOTEPAD UPDATED]")
   })
 
-  test("#given notepad path #when formatting omo notepad changes #then reports notepad updated", () => {
+  test("#given notepad path #when formatting omc notepad changes #then reports notepad updated", () => {
     const summary = formatFileChanges([
-      { path: ".omo/notepads/work/notes.md", added: 1, removed: 0, status: "modified" },
-    ], ".omo/notepads/work/notes.md")
+      { path: ".omc/notepads/work/notes.md", added: 1, removed: 0, status: "modified" },
+    ], ".omc/notepads/work/notes.md")
 
     expect(summary).toContain("[NOTEPAD UPDATED]")
-    expect(summary).toContain(".omo/notepads/work/notes.md")
+    expect(summary).toContain(".omc/notepads/work/notes.md")
   })
 
-  test("#given notepad path #when formatting another omo notepad change #then does not report active notepad updated", () => {
+  test("#given notepad path #when formatting another omc notepad change #then does not report active notepad updated", () => {
     const summary = formatFileChanges([
-      { path: ".omo/notepads/other/notes.md", added: 1, removed: 0, status: "modified" },
-    ], ".omo/notepads/work/notes.md")
+      { path: ".omc/notepads/other/notes.md", added: 1, removed: 0, status: "modified" },
+    ], ".omc/notepads/work/notes.md")
 
     expect(summary).not.toContain("[NOTEPAD UPDATED]")
   })

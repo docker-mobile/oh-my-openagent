@@ -1,24 +1,24 @@
 ---
 name: senpi-qa
-description: "QA the omo Senpi adapter (packages/omo-senpi, packages/senpi-task) against the REAL senpi binary in strict isolation, and write every artifact to the one canonical evidence path .omo/evidence/omo-senpi-adapter/<slug>/. The live drivers under packages/omo-senpi/scripts/qa/ create their own isolated SENPI_CODING_AGENT_DIR and ignore the caller's, so the real ~/.senpi/agent is never written. Ships scripts/resolve-evidence-dir.mjs, which is the ONLY sanctioned way to pick an evidence directory: it rejects traversal, separators, absolute paths, and stray roots such as local-ignore/qa-evidence. Use whenever someone changes anything under packages/omo-senpi or packages/senpi-task, or wants to QA, smoke-test, verify, or debug the Senpi adapter, the task/team engine, the DAG, task RPC, or skill delivery. Triggers: senpi qa, qa senpi, senpi-qa, test senpi adapter, verify senpi task, senpi task e2e, senpi team e2e, task dag qa, live senpi driver, senpi evidence path."
+description: "QA the omc Senpi adapter (packages/omc-senpi, packages/senpi-task) against the REAL senpi binary in strict isolation, and write every artifact to the one canonical evidence path .omc/evidence/omc-senpi-adapter/<slug>/. The live drivers under packages/omc-senpi/scripts/qa/ create their own isolated SENPI_CODING_AGENT_DIR and ignore the caller's, so the real ~/.senpi/agent is never written. Ships scripts/resolve-evidence-dir.mjs, which is the ONLY sanctioned way to pick an evidence directory: it rejects traversal, separators, absolute paths, and stray roots such as local-ignore/qa-evidence. Use whenever someone changes anything under packages/omc-senpi or packages/senpi-task, or wants to QA, smoke-test, verify, or debug the Senpi adapter, the task/team engine, the DAG, task RPC, or skill delivery. Triggers: senpi qa, qa senpi, senpi-qa, test senpi adapter, verify senpi task, senpi task e2e, senpi team e2e, task dag qa, live senpi driver, senpi evidence path."
 ---
 
 # Senpi QA
 
-QA the omo Senpi adapter (`packages/omo-senpi/`) and the task engine
+QA the omc Senpi adapter (`packages/omc-senpi/`) and the task engine
 (`packages/senpi-task/`) by driving the REAL `senpi` binary. Unit tests never
 count as live QA here: `bun run test:senpi` is the package gate, the drivers in
-`packages/omo-senpi/scripts/qa/` are the harness proof.
+`packages/omc-senpi/scripts/qa/` are the harness proof.
 
 ## Golden rules
 
 - **Evidence lives at exactly one path.** Every artifact goes under
-  `.omo/evidence/omo-senpi-adapter/<slug>/`. Pick it with
+  `.omc/evidence/omc-senpi-adapter/<slug>/`. Pick it with
   `scripts/resolve-evidence-dir.mjs` and nothing else — a hand-typed path is how
   runs end up somewhere like `local-ignore/qa-evidence/` or a `.qa-evidence/` at
   the worktree root, which is outside the ignored root and gets committed by
   accident (#8703).
-- **Evidence stays local.** `.omo/evidence/` is gitignored and the
+- **Evidence stays local.** `.omc/evidence/` is gitignored and the
   tracked-evidence audit test fails the build if any evidence path is tracked.
   Never `git add -f` an artifact; the PR body carries the summary and the
   decisive excerpts.
@@ -52,26 +52,26 @@ and a message naming the offending slug.
 
 | You changed… | Run | Proves |
 |---|---|---|
-| Any adapter code, as the fast precondition | `node packages/omo-senpi/scripts/qa/drive.mjs --self-test` | the driver + isolation harness itself works |
-| Adapter wiring reaching a live session | `node packages/omo-senpi/scripts/qa/drive.mjs` | a real senpi run with the plugin loaded, isolated agent dir, and no attributed real-home changes |
-| Task lifecycle (single + batch) | `SENPI_BIN="$(command -v senpi)" node packages/omo-senpi/scripts/qa/task-e2e.mjs` | live task start/stream/terminal states |
-| Team delivery, shutdown, reclaim, restart recovery | `SENPI_BIN="$(command -v senpi)" node packages/omo-senpi/scripts/qa/team-e2e.mjs` | injection delivery and exactly-once recovery |
-| Task RPC driver scripts | `node packages/omo-senpi/scripts/qa/task-rpc-e2e.mjs --self-test` | the RPC surface contract |
-| Skill delivery into a task | `SENPI_BIN="$(command -v senpi)" node packages/omo-senpi/scripts/qa/task-load-skills-e2e.mjs` | skills reach the child |
-| Continuation behavior | `node packages/omo-senpi/scripts/qa/probe-continuation.mjs` | turns continue as expected |
+| Any adapter code, as the fast precondition | `node packages/omc-senpi/scripts/qa/drive.mjs --self-test` | the driver + isolation harness itself works |
+| Adapter wiring reaching a live session | `node packages/omc-senpi/scripts/qa/drive.mjs` | a real senpi run with the plugin loaded, isolated agent dir, and no attributed real-home changes |
+| Task lifecycle (single + batch) | `SENPI_BIN="$(command -v senpi)" node packages/omc-senpi/scripts/qa/task-e2e.mjs` | live task start/stream/terminal states |
+| Team delivery, shutdown, reclaim, restart recovery | `SENPI_BIN="$(command -v senpi)" node packages/omc-senpi/scripts/qa/team-e2e.mjs` | injection delivery and exactly-once recovery |
+| Task RPC driver scripts | `node packages/omc-senpi/scripts/qa/task-rpc-e2e.mjs --self-test` | the RPC surface contract |
+| Skill delivery into a task | `SENPI_BIN="$(command -v senpi)" node packages/omc-senpi/scripts/qa/task-load-skills-e2e.mjs` | skills reach the child |
+| Continuation behavior | `node packages/omc-senpi/scripts/qa/probe-continuation.mjs` | turns continue as expected |
 | DAG state machine / runners | `bun test packages/senpi-task` | unit + chaos invariants (NOT live proof) |
 
 Point a driver's output at the resolved directory, e.g.:
 
 ```bash
 TASK_E2E_OUT_DIR="$ev/live-task-dag" SENPI_BIN="$(command -v senpi)" \
-  node packages/omo-senpi/scripts/qa/task-e2e.mjs
+  node packages/omc-senpi/scripts/qa/task-e2e.mjs
 ```
 
 ## Optional LSP freshness budget
 
 Custom diagnostics probes may set
-`OMO_LSP_DIAGNOSTICS_FRESHNESS_TIMEOUT_MS=6000` in the isolated engine/MCP
+`OMC_LSP_DIAGNOSTICS_FRESHNESS_TIMEOUT_MS=6000` in the isolated engine/MCP
 process before launch. The unset or invalid-value default is 3,000 ms; valid
 values are positive integer milliseconds up to 2,147,483,647. Restart only the
 QA-owned daemon after changing it. The drivers construct minimal environments,
@@ -83,7 +83,7 @@ protected-home certification and changed-path fields. See the repository's
 ## Package gate
 
 ```bash
-tsgo --noEmit -p packages/omo-senpi/tsconfig.json
+tsgo --noEmit -p packages/omc-senpi/tsconfig.json
 bun run test:senpi
 ```
 

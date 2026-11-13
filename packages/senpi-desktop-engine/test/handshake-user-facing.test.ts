@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { DesktopEngineHandshakeError } from "../src/handshake";
 
-const ENGINE_PATH = "/Users/someone/.omo/omo-versions/9.9.9/node_modules/omo-ai/native/prebuilds/senpi-desktop-engine";
+const ENGINE_PATH = "/Users/someone/.omc/omc-versions/9.9.9/node_modules/omc-ai/native/prebuilds/senpi-desktop-engine";
 
 describe("DesktopEngineHandshakeError user-facing contract (senpi#4990)", () => {
 	it("says the engine did not start and what to try, without the engine path or the raw reply", () => {

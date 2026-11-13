@@ -91,8 +91,8 @@ describe("MirrorSync module surface", () => {
       }
     })
 
-    it("#then the config key and log name are the letta-parity omo names", () => {
-      expect(CONFIG_KEY).toBe("omo.memoryRepository.url")
+    it("#then the config key and log name are the letta-parity omc names", () => {
+      expect(CONFIG_KEY).toBe("omc.memoryRepository.url")
       expect(LOG_NAME).toBe("memory-repository-push.log")
     })
 

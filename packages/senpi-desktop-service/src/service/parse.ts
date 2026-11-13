@@ -8,7 +8,7 @@ import {
 	type PermissionDeniedData,
 	type StopPathStatus,
 	UNKNOWN_AUDIT_VALUE,
-} from "@oh-my-opencode/senpi-desktop-protocol";
+} from "@oh-my-cybersecurity/senpi-desktop-protocol";
 
 // Engine stdout is the trust boundary: every payload the service hands out is shape-checked here.
 

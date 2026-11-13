@@ -19,7 +19,7 @@ afterEach(() => {
 })
 
 function syncDir(): string {
-  const root = realpathSync.native(mkdtempSync(join(tmpdir(), "omo-outbox-sweep-")))
+  const root = realpathSync.native(mkdtempSync(join(tmpdir(), "omc-outbox-sweep-")))
   roots.push(root)
   return root
 }

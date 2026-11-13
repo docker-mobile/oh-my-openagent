@@ -1,10 +1,10 @@
 [English](README.md) | [简体中文](README.zh-cn.md) | [日本語](README.ja.md) | [Русский](README.ru.md) | [한국어](README.ko.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Português (Brasil)](README.pt-br.md) | [Italiano](README.it.md)
 
 > [!NOTE]
-> **OmO 베타: OmO ❤️ Pi**
-> `curl -fsSL https://get.omo.dev/install.sh | bash`로 설치하세요. 메모리 시스템, CodeMode, Anthropic 구독까지 전부 지원됩니다.
-> [![OmO Herdr DAG - live OmO workflow DAGs in a Herdr side pane](./.github/assets/omo-herdr-dag.png)](https://github.com/jc01rho/omo-herdr-dag)
-> *프롬프트에 "mass ulw" 한 줄이면 끝. 당신도 그래프 엔지니어링의 마스터가 됩니다. 멀티 모델 ultracode, 더 나은 메모리 시스템과 함께. (우측의 패널은 [omo-herdr-dag](https://github.com/jc01rho/omo-herdr-dag) 입니다)*
+> **OmC 베타: OmC ❤️ Pi**
+> `curl -fsSL https://get.omc.nga.hm/install.sh | bash`로 설치하세요. 메모리 시스템, CodeMode, Anthropic 구독까지 전부 지원됩니다.
+> [![OmC Herdr DAG - live OmC workflow DAGs in a Herdr side pane](./.github/assets/omc-herdr-dag.png)](https://github.com/jc01rho/omc-herdr-dag)
+> *프롬프트에 "mass ulw" 한 줄이면 끝. 당신도 그래프 엔지니어링의 마스터가 됩니다. 멀티 모델 ultracode, 더 나은 메모리 시스템과 함께. (우측의 패널은 [omc-herdr-dag](https://github.com/jc01rho/omc-herdr-dag) 입니다)*
 
 
 > **Sponsors**
@@ -15,55 +15,55 @@
 > [!TIP]
 > 함께해요!
 >
-> | [<img alt="Discord link" src="https://img.shields.io/discord/1452487457085063218?color=5865F2&label=discord&labelColor=black&logo=discord&logoColor=white&style=flat-square" width="156px" />](https://discord.gg/PUwSMR9XNk) | 기여자와 OmO 사용자들을 만나려면 [Discord 커뮤니티](https://discord.gg/PUwSMR9XNk)로 오세요. |
+> | [<img alt="Discord link" src="https://img.shields.io/discord/1452487457085063218?color=5865F2&label=discord&labelColor=black&logo=discord&logoColor=white&style=flat-square" width="156px" />](https://discord.gg/PUwSMR9XNk) | 기여자와 OmC 사용자들을 만나려면 [Discord 커뮤니티](https://discord.gg/PUwSMR9XNk)로 오세요. |
 > | :-----| :----- |
-> | [<img alt="X link" src="https://img.shields.io/badge/Follow-%40justsisyphus-00CED1?style=flat-square&logo=x&labelColor=black" width="156px" />](https://x.com/justsisyphus) | 원래 제 X 계정에서 OmO 업데이트를 올렸는데, 계정이 실수로 정지되어 지금은 [@justsisyphus](https://x.com/justsisyphus)에서 대신 업데이트가 올라옵니다. |
+> | [<img alt="X link" src="https://img.shields.io/badge/Follow-%40justsisyphus-00CED1?style=flat-square&logo=x&labelColor=black" width="156px" />](https://x.com/justsisyphus) | 원래 제 X 계정에서 OmC 업데이트를 올렸는데, 계정이 실수로 정지되어 지금은 [@justsisyphus](https://x.com/justsisyphus)에서 대신 업데이트가 올라옵니다. |
 > | [<img alt="GitHub Follow" src="https://img.shields.io/github/followers/code-yeongyu?style=flat-square&logo=github&labelColor=black&color=24292f" width="156px" />](https://github.com/code-yeongyu) | 다른 프로젝트도 궁금하다면 GitHub에서 [@code-yeongyu](https://github.com/code-yeongyu)를 팔로우하세요. |
 
 <!-- <CENTERED SECTION FOR GITHUB DISPLAY> -->
 
 <div align="center">
 
-<a href="https://omo.dev"><img src="./.github/assets/omo-icon-light.svg" alt="OmO" width="200" /></a>
+<a href="https://omc.nga.hm"><img src="./.github/assets/omc-icon-light.svg" alt="OmC" width="200" /></a>
 
-# OmO
+# OmC
 
 **Your tool for real work. But it's an agent.**
 
-[![GitHub Release](https://img.shields.io/github/v/release/code-yeongyu/oh-my-openagent?color=369eff&labelColor=black&logo=github&style=flat-square)](https://github.com/code-yeongyu/oh-my-openagent/releases)
-[![downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Fomo.dev%2Fapi%2Fdownloads&style=flat-square)](https://omo.dev)
-[![GitHub Contributors](https://img.shields.io/github/contributors/code-yeongyu/oh-my-openagent?color=c4f042&labelColor=black&style=flat-square)](https://github.com/code-yeongyu/oh-my-openagent/graphs/contributors)
-[![GitHub Stars](https://img.shields.io/github/stars/code-yeongyu/oh-my-openagent?color=ffcb47&labelColor=black&style=flat-square)](https://github.com/code-yeongyu/oh-my-openagent/stargazers)
-[![License](https://img.shields.io/badge/license-SUL--1.0-white?labelColor=black&style=flat-square)](https://github.com/code-yeongyu/oh-my-openagent/blob/dev/LICENSE.md)
-[![Docs](https://img.shields.io/badge/docs-omo.dev-369eff?labelColor=black&logo=readthedocs&logoColor=white&style=flat-square)](https://omo.dev/docs)
+[![GitHub Release](https://img.shields.io/github/v/release/code-yeongyu/oh-my-cybersecurity?color=369eff&labelColor=black&logo=github&style=flat-square)](https://github.com/code-yeongyu/oh-my-cybersecurity/releases)
+[![downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Fomc.nga.hm%2Fapi%2Fdownloads&style=flat-square)](https://omc.nga.hm)
+[![GitHub Contributors](https://img.shields.io/github/contributors/code-yeongyu/oh-my-cybersecurity?color=c4f042&labelColor=black&style=flat-square)](https://github.com/code-yeongyu/oh-my-cybersecurity/graphs/contributors)
+[![GitHub Stars](https://img.shields.io/github/stars/code-yeongyu/oh-my-cybersecurity?color=ffcb47&labelColor=black&style=flat-square)](https://github.com/code-yeongyu/oh-my-cybersecurity/stargazers)
+[![License](https://img.shields.io/badge/license-SUL--1.0-white?labelColor=black&style=flat-square)](https://github.com/code-yeongyu/oh-my-cybersecurity/blob/dev/LICENSE.md)
+[![Docs](https://img.shields.io/badge/docs-omc.nga.hm-369eff?labelColor=black&logo=readthedocs&logoColor=white&style=flat-square)](https://omc.nga.hm/docs)
 
 
 </div>
 
 <!-- </CENTERED SECTION FOR GITHUB DISPLAY> -->
 
-OmO는 토큰을 끝난 일로 바꿔 주는 `omo` 명령 하나입니다. 만 개가 넘는 소스를 훑는 리서치, 한 번에 이해되는 발표자료, 백엔드, 프론트엔드, 코드까지 맡겨 보세요.
+OmO는 토큰을 끝난 일로 바꿔 주는 `omc` 명령 하나입니다. 만 개가 넘는 소스를 훑는 리서치, 한 번에 이해되는 발표자료, 백엔드, 프론트엔드, 코드까지 맡겨 보세요.
 
 엔진은 [pi](https://github.com/badlogic/pi-mono)를 포크한 senpi이고, 아래 기능은 전부 기본으로 들어 있어요.
 
 ## 설치
 
 ```bash
-curl -fsSL https://get.omo.dev/install.sh | bash
-omo
+curl -fsSL https://get.omc.nga.hm/install.sh | bash
+omc
 ```
 
-Windows는 PowerShell에서 `irm https://get.omo.dev/install.ps1 | iex`를 실행하세요. OS와 CPU에 맞는 네이티브 `omo`를 `~/.local/bin`에 설치하고 릴리스 체크섬으로 검증합니다. 패키지 매니저가 편하면 `bun add -g omo-ai`(또는 `npm i -g omo-ai`)로 같은 OmO를 설치할 수 있어요. 패키지 이름은 `omo-ai`예요. npm의 `omo` 패키지는 다른 사람이 만든 전혀 다른 물건입니다. Windows CMD, `PATH` 문제 해결, 업데이트와 삭제는 [omo.dev/docs/install](https://omo.dev/docs/install)에서 다룹니다.
+Windows는 PowerShell에서 `irm https://get.omc.nga.hm/install.ps1 | iex`를 실행하세요. OS와 CPU에 맞는 네이티브 `omc`를 `~/.local/bin`에 설치하고 릴리스 체크섬으로 검증합니다. 패키지 매니저가 편하면 `bun add -g omc-ai`(또는 `npm i -g omc-ai`)로 같은 OmO를 설치할 수 있어요. 패키지 이름은 `omc-ai`예요. npm의 `omc` 패키지는 다른 사람이 만든 전혀 다른 물건입니다. Windows CMD, `PATH` 문제 해결, 업데이트와 삭제는 [omc.nga.hm/docs/install](https://omc.nga.hm/docs/install)에서 다룹니다.
 
-프로젝트를 열고 `omo`를 실행한 다음, 할 일을 말하세요. 설정은 그게 끝.
+프로젝트를 열고 `omc`를 실행한 다음, 할 일을 말하세요. 설정은 그게 끝.
 
-세션 안에서 `/thinking <level>`로 모델이 얼마나 깊이 생각할지 정해요. `/thinking`만 치면 고르는 창이 뜨고, `Shift+Tab`은 레벨을 차례로 바꾸고, `/efforts <level>`은 강도 단계가 있는 모델에서 추론 강도를 바로 정합니다. 이전 작업을 이어 가려면 `/resume`(또는 `/sessions`)으로 지난 세션을 열면 돼요. 셸에서는 `omo -c`가 마지막 세션을 이어 가고 `omo -r`이 세션 목록을 엽니다. 나머지 명령은 `/help`에 다 있어요.
+세션 안에서 `/thinking <level>`로 모델이 얼마나 깊이 생각할지 정해요. `/thinking`만 치면 고르는 창이 뜨고, `Shift+Tab`은 레벨을 차례로 바꾸고, `/efforts <level>`은 강도 단계가 있는 모델에서 추론 강도를 바로 정합니다. 이전 작업을 이어 가려면 `/resume`(또는 `/sessions`)으로 지난 세션을 열면 돼요. 셸에서는 `omc -c`가 마지막 세션을 이어 가고 `omc -r`이 세션 목록을 엽니다. 나머지 명령은 `/help`에 다 있어요.
 
-OpenCode 에디션이나 LazyCodex에서 넘어오셨다면 `omo setup`을 한 번 실행하세요. 프로바이더 키, 커스텀 프로바이더, MCP 서버, 스킬, 모델 선택까지 그대로 옮겨 옵니다.
+OpenCode 에디션이나 LazyCodex에서 넘어오셨다면 `omc setup`을 한 번 실행하세요. 프로바이더 키, 커스텀 프로바이더, MCP 서버, 스킬, 모델 선택까지 그대로 옮겨 옵니다.
 
-그다음 `omo doctor`가 지금 연결된 프로바이더로 어떤 작업 카테고리를 돌릴 수 있는지, 이전 설치가 무엇을 남겼는지 보여 줘요. 자세한 과정은 [OpenCode에서 옮겨 오기](docs/guide/migrating-from-opencode.md)에 있습니다.
+그다음 `omc doctor`가 지금 연결된 프로바이더로 어떤 작업 카테고리를 돌릴 수 있는지, 이전 설치가 무엇을 남겼는지 보여 줘요. 자세한 과정은 [OpenCode에서 옮겨 오기](docs/guide/migrating-from-opencode.md)에 있습니다.
 
-업데이트는 `omo update`, 제거는 `bun remove -g omo-ai`(npm으로 깔았다면 `npm uninstall -g omo-ai`)입니다.
+업데이트는 `omc update`, 제거는 `bun remove -g omc-ai`(npm으로 깔았다면 `npm uninstall -g omc-ai`)입니다.
 
 ## 왜 OmO인가
 
@@ -83,13 +83,13 @@ OpenCode 에디션이나 LazyCodex에서 넘어오셨다면 `omo setup`을 한 �
 
 ## 설정
 
-기본값에는 분명한 취향이 들어 있지만, 원하면 바꿀 수 있어요. 개인 설정은 `~/.omo/omo.jsonc`, 프로젝트 설정은 그 프로젝트의 `.omo/omo.jsonc`에 두고, 가까운 파일이 이깁니다.
+기본값에는 분명한 취향이 들어 있지만, 원하면 바꿀 수 있어요. 개인 설정은 `~/.omc/omc.jsonc`, 프로젝트 설정은 그 프로젝트의 `.omc/omc.jsonc`에 두고, 가까운 파일이 이깁니다.
 
 모든 키는 [설정 레퍼런스](docs/reference/configuration.md)에 있습니다.
 
 ## 문서
 
-- [omo.dev/docs](https://omo.dev/docs)
+- [omc.nga.hm/docs](https://omc.nga.hm/docs)
 - [OpenCode에서 옮겨 오기](docs/guide/migrating-from-opencode.md)
 - [설정 레퍼런스](docs/reference/configuration.md)
 - [기능](docs/reference/features.md)
@@ -100,7 +100,7 @@ OpenCode 에디션이나 LazyCodex에서 넘어오셨다면 `omo setup`을 한 �
 
 > "It made me cancel my Cursor subscription. Unbelievable things are happening in the open source community." - [Arthur Guiot](https://x.com/arthur_guiot/status/2008736347092382053?s=20)
 
-> "If Claude Code does in 7 days what a human does in 3 months, OmO does it in 1 hour." <br/>- B, Quant Researcher
+> "If Claude Code does in 7 days what a human does in 3 months, OmC does it in 1 hour." <br/>- B, Quant Researcher
 
 > "You guys should pull this into core and recruit him. Seriously. It's really, really, really good." <br/>- Henning Kilset
 

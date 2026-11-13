@@ -1,4 +1,4 @@
-import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
+import type { OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import { DEFAULT_CATEGORIES } from "../category/builtins"
 import { CATEGORY_FALLBACK_CHAINS } from "../category/fallback-chains"
@@ -35,7 +35,7 @@ function unavailableReason<TModel extends SenpiModelPort>(result: CategoryResolu
 
 /**
  * One category as a spawn sees it: `resolveCategory` supplies the runtime chain, and the declared
- * rungs (omo.json model, models[] or fallback_models, the builtin default, then the builtin chain)
+ * rungs (omc.json model, models[] or fallback_models, the builtin default, then the builtin chain)
  * are classified against it.
  */
 export function describeCategoryChain<TModel extends SenpiModelPort>(
@@ -52,7 +52,7 @@ export function describeCategoryChain<TModel extends SenpiModelPort>(
   const chainModelIds = new Set((chain ?? []).map((rung) => rung.model))
   const declared: readonly DeclaredRung[] = [
     ...categoryModelCandidates({ ...own(DEFAULT_CATEGORIES, name), ...userConfig }).flatMap((candidate): readonly DeclaredRung[] => {
-      if (userModels.has(candidate.model)) return [{ model: candidate.model, source: "omo.json" }]
+      if (userModels.has(candidate.model)) return [{ model: candidate.model, source: "omc.json" }]
       return chainModelIds.has(candidate.model.slice(candidate.model.indexOf("/") + 1)) ? [] : [{ model: candidate.model, source: "built-in" }]
     }),
     ...builtinRungs(chain, available),

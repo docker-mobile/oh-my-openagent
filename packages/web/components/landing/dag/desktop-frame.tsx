@@ -57,7 +57,7 @@ function RunStatusChip({
 }
 
 /**
- * The omo desktop app, drawn in ledger tokens: title bar, thread sidebar (≥ md), the chat
+ * The omc desktop app, drawn in ledger tokens: title bar, thread sidebar (≥ md), the chat
  * turn that typed `mass ulw …`, and the workflow panel open on the run — header, graph
  * viewport (children) and the activity feed floating over its bottom edge, as in the app.
  */

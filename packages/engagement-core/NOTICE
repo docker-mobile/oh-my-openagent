@@ -1,0 +1,103 @@
+# Third-party notices for @oh-my-cybersecurity/engagement-core
+
+This package reimplements capabilities and adopts design shapes from two
+upstream projects. Both are MIT-licensed. The notice and permission text of each
+is reproduced below, as their license requires of any copy or substantial
+portion.
+
+## sapper-v2
+
+Upstream: https://github.com/N1nEmAn/sapper-v2
+Pinned commit: 7b75e6f1f5d5b4ae0c55878b0dd0994d9b08f1fb
+License: MIT
+
+The engagement fact graph in `src/index.ts` and the node store semantics in
+`src/store.ts` are reimplementations of the fact/intent graph and store design
+from sapper-v2's `lib/sapper.py` (typed facts with a flat `data` map, intents as
+edges with dependency `from` and produced `to`, a reserved `goal` fact, one JSON
+file per node, id counters that skip occupied ids, path-safe id validation, and a
+deduplicated loot ledger that records before submitting).
+
+```
+MIT License
+
+Copyright (c) 2026 N1nEmAn
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+## pentagi
+
+Upstream: https://github.com/vxcontrol/pentagi
+Pinned commit: cffed9485aa1cca70762cd08a57ac62a80406258
+License: MIT
+
+The typed execution boundary in `src/exec.ts` adopts the shape of pentagi's
+terminal tool (`backend/pkg/tools/terminal.go`): bounded execution with a hard
+timeout ceiling, captured output, and per-operation identity. The security
+vocabulary used in `src/findings.ts` follows the node/edge taxonomy described in
+pentagi's security prompt templates. Both are reimplementations; no Go source was
+copied.
+
+The following NOTICE is reproduced verbatim as a condition attached to the
+distributed work:
+
+```
+PentAGI, Fully autonomous AI Agent capable of performing complex penetration
+testing tasks. Copyright 2025 PentAGI Development Team. Licensed under MIT
+License. See LICENSE and EULA for terms. NOTICE: This software integrates
+VXControl Cloud SDK for enhanced intelligence services. VXControl Cloud SDK is
+licensed under AGPL-3.0 with a special exception for this official PentAGI
+project.
+```
+
+```
+MIT License
+
+Copyright (c) 2025 PentAGI Development Team
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+## Not derived from either upstream
+
+The typed finding model in `src/findings.ts` (severity ranks, CVE/CWE validation,
+evidence records, dedupe and ranking) has **no upstream source**. Neither
+sapper-v2 nor pentagi ships a typed finding, a CVE id field, or a CVSS score; both
+keep findings as free text. Any claim that this was ported would be false.
+
+The VXControl Cloud SDK is deliberately not used or referenced. Its code is
+MIT but service access requires a separate license key and acceptance of separate
+terms, so none of it is absorbed here.

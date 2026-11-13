@@ -9,7 +9,7 @@ import type {
 	RpcNotificationListener,
 	RpcPort,
 	RpcPortFailure,
-} from "@oh-my-opencode/senpi-desktop-protocol";
+} from "@oh-my-cybersecurity/senpi-desktop-protocol";
 
 // The desktop service's own script engine (packages/senpi-desktop-service/test/fake-engine.mjs), reused unchanged
 // behind an RpcPort: one child per port, NDJSON JSON-RPC over stdio, FAKE_ENGINE_DESKTOP=1 scripted desktop.

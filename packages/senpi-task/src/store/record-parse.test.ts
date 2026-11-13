@@ -278,7 +278,7 @@ describe("record-parse runner_kind and host_session fields", () => {
     const stored = persisted({
       runner_kind: "host-session",
       host_session: {
-        socket: "/tmp/omo-agent/rpc/rpc.sock",
+        socket: "/tmp/omc-agent/rpc/rpc.sock",
         routing_id: "routing-12345",
         session_path: "01a0815e-session-path",
         instance_id: "inst-uuid-001",
@@ -292,7 +292,7 @@ describe("record-parse runner_kind and host_session fields", () => {
     // then
     expect(record.runner_kind).toBe("host-session")
     expect(record.host_session).toEqual({
-      socket: "/tmp/omo-agent/rpc/rpc.sock",
+      socket: "/tmp/omc-agent/rpc/rpc.sock",
       routing_id: "routing-12345",
       session_path: "01a0815e-session-path",
       instance_id: "inst-uuid-001",
@@ -331,7 +331,7 @@ describe("record-parse runner_kind and host_session fields", () => {
     const stored = persisted({
       runner_kind: "host-session",
       host_session: {
-        socket: "/tmp/omo-agent/rpc/rpc.sock",
+        socket: "/tmp/omc-agent/rpc/rpc.sock",
         session_path: "01a0815e-session-path",
         instance_id: "inst-uuid-001",
         // routing_id is missing - should cause an error
@@ -346,7 +346,7 @@ describe("record-parse runner_kind and host_session fields", () => {
     // given - inconsistent: host_session present but runner_kind not set to host-session
     const stored = persisted({
       host_session: {
-        socket: "/tmp/omo-agent/rpc/rpc.sock",
+        socket: "/tmp/omc-agent/rpc/rpc.sock",
         routing_id: "routing-12345",
         session_path: "01a0815e-session-path",
         instance_id: "inst-uuid-001",
@@ -362,7 +362,7 @@ describe("record-parse runner_kind and host_session fields", () => {
     const stored = persisted({
       runner_kind: "host-session",
       host_session: {
-        socket: "/tmp/omo-agent/rpc/rpc.sock",
+        socket: "/tmp/omc-agent/rpc/rpc.sock",
         routing_id: "routing-12345",
         session_path: "01a0815e-session-path",
         instance_id: "inst-uuid-001",

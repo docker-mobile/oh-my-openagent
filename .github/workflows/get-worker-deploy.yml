@@ -1,4 +1,4 @@
-name: get.omo.dev deploy
+name: get.omc.nga.hm deploy
 
 on:
   push:
@@ -14,14 +14,14 @@ concurrency:
 
 jobs:
   deploy:
-    if: github.repository == 'code-yeongyu/oh-my-openagent'
+    if: github.repository == 'code-yeongyu/oh-my-cybersecurity'
     # Pin until this release/deploy path is proven on Ubuntu 26.04: #9943.
     runs-on: ubuntu-24.04
     # The Sisyphus Labs account (moved 2026-10-09). The token in this environment can edit Workers scripts and
-    # the omo.dev zone's routes; it has NO D1 access, so migrations are applied by a separate reviewed step.
+    # the omc.nga.hm zone's routes; it has NO D1 access, so migrations are applied by a separate reviewed step.
     environment:
-      name: omo-production
-      url: https://get.omo.dev
+      name: omc-production
+      url: https://get.omc.nga.hm
     defaults:
       run:
         working-directory: packages/get-worker
@@ -46,18 +46,18 @@ jobs:
       - name: Smoke the live endpoints
         run: |
           set -euo pipefail
-          curl -fsS https://get.omo.dev/healthz
-          curl -fsSI https://get.omo.dev/install.sh | grep -i '^cache-control: public, max-age=300'
-          curl -fsS https://get.omo.dev/channels/latest
+          curl -fsS https://get.omc.nga.hm/healthz
+          curl -fsSI https://get.omc.nga.hm/install.sh | grep -i '^cache-control: public, max-age=300'
+          curl -fsS https://get.omc.nga.hm/channels/latest
       - name: Write job summary
         if: always()
         shell: bash
         working-directory: .
         env:
-          JOB_SUMMARY_TITLE: get.omo.dev deploy
+          JOB_SUMMARY_TITLE: get.omc.nga.hm deploy
           JOB_SUMMARY_STATUS: ${{ job.status }}
           JOB_SUMMARY_DETAILS: |
-            - Refuses to deploy while a D1 migration is pending, then deploys the omo-get Worker.
+            - Refuses to deploy while a D1 migration is pending, then deploys the omc-get Worker.
             - Smoke-checks healthz, install.sh caching and the latest channel.
           JOB_SUMMARY_NEXT: A pending-migration stop means the migration must be applied through the reviewed step first; otherwise check wrangler authentication.
         run: GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" bash .github/scripts/write-job-summary.sh

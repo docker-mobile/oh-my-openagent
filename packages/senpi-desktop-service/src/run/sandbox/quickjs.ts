@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { Worker } from "node:worker_threads";
-import type { ComputerDisplay, ComputerRunOk, ComputerSessionSnapshot } from "@oh-my-opencode/senpi-desktop-protocol";
+import type { ComputerDisplay, ComputerRunOk, ComputerSessionSnapshot } from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import type { DesktopService } from "../../service/service";
 import { ComputerRunError, type ComputerRunErrorReason, type RunOutput } from "../context";
 import {
@@ -59,8 +59,8 @@ export interface QuickJsRunOptions {
 	readonly workerPath?: string;
 }
 
-/** The worker bundle and the wasm the omo-senpi build emits beside the bundle this module is inlined into. */
-const SANDBOX_WORKER_BUNDLE_NAME = "omo-computer-run-worker.mjs";
+/** The worker bundle and the wasm the omc-senpi build emits beside the bundle this module is inlined into. */
+const SANDBOX_WORKER_BUNDLE_NAME = "omc-computer-run-worker.mjs";
 const SANDBOX_WASM_BUNDLE_NAME = "quickjs.wasm";
 
 // A bundler cannot inline a Worker's entry, so inside a bundle both files are its siblings; from source

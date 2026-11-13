@@ -1,0 +1,101 @@
+{
+  "name": "@oh-my-cybersecurity/omc-senpi",
+  "version": "5.1.65",
+  "type": "module",
+  "private": true,
+  "description": "Senpi harness adapter for oh-my-cybersecurity.",
+  "imports": {
+    "#omc-desktop-toolkit-runtime": "./src/components/desktop-toolkit/runtime.ts",
+    "#omc-telemetry-posthog-runtime": "./src/components/telemetry/posthog-runtime.ts",
+    "#omc-telemetry-otlp-runtime": "./src/components/telemetry/otlp-runtime.ts",
+    "#omc-task-runtime": "./src/extension/omc-task.ts",
+    "#omc-computer-use-runtime": "./src/components/computer-use/runtime.ts",
+    "#omc-memory-doctor-runtime": "./src/components/memory/commands/doctor-runtime.ts",
+    "#omc-thread-client-runtime": "./src/components/thread/live-surface.ts",
+    "#omc-memory-memfs-runtime": "./src/components/memory/commands/memfs-runtime.ts",
+    "#omc-telemetry-recovery-runtime": "./src/components/telemetry/session-summary-recovery.ts",
+    "#omc-feedback-runtime": "./src/components/feedback/runtime.ts",
+    "#omc-claim-receipt-runtime": "./src/components/claim-receipt/runtime.ts",
+    "#omc-memory-palace-runtime": "./src/components/memory/palace/runtime.ts",
+    "#omc-device-account-runtime": "./src/components/memory/device-session/account-runtime.ts",
+    "#omc-memory-commands-runtime": "./src/components/memory/commands/runtime.ts",
+    "#omc-session-history-runtime": "./src/components/onboarding/session-history/runtime.ts",
+    "#omc-recall-store-runtime": "./src/components/memory/recall-store-runtime.ts",
+    "#omc-device-service-runtime": "./src/components/device-service/runtime.ts",
+    "#omc-memory-sync-runtime": "./src/components/memory/sync-runtime.ts",
+    "#omc-agent-toolkit-sdk": "./src/extension/agent-toolkit-sdk.ts",
+    "#senpi-private-fds": "@code-yeongyu/senpi/private-fds",
+    "#bunshin-ts": "./src/extension/bunshin-ts-sdk.ts",
+    "#bunshin-ts-dep/@sinclair/typebox": "@sinclair/typebox",
+    "#bunshin-ts-dep/@sinclair/typebox/*": "@sinclair/typebox/*"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    },
+    "./agent-home": {
+      "types": "./src/components/agent-home/resolve-agent-home.ts",
+      "import": "./src/components/agent-home/resolve-agent-home.ts"
+    },
+    "./onboarding/session-history": {
+      "types": "./src/components/onboarding/session-history/index.ts",
+      "import": "./src/components/onboarding/session-history/index.ts"
+    },
+    "./install": {
+      "types": "./src/install/index.ts",
+      "import": "./src/install/index.ts"
+    },
+    "./extension": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    }
+  },
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsgo --noEmit -p tsconfig.json",
+    "test": "bun test src/**/*.test.ts"
+  },
+  "dependencies": {
+    "@code-yeongyu/lsp-daemon": "file:../lsp-daemon",
+    "@earendil-works/pi-tui": "npm:@code-yeongyu/senpi-tui@2026.11.9-2",
+    "@oh-my-cybersecurity/ast-grep-mcp": "workspace:*",
+    "@oh-my-cybersecurity/boulder-state": "workspace:*",
+    "@oh-my-cybersecurity/comment-checker-core": "workspace:*",
+    "@oh-my-cybersecurity/delegate-core": "workspace:*",
+    "@oh-my-cybersecurity/device-service-core": "workspace:*",
+    "@oh-my-cybersecurity/lsp-core": "workspace:*",
+    "@oh-my-cybersecurity/model-core": "workspace:*",
+    "@oh-my-cybersecurity/omc-config-core": "workspace:*",
+    "@oh-my-cybersecurity/omc-opencode": "workspace:*",
+    "@oh-my-cybersecurity/prompts-core": "workspace:*",
+    "@oh-my-cybersecurity/senpi-desktop-engine": "workspace:*",
+    "@oh-my-cybersecurity/senpi-desktop-sdk": "workspace:*",
+    "@oh-my-cybersecurity/senpi-desktop-service": "workspace:*",
+    "@oh-my-cybersecurity/senpi-desktop-tool": "workspace:*",
+    "@oh-my-cybersecurity/senpi-task": "workspace:*",
+    "@oh-my-cybersecurity/shared-skills": "workspace:*",
+    "@oh-my-cybersecurity/skills-loader-core": "workspace:*",
+    "@oh-my-cybersecurity/team-core": "workspace:*",
+    "@oh-my-cybersecurity/telemetry-core": "workspace:*",
+    "@oh-my-cybersecurity/utils": "workspace:*",
+    "@sinclair/typebox": "0.34.52",
+    "typebox": "1.3.34"
+  },
+  "peerDependencies": {
+    "@code-yeongyu/senpi": "2026.11.9-2"
+  },
+  "peerDependenciesMeta": {
+    "@code-yeongyu/senpi": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@code-yeongyu/senpi": "2026.11.9-2",
+    "@code-yeongyu/senpi-agent-core": "2026.11.9-2",
+    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.9-2",
+    "@types/node": "26.6.2",
+    "bun-types": "1.4.4",
+    "terser": "5.51.2"
+  }
+}

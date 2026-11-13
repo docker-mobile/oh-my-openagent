@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { computerPreludeAssets } from "@oh-my-opencode/senpi-desktop-prelude";
+import { computerPreludeAssets } from "@oh-my-cybersecurity/senpi-desktop-prelude";
 import { Check } from "typebox/value";
 import { describe, expect, it } from "vitest";
 import { ComputerHandle } from "../src/activation";

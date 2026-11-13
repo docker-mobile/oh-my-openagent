@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test"
 import { appendFile, readFile, rm, writeFile } from "node:fs/promises"
 import { join } from "node:path"
-import { getProcessStartIdentity } from "@oh-my-opencode/memory-core/process-identity"
+import { getProcessStartIdentity } from "@oh-my-cybersecurity/memory-core/process-identity"
 
 import { publishLockRecord } from "./lock-publish"
 import { createTempDirectory, runLockContenders } from "./lock-test-support"

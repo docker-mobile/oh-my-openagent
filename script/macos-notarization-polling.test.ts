@@ -17,7 +17,7 @@ const NOT_YET = "rejected source=Unnotarized Developer ID"
 
 /** A repo-shaped sandbox with the signing script, a stub bin dir, and no signing material in the environment. */
 function sandbox(): { root: string; env: NodeJS.ProcessEnv } {
-  const root = mkdtempSync(join(tmpdir(), "omo-macos-notarize-"))
+  const root = mkdtempSync(join(tmpdir(), "omc-macos-notarize-"))
   mkdirSync(join(root, ".github", "scripts"), { recursive: true })
   copyFileSync(signingScript, join(root, ".github", "scripts", "macos-sign-and-notarize.sh"))
   mkdirSync(join(root, "bin"))
@@ -67,7 +67,7 @@ find "\${@: -2:1}" -type f -exec cat {} \\; -exec echo \\; > "${root}/archived-f
 touch "\${@: -1}"
 `)
   for (const tool of ["security", "codesign", "xcrun", "spctl", "ditto"]) chmodSync(join(bin, tool), 0o755)
-  const binary = join(root, "omo-darwin-arm64")
+  const binary = join(root, "omc-darwin-arm64")
   writeFileSync(binary, "binary")
   const material = { CSC_LINK: Buffer.from("p12").toString("base64"), CSC_KEY_PASSWORD: "pw", APPLE_API_KEY: "key", APPLE_API_KEY_ID: "KEY", APPLE_API_ISSUER: "issuer" }
   return { root, binary, env: { ...env, ...material, RUNNER_TEMP: root, NOTARY_POLL_SECONDS: "0", NOTARY_TIMEOUT_SECONDS: "30", GATEKEEPER_POLL_SECONDS: "0", GATEKEEPER_TIMEOUT_SECONDS: "30" } }

@@ -2,7 +2,7 @@ import { mkdirSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 import { afterEach, describe, expect, test } from "bun:test"
 
-import { createManagerResidencyRegistry } from "../../../omo-senpi/src/components/task/residency-registry"
+import { createManagerResidencyRegistry } from "../../../omc-senpi/src/components/task/residency-registry"
 import { createTaskManager } from "../manager/manager"
 import { FakeRunner, settings as managerSettings } from "../manager/__fixtures__/manager-fakes"
 import { resolveChildSessionDir } from "../runners/rpc/spawn"

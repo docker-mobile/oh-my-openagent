@@ -8,33 +8,33 @@ const sums = (entries: Record<string, string>) => parseSha256Sums(Object.entries
 
 describe("planMirrorAssets", () => {
   const release = [
-    asset("omo-linux-x64", hash("a")),
-    asset("omo-darwin-arm64", hash("b")),
+    asset("omc-linux-x64", hash("a")),
+    asset("omc-darwin-arm64", hash("b")),
     asset("SHA256SUMS", hash("c")),
     asset("senpi-desktop-engine-darwin-arm64", hash("d")),
     asset("notes.txt", hash("e")),
   ]
 
   test("mirrors binaries, SHA256SUMS and engines, skipping anything else", () => {
-    const plan = planMirrorAssets(release, sums({ "omo-linux-x64": hash("a"), "omo-darwin-arm64": hash("b") }))
-    expect(plan.map((a) => a.name)).toEqual(["omo-linux-x64", "omo-darwin-arm64", "SHA256SUMS", "senpi-desktop-engine-darwin-arm64"])
+    const plan = planMirrorAssets(release, sums({ "omc-linux-x64": hash("a"), "omc-darwin-arm64": hash("b") }))
+    expect(plan.map((a) => a.name)).toEqual(["omc-linux-x64", "omc-darwin-arm64", "SHA256SUMS", "senpi-desktop-engine-darwin-arm64"])
     expect(plan[0]?.sha256).toBe(hash("a"))
   })
 
   test("refuses a binary whose SHA256SUMS entry disagrees with the GitHub digest", () => {
-    expect(() => planMirrorAssets(release, sums({ "omo-linux-x64": hash("f"), "omo-darwin-arm64": hash("b") }))).toThrow(MirrorPlanError)
+    expect(() => planMirrorAssets(release, sums({ "omc-linux-x64": hash("f"), "omc-darwin-arm64": hash("b") }))).toThrow(MirrorPlanError)
   })
 
   test("refuses a binary missing from SHA256SUMS, or a SHA256SUMS entry with no asset", () => {
-    expect(() => planMirrorAssets(release, sums({ "omo-linux-x64": hash("a") }))).toThrow("omo-darwin-arm64 is missing from SHA256SUMS")
+    expect(() => planMirrorAssets(release, sums({ "omc-linux-x64": hash("a") }))).toThrow("omc-darwin-arm64 is missing from SHA256SUMS")
     expect(() =>
-      planMirrorAssets(release, sums({ "omo-linux-x64": hash("a"), "omo-darwin-arm64": hash("b"), "omo-linux-arm64": hash("9") })),
-    ).toThrow("SHA256SUMS lists omo-linux-arm64")
+      planMirrorAssets(release, sums({ "omc-linux-x64": hash("a"), "omc-darwin-arm64": hash("b"), "omc-linux-arm64": hash("9") })),
+    ).toThrow("SHA256SUMS lists omc-linux-arm64")
   })
 
   test("refuses an asset without a GitHub sha256 digest", () => {
     const noDigest = release.map((a) => (a.name === "senpi-desktop-engine-darwin-arm64" ? asset(a.name, null) : a))
-    expect(() => planMirrorAssets(noDigest, sums({ "omo-linux-x64": hash("a"), "omo-darwin-arm64": hash("b") }))).toThrow("no GitHub sha256")
+    expect(() => planMirrorAssets(noDigest, sums({ "omc-linux-x64": hash("a"), "omc-darwin-arm64": hash("b") }))).toThrow("no GitHub sha256")
   })
 })
 
@@ -59,15 +59,15 @@ describe("versions, channels and retention", () => {
 })
 
 describe("signPut", () => {
-  const credentials = { accountId: "acct", accessKeyId: "id", secretAccessKey: "secret", bucket: "omo-releases" }
+  const credentials = { accountId: "acct", accessKeyId: "id", secretAccessKey: "secret", bucket: "omc-releases" }
   const at = new Date("2026-09-29T00:00:00.000Z")
 
   test("signs the payload hash and the checksum so R2 can reject altered bytes", () => {
-    const signed = signPut(credentials, "releases/v5.1.1/omo-linux-x64", hash("a"), { "x-amz-meta-sha256": hash("a") }, at)
-    expect(signed.url).toBe("https://acct.r2.cloudflarestorage.com/omo-releases/releases/v5.1.1/omo-linux-x64")
+    const signed = signPut(credentials, "releases/v5.1.1/omc-linux-x64", hash("a"), { "x-amz-meta-sha256": hash("a") }, at)
+    expect(signed.url).toBe("https://acct.r2.cloudflarestorage.com/omc-releases/releases/v5.1.1/omc-linux-x64")
     expect(signed.headers["x-amz-content-sha256"]).toBe(hash("a"))
     expect(signed.headers.authorization).toContain("SignedHeaders=host;x-amz-checksum-sha256;x-amz-content-sha256;x-amz-date;x-amz-meta-sha256")
-    const other = signPut(credentials, "releases/v5.1.1/omo-linux-x64", hash("b"), { "x-amz-meta-sha256": hash("a") }, at)
+    const other = signPut(credentials, "releases/v5.1.1/omc-linux-x64", hash("b"), { "x-amz-meta-sha256": hash("a") }, at)
     expect(other.headers.authorization).not.toBe(signed.headers.authorization)
   })
 })

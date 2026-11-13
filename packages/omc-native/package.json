@@ -1,0 +1,26 @@
+{
+  "name": "omc-ai",
+  "version": "5.1.65",
+  "type": "module",
+  "description": "OmC Native - the standalone omc command with the OMO extension built in: bun add -g omc-ai",
+  "bin": {
+    "omc": "bin/omc.js"
+  },
+  "files": [
+    "bin",
+    "plugin"
+  ],
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "postinstall": "node bin/senpi-patch.mjs"
+  },
+  "dependencies": {
+    "@code-yeongyu/senpi": "2026.11.9-2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/code-yeongyu/oh-my-cybersecurity.git"
+  }
+}

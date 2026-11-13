@@ -69,7 +69,7 @@ describe("expandEnvVars", () => {
   describe("#given a benign environment variable in the builtin allowlist", () => {
     it("#when expanding the value #then it returns the env value", async () => {
       // given
-      process.env.TMPDIR = "/tmp/omo"
+      process.env.TMPDIR = "/tmp/omc"
       process.env.TEMP = "C:\\Temp"
       process.env.USERPROFILE = "C:\\Users\\tester"
       process.env.LANG = "en_US.UTF-8"
@@ -83,7 +83,7 @@ describe("expandEnvVars", () => {
 
       // then
       expect(expanded).toBe(
-        "/tmp/omo|C:\\Temp|C:\\Users\\tester|en_US.UTF-8|/Users/tester/.config"
+        "/tmp/omc|C:\\Temp|C:\\Users\\tester|en_US.UTF-8|/Users/tester/.config"
       )
     })
   })

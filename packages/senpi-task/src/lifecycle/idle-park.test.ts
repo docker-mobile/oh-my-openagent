@@ -5,7 +5,7 @@ import { resolveContext } from "./context"
 import { reclaimIdleResidents, startIdleResidentReclaimer } from "./residency"
 import { cleanupProjects, fakeHandle, FakeRegistry, readEvents, seedRecord, settings, tempStore } from "./__fixtures__/lifecycle-fakes"
 import { runTaskOutput } from "../tools/output/output"
-import { configureSharedSubunitLogger } from "@oh-my-opencode/utils"
+import { configureSharedSubunitLogger } from "@oh-my-cybersecurity/utils"
 import { createTaskManager } from "../manager/manager"
 import { FakeRunner } from "../manager/__fixtures__/manager-fakes"
 import { parkRealSession } from "./__fixtures__/idle-park-session"
@@ -96,7 +96,7 @@ describe("idle suspension", () => {
       expect(output.details.kind).toBe("status")
       if (output.details.kind === "status") expect(output.details.snapshot.final_response).toBe("IDLE_PARK_SENTINEL")
     }
-    // Residents are reclaimed independently (omo#9785), so only each child's own step order is a contract.
+    // Residents are reclaimed independently (omc#9785), so only each child's own step order is a contract.
     const stepsOf = (id: string) => trace.filter((entry) => entry.endsWith(`:${id}`))
     expect(stepsOf("st_00000101")).toEqual(["forget:st_00000101", "abort:st_00000101", "dispose:st_00000101"])
     expect(stepsOf("st_00000102")).toEqual(["forget:st_00000102", "abort:st_00000102", "terminate:st_00000102", "dispose:st_00000102"])

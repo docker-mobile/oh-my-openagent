@@ -9,7 +9,7 @@ import {
   isKimiK31Model,
   isMiniMaxModel,
   isSWE2Model,
-} from "@oh-my-opencode/model-core"
+} from "@oh-my-cybersecurity/model-core"
 import type { VariantTable } from "./types"
 
 type ModelMatcher = (modelID: string) => boolean

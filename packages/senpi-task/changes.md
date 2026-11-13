@@ -1362,7 +1362,7 @@ skips to zai, a rejected OAuth refresh with only same-provider rungs ends the ta
 
 ## Task-category coverage for omo doctor and omo setup (#8858)
 
-`category/coverage.ts` (new): `resolveCategoryCoverage(config, registry)` returns the usable categories (`resolveAvailableCategoryNames`) and, per unusable one, the chain providers with no model in the registry (the resolver's `missingChainProviders`, now exported with `parseAvailableModels`). Disabled categories are neither; a registry without a model list throws. Exported from `category/index.ts` and as `@oh-my-opencode/senpi-task/category-coverage`. omo#8857.
+`category/coverage.ts` (new): `resolveCategoryCoverage(config, registry)` returns the usable categories (`resolveAvailableCategoryNames`) and, per unusable one, the chain providers with no model in the registry (the resolver's `missingChainProviders`, now exported with `parseAvailableModels`). Disabled categories are neither; a registry without a model list throws. Exported from `category/index.ts` and as `@oh-my-cybersecurity/senpi-task/category-coverage`. omo#8857.
 
 ## unspecified-high GLM rung uses engine `zai` / `zai-coding-cn` (#8827)
 
@@ -1489,7 +1489,7 @@ rebinding the same socket path, as before. omo#8604 (same dev full-matrix shard)
 
 ## Isolated children run in a copy-on-write clone and merge back when they settle
 
-`isolation/` wraps `@oh-my-opencode/isolation-core` as an injectable port (`runtime.ts`
+`isolation/` wraps `@oh-my-cybersecurity/isolation-core` as an injectable port (`runtime.ts`
 `createIsolationRuntime`, seven backends, `~/.omo/wt` sweep roots). `prepare.ts` resolves the repo
 root, captures the baseline and clones BEFORE the record is committed to a launch, so a repository
 that cannot be cloned refuses the spawn `isolation_unavailable` instead of quietly running the child

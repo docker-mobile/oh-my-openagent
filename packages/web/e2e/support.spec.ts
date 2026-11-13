@@ -22,7 +22,7 @@ test.describe("Support page (Report a problem landing)", () => {
     const href = await page.getByRole("link", { name: "GitHub 이슈 열기" }).getAttribute("href")
     const issue = new URL(href ?? "")
     expect(`${issue.origin}${issue.pathname}`).toBe(
-      "https://github.com/code-yeongyu/oh-my-openagent/issues/new",
+      "https://github.com/code-yeongyu/oh-my-cybersecurity/issues/new",
     )
     expect(issue.searchParams.get("title")).toBe("Anthropic sign-in missing")
   })
@@ -33,7 +33,7 @@ test.describe("Support page (Report a problem landing)", () => {
     const response = await page.goto("/support")
 
     expect(response?.status()).toBe(200)
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Get help with OmO")
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Get help with OmC")
     await expect(page.getByTestId("support-report-body")).toHaveCount(0)
     await expect(page.getByRole("link", { name: "Ask on Discord" })).toHaveAttribute(
       "href",

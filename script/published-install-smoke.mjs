@@ -7,7 +7,7 @@ import { join, resolve } from "node:path"
 import { pathToFileURL } from "node:url"
 
 // The published payload is the only artifact a user installs, and `npm pack --dry-run` cannot prove
-// it installs: oh-my-openagent@5.0.0-beta.43 shipped without the prompts-core directive and
+// it installs: oh-my-cybersecurity@5.0.0-beta.43 shipped without the prompts-core directive and
 // lazycodex-ai@5.0.0-beta.43 without shared-skills/skill-source-filter.mjs, and both died at
 // `npm run sync:skills` on first install while every gate stayed green.
 const REQUIRED_INSTALLED_ARTIFACTS = [
@@ -63,7 +63,7 @@ async function runSmoke(argv) {
     return 2
   }
 
-  const sandbox = await mkdtemp(join(tmpdir(), "omo-published-smoke-"))
+  const sandbox = await mkdtemp(join(tmpdir(), "omc-published-smoke-"))
   // The sandbox is always created here and never taken from the environment, so a caller's real
   // CODEX_HOME can never be written by this smoke.
   const codexHome = join(sandbox, "codex-home")
@@ -84,7 +84,7 @@ async function runSmoke(argv) {
     }
 
     const packageRoot = await extractTarball(tarballPath, sandbox)
-    const installerPath = join(packageRoot, "packages", "omo-codex", "scripts", "install-dist", "install-local.mjs")
+    const installerPath = join(packageRoot, "packages", "omc-codex", "scripts", "install-dist", "install-local.mjs")
     if (!existsSync(installerPath)) {
       console.error(`published payload has no Codex installer at ${installerPath}`)
       return 1

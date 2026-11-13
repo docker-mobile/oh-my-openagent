@@ -88,7 +88,7 @@ test("a local commit starts a cycle after a 2 s debounce, once for a burst", asy
 for (const { name, stop } of [
   { name: "reruns when not stopped", stop: false },
   { name: "does not rerun once stopped", stop: true },
-]) test(`a local commit queued during a successful cycle ${name} (omo #11057)`, async () => {
+]) test(`a local commit queued during a successful cycle ${name} (omc #11057)`, async () => {
   // given: hold a successful push after its capture, with no stream or poll subscribed
   const { server, a, b } = await started()
   const entered = Promise.withResolvers<void>()
@@ -134,7 +134,7 @@ for (const { name, stop } of [
   }
 }, GIT_TEST_TIMEOUT * 2)
 
-test("a stream-connected device's own pushed head echoed back during its cycle starts no extra cycle (omo #11057)", async () => {
+test("a stream-connected device's own pushed head echoed back during its cycle starts no extra cycle (omc #11057)", async () => {
   // given: a started device subscribed to the stream; the server echoes every append to every listener, the pusher too
   const { a } = await started()
   a.engine.start()
@@ -153,7 +153,7 @@ test("a stream-connected device's own pushed head echoed back during its cycle s
   expect(a.engine.cyclesRun).toBe(2)
 }, GIT_TEST_TIMEOUT)
 
-test("a cycle that fails settles nextCycle() with that failure, and a request queued while it ran still gets its cycle (omo #10637)", async () => {
+test("a cycle that fails settles nextCycle() with that failure, and a request queued while it ran still gets its cycle (omc #10637)", async () => {
   const { b } = await started()
   await b.restart()
   const failure = new Error("store unavailable")
@@ -188,7 +188,7 @@ test("a cycle that fails settles nextCycle() with that failure, and a request qu
   load.mockRestore()
 }, GIT_TEST_TIMEOUT)
 
-test("a request queued during a failing cycle never starts a cycle after stop() returns (omo #10637 review of #10971, HIGH)", async () => {
+test("a request queued during a failing cycle never starts a cycle after stop() returns (omc #10637 review of #10971, HIGH)", async () => {
   const { b } = await started()
   await b.restart()
   let loads = 0

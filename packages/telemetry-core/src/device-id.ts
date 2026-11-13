@@ -9,15 +9,15 @@ import type { TelemetryEnv } from "./types"
  *
  * The OS writes one random identifier per installation of itself: `IOPlatformUUID` on macOS, `/etc/machine-id` on
  * Linux, `MachineGuid` on Windows. None of them is derived from a person, a hostname, a user name or a path, so a
- * hash of one cannot be confirmed by guessing (the #11571 defect), while it stays the same across OmO updates,
+ * hash of one cannot be confirmed by guessing (the #11571 defect), while it stays the same across OmC updates,
  * reinstalls and agent-dir overrides. Only `sha256(domain + id)` leaves the process; the raw id is read on the send
  * path, after every consent check, and never written anywhere.
  */
 
-export const TELEMETRY_DEVICE_ID_ENV = "OMO_TELEMETRY_DEVICE_ID"
+export const TELEMETRY_DEVICE_ID_ENV = "OMC_TELEMETRY_DEVICE_ID"
 
 /** Domain separation: the same machine id hashed by another product or purpose yields an unrelated value. */
-const DEVICE_HASH_DOMAIN = "omo:device:v1\u0000"
+const DEVICE_HASH_DOMAIN = "omc:device:v1\u0000"
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 const HEX32_PATTERN = /^[0-9a-f]{32}$/
 const HEX64_PATTERN = /^[0-9a-f]{64}$/
@@ -105,7 +105,7 @@ let cachedDefault: { readonly value: string | undefined } | undefined
 
 /**
  * `sha256(domain + OS machine id)`, or undefined when the platform exposes no usable id (minimal containers,
- * unsupported platforms, a failed command). `OMO_TELEMETRY_DEVICE_ID` overrides the OS read: a hex id pins a
+ * unsupported platforms, a failed command). `OMC_TELEMETRY_DEVICE_ID` overrides the OS read: a hex id pins a
  * hosted or remote runtime to the device of the host that launched it, `off` disables device identity. The OS
  * read is done once per process.
  */

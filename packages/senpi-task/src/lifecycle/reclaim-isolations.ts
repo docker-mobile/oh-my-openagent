@@ -1,5 +1,5 @@
-import { log } from "@oh-my-opencode/utils"
-import { processOwnerProbe } from "@oh-my-opencode/isolation-core"
+import { log } from "@oh-my-cybersecurity/utils"
+import { processOwnerProbe } from "@oh-my-cybersecurity/isolation-core"
 import { needsCrashSalvage, salvageCrashedIsolation, sweepIsolations } from "../isolation"
 import { TERMINAL_STATUSES, type LifecycleContext } from "./context"
 

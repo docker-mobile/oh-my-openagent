@@ -7,7 +7,7 @@ import type { ChildExitOutcome } from "../types"
  * A process-mode task child runs in RPC mode, which writes no lifetime marker of its own (senpi#2194):
  * this parent is the process that watches it, so this parent records its death. The record lands in
  * the same `<agentDir>/process-crashes/crashes.jsonl` senpi writes, in the same shape, so one reporter
- * reads every kind (oh-my-openagent#8931).
+ * reads every kind (oh-my-cybersecurity#8931).
  */
 
 /** Signals that mean the child died, as opposed to being asked to stop by a terminal or supervisor. */
@@ -49,7 +49,7 @@ export function recordTaskChildDeath(input: RecordTaskChildDeathInput): void {
 
 /** Append one parent-written record to the agent dir's `process-crashes/crashes.jsonl`; best-effort. */
 export function appendParentCrashRecord(env: NodeJS.ProcessEnv, record: Readonly<Record<string, unknown>>): void {
-  const agentDir = env.OMO_CODING_AGENT_DIR ?? env.SENPI_CODING_AGENT_DIR ?? env.PI_CODING_AGENT_DIR
+  const agentDir = env.OMC_CODING_AGENT_DIR ?? env.SENPI_CODING_AGENT_DIR ?? env.PI_CODING_AGENT_DIR
   if (agentDir === undefined || agentDir.length === 0) return
   try {
     const dir = join(agentDir, "process-crashes")

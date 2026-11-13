@@ -51,7 +51,7 @@ export type TaskSnapshot = {
   readonly awaiting_input?: AwaitingInputDetails
   // A cancel waits for this child's lost connection; it may still be running on its host.
   readonly stop?: string
-  // The child runs in another live omo process (#12349): where it runs and whether this process can reach it.
+  // The child runs in another live omc process (#12349): where it runs and whether this process can reach it.
   readonly owner?: string
   // The child has not launched yet: its start-time fallback model is waiting for a lane slot.
   readonly start_queued?: StartQueued

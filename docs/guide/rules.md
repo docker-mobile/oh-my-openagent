@@ -1,10 +1,10 @@
 # Rule Authoring
 
-Project rules are markdown files that OmO injects when the current file matches their frontmatter. Use them for repo-specific standards that should travel with the codebase: test discipline, API error handling, UI conventions, migration rules, or generated-file warnings.
+Project rules are markdown files that OmC injects when the current file matches their frontmatter. Use them for repo-specific standards that should travel with the codebase: test discipline, API error handling, UI conventions, migration rules, or generated-file warnings.
 
 ## Where Rules Live
 
-Prefer `.omo/rules/*.md` for OmO-native project rules.
+Prefer `.omc/rules/*.md` for OmC-native project rules.
 
 Also discovered:
 
@@ -13,7 +13,7 @@ Also discovered:
 - `.github/instructions/*.instructions.md`
 - `.github/copilot-instructions.md`
 - `CONTEXT.md`
-- user rules under `~/.omo/rules`, `~/.opencode/rules`, and `~/.claude/rules`
+- user rules under `~/.omc/rules`, `~/.opencode/rules`, and `~/.claude/rules`
 
 Do not create new `.sisyphus/rules` files. That legacy location is only kept for compatibility in older paths.
 
@@ -24,7 +24,7 @@ Supported fields:
 | Field | Type | Purpose |
 |---|---|---|
 | `description` | string | Human-readable summary shown with the rule. |
-| `globs` | string or string[] | Primary OmO match patterns. |
+| `globs` | string or string[] | Primary OmC match patterns. |
 | `paths` | string or string[] | Claude-compatible alias; normalized into `globs`. |
 | `applyTo` | string or string[] | GitHub Copilot-compatible alias; normalized into `globs`. |
 | `alwaysApply` | boolean | Apply the rule without checking glob patterns. |
@@ -48,7 +48,7 @@ globs:
 - Do not swallow unexpected exceptions without logging or surfacing them.
 ```
 
-Create the file as `.omo/rules/api-error-handling.md`.
+Create the file as `.omc/rules/api-error-handling.md`.
 
 ## Matching Semantics
 
@@ -80,11 +80,11 @@ This bypasses glob matching. Use it sparingly for repo-wide invariants.
 
 ## Discovery And Priority
 
-For a target file, OmO walks up from that file's directory toward the project root and scans rule directories at each level. Closer rules have lower distance and are preferred when ordering the injected block.
+For a target file, OmC walks up from that file's directory toward the project root and scans rule directories at each level. Closer rules have lower distance and are preferred when ordering the injected block.
 
 Source ordering is deterministic:
 
-1. `.omo/rules`
+1. `.omc/rules`
 2. `.claude/rules`
 3. `.cursor/rules`
 4. `.github/instructions`
@@ -97,7 +97,7 @@ Single-file rules such as `.github/copilot-instructions.md` and `CONTEXT.md` app
 
 ## Authoring Checklist
 
-- Put project-owned rules in `.omo/rules`.
+- Put project-owned rules in `.omc/rules`.
 - Give every rule a `description`.
 - Prefer narrow `globs` over `alwaysApply`.
 - Add negative globs for tests, generated files, or fixtures that should not inherit the rule.

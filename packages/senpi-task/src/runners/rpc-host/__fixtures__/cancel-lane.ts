@@ -5,7 +5,7 @@ import { startHostWorld, type HostWorld, type ParentOptions, type ParentSession 
 import { manualRecoveryClock, type ManualRecoveryClock } from "./manual-recovery-clock"
 
 /**
- * A one-host world for the cancel suites (omo#9403): a lane of `slots` children whose sessions each
+ * A one-host world for the cancel suites (omc#9403): a lane of `slots` children whose sessions each
  * run a real long-lived process, so "the cancel stopped the child" is the process exiting.
  */
 export interface CancelLane {

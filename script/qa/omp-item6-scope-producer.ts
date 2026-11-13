@@ -6,7 +6,7 @@ import { bounded, openChildEnv, openProducerKernel, type ProducerKernel } from "
 
 /**
  * The same scoped grant as `omp-item6-scope.ts`, but against the REAL merged producer kernel
- * (senpi#1731 / senpi PR #1765) injected through `OMP_SENPI_PRODUCER`: the scope omo computes is
+ * (senpi#1731 / senpi PR #1765) injected through `OMP_SENPI_PRODUCER`: the scope omc computes is
  * enforced inside the producer's own worker, so the refusal is the engine's, not a fixture's.
  *
  * A real JS cell defines one closure that reaches a host tool by name. A REAL in-process child with

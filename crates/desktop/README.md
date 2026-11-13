@@ -1,6 +1,6 @@
 # Desktop (computer-use) crates
 
-The cross-platform computer-use engine behind omo-senpi's `computer` tool. It is tracked in code-yeongyu/oh-my-openagent#8893, and the `senpi-desktop-*` names follow omo's senpi-integration naming (as in `senpi-task`).
+The cross-platform computer-use engine behind omc-senpi's `computer` tool. It is tracked in code-yeongyu/oh-my-cybersecurity#8893, and the `senpi-desktop-*` names follow omc's senpi-integration naming (as in `senpi-task`).
 
 - `senpi-desktop-core` - types, errors, frames, keys, AX registry, backend traits, the frozen JSON-RPC contract.
 - `senpi-desktop-safety` - fail-closed Supervisor, stop-path registry, `gate()`.

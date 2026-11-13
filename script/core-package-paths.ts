@@ -3,7 +3,7 @@
 export const corePackagePaths = [
   "packages/utils",
   "packages/model-core",
-  "packages/omo-config-core",
+  "packages/omc-config-core",
   "packages/delegate-core",
   "packages/prompts-core",
   "packages/rules-engine",

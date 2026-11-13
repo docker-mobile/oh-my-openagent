@@ -94,7 +94,7 @@ export const transportFor = (
 /** A fresh per-device state directory for a trust pin (under one temp root per test process). */
 let stateRoot: string | null = null;
 export const freshStateDir = (): string => {
-	stateRoot ??= mkdtempSync(join(tmpdir(), "omo-recovery-world-"));
+	stateRoot ??= mkdtempSync(join(tmpdir(), "omc-recovery-world-"));
 	return mkdtempSync(join(stateRoot, "device-"));
 };
 /** Removes every state dir `freshStateDir` made; each test file using this world calls it in afterAll. */

@@ -272,11 +272,11 @@ describe("#given git attribution policy suppression", () => {
 		expect(result).not.toContain("Co-authored-by: ")
 	})
 
-	it("#then suppresses attribution when git config omo.attribution is false", () => {
+	it("#then suppresses attribution when git config omc.attribution is false", () => {
 		const result = withUnixShell(() =>
 			injectGitMasterConfig(SAMPLE_TEMPLATE, undefined, undefined, {
 				env: {},
-				gitConfigReader: (key) => (key === "omo.attribution" ? "false" : undefined),
+				gitConfigReader: (key) => (key === "omc.attribution" ? "false" : undefined),
 			}),
 		)
 
@@ -315,14 +315,14 @@ describe("#given git attribution policy suppression", () => {
 		expect(result).not.toContain("Co-authored-by: ")
 	})
 
-	it("#then re-enables the builtin footer when OMO_GIT_ATTRIBUTION is 1", () => {
+	it("#then re-enables the builtin footer when OMC_GIT_ATTRIBUTION is 1", () => {
 		const result = withUnixShell(() =>
 			injectGitMasterConfig(
 				SAMPLE_TEMPLATE,
 				{ commit_footer: false, include_co_authored_by: false },
 				undefined,
 				{
-					env: { OMO_GIT_ATTRIBUTION: "1" },
+					env: { OMC_GIT_ATTRIBUTION: "1" },
 					gitConfigReader: () => undefined,
 				},
 			),

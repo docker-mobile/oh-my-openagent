@@ -345,7 +345,7 @@ describe("record-parse pending_steering with sibling records", () => {
   })
 })
 
-describe("record-parse cancel_requested (omo#9403)", () => {
+describe("record-parse cancel_requested (omc#9403)", () => {
   test("#given a record with a pending cancel, with and without a reason #when listed #then cancel_requested round-trips", () => {
     // given
     const project = tempProject()

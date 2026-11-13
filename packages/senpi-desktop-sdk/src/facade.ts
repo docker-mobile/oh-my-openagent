@@ -3,7 +3,7 @@
 // `@policy` what it may move (none, semantic, background, foreground; see `Policy`), `@wire` the engine
 // methods it sends. Every method signature here must carry `@tier`, `@policy` and `@wire`.
 
-import type { AuditEvent, DesktopCapabilities, EpochChanged, StopPathStatus } from "@oh-my-opencode/senpi-desktop-protocol";
+import type { AuditEvent, DesktopCapabilities, EpochChanged, StopPathStatus } from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import type {
 	ActionOptions,
 	ActionReport,

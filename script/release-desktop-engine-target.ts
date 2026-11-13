@@ -79,7 +79,7 @@ export function desktopEngineTarget(target: string): DesktopEngineTarget {
   return entry
 }
 
-const ENGINE_TRUST_HELPER = "omo-engine-trust-helper"
+const ENGINE_TRUST_HELPER = "omc-engine-trust-helper"
 
 export type EngineTrustHelperTarget = {
   readonly target: string
@@ -92,7 +92,7 @@ export type EngineTrustHelperTarget = {
 }
 
 /**
- * The engine CA importer's fact helper (omo#10762) ships beside the desktop engine on the Darwin and Windows
+ * The engine CA importer's fact helper (omc#10762) ships beside the desktop engine on the Darwin and Windows
  * hosts; Linux reads its trust store from files and ships none. Baseline targets reuse their x64 host build.
  */
 export function engineTrustHelperTarget(target: string): EngineTrustHelperTarget {
@@ -109,10 +109,10 @@ export function engineTrustHelperTarget(target: string): EngineTrustHelperTarget
   }
 }
 
-const GIT_JOB_HELPER = "omo-git-job-helper.exe"
+const GIT_JOB_HELPER = "omc-git-job-helper.exe"
 
 /**
- * The memory-core git floor-job helper (omo#10391) ships beside the desktop engine on the Windows hosts only; it is a
+ * The memory-core git floor-job helper (omc#10391) ships beside the desktop engine on the Windows hosts only; it is a
  * Windows job-object mechanism. Baseline targets reuse their x64 host build, like the engine.
  */
 export function gitJobHelperTarget(target: string): EngineTrustHelperTarget {

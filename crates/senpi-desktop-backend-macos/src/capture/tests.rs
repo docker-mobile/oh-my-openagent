@@ -67,7 +67,7 @@ fn permission_error_names_host_app_pane_and_relaunch() {
     let error = super::permission_denied();
     println!("{}", error.message);
     let app = std::env::var("SENPI_DESKTOP_HOST_APP").ok().filter(|app| !app.trim().is_empty()).unwrap_or_else(|| {
-        "the app that launched OmO (for a terminal launch, that terminal app)".to_owned()
+        "the app that launched OmC (for a terminal launch, that terminal app)".to_owned()
     });
     assert_eq!(error.code, ErrorCode::PermissionDenied);
     let data = error.permission.expect("structured permission payload");

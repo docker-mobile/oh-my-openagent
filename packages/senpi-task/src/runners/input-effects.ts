@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 import type { TaskRecordStore } from "../store"
 import { RpcRequestTimeout } from "./rpc/errors"
 
@@ -19,7 +19,7 @@ export type InputAdmissionRead = (ids: readonly string[]) => Promise<ReadonlyMap
 
 export class InputUncertainError extends Error {
   constructor(readonly effectId: string, override readonly cause: Error) {
-    super(`uncertain: ${unacknowledgedReason(cause)}; it may still be delivered. omo will confirm by itself; do not resend the same text.`, { cause })
+    super(`uncertain: ${unacknowledgedReason(cause)}; it may still be delivered. omc will confirm by itself; do not resend the same text.`, { cause })
   }
 }
 
@@ -195,7 +195,7 @@ function epochOf(command: IdentifiedInput): number {
   return command.run_epoch ?? Number(command.clientMessageId.split(":").at(-2))
 }
 
-/** The input as the child receives it: the run it was sent in stays in omo's own record. */
+/** The input as the child receives it: the run it was sent in stays in omc's own record. */
 function wireOf(command: IdentifiedInput): IdentifiedInput {
   const { run_epoch: _runEpoch, ...wire } = command
   return wire

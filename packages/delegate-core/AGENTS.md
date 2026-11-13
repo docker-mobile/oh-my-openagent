@@ -4,7 +4,7 @@
 
 ## OVERVIEW
 
-Two harness-neutral primitives for the `task`/delegate tool: (1) resolve which model a category/agent delegation should run on, with a multi-step fallback chain; (2) detect common `task()` invocation errors and build corrective retry guidance. Purely functional — zero state, zero IO, all deps injected. Package: `@oh-my-opencode/delegate-core`.
+Two harness-neutral primitives for the `task`/delegate tool: (1) resolve which model a category/agent delegation should run on, with a multi-step fallback chain; (2) detect common `task()` invocation errors and build corrective retry guidance. Purely functional — zero state, zero IO, all deps injected. Package: `@oh-my-cybersecurity/delegate-core`.
 
 ## PUBLIC API (`src/index.ts` barrel)
 
@@ -24,13 +24,16 @@ Two harness-neutral primitives for the `task`/delegate tool: (1) resolve which m
 
 ## DEPENDENCIES & CONSUMERS
 
-- **Depends on:** `@oh-my-opencode/model-core` (`fuzzyMatchModel`, `normalizeModel`, `parseModelString`, `parseVariantFromModelID`, `transformModelForProvider`).
-- **Consumed by** (no Codex consumer): `packages/omo-opencode` (`src/tools/delegate-task/model-selection.ts` wires cache + logger deps; `hooks/delegate-task-retry/{patterns,guidance}.ts` re-export retry behavior) and `packages/senpi-task` (category resolver, category/agent fallback chains, `manager/types.ts`, `model-chain.ts` import `resolveModelForDelegateTask` + `DelegateFallbackEntry`). `packages/omo-senpi` declares the dep and uses the fallback-entry type in tests only.
+- **Depends on:** `@oh-my-cybersecurity/model-core` (`fuzzyMatchModel`, `normalizeModel`, `parseModelString`, `parseVariantFromModelID`, `transformModelForProvider`).
+- **Consumed by** (no Codex consumer): `packages/omc-opencode` (`src/tools/delegate-task/model-selection.ts` wires cache + logger deps; `hooks/delegate-task-retry/{patterns,guidance}.ts` re-export retry behavior) and `packages/senpi-task` (category resolver, category/agent fallback chains, `manager/types.ts`, `model-chain.ts` import `resolveModelForDelegateTask` + `DelegateFallbackEntry`). `packages/omc-senpi` declares the dep and uses the fallback-entry type in tests only.
 
 ## NOTES
 
 - **Cold-cache `skipped` sentinel:** when `availableModels` AND `connectedProviders` caches are both empty, resolution defers — caller waits for the model cache rather than picking wrong.
 - **`-high` models** are matched on their base model exactly, never fuzzy-downgraded to a non-high variant.
 - **Variant propagation:** a matched `DelegateFallbackEntry`'s variant flows through to the result.
-- **Fallback-chain provider shaping:** each entry's model passes through `transformModelForProvider` before exact matching, so provider-prefixed IDs (e.g. Vercel `openai/gpt-5.6-sol`) resolve on the owning entry. A rung resolves only on the providers it lists (#9146): a gateway re-publishing the model (`openrouter/anthropic/claude-opus-5.5`) or any other unlisted provider is never selected. `allowUnlistedProviders: true` opts back into cross-provider fuzzy matching for callers whose rungs are the user's own selection (the omo-senpi `model_profile` matcher); that step skips providers holding a later dedicated rung for the same model, so the earlier variant is kept.
+- **Fallback-chain provider shaping:** each entry's model passes through `transformModelForProvider` before exact matching, so provider-prefixed IDs (e.g. Vercel `openai/gpt-5.6-sol`) resolve on the owning entry. A rung resolves only on the providers it lists (#9146): a gateway re-publishing the model (`openrouter/anthropic/claude-opus-5.5`) or any other unlisted provider is never selected. `allowUnlistedProviders: true` opts back into cross-provider fuzzy matching for callers whose rungs are the user's own selection (the omc-senpi `model_profile` matcher); that step skips providers holding a later dedicated rung for the same model, so the earlier variant is kept.
 - Parent: [`packages/AGENTS.md`](../AGENTS.md).
+
+- **Harness-neutral guard:** zero adapter imports, enforced by `script/shared-core-extraction-guard.test.ts` (package list: `script/core-package-paths.ts`).
+- **QA:** `bun run typecheck` + `bun test` in-package (6 TS files, 2 test suites); package consumed from source by its two consumers.

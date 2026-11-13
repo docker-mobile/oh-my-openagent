@@ -1,5 +1,5 @@
 // Rotation on revoke, end to end on the chain wire server (#12280; sync-design section 7). A revoke,
-// `omo logout` (`DELETE /v1/devices/:id`) and the desktop sign-out (`POST /v1/session/sign-out`) all
+// `omc logout` (`DELETE /v1/devices/:id`) and the desktop sign-out (`POST /v1/session/sign-out`) all
 // reach the service's revokeDevice, which freezes pushes until a remaining member rotates the
 // revoked principal out. Real devices: genesis, pairing joins, CLI-shaped sessions, real engines.
 

@@ -2,7 +2,7 @@ import { readdirSync, readFileSync, statSync } from "node:fs"
 import { join } from "node:path"
 import { describe, expect, test } from "bun:test"
 
-// The omo-task.js/omo-member.js blobs are spawned fresh in rpc children, so any static (non-type)
+// The omc-task.js/omc-member.js blobs are spawned fresh in rpc children, so any static (non-type)
 // import of the @code-yeongyu/senpi engine barrel or the @earendil-works/pi-tui barrel inside
 // packages/senpi-task/src puts that barrel into every child's boot-time module graph. This guard
 // keeps those edges lazy: runtime value imports must go through the memoized boundaries in

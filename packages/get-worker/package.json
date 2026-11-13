@@ -1,5 +1,5 @@
 {
-  "name": "omo-get-worker",
+  "name": "omc-get-worker",
   "version": "0.1.0",
   "private": true,
   "type": "module",

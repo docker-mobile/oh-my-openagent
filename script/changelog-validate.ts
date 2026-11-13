@@ -87,7 +87,7 @@ export function validateReleaseRequirements(release: Release): ValidationError[]
     if (!marked) {
       errors.push({
         code: "MISSING_BACKFILL_MARKER",
-        message: "body must contain backfill marker (<!-- omo-backfill-marker: version -->)",
+        message: "body must contain backfill marker (<!-- omc-backfill-marker: version -->)",
         field: "body",
       })
     }

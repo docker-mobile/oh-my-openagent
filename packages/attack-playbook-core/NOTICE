@@ -1,0 +1,50 @@
+# Third-party notices for @oh-my-cybersecurity/attack-playbook-core
+
+This package carries an absorbed MITRE ATT&CK execution corpus assembled from one
+upstream community project. It is licensed under the MIT License. The notice and
+permission text is reproduced below, as the license requires of any copy or
+substantial portion.
+
+The corpus shipped with this package is JSON generated from the pin below.
+
+## atomic-red-team
+
+- Upstream repository: https://github.com/redcanaryco/atomic-red-team
+- Pinned commit: a0e3f9bc69fed2fd711bd1f1aa87a40c33482fe6
+- License: MIT
+- Copyright line: Copyright (c) 2018 Red Canary, Inc.
+- Upstream LICENSE file: https://github.com/redcanaryco/atomic-red-team/blob/a0e3f9bc69fed2fd711bd1f1aa87a40c33482fe6/LICENSE.txt
+
+Derivation: `attack_technique`, `display_name`, and every entry of
+`atomic_tests[]` - name, `auto_generated_guid`, description, `supported_platforms`,
+`input_arguments`, `dependency_executor_name`, `dependencies`, `executor`, and
+`manual` - are read from the `atomics/T*/T*.yaml` technique files at that pin and
+mapped onto the `Technique`, `AtomicTest`, `AtomicExecutor`, `AtomicDependency`,
+and `InputArgument` shapes in `src/types.ts`. The upstream YAML is not vendored
+here by this package; only generated JSON derived from it ships.
+
+## Full license text at the pin
+
+```
+The MIT License
+
+Copyright (c) 2018 Red Canary, Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+```

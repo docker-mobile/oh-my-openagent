@@ -19,7 +19,7 @@ export function getOllamaCloudInstallerSteps(): Array<{ title: string; code: str
     },
     {
       title: "Configure OMO for Ollama",
-      code: `omo config set providers.ollama.baseUrl ${OLLAMA_CLOUD_DEFAULT_URL}`,
+      code: `omc config set providers.ollama.baseUrl ${OLLAMA_CLOUD_DEFAULT_URL}`,
     },
   ]
 }

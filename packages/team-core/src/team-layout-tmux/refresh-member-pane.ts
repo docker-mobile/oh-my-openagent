@@ -1,4 +1,4 @@
-import { runTmuxCommand, type TmuxCommandResult } from "@oh-my-opencode/tmux-core"
+import { runTmuxCommand, type TmuxCommandResult } from "@oh-my-cybersecurity/tmux-core"
 import { log } from "../logger"
 import { shellSingleQuote } from "../shell-quote"
 
@@ -70,7 +70,7 @@ export async function refreshMemberPane(member: MemberPaneTarget, deps: RefreshM
       "-p",
       "-t",
       member.paneId,
-      "#{@omo_attach_server_url}\t#{@omo_attach_session_id}\t#{pane_dead}\t#{pane_current_command}",
+      "#{@omc_attach_server_url}\t#{@omc_attach_session_id}\t#{pane_dead}\t#{pane_current_command}",
     ])
     if (!snapshotResult.success) return "none"
 

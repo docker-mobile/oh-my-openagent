@@ -13,7 +13,7 @@ import { unsafeTestValue } from "../../../../test-support/unsafe-test-value"
 const originalFetch = globalThis.fetch
 
 const tempHome = mkdtempSync(join(tmpdir(), "openclaw-reply-listener-discord-"))
-const stateDir = join(tempHome, ".omo", "openclaw", "state")
+const stateDir = join(tempHome, ".omc", "openclaw", "state")
 const stateFilePath = join(stateDir, "reply-listener-state.json")
 afterAll(() => rmSync(tempHome, { recursive: true, force: true }))
 

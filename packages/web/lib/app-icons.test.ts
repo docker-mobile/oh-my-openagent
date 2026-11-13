@@ -63,7 +63,7 @@ describe("committed icon rasters", () => {
     ).toBe(0)
   })
 
-  test.each([...ICON_OUTPUTS])("$file shows the OmO mark at $size px", (output) => {
+  test.each([...ICON_OUTPUTS])("$file shows the OmC mark at $size px", (output) => {
     const image = decodePng(committedBytes(output.file))
     const metrics = measureIcon(image)
     expect({ width: image.width, height: image.height }).toEqual({

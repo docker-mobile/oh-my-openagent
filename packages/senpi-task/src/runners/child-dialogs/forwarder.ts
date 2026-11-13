@@ -1,5 +1,5 @@
 import type { RpcExtensionUIResponse } from "@code-yeongyu/senpi"
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import { buildAutoUiResponse, type AutoAnswerableUiRequest } from "../rpc/ui-auto-answer"
 import { CANCELLED, forwardableDialogOf, forwardedUiResponse, type ForwardableDialog, type ForwardedAnswer } from "./forwardable-dialog"

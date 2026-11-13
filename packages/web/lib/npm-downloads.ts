@@ -1,7 +1,7 @@
-// OmO shipped under three npm names in sequence, plus the Codex Light edition. None of these
+// OmC shipped under three npm names in sequence, plus the Codex Light edition. None of these
 // depends on another, and per-platform binaries are optionalDependencies that are not counted,
 // so summing the list counts each install exactly once.
-export const NPM_PACKAGES = ["oh-my-opencode", "oh-my-openagent", "omo-ai", "lazycodex-ai"] as const
+export const NPM_PACKAGES = ["oh-my-cybersecurity", "oh-my-openagent", "oh-my-opencode", "omc-ai", "lazycodex-ai"] as const
 const NPM_FIRST_PUBLISH_YEAR = 2025
 
 function readDownloads(payload: unknown, pkg: string, range: string): number {

@@ -1,5 +1,5 @@
-import { loadRuntimeState, transitionRuntimeState } from "@oh-my-opencode/team-core/team-state-store"
-import type { RuntimeState } from "@oh-my-opencode/team-core/types"
+import { loadRuntimeState, transitionRuntimeState } from "@oh-my-cybersecurity/team-core/team-state-store"
+import type { RuntimeState } from "@oh-my-cybersecurity/team-core/types"
 
 import { TEAM_LEAD_SENTINEL } from "./normalize"
 import type { TeamCoreConfig } from "./runtime-config"

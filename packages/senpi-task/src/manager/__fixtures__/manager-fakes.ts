@@ -3,7 +3,7 @@ import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { DEFAULT_TEST_TIMEOUT_MS, remainingTestTime } from "../../../../../test-support/test-deadline"
 
-import { OmoTaskSettingsSchema, type OmoTaskSettings } from "@oh-my-opencode/omo-config-core"
+import { OmoTaskSettingsSchema, type OmoTaskSettings } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { RunnerOutcome } from "../../runners/in-process/child-handle"
 import type { SuspensionReason } from "../../state"

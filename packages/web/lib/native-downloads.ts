@@ -1,8 +1,8 @@
 import { GITHUB_REPOSITORY, githubHeaders } from "./github"
 
-// The compiled OmO binaries every release attaches: `omo-<os>-<arch>[-variant][.exe]`. SHA256SUMS
+// The compiled OmC binaries every release attaches: `omc-<os>-<arch>[-variant][.exe]`. SHA256SUMS
 // and the desktop engines are release plumbing, not installs, so they are not counted.
-const NATIVE_ASSET = /^omo-(?:darwin|linux|windows)-/
+const NATIVE_ASSET = /^omc-(?:darwin|linux|windows)-/
 // Release pages carry the full release notes (~30 KB each); 30 per page keeps one page under the
 // 2 MB fetch-cache item limit.
 const PAGE_SIZE = 30

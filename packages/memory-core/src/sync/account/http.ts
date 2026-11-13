@@ -1,4 +1,4 @@
-// The signed-in account's chain routes (omo-service contract 1.17.0): the bootstrap reads a device
+// The signed-in account's chain routes (omc-service contract 1.17.0): the bootstrap reads a device
 // verifies its keyring from (`GET /v1/sync/entries?after=n`, `GET /v1/sync/keys`,
 // `GET /v1/sync/recovery-wraps`), the keyring appends (`PUT /v1/sync/keys`,
 // `POST /v1/sync/recovery/join`) and the state read. Every response is untrusted input: callers

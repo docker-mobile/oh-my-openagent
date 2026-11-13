@@ -6,7 +6,7 @@ import { calculateDistance } from "./distance";
 describe("calculateDistance", () => {
   it("#given no project root #when calculating rule distance #then returns the global distance", () => {
     // given
-    const rulePath = "/repo/.omo/rules/rule.md";
+    const rulePath = "/repo/.omc/rules/rule.md";
     const currentFile = "/repo/src/index.ts";
 
     // when
@@ -45,7 +45,7 @@ describe("calculateDistance", () => {
   it("#given rule and current file are in sibling project directories #when calculating rule distance #then counts from the current file directory", () => {
     // given
     const projectRoot = "/repo";
-    const rulePath = "/repo/packages/rules/.omo/rules/rule.md";
+    const rulePath = "/repo/packages/rules/.omc/rules/rule.md";
     const currentFile = "/repo/packages/app/src/index.ts";
 
     // when
@@ -58,7 +58,7 @@ describe("calculateDistance", () => {
   it("#given the current file is outside the project #when calculating rule distance #then returns the global distance", () => {
     // given
     const projectRoot = "/repo";
-    const rulePath = "/repo/.omo/rules/rule.md";
+    const rulePath = "/repo/.omc/rules/rule.md";
     const currentFile = "/external/src/index.ts";
 
     // when
@@ -71,7 +71,7 @@ describe("calculateDistance", () => {
   it("#given Windows-style paths #when calculating rule distance #then uses Windows path semantics", () => {
     // given
     const projectRoot = "C:\\repo";
-    const rulePath = "C:\\repo\\.omo\\rules\\rule.md";
+    const rulePath = "C:\\repo\\.omc\\rules\\rule.md";
     const currentFile = "C:\\repo\\src\\index.ts";
 
     // when
@@ -97,7 +97,7 @@ describe("calculateDistance", () => {
   it("#given a Windows current file on another drive #when calculating rule distance #then returns the global distance", () => {
     // given
     const projectRoot = "C:\\repo";
-    const rulePath = "C:\\repo\\.omo\\rules\\rule.md";
+    const rulePath = "C:\\repo\\.omc\\rules\\rule.md";
     const currentFile = "D:\\repo\\src\\index.ts";
 
     // when
@@ -110,7 +110,7 @@ describe("calculateDistance", () => {
   it("#given a UNC current file on another server and share #when calculating rule distance #then returns the global distance", () => {
     // given
     const projectRoot = "\\\\server-a\\share-a\\repo";
-    const rulePath = "\\\\server-a\\share-a\\repo\\.omo\\rules\\rule.md";
+    const rulePath = "\\\\server-a\\share-a\\repo\\.omc\\rules\\rule.md";
     const currentFile = "\\\\server-b\\share-b\\repo\\src\\index.ts";
 
     // when

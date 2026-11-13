@@ -5,10 +5,10 @@ import { classifyFlockFailure, tryLockExclusive, tryLockShared } from "./os-file
 
 const errno = constants.errno
 
-// omo #10604 review M1: only a conflicting holder is "busy". A filesystem without flock falls back to
+// omc #10604 review M1: only a conflicting holder is "busy". A filesystem without flock falls back to
 // the behavior without the lock, and any other failure is a real error that is never read as busy or
 // idle, so the stranded-lock sweep fails closed and git never waits 10 s on a lock it cannot take.
-describe("flock failures are classified by errno (omo #10604)", () => {
+describe("flock failures are classified by errno (omc #10604)", () => {
   test.each([
     ["EWOULDBLOCK", errno.EWOULDBLOCK, "busy"],
     ["EAGAIN", errno.EAGAIN, "busy"],

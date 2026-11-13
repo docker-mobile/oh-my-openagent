@@ -11,7 +11,7 @@ git clone https://github.com/code-yeongyu/ast-grep-skill ~/.agents/skills/ast-gr
 bash ~/.agents/skills/ast-grep/install.sh        # installs the ast-grep binary
 ```
 
-That is it. The wrapper script is single-file Python 3 stdlib; no `pip install` needed. The installer tries `brew` → `npm` → `cargo` → `pip` → `nix` → `mise` → GitHub release in priority order, picks the first that works, and falls back to a cached binary in a user cache folder (`~/.cache/omo-ast-grep/bin/sg`, or `%LOCALAPPDATA%\omo-ast-grep\bin\sg.exe` on Windows), never inside the skill.
+That is it. The wrapper script is single-file Python 3 stdlib; no `pip install` needed. The installer tries `brew` → `npm` → `cargo` → `pip` → `nix` → `mise` → GitHub release in priority order, picks the first that works, and falls back to a cached binary in a user cache folder (`~/.cache/omc-ast-grep/bin/sg`, or `%LOCALAPPDATA%\omc-ast-grep\bin\sg.exe` on Windows), never inside the skill.
 
 ### Symlink for active development
 
@@ -85,7 +85,7 @@ ast-grep-skill/
 
 1. **Wraps `sg`** with a single Python 3 stdlib script that works the same on macOS, Linux, Windows, WSL, Git Bash.
 2. **Validates patterns offline** before calling `sg` — catches the regex-misuse class of mistakes (`\w`, `.*`, `|`, `[a-z]`) plus language-specific traps (Python trailing colons, JS/Go/Rust missing function bodies).
-3. **Resolves the binary** through 5 candidates: `OMO_AST_GREP_SG_PATH` override → OMO runtime dirs → cached → PATH (with Linux `setgroups` collision detection) → Homebrew. Falls through to a clear install hint with copy-paste commands.
+3. **Resolves the binary** through 5 candidates: `OMC_AST_GREP_SG_PATH` override → OMO runtime dirs → cached → PATH (with Linux `setgroups` collision detection) → Homebrew. Falls through to a clear install hint with copy-paste commands.
 4. **Runs the two-pass write trick** when applying rewrites — `sg run` silently ignores `--update-all` when `--json` is set, so `replace --apply` runs two invocations: pass 1 collects JSON matches, pass 2 mutates files.
 5. **Ships per-OS installers** that try every reasonable package manager and fall back to a GitHub release tarball.
 6. **Documents the failure modes** the model will hit (regex misuse, incomplete patterns, `--update-all` + `--json` trap, scope/type questions ast-grep can't answer) in `references/pitfalls.md`.
@@ -100,7 +100,7 @@ ast-grep-skill/
 ## Limits
 
 - 5-minute timeout per `sg` invocation (configurable in the helper).
-- ast-grep itself supports 25 languages out-of-the-box. For anything else, use [`customLanguages`](./references/sgconfig.md#customlanguages-experimental) in `sgconfig.yml`; the helper also accepts comma-separated overrides via `OMO_AST_GREP_EXTRA_LANGUAGES`.
+- ast-grep itself supports 25 languages out-of-the-box. For anything else, use [`customLanguages`](./references/sgconfig.md#customlanguages-experimental) in `sgconfig.yml`; the helper also accepts comma-separated overrides via `OMC_AST_GREP_EXTRA_LANGUAGES`.
 - Pattern hint detection is heuristic; pass `--force` to skip validation when you know the pattern is correct.
 
 ## Requirements
@@ -130,7 +130,7 @@ CI runs the matrix on every push: `{macos-latest, ubuntu-latest, ubuntu-22.04, w
 
 ## Acknowledgments
 
-- [`omo` (oh-my-opencode)](https://github.com/code-yeongyu/oh-my-opencode) — `src/tools/ast-grep/` is the original tool implementation; this skill is a port of its pattern-hint detection and two-pass-write strategy.
+- [`omc` (oh-my-cybersecurity)](https://github.com/code-yeongyu/oh-my-cybersecurity) — `src/tools/ast-grep/` is the original tool implementation; this skill is a port of its pattern-hint detection and two-pass-write strategy.
 - [`pi-extensions/pi-ast-grep`](https://github.com/code-yeongyu/pi-extensions) — sibling Node port; the helper's binary-resolution cascade is modelled on it.
 - [ast-grep](https://github.com/ast-grep/ast-grep) — the CLI. All structural matching power comes from it.
 - [Anthropic skills](https://docs.anthropic.com/en/docs/claude-code/skills) — the `SKILL.md` + `references/` packaging convention.

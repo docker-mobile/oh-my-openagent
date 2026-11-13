@@ -89,8 +89,8 @@ describe("#given a newly scaffolded TypeScript project", () => {
   });
 
   // Opt in to registry-dependent install + lint/format/typecheck coverage:
-  // OMO_TEST_SCAFFOLD_INSTALL=1 bun test packages/shared-skills/skills/programming/scripts/typescript/new-project.test.ts
-  test.skipIf(process.env.OMO_TEST_SCAFFOLD_INSTALL !== "1")(
+  // OMC_TEST_SCAFFOLD_INSTALL=1 bun test packages/shared-skills/skills/programming/scripts/typescript/new-project.test.ts
+  test.skipIf(process.env.OMC_TEST_SCAFFOLD_INSTALL !== "1")(
     "#when linting seeded product copy #then the installed generated rule rejects it",
     async () => {
       // given the dependencies and configuration emitted by the real scaffold

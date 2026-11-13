@@ -148,7 +148,7 @@ export function bunHasCommand(
 // `format` must also prove it rewrites a file in place: a bun whose `format --write` printed to stdout
 // instead, or ignored the flag, would leave every file unchanged and silently stop formatting.
 async function probeOnce(bunPath: string, command: BunProjectCommand, timeoutMs: number): Promise<boolean | undefined> {
-	const emptyDir = mkdtempSync(join(tmpdir(), "omo-bun-probe-"));
+	const emptyDir = mkdtempSync(join(tmpdir(), "omc-bun-probe-"));
 	const timeout = AbortSignal.timeout(timeoutMs);
 	try {
 		const help = await runBunCommand(bunPath, [command, "--help"], emptyDir, timeout);

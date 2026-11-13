@@ -2,33 +2,33 @@
 
 Complete reference for the published CLI package. During the rename transition, both package names work:
 
-- `oh-my-openagent` (preferred package name)
-- `oh-my-opencode` (compatibility package name)
+- `oh-my-cybersecurity` (preferred package name)
+- `oh-my-cybersecurity` (compatibility package name)
 
-Plugin registration inside `opencode.json` prefers `oh-my-openagent`.
+Plugin registration inside `opencode.json` prefers `oh-my-cybersecurity`.
 
 ## Bin Commands
 
 All published packages expose the same compiled CLI with these bin entries:
 
-- `omo-agent-toolkit` (short name, recommended in docs and prompts)
-- `oh-my-openagent` (preferred package-matching name)
-- `oh-my-opencode` (legacy compatibility name)
+- `omc-agent-toolkit` (short name, recommended in docs and prompts)
+- `oh-my-cybersecurity` (preferred package-matching name)
+- `oh-my-cybersecurity` (legacy compatibility name)
 - `lazycodex` (Light edition shortcut; install defaults to `--platform=codex`)
 - `lazycodex-ai` (Light edition shortcut; install defaults to `--platform=codex`)
 
-The former `omo` bin was removed from these packages in this major release. The name now belongs to the OmO Native edition:
+The former `omc` bin was removed from these packages in this major release. The name now belongs to the OmC Native edition:
 
 | Bin | Package | Channel | What it is |
 | --- | --- | --- | --- |
-| `omo` | `omo-ai` | bun (recommended): `bun add -g omo-ai`; npm fallback: `npm i -g omo-ai` | Launches the pinned senpi release with the full OMO extension loaded. Prerelease builds live on `omo-ai@beta`; see the [omo-ai publishing runbook](./omo-ai-publishing.md). |
+| `omc` | `omc-ai` | bun (recommended): `bun add -g omc-ai`; npm fallback: `npm i -g omc-ai` | Launches the pinned senpi release with the full OMO extension loaded. Prerelease builds live on `omc-ai@beta`; see the [omc-ai publishing runbook](./omc-ai-publishing.md). |
 
-The `omo-agent-toolkit` npm bin stays with the wrapper packages above; `omo-ai` never declares it.
+The `omc-agent-toolkit` npm bin stays with the wrapper packages above; `omc-ai` never declares it.
 
-### `omo account` (OmO Native)
+### `omc account` (OmC Native)
 
-`omo account show [--account <id>]`, `adopt [--replace]`, `token`, `export`, and
-`forget` share the OS-keychain sign-in used by `omo login`. This machine interface
+`omc account show [--account <id>]`, `adopt [--replace]`, `token`, `export`, and
+`forget` share the OS-keychain sign-in used by `omc login`. This machine interface
 accepts credentials on stdin for `adopt` and writes JSON replies on stdout;
 diagnostics go to stderr.
 
@@ -54,10 +54,10 @@ take approximately 25 seconds, but the error handler does not repeat that wait.
 
 ```bash
 # Display help (preferred package)
-bunx oh-my-openagent
+bunx oh-my-cybersecurity
 
 # Compatibility package
-bunx oh-my-opencode
+bunx oh-my-cybersecurity
 ```
 
 ## Commands
@@ -70,7 +70,7 @@ bunx oh-my-opencode
 | `run <message>` | Non-interactive OpenCode session runner with completion enforcement |
 | `get-local-version` | Show current installed version and check for updates |
 | `refresh-model-capabilities` | Refresh cached model capabilities snapshot from models.dev |
-| `config migrate` | Migrate legacy OMO configuration into the unified config at `~/.omo/omo.jsonc` (`--dry-run` prints the transform/backup plan without writing, `--json` emits a machine-readable report) |
+| `config migrate` | Migrate legacy OMO configuration into the unified config at `~/.omc/omc.jsonc` (`--dry-run` prints the transform/backup plan without writing, `--json` emits a machine-readable report) |
 | `worktree-sweep` | Report (and optionally remove) stale linked git worktrees: SWEEP when merged into the default branch and clean, KEEP when locked/external/unmerged/dirty or when it is the worktree the sweep was started from, PRUNE when the path is gone. Dry-run by default; `--apply` removes with `git worktree remove` (never forced) and prunes; `--older-than <days>` adds an age fallback, `--repo <path>` is repeatable, `--json` emits machine-readable output |
 | `ulw-loop [args...]` | Pass arguments through to the Codex LazyCodex ulw-loop CLI |
 | `update` | `lazycodex` / `lazycodex-ai` bins only: refresh the installed Codex Light edition in place (`--dry-run`, `--repo-root <path>`) |
@@ -87,7 +87,7 @@ Interactive installation tool for initial setup.
 ### Usage
 
 ```bash
-bunx oh-my-openagent install
+bunx oh-my-cybersecurity install
 ```
 
 ### Options
@@ -112,23 +112,23 @@ bunx oh-my-openagent install
 | `--no-codex-autonomous` | Leave existing Codex permission settings unchanged when installing Light or Both |
 | `--skip-auth` | Skip authentication setup hints |
 
-When using either the `lazycodex` or `lazycodex-ai` bin alias, `install` defaults to `--platform=codex`. These are npm bin aliases. The separate LazyCodex repository identity does not change the Codex config, which uses marketplace `sisyphuslabs` and plugin `omo`, enabled as `omo@sisyphuslabs`, with the marketplace source set to the local built cache under `~/.codex/plugins/cache/sisyphuslabs`.
+When using either the `lazycodex` or `lazycodex-ai` bin alias, `install` defaults to `--platform=codex`. These are npm bin aliases. The separate LazyCodex repository identity does not change the Codex config, which uses marketplace `sisyphuslabs` and plugin `omc`, enabled as `omc@sisyphuslabs`, with the marketplace source set to the local built cache under `~/.codex/plugins/cache/sisyphuslabs`.
 
 Subscription flags (`--claude`, `--openai`, etc.) only apply when `--platform` is `opencode` or `both`. They are rejected under `--platform=codex` because the Light edition does not write OpenCode model config. `--codex-autonomous` and `--no-codex-autonomous` only affect installs where the selected platform includes Codex.
 
 ### Telemetry and opt-out
 
-Anonymous telemetry uses PostHog. The once-a-day activity events are keyed by a SHA-256 hash of the identifier the operating system assigns to the computer (macOS hardware UUID, Linux `/etc/machine-id`, Windows `MachineGuid`, behind a fixed OmO prefix), and also carry `install_hash`, the SHA-256 hash of a random install id created on the computer, with `id_scheme` naming which one is the distinct id. Without a readable system identifier, or with `OMO_TELEMETRY_DEVICE_ID=off`, the install hash is the distinct id. Two streams exist:
+Anonymous telemetry uses PostHog. The once-a-day activity events are keyed by a SHA-256 hash of the identifier the operating system assigns to the computer (macOS hardware UUID, Linux `/etc/machine-id`, Windows `MachineGuid`, behind a fixed OmC prefix), and also carry `install_hash`, the SHA-256 hash of a random install id created on the computer, with `id_scheme` naming which one is the distinct id. Without a readable system identifier, or with `OMC_TELEMETRY_DEVICE_ID=off`, the install hash is the distinct id. Two streams exist:
 
-- `omo_daily_active`: fired by the main plugin when it loads (`reason: "plugin_loaded"`) and by `oh-my-openagent run` (`reason: "run_started"`).
-- `omo_codex_daily_active`: fired by `omo-agent-toolkit install --platform=codex` or `--platform=both` (`reason: "install_completed"`) and by the Codex plugin's `SessionStart` hook on every Codex session (`reason: "session_start"`). Both sources share the same UTC-day deduplication, so daily/weekly/monthly active counts reflect real Codex usage, not just install events.
+- `omc_daily_active`: fired by the main plugin when it loads (`reason: "plugin_loaded"`) and by `oh-my-cybersecurity run` (`reason: "run_started"`).
+- `omc_codex_daily_active`: fired by `omc-agent-toolkit install --platform=codex` or `--platform=both` (`reason: "install_completed"`) and by the Codex plugin's `SessionStart` hook on every Codex session (`reason: "session_start"`). Both sources share the same UTC-day deduplication, so daily/weekly/monthly active counts reflect real Codex usage, not just install events.
 
 Opt-out env vars:
 
-- Global opt-out for oh-my-openagent and omo-codex: `OMO_SEND_ANONYMOUS_TELEMETRY=0` or `OMO_DISABLE_POSTHOG=1`
-- Codex-only opt-out for `omo_codex_daily_active`: `OMO_CODEX_SEND_ANONYMOUS_TELEMETRY=0` or `OMO_CODEX_DISABLE_POSTHOG=1`
+- Global opt-out for oh-my-cybersecurity and omc-codex: `OMC_SEND_ANONYMOUS_TELEMETRY=0` or `OMC_DISABLE_POSTHOG=1`
+- Codex-only opt-out for `omc_codex_daily_active`: `OMC_CODEX_SEND_ANONYMOUS_TELEMETRY=0` or `OMC_CODEX_DISABLE_POSTHOG=1`
 
-The OpenCode plugin can also opt out through oh-my-openagent config with `"telemetry": false`.
+The OpenCode plugin can also opt out through oh-my-cybersecurity config with `"telemetry": false`.
 
 For the full Codex Light event inventory, collected properties, local state path, and lazycodex marketplace copy path, see [Codex Light telemetry](./codex-telemetry.md).
 
@@ -142,14 +142,14 @@ Removes managed Codex Light state. `cleanup` is the underlying command name; `un
 
 ```bash
 npx lazycodex-ai uninstall
-omo-agent-toolkit uninstall --platform=codex
+omc-agent-toolkit uninstall --platform=codex
 ```
 
 ### Options
 
 | Option | Description |
 | --- | --- |
-| `--platform codex` | Required when using the shared `omo-agent-toolkit` CLI unless `OMO_INVOCATION_NAME` is `lazycodex` or `lazycodex-ai` |
+| `--platform codex` | Required when using the shared `omc-agent-toolkit` CLI unless `OMC_INVOCATION_NAME` is `lazycodex` or `lazycodex-ai` |
 | `--codex-home <path>` | Codex home to clean, defaulting to `CODEX_HOME` or `~/.codex` |
 | `--project <path>` | Project directory to inspect for project-local legacy Codex artifacts |
 | `--json` | Output structured JSON result |
@@ -165,7 +165,7 @@ Diagnoses your environment and configuration. OpenCode checks are grouped as **S
 ### Usage
 
 ```bash
-bunx oh-my-openagent doctor
+bunx oh-my-cybersecurity doctor
 ```
 
 ### Options
@@ -180,15 +180,15 @@ bunx oh-my-openagent doctor
 ### Notes
 
 - The current minimum OpenCode version check is `>= 1.4.0`.
-- The doctor command warns when legacy plugin registration (`oh-my-opencode`) is still present in `opencode.json`.
-- OmO Native's `doctor` subcommand also reports computer use (experimental) without opening a desktop session or requesting OS permissions. It prints:
+- The doctor command warns when legacy plugin registration (`oh-my-cybersecurity`) is still present in `opencode.json`.
+- OmC Native's `doctor` subcommand also reports computer use (experimental) without opening a desktop session or requesting OS permissions. It prints:
   - whether the effective Native config enables computer use and whether the host is supported;
   - the selected engine path and its version, protocol, and ABI, or the engine-location diagnostic and every path tried;
   - the backend plus capture, input, and accessibility permission state;
   - display count and screen-lock state;
   - the stop path, reported as not armed until computer use starts input, because the engine arms the stop chord only then.
   The probe sends only the read-only `engine.hello` and `capabilities` requests and is bounded by the doctor's timeout.
-- `omo doctor --models [--json]` (OmO Native) prints every task category and agent as a spawn resolves it right now: the model it runs first, the runtime retry chain in order, and every declared rung with its source (`built-in`, `omo.json`, `category:<name>`) and state (`runs first`, `fallback N`, `excluded by exclude_models`, `no login`, `not reached`), then the main session's `model_profile` lane. It uses the spawn resolvers and the engine's offline model list (credentials are not probed). It exits 1 when the resolver runtime cannot load and 2 on an option other than `--json`. See [`exclude_models`](./omo-json.md#exclude_models-native-harness) to keep a model out of every chain.
+- `omc doctor --models [--json]` (OmC Native) prints every task category and agent as a spawn resolves it right now: the model it runs first, the runtime retry chain in order, and every declared rung with its source (`built-in`, `omc.json`, `category:<name>`) and state (`runs first`, `fallback N`, `excluded by exclude_models`, `no login`, `not reached`), then the main session's `model_profile` lane. It uses the spawn resolvers and the engine's offline model list (credentials are not probed). It exits 1 when the resolver runtime cannot load and 2 on an option other than `--json`. See [`exclude_models`](./omc-json.md#exclude_models-native-harness) to keep a model out of every chain.
 
 ---
 
@@ -204,7 +204,7 @@ Runs a non-interactive session and exits only when all of these conditions are t
 ### Usage
 
 ```bash
-bunx oh-my-openagent run <message>
+bunx oh-my-cybersecurity run <message>
 ```
 
 ### Options
@@ -228,9 +228,9 @@ bunx oh-my-openagent run <message>
 2. `OPENCODE_DEFAULT_AGENT`
 3. `default_run_agent` in plugin config
 
-`--agent` accepts config keys (`sisyphus`, `prometheus`) and remapped display names (`Sisyphus - ultraworker`). Builtin categories (`quick`, `deep`, `ultrabrain`, `unspecified-high`, and the others used by `task(category=...)`) are not CLI agents; `oh-my-openagent run --agent quick` errors with the runnable names.
+`--agent` accepts config keys (`sisyphus`, `prometheus`) and remapped display names (`Sisyphus - ultraworker`). Builtin categories (`quick`, `deep`, `ultrabrain`, `unspecified-high`, and the others used by `task(category=...)`) are not CLI agents; `oh-my-cybersecurity run --agent quick` errors with the runnable names.
 
-`opencode run --agent` does exact-key lookup in the host. Prefer `oh-my-openagent run --agent`, or pass the remapped display name. Unknown host `--agent` values should fail closed (see the OpenCode CLI).
+`opencode run --agent` does exact-key lookup in the host. Prefer `oh-my-cybersecurity run --agent`, or pass the remapped display name. Unknown host `--agent` values should fail closed (see the OpenCode CLI).
 
 ---
 
@@ -241,7 +241,7 @@ Shows local plugin version state and update status.
 ### Usage
 
 ```bash
-bunx oh-my-openagent get-local-version
+bunx oh-my-cybersecurity get-local-version
 ```
 
 ### Options
@@ -260,7 +260,7 @@ Refreshes the cached model capabilities snapshot from models.dev.
 ### Usage
 
 ```bash
-bunx oh-my-openagent refresh-model-capabilities
+bunx oh-my-cybersecurity refresh-model-capabilities
 ```
 
 ### Options
@@ -293,7 +293,7 @@ Shows CLI package version.
 ### Usage
 
 ```bash
-bunx oh-my-openagent version
+bunx oh-my-cybersecurity version
 ```
 
 ---
@@ -306,19 +306,19 @@ OAuth token management for MCP servers (Tier-3 MCP OAuth flow, including PKCE an
 
 ```bash
 # Authenticate
-bunx oh-my-openagent mcp oauth login <server-name> --server-url https://api.example.com
+bunx oh-my-cybersecurity mcp oauth login <server-name> --server-url https://api.example.com
 
 # Authenticate with explicit client ID and scopes
-bunx oh-my-openagent mcp oauth login <server-name> --server-url https://api.example.com --client-id my-client --scopes read write
+bunx oh-my-cybersecurity mcp oauth login <server-name> --server-url https://api.example.com --client-id my-client --scopes read write
 
 # Remove stored tokens
-bunx oh-my-openagent mcp oauth logout <server-name> --server-url https://api.example.com
+bunx oh-my-cybersecurity mcp oauth logout <server-name> --server-url https://api.example.com
 
 # Show all stored token statuses
-bunx oh-my-openagent mcp oauth status
+bunx oh-my-cybersecurity mcp oauth status
 
 # Show the status for a named server whose token is stored under its URL
-bunx oh-my-openagent mcp oauth status github --server-url https://api.example.com
+bunx oh-my-cybersecurity mcp oauth status github --server-url https://api.example.com
 ```
 
 ### Options

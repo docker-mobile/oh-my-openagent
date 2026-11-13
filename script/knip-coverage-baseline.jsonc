@@ -16,9 +16,9 @@
     // pre-existing at origin dev 4686e425b5: unused export(s) generatedCodexInstallerPath, CODEX_INSTALL_BUILD_MARKER_PREFIX, buildCodexInstaller
     "script/build-codex-install.ts": ["exports"],
     // pre-existing at origin dev 4686e425b5: unused export(s) buildReleaseBinary
-    "script/build-omo-binary.ts": ["exports"],
+    "script/build-omc-binary.ts": ["exports"],
     // pre-existing at origin dev 4686e425b5: unused export(s) CATEGORY_COVERAGE_ENTRY, CATEGORY_COVERAGE_ARTIFACT, CATEGORY_COVERAGE_PRELUDE_ASSET, TASK_CONFIG_ENTRY, TASK_CONFIG_ARTIFACT
-    "script/build-omo-native.ts": ["exports"],
+    "script/build-omc-native.ts": ["exports"],
     // pre-existing at origin dev 4686e425b5: unused export(s) getBackfillMarkerPattern
     "script/changelog-backfill-index.ts": ["exports"],
     // pre-existing at origin dev 4686e425b5: unused export(s) fragmentPath
@@ -98,7 +98,7 @@
     // pre-existing at origin dev 4686e425b5: unused export(s) INVALID_STOP_CHORD
     "script/qa/desktop/windows/scenarios-guard.ts": ["exports"],
     // pre-existing at origin dev 4686e425b5: unused export(s) DOCTOR_EXPECTED_ONLY, sectionKey, compareLines, BINARY_ONLY_REQUIRED_STEPS, memoryReceiptFailures
-    "script/qa/omo-native-parity-compare.mjs": ["exports"],
+    "script/qa/omc-native-parity-compare.mjs": ["exports"],
     // pre-existing at origin dev 4686e425b5: unused export(s) GOVERNED_SURFACES
     "script/retired-agent-names.test.ts": ["exports"],
     // pre-existing at origin dev 4686e425b5: unused export(s) ROOT_TEST_SERIAL_QUARANTINE, POSIX_TEST_TIMEOUT_MS
@@ -111,8 +111,8 @@
     "test-support/environment-integrity.ts": ["exports"],
   },
   // Third-party projects vendored as git submodules; the build materializes them, they are not this repository's code.
-  // Vendored build output pinned by packages/omo-senpi/vendor/PIN.json: upstream code, never export-checked here either.
-  "ignore": ["packages/shared-skills/upstreams/**", "packages/omo-senpi/vendor/**"],
+  // Vendored build output pinned by packages/omc-senpi/vendor/PIN.json: upstream code, never export-checked here either.
+  "ignore": ["packages/shared-skills/upstreams/**", "packages/omc-senpi/vendor/**"],
   "workspaces": {
     ".": {
       "includeEntryExports": true,
@@ -129,7 +129,7 @@
         "script/bun-panic-retry.ts",
         "script/ci-leg-tests-guard.mjs",
         "script/published-install-smoke.mjs",
-        "script/verify-omo-ai-payload.mjs",
+        "script/verify-omc-ai-payload.mjs",
         "script/release-announce.ts",
         "script/preflight-trust.mjs",
         "script/release-version.mjs",
@@ -143,9 +143,9 @@
         "script/build-cli-node.ts",
         "script/build-codex-install.ts",
         "script/build-model-capabilities.ts",
-        "script/build-omo-binary.ts",
-        "script/build-omo-native.ts",
-        "script/build-omo-schema.ts",
+        "script/build-omc-binary.ts",
+        "script/build-omc-native.ts",
+        "script/build-omc-schema.ts",
         "script/build-omob.ts",
         "script/build-schema.ts",
         "script/build.ts",
@@ -167,8 +167,8 @@
         "script/qa/desktop/linux/expect-sabotage.ts",
         "script/qa/desktop/windows.ts",
         "script/qa/desktop/windows/expect-sabotage.ts",
-        "script/qa/omo-native-eval-smoke.mjs",
-        "script/qa/omo-native-parity-smoke.mjs",
+        "script/qa/omc-native-eval-smoke.mjs",
+        "script/qa/omc-native-parity-smoke.mjs",
         "script/qa/python-kernel-warmup.mjs",
         "script/release-desktop-engine-target.ts",
         "script/release-latest-flag.ts",
@@ -270,7 +270,7 @@
         // pre-existing at origin dev 4686e425b5: a file nothing imports or runs
         "script/qa/member-boot-profile.ts",
         // pre-existing at origin dev 4686e425b5: a file nothing imports or runs
-        "script/qa/omo-native-parity-compare.d.mts",
+        "script/qa/omc-native-parity-compare.d.mts",
         // pre-existing at origin dev 4686e425b5: a file nothing imports or runs
         "script/qa/omp-item2-admission.mjs",
         // pre-existing at origin dev 4686e425b5: a file nothing imports or runs
@@ -326,49 +326,49 @@
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
         "@modelcontextprotocol/sdk",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
-        "@oh-my-opencode/agents-md-core",
+        "@oh-my-cybersecurity/agents-md-core",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
-        "@oh-my-opencode/ast-grep-mcp",
+        "@oh-my-cybersecurity/ast-grep-mcp",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
-        "@oh-my-opencode/boulder-state",
+        "@oh-my-cybersecurity/boulder-state",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
-        "@oh-my-opencode/claude-code-compat-core",
+        "@oh-my-cybersecurity/claude-code-compat-core",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
-        "@oh-my-opencode/comment-checker-core",
+        "@oh-my-cybersecurity/comment-checker-core",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
-        "@oh-my-opencode/delegate-core",
+        "@oh-my-cybersecurity/delegate-core",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
-        "@oh-my-opencode/git-bash-mcp",
+        "@oh-my-cybersecurity/git-bash-mcp",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
-        "@oh-my-opencode/hashline-core",
+        "@oh-my-cybersecurity/hashline-core",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
-        "@oh-my-opencode/isolation-core",
+        "@oh-my-cybersecurity/isolation-core",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
-        "@oh-my-opencode/lsp-core",
+        "@oh-my-cybersecurity/lsp-core",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
-        "@oh-my-opencode/mcp-client-core",
+        "@oh-my-cybersecurity/mcp-client-core",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
-        "@oh-my-opencode/mcp-stdio-core",
+        "@oh-my-cybersecurity/mcp-stdio-core",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
-        "@oh-my-opencode/omo-codex",
+        "@oh-my-cybersecurity/omc-codex",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
-        "@oh-my-opencode/omo-opencode",
+        "@oh-my-cybersecurity/omc-opencode",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
-        "@oh-my-opencode/openclaw-core",
+        "@oh-my-cybersecurity/openclaw-core",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
-        "@oh-my-opencode/prompts-core",
+        "@oh-my-cybersecurity/prompts-core",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
-        "@oh-my-opencode/rules-engine",
+        "@oh-my-cybersecurity/rules-engine",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
-        "@oh-my-opencode/senpi-desktop-prelude",
+        "@oh-my-cybersecurity/senpi-desktop-prelude",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
-        "@oh-my-opencode/senpi-desktop-service",
+        "@oh-my-cybersecurity/senpi-desktop-service",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
-        "@oh-my-opencode/skills-loader-core",
+        "@oh-my-cybersecurity/skills-loader-core",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
-        "@oh-my-opencode/team-core",
+        "@oh-my-cybersecurity/team-core",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
-        "@oh-my-opencode/tmux-core",
+        "@oh-my-cybersecurity/tmux-core",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
         "@opencode-ai/plugin",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
@@ -565,7 +565,7 @@
       ],
       "ignoreDependencies": [
         // pre-existing at origin dev 4686e425b5: a declared dependency nothing imports
-        "@oh-my-opencode/omo-config-core",
+        "@oh-my-cybersecurity/omc-config-core",
       ],
       // pre-existing at origin dev 4686e425b5: executables this package runs that it does not declare
       "ignoreBinaries": ["taskkill.exe", "where"],
@@ -588,7 +588,7 @@
         "src/process-sweep/command-match.ts": ["exports"],
         // pre-existing at origin dev 4686e425b5: unused export(s) hasExecutableToken, hasExecutableTokenUnderRootWithSuffix, normalizeForComparison, normalizeRoots, splitCommandTokens, tokenLooksExecutable, createDefaultProcessKiller, defaultIsProcessAlive, enumerateProcesses, listLspDaemonVersionDirs and 9 more
         "src/process-sweep/index.ts": ["exports"],
-        // pre-existing at origin dev 4686e425b5: unused export(s) OMO_LSP_DAEMON_DIR_ENV, listLspDaemonVersionDirs, readLspDaemonOwnerPid
+        // pre-existing at origin dev 4686e425b5: unused export(s) OMC_LSP_DAEMON_DIR_ENV, listLspDaemonVersionDirs, readLspDaemonOwnerPid
         "src/process-sweep/lsp-daemon-family.ts": ["exports"],
         // pre-existing at origin dev 4686e425b5: unused export(s) extractPromptFailureMessage
         "src/prompt-failure-classifier.ts": ["exports"],
@@ -620,7 +620,7 @@
         "src/model-capability-heuristics.ts": ["exports"],
       },
     },
-    "packages/omo-config-core": {
+    "packages/omc-config-core": {
       "includeEntryExports": true,
       // knip's default entry patterns (an explicit "entry" replaces them), files run by path from package.json scripts or CI
       // workflows, and the test, config and helper files plugins report with exports unchecked: listing them export-checks
@@ -1390,7 +1390,7 @@
         "stage-omowright-runtime.mjs": ["exports"],
       },
     },
-    "packages/omo-codex": {
+    "packages/omc-codex": {
       "includeEntryExports": true,
       // knip's default entry patterns (an explicit "entry" replaces them), files run by path from package.json scripts or CI
       // workflows, and the test, config and helper files plugins report with exports unchecked: listing them export-checks
@@ -1425,7 +1425,7 @@
       ],
       "ignoreDependencies": [
         // pre-existing at origin dev 4686e425b5: a declared dependency nothing imports
-        "@oh-my-opencode/shared-skills",
+        "@oh-my-cybersecurity/shared-skills",
       ],
       // pre-existing at origin dev 4686e425b5: executables this package runs that it does not declare
       "ignoreBinaries": ["where"],
@@ -1466,7 +1466,7 @@
         "src/telemetry/product-identity.ts": ["exports"],
       },
     },
-    "packages/omo-senpi": {
+    "packages/omc-senpi": {
       "includeEntryExports": true,
       // knip's default entry patterns (an explicit "entry" replaces them), files run by path from package.json scripts or CI
       // workflows, and the test, config and helper files plugins report with exports unchecked: listing them export-checks
@@ -1494,7 +1494,7 @@
         "src/components/telemetry/posthog-runtime.ts",
         "src/components/telemetry/session-summary-recovery.ts",
         "src/components/thread/live-surface.ts",
-        "src/extension/omo-task.ts",
+        "src/extension/omc-task.ts",
       ],
       "ignoreFiles": [
         // pre-existing at origin dev 4686e425b5: a file nothing imports or runs
@@ -1908,7 +1908,7 @@
         // pre-existing at origin dev 4686e425b5: a file nothing imports or runs
         "src/components/onboarding/claim-race-child.mjs",
         // pre-existing at origin dev 4686e425b5: a file nothing imports or runs
-        "src/components/telemetry/omo-native-crash.ts",
+        "src/components/telemetry/omc-native-crash.ts",
         // pre-existing at origin dev 4686e425b5: a file nothing imports or runs
         "src/components/telemetry/process-crash-records.ts",
         // pre-existing at origin dev 4686e425b5: a file nothing imports or runs
@@ -1934,9 +1934,9 @@
         // pre-existing at origin dev 4686e425b5: a declared dependency nothing imports
         "@code-yeongyu/lsp-daemon",
         // pre-existing at origin dev 4686e425b5: a declared dependency nothing imports
-        "@oh-my-opencode/ast-grep-mcp",
+        "@oh-my-cybersecurity/ast-grep-mcp",
         // pre-existing at origin dev 4686e425b5: a declared dependency nothing imports
-        "@oh-my-opencode/prompts-core",
+        "@oh-my-cybersecurity/prompts-core",
       ],
       // pre-existing at origin dev 4686e425b5: executables this package runs that it does not declare
       "ignoreBinaries": ["icacls", "pgrep", "taskkill.exe", "vmmap"],
@@ -2035,7 +2035,7 @@
         "src/components/computer-use/settings.ts": ["exports"],
         // pre-existing at origin dev 4686e425b5: unused export(s) OPENCODE_ROUTING_NOTICE_MIGRATION_ID
         "src/components/config-startup/opencode-routing-notice.ts": ["exports"],
-        // pre-existing at origin dev 4686e425b5: unused export(s) PLAN9_FILE_SYSTEM_TYPE, OMO_CONFIG_FILE_FILTER_GLOBS, OMO_CONFIG_DIRECTORY_FILTER_GLOBS
+        // pre-existing at origin dev 4686e425b5: unused export(s) PLAN9_FILE_SYSTEM_TYPE, OMC_CONFIG_FILE_FILTER_GLOBS, OMC_CONFIG_DIRECTORY_FILTER_GLOBS
         "src/components/config-watch/paths.ts": ["exports"],
         // pre-existing at origin dev 4686e425b5: unused export(s) MERGED_OMO_CONFIG_DIAGNOSTIC_PATH
         "src/components/config-watch/validate.ts": ["exports"],
@@ -2242,13 +2242,13 @@
         // pre-existing at origin dev 4686e425b5: unused export(s) bareOsVersion, DAY_UTC_PATTERN, COMBO_FINGERPRINT_PATTERN, SUMMARY_EPOCH_PATTERN, SESSIONLESS_EVENTS, numberConstraint
         "src/components/telemetry/event-schema-constraints.ts": ["exports"],
         // pre-existing at origin dev 4686e425b5: unused export(s) maskKibitzerModel
-        "src/components/telemetry/omo-native-kibitzer-summary.ts": ["exports"],
+        "src/components/telemetry/omc-native-kibitzer-summary.ts": ["exports"],
         // pre-existing at origin dev 4686e425b5: unused export(s) buildParallelismSummary
-        "src/components/telemetry/omo-native-parallel-summary.ts": ["exports"],
+        "src/components/telemetry/omc-native-parallel-summary.ts": ["exports"],
         // pre-existing at origin dev 4686e425b5: unused export(s) RAW_TURN_SAMPLE_RATE
-        "src/components/telemetry/omo-native-session-summary.ts": ["exports"],
+        "src/components/telemetry/omc-native-session-summary.ts": ["exports"],
         // pre-existing at origin dev 4686e425b5: unused export(s) loadSummaryRuntime
-        "src/components/telemetry/omo-native-summary-wiring.ts": ["exports"],
+        "src/components/telemetry/omc-native-summary-wiring.ts": ["exports"],
         // pre-existing at origin dev 4686e425b5: unused export(s) DEAD_PID
         "src/components/telemetry/optout-purge.test-support.ts": ["exports"],
         // pre-existing at origin dev 4686e425b5: unused export(s) toWireValue
@@ -2344,7 +2344,7 @@
         // pre-existing at origin dev 4686e425b5: unused export(s) localLauncherCmdPath
         "src/install/local-launcher.ts": ["exports"],
         // pre-existing at origin dev 4686e425b5: unused export(s) findDirectNativeCaptureViolations
-        "src/omo-native-capture-path.audit.test.ts": ["exports"],
+        "src/omc-native-capture-path.audit.test.ts": ["exports"],
       },
     },
     "packages/senpi-task": {
@@ -2581,7 +2581,7 @@
         "src/tools/output/transcript/event-log.ts": ["exports"],
         // pre-existing at origin dev 4686e425b5: unused export(s) TRANSCRIPT_ASSISTANT_EVENT, TRANSCRIPT_TOOL_EVENT, readEventLogTranscript, readEventLogTranscriptResult, MAX_TRANSCRIPT_SOURCE_BYTES, readBoundedFileText, readSessionDirTranscript, readSessionDirTranscriptResult, parseSessionTranscript
         "src/tools/output/transcript/index.ts": ["exports"],
-        // pre-existing at origin dev 4686e425b5: unused export(s) OMO_CONFIG
+        // pre-existing at origin dev 4686e425b5: unused export(s) OMC_CONFIG
         "src/tools/task/__fixtures__/task-tool-fakes.ts": ["exports"],
         // pre-existing at origin dev 4686e425b5: unused export(s) formatTaskTarget
         "src/tools/task/call-renderer.ts": ["exports"],
@@ -2753,7 +2753,7 @@
         "vitest.config.ts": ["exports"],
       },
     },
-    "packages/omo-opencode": {
+    "packages/omc-opencode": {
       "includeEntryExports": true,
       // knip's default entry patterns (an explicit "entry" replaces them), files run by path from package.json scripts or CI
       // workflows, and the test, config and helper files plugins report with exports unchecked: listing them export-checks
@@ -3172,11 +3172,11 @@
         // pre-existing at origin dev 4686e425b5: unused export(s) formatNativeInstallCommand, NATIVE_PACKAGE_SPEC, firstOmoBinOnPath, LEGACY_OMO_BIN_PACKAGES, legacyOmoBins, NATIVE_OMO_PACKAGE, nativeOmoBin, resolveOmoBinEnvironment, scanOmoBins, removeFileCommand and 4 more
         "src/cli/install-native/index.ts": ["exports"],
         // pre-existing at origin dev 4686e425b5: unused export(s) NATIVE_OMO_PACKAGE, LEGACY_OMO_BIN_PACKAGES
-        "src/cli/install-native/legacy-omo-bin.ts": ["exports"],
+        "src/cli/install-native/legacy-omc-bin.ts": ["exports"],
         // pre-existing at origin dev 4686e425b5: unused export(s) nativeSetupStartLine
         "src/cli/install-native/offer-native-setup.ts": ["exports"],
         // pre-existing at origin dev 4686e425b5: unused export(s) pathOrderFix
-        "src/cli/install-native/verify-omo-command.ts": ["exports"],
+        "src/cli/install-native/verify-omc-command.ts": ["exports"],
         // pre-existing at origin dev 4686e425b5: unused export(s) login, logout, status
         "src/cli/mcp-oauth/index.ts": ["exports"],
         // pre-existing at origin dev 4686e425b5: unused export(s) resolveRunAgent, resolveRunModel, createServerConnection, resolveSession, createJsonOutputManager, executeOnCompleteHook, createEventState, processEvents, serializeError
@@ -3470,7 +3470,7 @@
         // pre-existing at origin dev 4686e425b5: unused export(s) parseVariantFromModelID
         "src/shared/model-string-parser.ts": ["exports"],
         // pre-existing at origin dev 4686e425b5: unused export(s) sweepOrphanedLspDaemonProxiesBestEffort, sweepStaleLspDaemonVersionsBestEffort
-        "src/shared/omo-process-sweep.ts": ["exports"],
+        "src/shared/omc-process-sweep.ts": ["exports"],
         // pre-existing at origin dev 4686e425b5: unused export(s) openCodeShellName
         "src/shared/opencode-shell.ts": ["exports"],
         // pre-existing at origin dev 4686e425b5: unused export(s) resetSqliteBackendCache
@@ -3555,7 +3555,7 @@
         "src/tools/task/types.ts": ["duplicates"],
       },
     },
-    "packages/omo-native": {
+    "packages/omc-native": {
       "includeEntryExports": true,
       // knip's default entry patterns (an explicit "entry" replaces them), files run by path from package.json scripts or CI
       // workflows, and the test, config and helper files plugins report with exports unchecked: listing them export-checks
@@ -3690,7 +3690,7 @@
         // pre-existing at origin dev 4686e425b5: a file nothing imports or runs
         "lib/og/graph-glyph.tsx",
         // pre-existing at origin dev 4686e425b5: a file nothing imports or runs
-        "lib/og/omo-logo.ts",
+        "lib/og/omc-logo.ts",
         // pre-existing at origin dev 4686e425b5: a file nothing imports or runs
         "lib/og/tagline.tsx",
         // pre-existing at origin dev 4686e425b5: a file nothing imports or runs
@@ -3823,7 +3823,7 @@
       // pre-existing at origin dev 4686e425b5: executables this package runs that it does not declare
       "ignoreBinaries": ["daemon"],
       "ignoreIssues": {
-        // pre-existing at origin dev 4686e425b5: unused export(s) disposeDefaultLspManager, callDiagnosticsViaDaemon, callToolViaDaemon, currentRequestContext, ensureDaemonRunning, InvalidRuntimeOverrideError, OMO_LSP_DAEMON_CLI, probeDaemon, resolveDaemonRuntime, daemonPaths and 6 more
+        // pre-existing at origin dev 4686e425b5: unused export(s) disposeDefaultLspManager, callDiagnosticsViaDaemon, callToolViaDaemon, currentRequestContext, ensureDaemonRunning, InvalidRuntimeOverrideError, OMC_LSP_DAEMON_CLI, probeDaemon, resolveDaemonRuntime, daemonPaths and 6 more
         "src/index.ts": ["exports"],
         // pre-existing at origin dev 4686e425b5: unused export(s) AUTH_ERROR_CODE, PROTOCOL_ERROR_CODE, UnsafePrivateDirectoryError
         "src/ipc-protocol.ts": ["exports"],
@@ -3857,7 +3857,7 @@
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
         "@biomejs/biome",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
-        "@oh-my-opencode/mcp-stdio-core",
+        "@oh-my-cybersecurity/mcp-stdio-core",
         // pre-existing at origin dev 4686e425b5: a declared devDependency nothing imports
         "@vitest/coverage-v8",
       ],
@@ -3900,7 +3900,7 @@
         "test/fakes.ts": ["exports"],
       },
     },
-    "packages/omo-codex/plugin": {
+    "packages/omc-codex/plugin": {
       "includeEntryExports": true,
       // knip's default entry patterns (an explicit "entry" replaces them), files run by path from package.json scripts or CI
       // workflows, and the test, config and helper files plugins report with exports unchecked: listing them export-checks
@@ -3955,7 +3955,7 @@
         "test/sync-skills-test-support.mjs": ["exports"],
       },
     },
-    "packages/omo-codex/plugin/shared": {
+    "packages/omc-codex/plugin/shared": {
       "includeEntryExports": true,
       // knip's default entry patterns (an explicit "entry" replaces them), files run by path from package.json scripts or CI
       // workflows, and the test, config and helper files plugins report with exports unchecked: listing them export-checks
@@ -3967,7 +3967,7 @@
         "**/*.test-d.ts",
       ],
     },
-    "packages/omo-senpi/plugin": {
+    "packages/omc-senpi/plugin": {
       "includeEntryExports": true,
       // knip's default entry patterns (an explicit "entry" replaces them), files run by path from package.json scripts or CI
       // workflows, and the test, config and helper files plugins report with exports unchecked: listing them export-checks
@@ -3987,32 +3987,32 @@
         "scripts/sync-version.mjs",
         "**/*.{test,spec}.{js,cjs,mjs,jsx,ts,cts,mts,tsx}",
         "**/*.test-d.ts",
-        "extensions/omo-claim-receipt.js",
-        "extensions/omo-computer-use.js",
-        "extensions/omo-device-account.js",
-        "extensions/omo-feedback.js",
-        "extensions/omo-memory-commands.js",
-        "extensions/omo-memory-doctor.js",
-        "extensions/omo-memory-memfs.js",
-        "extensions/omo-memory-palace.js",
-        "extensions/omo-memory-sync.js",
-        "extensions/omo-recall-store.js",
-        "extensions/omo-device-service.js",
-        "extensions/omo-session-history.js",
-        "extensions/omo-task.js",
-        "extensions/omo-telemetry-otlp.js",
-        "extensions/omo-telemetry-posthog.js",
-        "extensions/omo-telemetry-recovery.js",
-        "extensions/omo-thread-client.js",
+        "extensions/omc-claim-receipt.js",
+        "extensions/omc-computer-use.js",
+        "extensions/omc-device-account.js",
+        "extensions/omc-feedback.js",
+        "extensions/omc-memory-commands.js",
+        "extensions/omc-memory-doctor.js",
+        "extensions/omc-memory-memfs.js",
+        "extensions/omc-memory-palace.js",
+        "extensions/omc-memory-sync.js",
+        "extensions/omc-recall-store.js",
+        "extensions/omc-device-service.js",
+        "extensions/omc-session-history.js",
+        "extensions/omc-task.js",
+        "extensions/omc-telemetry-otlp.js",
+        "extensions/omc-telemetry-posthog.js",
+        "extensions/omc-telemetry-recovery.js",
+        "extensions/omc-thread-client.js",
         "runtime/agent-toolkit-sdk/sdk.js",
       ],
       "ignoreFiles": [
         // pre-existing at origin dev 4686e425b5: a file nothing imports or runs
         "extensions/gateway-store-worker.mjs",
         // pre-existing at origin dev 4686e425b5: a file nothing imports or runs
-        "extensions/omo-init-deep-advisor.js",
+        "extensions/omc-init-deep-advisor.js",
         // pre-existing at origin dev 4686e425b5: a file nothing imports or runs
-        "extensions/omo-member.js",
+        "extensions/omc-member.js",
         // pre-existing at origin dev 4686e425b5: a file nothing imports or runs
         "runtime/dag/library.js",
         // pre-existing at origin dev 4686e425b5: a file nothing imports or runs
@@ -4109,7 +4109,7 @@
         "puppeteer-extra-plugin-stealth",
       ],
     },
-    "packages/omo-codex/plugin/components/bootstrap": {
+    "packages/omc-codex/plugin/components/bootstrap": {
       "includeEntryExports": true,
       // knip's default entry patterns (an explicit "entry" replaces them), files run by path from package.json scripts or CI
       // workflows, and the test, config and helper files plugins report with exports unchecked: listing them export-checks
@@ -4142,7 +4142,7 @@
         "src/worker.ts": ["exports"],
       },
     },
-    "packages/omo-codex/plugin/components/comment-checker": {
+    "packages/omc-codex/plugin/components/comment-checker": {
       "includeEntryExports": true,
       // Vitest is installed by this package's own npm ci, which the root install does not run, so knip cannot load vitest.config.ts; these are its config and test globs.
       "vitest": {"config":[],"entry":["vitest.config.ts","test/**/*.test.ts"]},
@@ -4180,7 +4180,7 @@
         "vitest.config.ts": ["exports"],
       },
     },
-    "packages/omo-codex/plugin/components/git-bash": {
+    "packages/omc-codex/plugin/components/git-bash": {
       "includeEntryExports": true,
       // knip's default entry patterns (an explicit "entry" replaces them), files run by path from package.json scripts or CI
       // workflows, and the test, config and helper files plugins report with exports unchecked: listing them export-checks
@@ -4198,7 +4198,7 @@
         "src/index.ts": ["exports"],
       },
     },
-    "packages/omo-codex/plugin/components/lazycodex-executor-verify": {
+    "packages/omc-codex/plugin/components/lazycodex-executor-verify": {
       "includeEntryExports": true,
       // Vitest is installed by this package's own npm ci, which the root install does not run, so knip cannot load vitest.config.ts; these are its config and test globs.
       "vitest": {"config":[],"entry":["vitest.config.ts","test/**/*.test.ts"]},
@@ -4231,7 +4231,7 @@
         "vitest.config.ts": ["exports"],
       },
     },
-    "packages/omo-codex/plugin/components/lsp": {
+    "packages/omc-codex/plugin/components/lsp": {
       "includeEntryExports": true,
       // Vitest is installed by this package's own npm ci, which the root install does not run, so knip cannot load vitest.config.ts; these are its config and test globs.
       "vitest": {"config":[],"entry":["vitest.config.ts","test/**/*.test.ts"]},
@@ -4268,7 +4268,7 @@
         "vitest.config.ts": ["exports"],
       },
     },
-    "packages/omo-codex/plugin/components/rules": {
+    "packages/omc-codex/plugin/components/rules": {
       "includeEntryExports": true,
       // Vitest is installed by this package's own npm ci, which the root install does not run, so knip cannot load vitest.config.ts; these are its config and test globs.
       "vitest": {"config":[],"entry":["vitest.config.ts","**/*.test.ts"]},
@@ -4303,7 +4303,7 @@
         "vitest.config.ts": ["exports"],
       },
     },
-    "packages/omo-codex/plugin/components/teammode": {
+    "packages/omc-codex/plugin/components/teammode": {
       "includeEntryExports": true,
       // knip's default entry patterns (an explicit "entry" replaces them), files run by path from package.json scripts or CI
       // workflows, and the test, config and helper files plugins report with exports unchecked: listing them export-checks
@@ -4329,7 +4329,7 @@
         "src/codex-hook.ts": ["exports"],
       },
     },
-    "packages/omo-codex/plugin/components/telemetry": {
+    "packages/omc-codex/plugin/components/telemetry": {
       "includeEntryExports": true,
       // Vitest is installed by this package's own npm ci, which the root install does not run, so knip cannot load vitest.config.ts; these are its config and test globs.
       "vitest": {"config":[],"entry":["vitest.config.ts","**/*.test.ts"]},
@@ -4361,7 +4361,7 @@
         "vitest.config.ts": ["exports"],
       },
     },
-    "packages/omo-codex/plugin/components/ultrawork": {
+    "packages/omc-codex/plugin/components/ultrawork": {
       "includeEntryExports": true,
       // knip's default entry patterns (an explicit "entry" replaces them), files run by path from package.json scripts or CI
       // workflows, and the test, config and helper files plugins report with exports unchecked: listing them export-checks
@@ -4389,7 +4389,7 @@
       // pre-existing at origin dev 4686e425b5: executables this package runs that it does not declare
       "ignoreBinaries": ["biome", "vitest"],
     },
-    "packages/omo-codex/plugin/components/ulw-execute-continuation": {
+    "packages/omc-codex/plugin/components/ulw-execute-continuation": {
       "includeEntryExports": true,
       // Vitest is installed by this package's own npm ci, which the root install does not run, so knip cannot load vitest.config.ts; these are its config and test globs.
       "vitest": {"config":[],"entry":["vitest.config.ts","test/**/*.test.ts"]},
@@ -4422,7 +4422,7 @@
         "vitest.config.ts": ["exports"],
       },
     },
-    "packages/omo-codex/plugin/components/ulw-loop": {
+    "packages/omc-codex/plugin/components/ulw-loop": {
       "includeEntryExports": true,
       // Vitest is installed by this package's own npm ci, which the root install does not run, so knip cannot load vitest.config.ts; these are its config and test globs.
       "vitest": {"config":[],"entry":["vitest.config.ts","test/**/*.test.ts"]},

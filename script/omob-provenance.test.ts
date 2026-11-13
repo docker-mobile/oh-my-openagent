@@ -2,14 +2,14 @@ import { describe, expect, test } from "bun:test"
 import { chmodSync, mkdtempSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
-import { versionLines, type OmoBuildInfo } from "../packages/omo-native/build-info"
+import { versionLines, type OmoBuildInfo } from "../packages/omc-native/build-info"
 import { isCurrentOmobBuild } from "./omob-launcher"
 import { binaryContentDigest, provenancePath, readProvenanceMarker, writeProvenanceMarker } from "./omob-provenance"
 import { hostTargetFor } from "./build-omob"
 
 const info: OmoBuildInfo = {
 	command: "omob",
-	omo: { commit: "a".repeat(40), committedAt: "2026-09-20T00:00:00Z", branch: "dev" },
+	omc: { commit: "a".repeat(40), committedAt: "2026-09-20T00:00:00Z", branch: "dev" },
 	engine: { commit: "b".repeat(40), committedAt: "2026-09-20T00:00:00Z", branch: "main" },
 }
 const otherInfo: OmoBuildInfo = { ...info, engine: { ...info.engine, commit: "c".repeat(40) } }

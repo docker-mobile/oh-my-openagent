@@ -40,7 +40,7 @@ describe("refresh-member-pane", () => {
       expect(decideMemberPaneRefresh({ ...aliveSnapshot, currentCommand: "zsh" })).toBe("revive")
     })
 
-    test("#given pane without omo attach metadata #then decides none", () => {
+    test("#given pane without omc attach metadata #then decides none", () => {
       expect(decideMemberPaneRefresh({ ...aliveSnapshot, attachServerUrl: "", attachSessionId: "" })).toBe("none")
     })
   })
@@ -90,7 +90,7 @@ describe("refresh-member-pane", () => {
       ])
     })
 
-    test("#given pane lost its omo attach metadata #when refreshed #then issues no further tmux commands", async () => {
+    test("#given pane lost its omc attach metadata #when refreshed #then issues no further tmux commands", async () => {
       const { deps, calls } = createDeps({
         runTmuxCommand: async (_tmuxPath, args) => {
           calls.push({ args })

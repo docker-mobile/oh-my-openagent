@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, jest, spyOn, test } from "bun:test"
 import { bounded } from "../lifecycle/__fixtures__/live-parent-clock"
 
-import { createManagerResidencyRegistry } from "../../../omo-senpi/src/components/task/residency-registry"
+import { createManagerResidencyRegistry } from "../../../omc-senpi/src/components/task/residency-registry"
 import { createTaskLifecycle } from "../lifecycle/create"
 import { hostRunnerHarness } from "../runners/rpc-host.test-support"
 import type { ResolvedModelRecord } from "../state"

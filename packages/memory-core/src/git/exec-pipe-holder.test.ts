@@ -10,7 +10,7 @@ import { disableFixtureAutoMaintenance } from "./test-repo-config.test-support"
 import { settlesWithin } from "./settles-within.test-support"
 import { probeUntil } from "../locks/process-liveness.test-support"
 
-// omo #10199 review LOW 1: git that exits NORMALLY while a hook's background child still holds the
+// omc #10199 review LOW 1: git that exits NORMALLY while a hook's background child still holds the
 // inherited stdout/stderr pipe must not keep the write waiting on that child. Before the fix the
 // result waited for `close`, which never came while the child lived (not even at the timeout).
 
@@ -44,7 +44,7 @@ async function repoWithPipeHoldingHook(): Promise<{ readonly repo: string; reado
   return { repo, holderPid }
 }
 
-describe("a git whose hook leaves a child holding its pipe (omo #10199 review LOW 1)", () => {
+describe("a git whose hook leaves a child holding its pipe (omc #10199 review LOW 1)", () => {
   test.skipIf(process.platform === "win32")("#given a post-commit hook that backgrounds a pipe holder #when the commit finishes normally #then the write settles with git's own result, without waiting for the holder", async () => {
     // #given
     const { repo, holderPid } = await repoWithPipeHoldingHook()

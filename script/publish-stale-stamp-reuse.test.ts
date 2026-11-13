@@ -119,7 +119,7 @@ function runPrepare(fixture: Fixture, version: string): { status: number; stdout
   const result = spawnSync("bash", [script], {
     cwd: fixture.work,
     encoding: "utf8",
-    env: { ...process.env, GIT_CONFIG_GLOBAL: "/dev/null", GIT_CONFIG_SYSTEM: "/dev/null", VERSION: version, OMO_AI_VERSION: version, RELEASE_REF: "dev", PREPARED_RELEASE_SHA: "", GITHUB_SHA: "", GITHUB_OUTPUT: outputFile },
+    env: { ...process.env, GIT_CONFIG_GLOBAL: "/dev/null", GIT_CONFIG_SYSTEM: "/dev/null", VERSION: version, OMC_AI_VERSION: version, RELEASE_REF: "dev", PREPARED_RELEASE_SHA: "", GITHUB_SHA: "", GITHUB_OUTPUT: outputFile },
   })
   const outputs: Record<string, string> = {}
   for (const line of readFileSync(outputFile, "utf8").split("\n")) { const i = line.indexOf("="); if (i > 0) outputs[line.slice(0, i)] = line.slice(i + 1) }

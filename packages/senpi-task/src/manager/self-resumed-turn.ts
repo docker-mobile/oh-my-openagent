@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import { nextRunEpoch, type TaskRecord } from "../state"
 import type { TaskRecordStore } from "../store"
@@ -52,7 +52,7 @@ function reopenable(record: TaskRecord | null, handle: ManagedChildHandle, ports
 
 /**
  * A child whose turn already settled can start a run on its own - its monitor fired, its background
- * job finished (omo#9069). That run is work the parent has not seen, so the record goes back to
+ * job finished (omc#9069). That run is work the parent has not seen, so the record goes back to
  * `running` under the next run_epoch (marked `resumed_run_epoch`) and outcome tracking is re-armed
  * exactly as a task_send revival does: the run's end becomes a second completion, announced as a
  * resumed turn's result. The earlier completion stays delivered. The settled outcome is persisted
@@ -83,7 +83,7 @@ export async function reopenSelfResumedTurn(ports: SelfResumedTurnPorts, taskId:
   // A resumed run is already doing its work: a full lane may deny it a slot, but never its result.
   if (reservation.ok) reservation.commit()
   else ports.trackOutcome(taskId, handle, model, epoch)
-  // Owners that folded the earlier outcome (a DAG node) re-watch the task for this run's end (omo#10487).
+  // Owners that folded the earlier outcome (a DAG node) re-watch the task for this run's end (omc#10487).
   ports.announce(taskId)
   log("senpi-task child resumed on its own after its turn settled", { taskId, runEpoch: epoch })
 }

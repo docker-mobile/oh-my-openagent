@@ -36,7 +36,7 @@ let fakeBunTest = ""
 let counterFile = ""
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), "omo-bun-panic-retry-"))
+  root = mkdtempSync(join(tmpdir(), "omc-bun-panic-retry-"))
   fakeBunTest = join(root, "fake-bun-test.ts")
   counterFile = join(root, "attempts")
   writeFileSync(fakeBunTest, FAKE_BUN_TEST)

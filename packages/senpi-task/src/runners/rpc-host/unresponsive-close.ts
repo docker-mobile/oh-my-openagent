@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 import type { HostSessionFacts, HostSessionPort } from "./handle-port"
 import type { HostSessionReattach, HostSessionReattached } from "./reattach"
 import { HostSessionDetachedError, HostSessionUnresponsiveError } from "./session-wire"

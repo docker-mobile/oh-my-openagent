@@ -4,11 +4,11 @@ import { locales } from "@/i18n/config"
 import { desktopDownloadEnabled } from "@/lib/desktop-download"
 import { DOC_GUIDE_PAGES } from "@/lib/docs-sections"
 
-const BASE_URL = "https://omo.dev"
+const BASE_URL = "https://omc.nga.hm"
 
 /**
  * Public, localized routes only. The primitive showcase `/design` (rendered only when
- * OMO_WEB_SHOWCASE=1, see app/design/page.tsx) is intentionally not listed here.
+ * OMC_WEB_SHOWCASE=1, see app/design/page.tsx) is intentionally not listed here.
  */
 const PUBLIC_ROUTES = [
   "",

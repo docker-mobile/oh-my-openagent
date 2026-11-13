@@ -41,14 +41,14 @@ describe("rules-core", () => {
     // given
     const root = createTestRoot("rules-core-order");
     mkdirSync(join(root, ".git"));
-    mkdirSync(join(root, ".omo", "rules"), { recursive: true });
+    mkdirSync(join(root, ".omc", "rules"), { recursive: true });
     mkdirSync(join(root, ".sisyphus", "rules"), { recursive: true });
     mkdirSync(join(root, ".claude", "rules"), { recursive: true });
     mkdirSync(join(root, ".cursor", "rules"), { recursive: true });
     mkdirSync(join(root, ".github", "instructions"), { recursive: true });
     mkdirSync(join(root, "src"), { recursive: true });
     writeFileSync(join(root, ".github", "copilot-instructions.md"), "copilot");
-    writeFileSync(join(root, ".omo", "rules", "omo.md"), "omo");
+    writeFileSync(join(root, ".omc", "rules", "omc.md"), "omc");
     writeFileSync(join(root, ".sisyphus", "rules", "sisyphus.md"), "sisyphus");
     writeFileSync(join(root, ".claude", "rules", "claude.md"), "claude");
     writeFileSync(join(root, ".cursor", "rules", "cursor.md"), "cursor");
@@ -60,7 +60,7 @@ describe("rules-core", () => {
     // then
     expect(found.map((rule) => rule.relativePath)).toEqual([
       ".github/copilot-instructions.md",
-      ".omo/rules/omo.md",
+      ".omc/rules/omc.md",
       ".claude/rules/claude.md",
       ".cursor/rules/cursor.md",
       ".github/instructions/github.instructions.md",
@@ -109,17 +109,17 @@ describe("rules-core", () => {
     // given
     const root = createTestRoot("rules-core-sisyphus-restored");
     mkdirSync(join(root, ".git"));
-    mkdirSync(join(root, ".omo", "rules"), { recursive: true });
+    mkdirSync(join(root, ".omc", "rules"), { recursive: true });
     mkdirSync(join(root, ".sisyphus", "rules"), { recursive: true });
     mkdirSync(join(root, "src"), { recursive: true });
-    writeFileSync(join(root, ".omo", "rules", "shared.md"), "omo");
+    writeFileSync(join(root, ".omc", "rules", "shared.md"), "omc");
     writeFileSync(join(root, ".sisyphus", "rules", "shared.md"), "legacy");
     writeFileSync(join(root, ".sisyphus", "rules", "legacy.md"), "legacy");
 
     // when
     const found = findRuleFiles(root, root, join(root, "src", "index.ts"));
     const relativePaths = found.map((rule) => rule.relativePath);
-    const omoSharedIndex = relativePaths.indexOf(".omo/rules/shared.md");
+    const omoSharedIndex = relativePaths.indexOf(".omc/rules/shared.md");
     const sisyphusSharedIndex = relativePaths.indexOf(".sisyphus/rules/shared.md");
 
     // then
@@ -152,14 +152,14 @@ describe("rules-core", () => {
     expect(deprecationWarnings).toHaveLength(1);
   });
 
-  it("#given a workspace directory has no project marker (no .git, no package.json, etc.) AND contains .omo/rules/ #when findRuleFiles is called #then the .omo/rules/ files are still discovered", () => {
+  it("#given a workspace directory has no project marker (no .git, no package.json, etc.) AND contains .omc/rules/ #when findRuleFiles is called #then the .omc/rules/ files are still discovered", () => {
     // given
     const root = createTestRoot("rules-core-markerless-workspace");
     const homeDir = join(root, "home");
     const sourceDir = join(root, "src");
-    const ruleFile = join(root, ".omo", "rules", "test-rule.md");
+    const ruleFile = join(root, ".omc", "rules", "test-rule.md");
     const currentFile = join(sourceDir, "index.ts");
-    mkdirSync(join(root, ".omo", "rules"), { recursive: true });
+    mkdirSync(join(root, ".omc", "rules"), { recursive: true });
     mkdirSync(homeDir, { recursive: true });
     mkdirSync(sourceDir, { recursive: true });
     writeFileSync(ruleFile, "markerless workspace rule");
@@ -256,9 +256,9 @@ describe("rules-core", () => {
     // given
     const root = createTestRoot("rules-core-cache");
     mkdirSync(join(root, ".git"));
-    mkdirSync(join(root, ".omo", "rules"), { recursive: true });
+    mkdirSync(join(root, ".omc", "rules"), { recursive: true });
     mkdirSync(join(root, "src"), { recursive: true });
-    writeFileSync(join(root, ".omo", "rules", "typescript.md"), "typescript");
+    writeFileSync(join(root, ".omc", "rules", "typescript.md"), "typescript");
     const cache = createRuleScanCache();
 
     // when

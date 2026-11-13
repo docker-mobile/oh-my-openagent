@@ -85,10 +85,10 @@ test("rcopy plain copy does not descend into its own destination", async () => {
   await writeFile(join(lower, "nested", "file"), "data")
   // Pathological layout (defended in depth): the destination lives inside the
   // source, as it did when a subvolume repository root stopped the device walk.
-  const baseDir = join(lower, ".omo-wt", "tselfcopy")
+  const baseDir = join(lower, ".omc-wt", "tselfcopy")
   const merged = join(baseDir, "m")
   await mkdir(baseDir, { recursive: true })
   await new RcopyBackend().start(lower, merged, { id: "selfcopy", baseDir, crossDevice: false })
   expect(await readFile(join(merged, "nested", "file"), "utf8")).toBe("data")
-  await expect(access(join(merged, ".omo-wt", "tselfcopy", "m"))).rejects.toThrow()
+  await expect(access(join(merged, ".omc-wt", "tselfcopy", "m"))).rejects.toThrow()
 })

@@ -1,7 +1,7 @@
 import type { BuiltinCategoryDefinition } from "./types"
-import { LATEST_MODEL_BY_FAMILY } from "@oh-my-opencode/model-core/latest-models"
+import { LATEST_MODEL_BY_FAMILY } from "@oh-my-cybersecurity/model-core/latest-models"
 
-// Ported from packages/omo-opencode/src/tools/delegate-task/openai-categories.ts.
+// Ported from packages/omc-opencode/src/tools/delegate-task/openai-categories.ts.
 //
 // GPT-6 Astra variants (2026-09-05). The category append is joined onto the child's user prompt
 // after the orchestrator's brief, on top of senpi's full gpt-6-astra core preset, so each Astra
@@ -119,7 +119,7 @@ function isGpt5_5Or5_6Model(model: string): boolean {
 }
 
 // Matches the GPT-6 family (gpt-6-astra, gpt-6-astra-fast, gateway-prefixed ids) by the last path
-// segment, mirroring isGpt6Model in packages/omo-opencode/src/agents/types.ts.
+// segment, mirroring isGpt6Model in packages/omc-opencode/src/agents/types.ts.
 export function isGpt6Model(model: string): boolean {
   return modelNameOf(model).includes("gpt-6")
 }

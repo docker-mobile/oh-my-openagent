@@ -1,10 +1,10 @@
-// Opt-in timeline for the SIGKILL takeover test (#10959). When OMO_TAKEOVER_TRACE names a file, the test and both
+// Opt-in timeline for the SIGKILL takeover test (#10959). When OMC_TAKEOVER_TRACE names a file, the test and both
 // writer children append one JSON line per event to it, so a failure on a slow runner shows which phase took the
 // time or which process ended early. Unset, every call returns at once and nothing is written.
 
 import { appendFileSync, existsSync, readFileSync } from "node:fs"
 
-const TRACE_PATH = process.env.OMO_TAKEOVER_TRACE
+const TRACE_PATH = process.env.OMC_TAKEOVER_TRACE
 
 export type TakeoverTraceEvent = {
   readonly t: number

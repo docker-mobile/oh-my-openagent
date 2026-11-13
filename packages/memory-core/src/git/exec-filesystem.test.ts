@@ -10,7 +10,7 @@ import { removeTreeSync } from "../../../../test-support/remove-tree"
 describe("createNodeGitExec filesystem fixtures", () => {
   describe("#given a spawn cwd that does not exist", () => {
     test("#when git runs #then it does NOT report git as missing from PATH", async () => {
-      const dir = mkdtempSync(join(tmpdir(), "omo-git-exec-"))
+      const dir = mkdtempSync(join(tmpdir(), "omc-git-exec-"))
       onTestFinished(() => removeTreeSync(dir, { maxRetries: 10, retryDelay: 200 }))
       const missing = join(dir, "no-such-dir")
       const exec = createNodeGitExec()
@@ -47,7 +47,7 @@ describe("createNodeGitExec filesystem fixtures", () => {
 
   describe("#given a cwd that exists but no git binary on PATH", () => {
     test("#when git runs #then GitNotFoundError fires", async () => {
-      const dir = mkdtempSync(join(tmpdir(), "omo-git-exec-"))
+      const dir = mkdtempSync(join(tmpdir(), "omc-git-exec-"))
       try {
         const exec = createNodeGitExec()
         await expect(
@@ -60,7 +60,7 @@ describe("createNodeGitExec filesystem fixtures", () => {
   })
 
   test("#given stdin #when real Git runs #then bytes are piped and existing argv handling is unchanged", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "omo-git-exec-"))
+    const dir = mkdtempSync(join(tmpdir(), "omc-git-exec-"))
     try {
       const exec = createNodeGitExec()
       const content = Buffer.from("stdin-content\n")

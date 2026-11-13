@@ -5,8 +5,8 @@
 ## OVERVIEW
 
 Harness-neutral skill loading, builtin skill, runtime skill, and skill matching primitives.
-Package `@oh-my-opencode/skills-loader-core`.
-Confirmed by grep: consumed by `omo-opencode` skill features in ~70 files across `src/features/builtin-skills`, `src/features/opencode-skill-loader`, `src/features/opencode-runtime-skills`, `src/tools/skill`, and `src/hooks/auto-slash-command`.
+Package `@oh-my-cybersecurity/skills-loader-core`.
+Confirmed by grep: consumed by `omc-opencode` skill features in ~70 files across `src/features/builtin-skills`, `src/features/opencode-skill-loader`, `src/features/opencode-runtime-skills`, `src/tools/skill`, and `src/hooks/auto-slash-command`.
 
 ## SUBSYSTEMS
 
@@ -25,6 +25,7 @@ Confirmed by grep: consumed by `omo-opencode` skill features in ~70 files across
 - **Exports:** barrel root plus subpath exports for `./opencode-skill-loader`, `./builtin-skills`, `./opencode-runtime-skills`, `./skill`, `./auto-slash-command`, `./shared/*`, and `./config/*`.
 - **Skill matching:** `tools/skill/skill-matcher.ts` provides `matchSkillByName()`, `matchCommandByName()`, and `findPartialMatches()`; ambiguous short-name matches refuse to resolve.
 - **Runtime skill source:** `features/opencode-runtime-skills/` exports `selectRuntimeSecuritySkills()` and `createRuntimeSkillSourceServer()`; dual-runtime (Bun.serve preferred, Node http fallback), loopback-only, `cache-control: no-store`, 404 on unknown paths.
-- **123 TypeScript files** under `src/` (86 non-test). Barrel entry `src/index.ts`.
+- **126 TypeScript files** under `src/` (87 non-test). Barrel entry `src/index.ts`.
+- **Harness-neutral guard:** zero adapter imports and no bare Codex hook names, enforced by `script/shared-core-extraction-guard.test.ts` (package list: `script/core-package-paths.ts`); the NEVER/ALWAYS strings inside `features/builtin-skills/skills/*` are shipped skill prose, not package policy.
 
 Parent: [packages/AGENTS.md](../AGENTS.md)

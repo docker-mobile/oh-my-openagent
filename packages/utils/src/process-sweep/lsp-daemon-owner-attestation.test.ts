@@ -49,13 +49,13 @@ describe("owner-bound lsp-daemon attestation", () => {
     expect(createLspDaemonOwnerPingRequest("auth-token")).toEqual({
       id: "process-sweep-owner-attestation",
       jsonrpc: "2.0",
-      method: "omo/ping",
+      method: "omc/ping",
       params: { _omo: { protocolVersion: 1, token: "auth-token" } },
     })
   })
 
   test("#given a version directory #when the owner target is read #then it points at the daemon auth token file", async () => {
-    const versionDir = mkdtempSync(join(tmpdir(), "omo-lsp-owner-target-"))
+    const versionDir = mkdtempSync(join(tmpdir(), "omc-lsp-owner-target-"))
     const owner = {
       endpoint: { dev: 1, ino: 2, kind: "unix", path: join(versionDir, "daemon.sock") },
       nonce: "owner-nonce",

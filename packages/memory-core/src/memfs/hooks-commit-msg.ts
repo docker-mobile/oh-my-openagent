@@ -15,7 +15,7 @@ export interface MemoryHookChecker {
 }
 
 export const COMMIT_MSG_HOOK_SCRIPT = String.raw`#!/bin/sh
-# Refuse a hand-written claim receipt header in memory notes. Installed by omo memory-core; regenerated on startup.
+# Refuse a hand-written claim receipt header in memory notes. Installed by omc memory-core; regenerated on startup.
 grep -q '^Omo-Writer: memory-tool$' "$1" && exit 0
 if git diff --cached -U0 --no-color --no-ext-diff | grep -q -i -E '^\+[[:space:]]*["'"'"']?provenance["'"'"']?[[:space:]]*:'; then
   echo "Claim receipt validation failed:"
@@ -33,10 +33,10 @@ export function withMemoryHookChecker(script: string, stage: "pre-commit" | "com
   if (checker === undefined) return script
   const anchor = stage === "commit-msg" ? script.indexOf("\n", script.indexOf("Omo-Writer: memory-tool")) : script.indexOf("\n")
   const block = [
-    `omo_hook_runtime=${shellQuote(checker.execPath)}`,
-    `omo_hook_script=${shellQuote(checker.script)}`,
-    'if [ -f "$omo_hook_runtime" ] && [ -f "$omo_hook_script" ]; then',
-    `  BUN_BE_BUN=1 "$omo_hook_runtime" "$omo_hook_script" --memory-hook ${stage}${stage === "commit-msg" ? ' "$1"' : ""} || { echo "  (no reason above? restart omo so it reinstalls its memory hooks)"; exit 1; }`,
+    `omc_hook_runtime=${shellQuote(checker.execPath)}`,
+    `omc_hook_script=${shellQuote(checker.script)}`,
+    'if [ -f "$omc_hook_runtime" ] && [ -f "$omc_hook_script" ]; then',
+    `  BUN_BE_BUN=1 "$omc_hook_runtime" "$omc_hook_script" --memory-hook ${stage}${stage === "commit-msg" ? ' "$1"' : ""} || { echo "  (no reason above? restart omc so it reinstalls its memory hooks)"; exit 1; }`,
     ...(stage === "commit-msg" ? ["  exit 0"] : []),
     "fi",
   ].join("\n")

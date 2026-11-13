@@ -1,7 +1,7 @@
-// One stale reflection-lock reaper for session start, each turn and `omo doctor --fix` (#11976, #11920).
+// One stale reflection-lock reaper for session start, each turn and `omc doctor --fix` (#11976, #11920).
 // It owns one decision table over `runtime/reflection/` (DESIGN 4.1) and an injectable settle: a
 // session settles through its reconciliation (worktree-tip recovery included), the CLI through the
-// minimal writers here. Anything not proven gone is kept and reported. `omo doctor` runs a generated
+// minimal writers here. Anything not proven gone is kept and reported. `omc doctor` runs a generated
 // bundle of this file, so every rule carries a `rule:` tag with a scenario the parity test replays.
 
 import { hostname as readHostname } from "node:os"

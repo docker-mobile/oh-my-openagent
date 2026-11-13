@@ -231,7 +231,7 @@ export interface RuntimeCapExcess {
 }
 
 /**
- * The over-cap line both doctors print (`/doctor` and `omo doctor`). "Nothing evictable; held by
+ * The over-cap line both doctors print (`/doctor` and `omc doctor`). "Nothing evictable; held by
  * unreflected journals" is said only when no tier has anything to evict and the unreflected journals
  * the switch keeps are enough to hold the excess; otherwise the line says what the next pass evicts.
  */

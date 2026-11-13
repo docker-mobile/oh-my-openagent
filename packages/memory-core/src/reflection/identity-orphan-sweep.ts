@@ -50,7 +50,7 @@ export interface IdentityOrphanSweepReport {
 }
 
 /**
- * The orphan worktree/branch sweep for one identity from outside a session (`omo doctor --fix`,
+ * The orphan worktree/branch sweep for one identity from outside a session (`omc doctor --fix`,
  * DESIGN.r2 6b): needs the identity's git repo; `dryRun` lists what would go and why the rest stays.
  */
 export async function sweepIdentityOrphanWorktrees(identityRoot: string, options: { readonly now: number; readonly dryRun?: boolean }): Promise<IdentityOrphanSweepReport> {

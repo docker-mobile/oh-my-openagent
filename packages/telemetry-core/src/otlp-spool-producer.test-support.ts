@@ -26,7 +26,7 @@ export function spoolProducer(dir: string, owner: { readonly pid: number; readon
     capture: (event, properties) => {
       const eventId = properties["event_id"]
       providers.logger.emit({
-        eventName: `omo.${event}`,
+        eventName: `omc.${event}`,
         attributes: {
           ...testWireProjection(event, properties),
           "log.record.uid": typeof eventId === "string" && eventId.length > 0 ? eventId : createBatchId(Date.now()),

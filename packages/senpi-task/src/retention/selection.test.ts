@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 
-import type { OmoTaskTranscriptRetention } from "@oh-my-opencode/omo-config-core"
+import type { OmoTaskTranscriptRetention } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { TaskRecord, TaskStatus } from "../state"
 import { selectForTranscriptRetention } from "./selection"

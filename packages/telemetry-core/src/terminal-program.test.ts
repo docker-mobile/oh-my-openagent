@@ -7,15 +7,15 @@ import { KNOWN_TERMINAL_PROGRAMS } from "./terminal-program"
 const SENTINEL = "/home/sentinel-user/bin/x"
 
 const PRODUCT = {
-  cacheDirName: "omo-codex",
+  cacheDirName: "omc-codex",
   defaultApiKey: DEFAULT_POSTHOG_API_KEY,
   defaultHost: DEFAULT_POSTHOG_HOST,
-  eventName: "omo_codex_daily_active",
-  packageName: "@oh-my-opencode/omo-codex",
+  eventName: "omc_codex_daily_active",
+  packageName: "@oh-my-cybersecurity/omc-codex",
   packageVersion: "4.9.2",
-  platform: "omo-codex",
-  productName: "omo-codex",
-  productEnvPrefix: "OMO_CODEX",
+  platform: "omc-codex",
+  productName: "omc-codex",
+  productEnvPrefix: "OMC_CODEX",
 } satisfies TelemetryProductConfig
 
 const OS_PROVIDER = {

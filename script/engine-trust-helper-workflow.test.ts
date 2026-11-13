@@ -1,6 +1,6 @@
 /// <reference types="bun-types" />
 
-// Release contract (omo#10762): the engine trust helper is built on the four Darwin and Windows hosts, signed on
+// Release contract (omc#10762): the engine trust helper is built on the four Darwin and Windows hosts, signed on
 // Darwin only (Windows ships unsigned, like the engine), carried in the desktop-engine artifact, and staged into
 // the compiled payload so its sha256 lands in the runtime manifest.
 
@@ -48,19 +48,19 @@ describe("engine trust helper release build", () => {
 
     expect(step).toContain("if: startsWith(matrix.host, 'darwin-') || startsWith(matrix.host, 'win32-')")
     expect(step).toContain("RUST_TARGET: ${{ matrix.rust_target }}")
-    expect(run).toContain('cargo build --release -p omo-engine-trust-helper --locked --target "$RUST_TARGET"')
+    expect(run).toContain('cargo build --release -p omc-engine-trust-helper --locked --target "$RUST_TARGET"')
     // Windows is unsigned by ruling: the shared build step never sees signing material or the signer.
     for (const name of material) expect(step).not.toContain(name)
     expect(run).not.toContain("macos-sign-and-notarize.sh")
   })
 
   posixBashTest("stages the Windows build next to the engine asset without signing it", () => {
-    const root = mkdtempSync(join(tmpdir(), "omo-trust-helper-build-"))
+    const root = mkdtempSync(join(tmpdir(), "omc-trust-helper-build-"))
     try {
       const bin = join(root, "bin")
       mkdirSync(bin)
       const calls = join(root, "calls")
-      stub(bin, "cargo", `echo "cargo $*" >> "${calls}"\nmkdir -p "target/$RUST_TARGET/release"\nprintf 'pe-image' > "target/$RUST_TARGET/release/omo-engine-trust-helper.exe"`)
+      stub(bin, "cargo", `echo "cargo $*" >> "${calls}"\nmkdir -p "target/$RUST_TARGET/release"\nprintf 'pe-image' > "target/$RUST_TARGET/release/omc-engine-trust-helper.exe"`)
       stub(bin, "codesign", `echo "codesign $*" >> "${calls}"`)
 
       const result = spawnSync("bash", ["-e", "-c", runBlock(engine, buildMarker, signMarker)], {
@@ -70,9 +70,9 @@ describe("engine trust helper release build", () => {
       })
 
       expect(result.status, result.stderr).toBe(0)
-      const staged = join(root, ".omo", "desktop-engine-assets", "engine-trust-helper-win32-arm64", "omo-engine-trust-helper.exe")
+      const staged = join(root, ".omc", "desktop-engine-assets", "engine-trust-helper-win32-arm64", "omc-engine-trust-helper.exe")
       expect(readFileSync(staged, "utf8")).toBe("pe-image")
-      expect(readFileSync(calls, "utf8")).toBe("cargo build --release -p omo-engine-trust-helper --locked --target aarch64-pc-windows-msvc\n")
+      expect(readFileSync(calls, "utf8")).toBe("cargo build --release -p omc-engine-trust-helper --locked --target aarch64-pc-windows-msvc\n")
     } finally {
       rmSync(root, { recursive: true, force: true })
     }
@@ -98,13 +98,13 @@ describe("Darwin engine trust helper signing", () => {
 
   for (const missing of material) {
     posixBashTest(`refuses to sign or ship the helper when signing is required and ${missing} is missing`, () => {
-      const root = mkdtempSync(join(tmpdir(), "omo-trust-helper-signing-"))
+      const root = mkdtempSync(join(tmpdir(), "omc-trust-helper-signing-"))
       try {
         mkdirSync(join(root, ".github", "scripts"), { recursive: true })
         copyFileSync(signingScript, join(root, ".github", "scripts", "macos-sign-and-notarize.sh"))
-        const helperDir = join(root, ".omo", "desktop-engine-assets", "engine-trust-helper-darwin-arm64")
+        const helperDir = join(root, ".omc", "desktop-engine-assets", "engine-trust-helper-darwin-arm64")
         mkdirSync(helperDir, { recursive: true })
-        const helper = join(helperDir, "omo-engine-trust-helper")
+        const helper = join(helperDir, "omc-engine-trust-helper")
         writeFileSync(helper, "unsigned helper")
         const bin = join(root, "bin")
         mkdirSync(bin)
@@ -145,14 +145,14 @@ describe("signed Darwin engine trust helper smoke", () => {
 
   /** Runs the real step in a scratch root that sees the repo's decoder, with the helper (and `arch`) stubbed. */
   function smoke(host: string, helperBody: string): { status: number | null; stderr: string; archCalls: string } {
-    const root = mkdtempSync(join(tmpdir(), "omo-trust-helper-smoke-"))
+    const root = mkdtempSync(join(tmpdir(), "omc-trust-helper-smoke-"))
     try {
       const repo = new URL("..", import.meta.url).pathname
       symlinkSync(join(repo, "script"), join(root, "script"))
       symlinkSync(join(repo, "packages"), join(root, "packages"))
-      const helperDir = join(root, ".omo", "desktop-engine-assets", `engine-trust-helper-${host}`)
+      const helperDir = join(root, ".omc", "desktop-engine-assets", `engine-trust-helper-${host}`)
       mkdirSync(helperDir, { recursive: true })
-      stub(helperDir, "omo-engine-trust-helper", helperBody)
+      stub(helperDir, "omc-engine-trust-helper", helperBody)
       const bin = join(root, "bin")
       mkdirSync(bin)
       const archLog = join(root, "arch-calls")
@@ -178,7 +178,7 @@ describe("signed Darwin engine trust helper smoke", () => {
 
     const x64 = smoke("darwin-x64", helper)
     expect(x64.status, x64.stderr).toBe(0)
-    expect(x64.archCalls).toEndWith("-x86_64 .omo/desktop-engine-assets/engine-trust-helper-darwin-x64/omo-engine-trust-helper\n")
+    expect(x64.archCalls).toEndWith("-x86_64 .omc/desktop-engine-assets/engine-trust-helper-darwin-x64/omc-engine-trust-helper\n")
   }, 60_000)
 
   posixBashTest("fails on malformed output or a non-zero helper exit", () => {
@@ -196,14 +196,14 @@ describe("engine trust helper transport into the compiled payload", () => {
     const upload = sliceWorkflowSection(engine, uploadMarker, "      - name: Write job summary\n")
 
     expect(upload).toContain("name: desktop-engine-${{ matrix.host }}")
-    expect(upload).toContain(".omo/desktop-engine-assets/senpi-desktop-engine-*\n")
-    expect(upload).toContain(".omo/desktop-engine-assets/engine-trust-helper-*/omo-engine-trust-helper*\n")
+    expect(upload).toContain(".omc/desktop-engine-assets/senpi-desktop-engine-*\n")
+    expect(upload).toContain(".omc/desktop-engine-assets/engine-trust-helper-*/omc-engine-trust-helper*\n")
   })
 
   posixBashTest("resolves the helper for Darwin and Windows targets and nothing for Linux", () => {
     const run = runBlock(platformBuild, resolveMarker, afterResolveMarker)
     const resolve = (platform: string): string => {
-      const root = mkdtempSync(join(tmpdir(), "omo-trust-helper-resolve-"))
+      const root = mkdtempSync(join(tmpdir(), "omc-trust-helper-resolve-"))
       try {
         const output = join(root, "output")
         const result = spawnSync("bash", ["-e", "-c", run], {
@@ -221,33 +221,33 @@ describe("engine trust helper transport into the compiled payload", () => {
 
     expect(resolve("darwin-x64-baseline")).toBe([
       "host=darwin-x64",
-      "asset=engine-trust-helper-darwin-x64/omo-engine-trust-helper",
-      "source=target/x86_64-apple-darwin/release/omo-engine-trust-helper",
+      "asset=engine-trust-helper-darwin-x64/omc-engine-trust-helper",
+      "source=target/x86_64-apple-darwin/release/omc-engine-trust-helper",
       "",
     ].join("\n"))
     expect(resolve("windows-arm64")).toBe([
       "host=win32-arm64",
-      "asset=engine-trust-helper-win32-arm64/omo-engine-trust-helper.exe",
-      "source=target/aarch64-pc-windows-msvc/release/omo-engine-trust-helper.exe",
+      "asset=engine-trust-helper-win32-arm64/omc-engine-trust-helper.exe",
+      "source=target/aarch64-pc-windows-msvc/release/omc-engine-trust-helper.exe",
       "",
     ].join("\n"))
     expect(resolve("linux-x64")).toBe("host=\nasset=\nsource=\n")
   }, 60_000)
 
   posixBashTest("copies the downloaded helper into its Rust source path, and fails when the promised helper is absent", () => {
-    const root = mkdtempSync(join(tmpdir(), "omo-trust-helper-stage-"))
+    const root = mkdtempSync(join(tmpdir(), "omc-trust-helper-stage-"))
     try {
       const run = runBlock(platformBuild, stageMarker, afterStageMarker)
-      const asset = "engine-trust-helper-darwin-arm64/omo-engine-trust-helper"
-      const source = "target/aarch64-apple-darwin/release/omo-engine-trust-helper"
+      const asset = "engine-trust-helper-darwin-arm64/omc-engine-trust-helper"
+      const source = "target/aarch64-apple-darwin/release/omc-engine-trust-helper"
       const env = { ...process.env, HELPER_ASSET: asset, HELPER_SOURCE: source }
 
       const missing = spawnSync("bash", ["-e", "-c", run], { cwd: root, env, encoding: "utf8" })
       expect(missing.status).not.toBe(0)
       expect(existsSync(join(root, source))).toBe(false)
 
-      mkdirSync(join(root, ".omo", "desktop-engine-assets", "engine-trust-helper-darwin-arm64"), { recursive: true })
-      writeFileSync(join(root, ".omo", "desktop-engine-assets", asset), "signed helper")
+      mkdirSync(join(root, ".omc", "desktop-engine-assets", "engine-trust-helper-darwin-arm64"), { recursive: true })
+      writeFileSync(join(root, ".omc", "desktop-engine-assets", asset), "signed helper")
       const staged = spawnSync("bash", ["-e", "-c", run], { cwd: root, env, encoding: "utf8" })
       expect(staged.status, staged.stderr).toBe(0)
       expect(readFileSync(join(root, source), "utf8")).toBe("signed helper")
@@ -258,13 +258,13 @@ describe("engine trust helper transport into the compiled payload", () => {
 })
 
 // ci.yml's native-binary-parity job compiles the release binary for darwin-arm64 and windows-x64, where
-// build-omo-binary.ts refuses a payload without the helper; the job must build it, in its own cargo call
+// build-omc-binary.ts refuses a payload without the helper; the job must build it, in its own cargo call
 // (a shared call unifies dependency features and builds an engine release never ships).
 describe("native binary parity job", () => {
   test("builds the engine trust helper for the parity binary in a separate cargo call", () => {
     const run = runBlock(parity, parityEngineMarker, parityBinaryMarker)
     const engine = run.indexOf("cargo build --release -p senpi-desktop-engine --locked --target ${{ matrix.rust-target }}")
-    const helper = run.indexOf("cargo build --release -p omo-engine-trust-helper --locked --target ${{ matrix.rust-target }}")
+    const helper = run.indexOf("cargo build --release -p omc-engine-trust-helper --locked --target ${{ matrix.rust-target }}")
 
     expect(engine).toBeGreaterThanOrEqual(0)
     expect(helper).toBeGreaterThan(engine)

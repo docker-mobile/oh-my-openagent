@@ -33,7 +33,7 @@
     "--no-compile-autoload-dotenv",
     "--no-compile-autoload-bunfig",
     "--asset=unused",
-    "$REPO/packages/omo-native/compile-entry.ts",
+    "$REPO/packages/omc-native/compile-entry.ts",
     "--root=$REPO",
     "--define=SENPI_RPC_SESSION_WORKER_ENTRY=\"./node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/modes/rpc/session-worker.js\"",
     "$REPO/node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/modes/rpc/session-worker.js",
@@ -43,7 +43,7 @@
   "commands": [
     {
       "command": [
-        "$SANDBOX/omo",
+        "$SANDBOX/omc",
         "--version"
       ],
       "exitCode": 0,
@@ -56,7 +56,7 @@
         "build",
         "--target=bun",
         "--minify-whitespace",
-        "$REPO/packages/omo-native/compile-entry.ts",
+        "$REPO/packages/omc-native/compile-entry.ts",
         "--root=$REPO",
         "--define=SENPI_RPC_SESSION_WORKER_ENTRY=\"./node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/modes/rpc/session-worker.js\"",
         "$REPO/node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/modes/rpc/session-worker.js",
@@ -65,7 +65,7 @@
         "--metafile=$OUT/graph-artifacts/meta.json"
       ],
       "exitCode": 0,
-      "stdout": "Bundled 4390 modules in 1832ms\n\n  packages/omo-native/compile-entry.js                                                                                               22.18 MB  (entry point)\n  node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/modes/rpc/session-worker.js  22.1 MB   (entry point)\n  SKILL-8gt84szq.md                                                                                                                  9.34 KB   (asset)\n\n",
+      "stdout": "Bundled 4390 modules in 1832ms\n\n  packages/omc-native/compile-entry.js                                                                                               22.18 MB  (entry point)\n  node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/modes/rpc/session-worker.js  22.1 MB   (entry point)\n  SKILL-8gt84szq.md                                                                                                                  9.34 KB   (asset)\n\n",
       "stderr": ""
     }
   ],

@@ -15,8 +15,8 @@ export {
 export {
   attestLspDaemonCliProcess,
   listLspDaemonVersionDirs,
-  OMO_LSP_DAEMON_DIR_ENV,
-  OMO_LSP_DAEMON_VERSION_ENV,
+  OMC_LSP_DAEMON_DIR_ENV,
+  OMC_LSP_DAEMON_VERSION_ENV,
   planStaleLspDaemonVersionSweep,
   readLspDaemonOwnerPid,
   resolveLspDaemonBaseDir,

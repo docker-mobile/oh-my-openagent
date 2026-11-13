@@ -4,7 +4,7 @@ import { TERMINAL_STATUSES } from "./context"
 /**
  * THE revival population and admission order, shared by the session-start reconcile, batch
  * admission and anything that wants to know ahead of time which suspended children a resumed
- * session will revive (omo's host pre-warm).
+ * session will revive (omc's host pre-warm).
  */
 
 export type SuspendedResidency = Extract<ResidencyState, "persisted_only" | "rpc_detached">
@@ -12,7 +12,7 @@ export type SuspendedResidency = Extract<ResidencyState, "persisted_only" | "rpc
 // `interrupted` is terminal by status, but stays revivable for in-flight session recovery.
 const REVIVABLE_STATUSES = new Set(["pending", "running", "interrupted"])
 
-// Both the "unlimited" literal and a 0 cap mean unbounded residency (omo.json accepts either).
+// Both the "unlimited" literal and a 0 cap mean unbounded residency (omc.json accepts either).
 export function isUnboundedResidency(maxChildren: number | "unlimited"): maxChildren is "unlimited" | 0 {
   return maxChildren === "unlimited" || maxChildren === 0
 }

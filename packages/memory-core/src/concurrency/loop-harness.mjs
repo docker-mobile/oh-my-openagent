@@ -1,4 +1,4 @@
-// Harness for loop-crash-consistency.mjs (omo #10177 loop driver): child process control,
+// Harness for loop-crash-consistency.mjs (omc #10177 loop driver): child process control,
 // fixture repos, git/fsck oracles and the two iteration protocols. Kept apart from the CLI
 // orchestration so both stay small enough to read in one sitting.
 

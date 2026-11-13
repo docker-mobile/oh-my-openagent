@@ -47,7 +47,7 @@ describe("RpcHostRunner host failure classification", () => {
   test("#given a local session-directory error #when a child starts #then it is not misreported as an unreachable host", async () => {
     // given a state dir that is a regular file: creating the session directory under it fails on
     // every OS (on Windows "/dev/null" is an ordinary creatable path, so it did not fail there)
-    const scratch = mkdtempSync(join(tmpdir(), "omo-start-failure-"))
+    const scratch = mkdtempSync(join(tmpdir(), "omc-start-failure-"))
     const stateFile = join(scratch, "state-is-a-file")
     writeFileSync(stateFile, "")
     const opened: string[] = []
@@ -90,7 +90,7 @@ describe("RpcHostRunner host failure classification", () => {
 
   test("#given a cached daemon endpoint that no longer answers #when the real client probes it #then the host is unreachable, not protocol-incompatible", async () => {
     // given
-    const socket = join(tmpdir(), `omo-8960-absent-${randomUUID()}.sock`)
+    const socket = join(tmpdir(), `omc-8960-absent-${randomUUID()}.sock`)
     const runner = new RpcHostRunner({
       policy: "upgrade",
       ...routing(socket),
@@ -108,7 +108,7 @@ describe("RpcHostRunner host failure classification", () => {
     // when
     const failure = await runner.start({
       ...childSpec(),
-      resumeSessionPath: join(tmpdir(), `omo-8960-existing-${randomUUID()}.jsonl`),
+      resumeSessionPath: join(tmpdir(), `omc-8960-existing-${randomUUID()}.jsonl`),
     }).catch((error: unknown) => error)
 
     // then

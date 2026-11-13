@@ -52,7 +52,7 @@ sandbox, free port, server start/stop, and an EXIT-trap cleanup). It requires
 ### Optional LSP freshness budget
 
 For diagnostics QA, compare an unset
-`OMO_LSP_DIAGNOSTICS_FRESHNESS_TIMEOUT_MS` (3,000 ms) with a configured value
+`OMC_LSP_DIAGNOSTICS_FRESHNESS_TIMEOUT_MS` (3,000 ms) with a configured value
 such as `6000`. Valid values are positive integer milliseconds up to
 2,147,483,647; invalid values retain the default. Set it in the actual isolated
 OpenCode/MCP process before launch and restart only the QA-owned daemon.
@@ -144,7 +144,7 @@ which degrades color and CJK width. From the repository root:
 ```bash
 node script/qa/web-terminal-visual-qa.mjs --title "OpenCode TUI QA" \
   --command "opencode" --input "{Enter}" \
-  --evidence-dir .omo/evidence/<slug>/opencode-web-terminal
+  --evidence-dir .omc/evidence/<slug>/opencode-web-terminal
 ```
 
 This runs a real pty, renders it in xterm.js under Chrome, and writes

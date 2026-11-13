@@ -77,27 +77,27 @@ describe("combined macOS CI execution contract (#9974)", () => {
     expect(steps.find((step) => step.id === "lsp-daemon-tests"))
       .toMatchObject({ run: "npm test", "working-directory": "packages/lsp-daemon" })
     expect(steps.find((step) => step.id === "root-tests-posix-1")?.run)
-      .toBe("bun test --timeout 20000 packages/omo-opencode packages/memory-core")
+      .toBe("bun test --timeout 20000 packages/omc-opencode packages/memory-core")
     expect(steps.find((step) => step.id === "root-tests-posix-2")?.run)
       .toBe("bash .github/scripts/ci-root-shard-2.sh")
     expect(steps.find((step) => step.id === "codex-platform-tests")?.run).toBe(
-      "bash .github/scripts/ci-codex-platform-build.sh\nbash .github/scripts/ci-codex-platform-node.sh\nbun test packages/omo-opencode/src/cli/cli-installer.platform.test.ts\n",
+      "bash .github/scripts/ci-codex-platform-build.sh\nbash .github/scripts/ci-codex-platform-node.sh\nbun test packages/omc-opencode/src/cli/cli-installer.platform.test.ts\n",
     )
     expect(steps.find((step) => step.id === "senpi-tests-posix")?.run)
       .toBe("bash .github/scripts/ci-senpi-posix.sh")
     expect(script("ci-codex-platform-build.sh").trim().split("\n").slice(2)).toEqual([
       "bun run build:codex-install", "bun run build:git-bash-mcp", "bun run build:lsp-tools-mcp",
-      "bun run build:lsp-daemon", "npm --prefix packages/omo-codex/plugin ci",
-      "bun run --cwd packages/omo-codex/plugin build",
+      "bun run build:lsp-daemon", "npm --prefix packages/omc-codex/plugin ci",
+      "bun run --cwd packages/omc-codex/plugin build",
     ])
     expect(script("ci-codex-platform-node.sh").trim().split("\n")[2]?.split(" ")).toEqual([
       "node", "--test",
-      "packages/omo-codex/scripts/install-local.test.mjs",
-      "packages/omo-codex/scripts/install-local-entrypoint.test.mjs",
-      "packages/omo-codex/scripts/install-local-git-bash-preflight.test.mjs",
-      "packages/omo-codex/scripts/install-cli-args.test.mjs",
-      "packages/omo-codex/plugin/test/node-install-surface.test.mjs",
-      "packages/omo-codex/plugin/test/install-time-build-runtime.test.mjs",
+      "packages/omc-codex/scripts/install-local.test.mjs",
+      "packages/omc-codex/scripts/install-local-entrypoint.test.mjs",
+      "packages/omc-codex/scripts/install-local-git-bash-preflight.test.mjs",
+      "packages/omc-codex/scripts/install-cli-args.test.mjs",
+      "packages/omc-codex/plugin/test/node-install-surface.test.mjs",
+      "packages/omc-codex/plugin/test/install-time-build-runtime.test.mjs",
     ])
   })
 

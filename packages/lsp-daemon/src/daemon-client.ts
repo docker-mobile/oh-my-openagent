@@ -2,9 +2,9 @@ import { connect } from "node:net";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
-import { type LspRequestContext, parseLspRequestContext } from "@oh-my-opencode/lsp-core/request-context";
-import type { ToolExecutionResult } from "@oh-my-opencode/lsp-core/tools";
-import { isPlainRecord } from "@oh-my-opencode/mcp-stdio-core/record";
+import { type LspRequestContext, parseLspRequestContext } from "@oh-my-cybersecurity/lsp-core/request-context";
+import type { ToolExecutionResult } from "@oh-my-cybersecurity/lsp-core/tools";
+import { isPlainRecord } from "@oh-my-cybersecurity/mcp-stdio-core/record";
 
 import { daemonFailureResult } from "./daemon-failure-result.js";
 import {

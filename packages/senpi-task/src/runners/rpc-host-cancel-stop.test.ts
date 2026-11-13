@@ -7,7 +7,7 @@ import { HOST_CHILD_MODEL, startHostWorld, type HostWorld, type ParentSession } 
 import { manualRecoveryClock, type ManualRecoveryClock } from "./rpc-host/__fixtures__/manual-recovery-clock"
 
 /**
- * omo#9403: a cancelled child must actually stop. A child whose transport is down when it is
+ * omc#9403: a cancelled child must actually stop. A child whose transport is down when it is
  * cancelled reports the cancel as pending - never a false `cancelled` - and the cancel runs on the
  * host BEFORE anything else once the child is reachable again; only then is its lane released.
  */

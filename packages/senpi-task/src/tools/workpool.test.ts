@@ -142,7 +142,7 @@ test("#given a process worker launch #when the member bundle registers #then onl
   expect(tools.map(tool => tool.name)).toEqual(["workpool"])
   expect(Value.Check(tools[0].parameters, { op: "create", ...poolInput })).toBe(false)
   expect(Value.Check(tools[0].parameters, { op: "yield", results: [{ key: "a", data: 1 }] })).toBe(true)
-  expect(() => registerProcessWorkpoolWorker({ registerTool: tool => { tools.push(tool) } }, { ...env, OMO_WORKPOOL_TASK_ID: "st_00000000" })).toThrow(engine.WorkpoolError)
+  expect(() => registerProcessWorkpoolWorker({ registerTool: tool => { tools.push(tool) } }, { ...env, OMC_WORKPOOL_TASK_ID: "st_00000000" })).toThrow(engine.WorkpoolError)
 })
 
 test("#given a queued plan-gated worker #when the host policy changes before grant #then the admission path fails closed", async () => {

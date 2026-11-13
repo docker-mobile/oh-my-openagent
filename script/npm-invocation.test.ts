@@ -46,9 +46,9 @@ describe("npm spawn options", () => {
 
   test("#given a minimal package #when npm pack --dry-run --json is spawned with these options #then its stdout is parseable JSON naming that package", () => {
     // given
-    const fixture = mkdtempSync(join(tmpdir(), "omo-npm-pack-"))
+    const fixture = mkdtempSync(join(tmpdir(), "omc-npm-pack-"))
     packFixtures.push(fixture)
-    writeFileSync(join(fixture, "package.json"), JSON.stringify({ name: "omo-pack-probe", version: "1.0.0", private: true }))
+    writeFileSync(join(fixture, "package.json"), JSON.stringify({ name: "omc-pack-probe", version: "1.0.0", private: true }))
 
     // when
     const raw = execFileSync("npm", ["pack", "--dry-run", "--json", "--ignore-scripts"], {
@@ -61,6 +61,6 @@ describe("npm spawn options", () => {
 
     // then
     expect(() => JSON.parse(raw)).not.toThrow()
-    expect(raw).toContain("omo-pack-probe")
+    expect(raw).toContain("omc-pack-probe")
   })
 })

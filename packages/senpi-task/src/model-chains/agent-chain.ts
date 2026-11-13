@@ -1,4 +1,4 @@
-import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
+import type { OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import { agentModelCandidates } from "../agents/agent-model-entry"
 import { AGENT_FALLBACK_CHAINS } from "../agents/builtin/fallback-chains"
@@ -19,7 +19,7 @@ function ownModels(config: OmoConfig, name: string): ReadonlySet<string> {
 
 /**
  * One agent as a spawn sees it: `resolveAgent` supplies the runtime chain; the declared rungs are
- * its own model/models (omo.json or the builtin definition), each policy category's runtime chain,
+ * its own model/models (omc.json or the builtin definition), each policy category's runtime chain,
  * then the builtin agent chain.
  */
 export function describeAgentChain<TModel extends SenpiModelPort>(
@@ -30,12 +30,12 @@ export function describeAgentChain<TModel extends SenpiModelPort>(
   available: ReadonlySet<string>,
 ): ModelChainEntry {
   const definition = agents[name]
-  if (definition?.disable === true) return { kind: "agent", name, status: "disabled", runtime: [], rungs: [], reason: "disabled by omo.json" }
+  if (definition?.disable === true) return { kind: "agent", name, status: "disabled", runtime: [], rungs: [], reason: "disabled by omc.json" }
   const fromConfig = ownModels(config, name)
   const declared: readonly DeclaredRung[] = [
     ...agentModelCandidates(definition?.model, definition?.models, {}).map((candidate): DeclaredRung => ({
       model: candidate.model,
-      source: fromConfig.has(candidate.model) ? "omo.json" : "built-in",
+      source: fromConfig.has(candidate.model) ? "omc.json" : "built-in",
       variant: candidate.reasoningEffort ?? candidate.variant,
     })),
     ...(definition?.categories ?? []).flatMap((category) =>

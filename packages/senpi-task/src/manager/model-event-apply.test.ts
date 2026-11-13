@@ -26,7 +26,7 @@ describe("applyModelEvent operator attribution (F12)", () => {
     }
   }
 
-  test("#given a set switch whose effectId omo minted #when the event applies #then it is not marked as the operator's", () => {
+  test("#given a set switch whose effectId omc minted #when the event applies #then it is not marked as the operator's", () => {
     const store = storeOver(baseRecord(), (effectId) => effectId === "own-1")
     const ownSwitch = { type: "model_changed", model: { provider: "anthropic", id: "claude-opus-5-5" }, thinkingLevel: "high", source: "set", effectId: "own-1" }
     applyModelEvent(store, "st_model_event_unit", ownSwitch)

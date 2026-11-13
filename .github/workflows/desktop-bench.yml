@@ -19,7 +19,7 @@ on:
       - "rust-toolchain.toml"
       - "crates/senpi-desktop-*/**"
       - "packages/senpi-desktop-*/**"
-      - "packages/omo-senpi/scripts/qa/cu-eval/**"
+      - "packages/omc-senpi/scripts/qa/cu-eval/**"
 
 permissions:
   contents: read
@@ -96,7 +96,7 @@ jobs:
           out="${BENCH_OUT:-${RUNNER_TEMP}/desktop-bench}"
           head_engine="${HEAD_ENGINE:-$PWD/head/target/release/senpi-desktop-engine}"
           base_engine="${BASE_ENGINE:-$PWD/base/target/release/senpi-desktop-engine}"
-          harness="head/packages/omo-senpi/scripts/qa/cu-eval"
+          harness="head/packages/omc-senpi/scripts/qa/cu-eval"
           mkdir -p "$out"
           if test ! -f "$harness/bench.mjs"; then
             echo "::error::head has no cu-eval bench at $harness"
@@ -107,9 +107,9 @@ jobs:
             exit 1
           fi
           # One harness for both sides: head's cu-eval runs inside each checkout, so only the SDK and the engine differ.
-          rm -rf base/packages/omo-senpi/scripts/qa/cu-eval
-          mkdir -p base/packages/omo-senpi/scripts/qa
-          cp -R "$harness" base/packages/omo-senpi/scripts/qa/cu-eval
+          rm -rf base/packages/omc-senpi/scripts/qa/cu-eval
+          mkdir -p base/packages/omc-senpi/scripts/qa
+          cp -R "$harness" base/packages/omc-senpi/scripts/qa/cu-eval
           # Interleaved rounds, with the side that goes first swapped every round, spread runner noise over both sides;
           # each side keeps its best p50 per op.
           for round in $(seq 1 "$BENCH_ROUNDS"); do
@@ -119,7 +119,7 @@ jobs:
               engine="$base_engine"
               if test "$side" = head; then engine="$head_engine"; fi
               status=0
-              (cd "$side" && timeout 600 bun packages/omo-senpi/scripts/qa/cu-eval/bench.mjs --fake-engine \
+              (cd "$side" && timeout 600 bun packages/omc-senpi/scripts/qa/cu-eval/bench.mjs --fake-engine \
                 --engine "$engine" --runs "$BENCH_RUNS" --warmup "$BENCH_WARMUP" \
                 --out "$out/$side-$round.json" >"$out/$side-$round.log" 2>&1) || status=$?
               # Exit 1 alone means an op lost a sample to a concurrent stop-path heartbeat reply; compare.mjs bounds that loss.

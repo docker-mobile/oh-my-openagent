@@ -301,7 +301,7 @@ describe("reconcileOnSessionStart scoped revival", () => {
     expect(harness.store.load(record.task_id)?.host_pid).toBeUndefined()
   })
 
-  test("#given a resumed session whose revival deferred #when the child is refused #then the refusal names the deferral, not a resume that already happened (omo#9498)", async () => {
+  test("#given a resumed session whose revival deferred #when the child is refused #then the refusal names the deferral, not a resume that already happened (omc#9498)", async () => {
     // given
     const harness = injectedHarness({
       onRespawn: async () => ({

@@ -3,9 +3,9 @@ import { mkdtempSync, rmSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 
-import { OmoTaskSettingsSchema, type OmoTaskSettings } from "@oh-my-opencode/omo-config-core"
+import { OmoTaskSettingsSchema, type OmoTaskSettings } from "@oh-my-cybersecurity/omc-config-core"
 
-import { createManagerResidencyRegistry } from "../../../../../omo-senpi/src/components/task/residency-registry"
+import { createManagerResidencyRegistry } from "../../../../../omc-senpi/src/components/task/residency-registry"
 import { createTaskLifecycle, createHostSessionProbe, type TaskLifecycle } from "../../../lifecycle"
 import { defaultHostSessionProbe } from "../../../lifecycle/host-session-default"
 import { createTaskManager } from "../../../manager/manager"
@@ -29,7 +29,7 @@ import type { hostWorldRecovery } from "./host-world-recovery"
 /**
  * A daemon and the parent sessions that share it: one fake host on a private socket, one project
  * store on disk, and as many parents as a suite connects - each with its OWN store handle, manager,
- * lifecycle and host runner, exactly as two omo processes on one machine would have.
+ * lifecycle and host runner, exactly as two omc processes on one machine would have.
  *
  * Every seam that would reach the machine is injected: the daemon is ensured by returning THIS
  * host's socket, the protocol probe and `list_sessions` speak to it over the wire, and the two
@@ -46,7 +46,7 @@ export interface ParentOptions {
   readonly maxDrainAttempts?: number
   /** Controlled clock: idle parking is a cutoff comparison, never a wait. */
   readonly now?: () => number
-  /** Run this parent as ANOTHER omo process: its manager and lifecycle claim records under this pid. */
+  /** Run this parent as ANOTHER omc process: its manager and lifecycle claim records under this pid. */
   readonly hostPid?: number
   /** Ask the daemon through the production liveness adapter instead of the fixture's own wire probe. */
   readonly productionProbe?: boolean

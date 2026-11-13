@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 import { isHostSessionRecord } from "../lifecycle/host-session"
 import { defaultTeardownStepDeadline, withinTeardownBudget } from "../lifecycle/teardown-budget"
 import type { ManagedChildHandle } from "../manager/child-handle"
@@ -18,7 +18,7 @@ export function createSteeringControls(
   const nowIso = (): string => new Date(port.now()).toISOString()
   const cancelUnhandledHostSession = createUnhandledHostSessionCancel({ port, clearPersistedQueue, cancelPending })
 
-  // A child that never answers its abort must not hold the cancel or interrupt forever (omo#9791): past the
+  // A child that never answers its abort must not hold the cancel or interrupt forever (omc#9791): past the
   // budget the caller moves on, and for a cancel the destruction that follows terminates the child (SIGKILL
   // escalation for a process child) and waits for its exit.
   function boundedAbort(handle: ManagedChildHandle, taskId: string): Promise<void> {
@@ -79,7 +79,7 @@ export function createSteeringControls(
         ...((record.pending_steering?.length ?? 0) > 0 ? { undelivered_messages: record.pending_steering?.length } : {}) }
     }
     if (record.status !== "running" && record.status !== "paused") {
-      // A finished child can still hold its process or session (omo#9785); cancel is the way to release it.
+      // A finished child can still hold its process or session (omc#9785); cancel is the way to release it.
       const undelivered = options?.abort === "skip" ? 0 : record.pending_steering?.length ?? 0
       if (undelivered > 0) clearPersistedQueue(record.task_id)
       const released = options?.abort !== "skip" && record.residency_state === "resident"
@@ -118,7 +118,7 @@ export function createSteeringControls(
     clearPersistedQueue(record.task_id)
     const handle = port.liveHandle(record.task_id)
     // From here no transport recovery may bring the child back: a host that crashes before the stop
-    // lands is reached again only to end the session (omo#9403).
+    // lands is reached again only to end the session (omc#9403).
     handle?.markStopping?.()
     // An exited RPC child's abort rejection must not skip destruction and leak residency.
     if (handle !== undefined && options?.abort !== "skip") {
@@ -143,7 +143,7 @@ export function createSteeringControls(
       ...((record.pending_steering?.length ?? 0) > 0 ? { undelivered_messages: record.pending_steering?.length } : {}) }
   }
 
-  // omo#9403: a child whose connection is down cannot be told to stop, and calling it cancelled would
+  // omc#9403: a child whose connection is down cannot be told to stop, and calling it cancelled would
   // be false - it may still be running on its host. The stop waits on the handle (applied on the host
   // before anything else once reachable, or the child ends when its connection never comes back), and
   // only then is the record cancelled and the child torn down, which releases its lane.

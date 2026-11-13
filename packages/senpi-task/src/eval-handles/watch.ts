@@ -1,5 +1,5 @@
 import type { HandleCallContext, HandleRef, HandleSnapshot, HandleWatch } from "@code-yeongyu/senpi"
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 import { fenceRun, type TaskRecord } from "../state"
 import { EvalHandleHostError } from "./errors"
 import { loadOwnedPool, poolSnapshot, type PoolAccess } from "./pool-refs"

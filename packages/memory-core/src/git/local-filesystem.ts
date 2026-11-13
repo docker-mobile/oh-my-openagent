@@ -1,6 +1,6 @@
 import { statfs } from "../fs/resilient"
 
-// omo #10604 review M2: an idle git-activity lock stands in for an unanswerable /proc scan only where
+// omc #10604 review M2: an idle git-activity lock stands in for an unanswerable /proc scan only where
 // flock is an open-file-description lock that git inherits. NFS, CIFS/SMB and FUSE emulate flock
 // with process-scoped fcntl locks (or not at all): a SIGKILLed writer releases the lock while its
 // orphaned git still runs. Linux reports the filesystem by magic number, so only known local ones

@@ -1,4 +1,4 @@
-import type { Message } from "@oh-my-opencode/team-core/types"
+import type { Message } from "@oh-my-cybersecurity/team-core/types"
 
 // In-memory delivery journal for lead mailbox reservations. Every message is recorded before its
 // injection is flushed, and is removed only after the recipient session durably contains the envelope.

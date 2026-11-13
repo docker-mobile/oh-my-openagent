@@ -82,18 +82,18 @@ describe("loadAgents", () => {
     expect(result.agents.writer?.prompt).toBe("registered prompt")
   })
 
-  test("#given file programmatic and omo config definitions #when loading #then omo agents overlay wins last", () => {
+  test("#given file programmatic and omc config definitions #when loading #then omc agents overlay wins last", () => {
     // given
     const fixture = makeFixture()
     writeText(join(fixture.project, ".pi", "agents", "finder.md"), agentMarkdown("file-model", "file prompt"))
     registerAgent({ name: "finder", model: "registered-model" })
-    writeText(join(fixture.project, ".omo", "omo.json"), `{"agents":{"finder":{"model":"omo-model"}}}`)
+    writeText(join(fixture.project, ".omc", "omc.json"), `{"agents":{"finder":{"model":"omc-model"}}}`)
 
     // when
     const result = loadAgents({ homeDir: fixture.home, projectDir: fixture.project })
 
     // then
-    expect(result.agents.finder?.model).toBe("omo-model")
+    expect(result.agents.finder?.model).toBe("omc-model")
     expect(result.agents.finder?.prompt).toBe("file prompt\n")
   })
 
@@ -194,10 +194,10 @@ describe("loadAgents", () => {
     )
   })
 
-  test("#given omo json path is a directory #when loading #then read diagnostic is returned and valid agents still load", () => {
+  test("#given omc json path is a directory #when loading #then read diagnostic is returned and valid agents still load", () => {
     // given
     const fixture = makeFixture()
-    const configPath = join(fixture.project, ".omo", "omo.json")
+    const configPath = join(fixture.project, ".omc", "omc.json")
     writeText(join(fixture.project, ".senpi", "agent", "valid.md"), agentMarkdown("valid-model", "Valid"))
     mkdirSync(configPath, { recursive: true })
 
@@ -310,7 +310,7 @@ Reader
     // given
     const fixture = makeFixture()
     writeText(
-      join(fixture.project, ".omo", "omo.json"),
+      join(fixture.project, ".omc", "omc.json"),
       JSON.stringify({
         agents: { finder: { model: "base" } },
         models: { quick: { model: "provider/quick", reasoningEffort: "low" } },
@@ -319,17 +319,17 @@ Reader
       }),
     )
     // when
-    const result = loadAgents({ homeDir: fixture.home, projectDir: fixture.project, env: { OMO_PROFILE: "focused" } })
+    const result = loadAgents({ homeDir: fixture.home, projectDir: fixture.project, env: { OMC_PROFILE: "focused" } })
 
     // then
     expect(result.agents.finder?.model).toBe("provider/focused")
   })
 
-  test("#given snake case omo agent keys #when loading #then fields normalize to camelCase definitions", () => {
+  test("#given snake case omc agent keys #when loading #then fields normalize to camelCase definitions", () => {
     // given
     const fixture = makeFixture()
     writeText(
-      join(fixture.project, ".omo", "omo.json"),
+      join(fixture.project, ".omc", "omc.json"),
       JSON.stringify({
         agents: {
           planner: {
@@ -358,7 +358,7 @@ Reader
     // given
     const fixture = makeFixture()
     writeText(
-      join(fixture.project, ".omo", "omo.json"),
+      join(fixture.project, ".omc", "omc.json"),
       JSON.stringify({ categories: { "plan-consultant": { models: [{ model: "provider/sonnet" }] } } }),
     )
 
@@ -368,7 +368,7 @@ Reader
     // then
     expect(result.diagnostics).toContainEqual({
       kind: "category_shadows_agent",
-      path: "(merged omo config)",
+      path: "(merged omc config)",
       message: 'categories."plan-consultant" is not read for subagent_type "plan-consultant" spawns (categories only route task(category: ...)), so that agent runs its default model chain. Move the chain to the agent: "agents": { "plan-consultant": { "models": [{"model":"provider/sonnet"}] } }. If you also use task(category: "plan-consultant") on purpose, the key keeps working there; giving the agent its own models silences this warning',
       issuePaths: ["categories.plan-consultant"],
     })
@@ -377,7 +377,7 @@ Reader
   test("#given a category whose name matches no agent #when loading #then no category-shadow diagnostic is produced", () => {
     // given
     const fixture = makeFixture()
-    writeText(join(fixture.project, ".omo", "omo.json"), JSON.stringify({ categories: { quick: { model: "provider/quick" } } }))
+    writeText(join(fixture.project, ".omc", "omc.json"), JSON.stringify({ categories: { quick: { model: "provider/quick" } } }))
 
     // when
     const result = loadAgents({ homeDir: fixture.home, projectDir: fixture.project })
@@ -390,7 +390,7 @@ Reader
     // given
     const fixture = makeFixture()
     writeText(join(fixture.project, ".senpi", "agents", "agents", "finder.md"), "---\ndescription: finder agent\n---\nfind things\n")
-    writeText(join(fixture.project, ".omo", "omo.json"), JSON.stringify({ categories: { finder: { model: "provider/other" } } }))
+    writeText(join(fixture.project, ".omc", "omc.json"), JSON.stringify({ categories: { finder: { model: "provider/other" } } }))
 
     // when
     const result = loadAgents({ homeDir: fixture.home, projectDir: fixture.project })
@@ -405,7 +405,7 @@ Reader
     // given
     const fixture = makeFixture()
     writeText(join(fixture.project, ".senpi", "agents", "agents", "finder.md"), agentMarkdown("provider/finder", "find things"))
-    writeText(join(fixture.project, ".omo", "omo.json"), JSON.stringify({ categories: { finder: { model: "provider/other" } } }))
+    writeText(join(fixture.project, ".omc", "omc.json"), JSON.stringify({ categories: { finder: { model: "provider/other" } } }))
 
     // when
     const result = loadAgents({ homeDir: fixture.home, projectDir: fixture.project })

@@ -5,7 +5,7 @@
 //   bun script/qa/desktop/linux.ts --all --json [--provision] [--workdir DIR] [--engine BIN]
 //       [--fake-eis BIN] [--scenario NAME]... [--sabotage skip-optin]
 //
-// The engine defaults to `locateDesktopEngine()` from `@oh-my-opencode/senpi-desktop-engine` (the
+// The engine defaults to `locateDesktopEngine()` from `@oh-my-cybersecurity/senpi-desktop-engine` (the
 // repository's `target/release/senpi-desktop-engine` on a dev host) and must pass that package's
 // `engine.hello` ABI handshake before any scenario runs. The fake EIS server defaults to
 // `<workdir>/target/release/senpi-qa-fake-eis`, built from `script/qa/desktop/linux/fake-eis`.
@@ -16,7 +16,7 @@ import { mkdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
-import { helloDesktopEngine, locateDesktopEngine } from "@oh-my-opencode/senpi-desktop-engine";
+import { helloDesktopEngine, locateDesktopEngine } from "@oh-my-cybersecurity/senpi-desktop-engine";
 
 import { exists, Processes } from "./linux/procs.ts";
 import { provision, toolEnv } from "./linux/provision.ts";
@@ -77,7 +77,7 @@ const sabotage = values.sabotage;
 if (sabotage !== undefined && !isSabotage(sabotage)) usage(`unknown sabotage mode ${sabotage}`);
 
 const stamp = new Date().toISOString().slice(0, 10).replaceAll("-", "");
-const workdir = values.workdir ?? `/tmp/omo-desktop-qa-${stamp}-${process.pid}`;
+const workdir = values.workdir ?? `/tmp/omc-desktop-qa-${stamp}-${process.pid}`;
 const fakeEisBinary = values["fake-eis"] ?? join(workdir, "target/release/senpi-qa-fake-eis");
 if (requested.some(isWayland) && !exists(fakeEisBinary)) usage(`no fake EIS server at ${fakeEisBinary} (--fake-eis)`);
 const runId = `${Date.now()}-${process.pid}`;

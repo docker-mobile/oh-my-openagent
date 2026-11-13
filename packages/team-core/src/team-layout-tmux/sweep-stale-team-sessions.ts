@@ -1,6 +1,6 @@
 const UUID_V4ISH_PATTERN = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
 
-export const TEAM_SESSION_PATTERN = new RegExp(`^omo-team-(${UUID_V4ISH_PATTERN})$`)
+export const TEAM_SESSION_PATTERN = new RegExp(`^omc-team-(${UUID_V4ISH_PATTERN})$`)
 
 export type TeamSweepDeps = {
 	listCandidates: () => Promise<string[]>
@@ -9,7 +9,7 @@ export type TeamSweepDeps = {
 }
 
 async function listTeamSessionsViaTmux(tmuxPath: string): Promise<string[]> {
-	const { runTmuxCommand } = await import("@oh-my-opencode/tmux-core")
+	const { runTmuxCommand } = await import("@oh-my-cybersecurity/tmux-core")
 	const result = await runTmuxCommand(tmuxPath, ["list-sessions", "-F", "#{session_name}"])
 
 	if (!result.success) {
@@ -23,7 +23,7 @@ async function listTeamSessionsViaTmux(tmuxPath: string): Promise<string[]> {
 }
 
 async function killTeamSessionViaTmux(tmuxPath: string, sessionName: string): Promise<void> {
-	const { runTmuxCommand } = await import("@oh-my-opencode/tmux-core")
+	const { runTmuxCommand } = await import("@oh-my-cybersecurity/tmux-core")
 	const result = await runTmuxCommand(tmuxPath, ["kill-session", "-t", sessionName])
 
 	if (!result.success) {
@@ -35,7 +35,7 @@ export async function sweepStaleTeamSessionsWith(
 	activeTeamRunIds: ReadonlySet<string>,
 	deps: TeamSweepDeps,
 ): Promise<string[]> {
-	const { sweepTmuxSessionsWith } = await import("@oh-my-opencode/tmux-core")
+	const { sweepTmuxSessionsWith } = await import("@oh-my-cybersecurity/tmux-core")
 
 	return sweepTmuxSessionsWith(
 		{
@@ -76,7 +76,7 @@ export type HerdrSweepDeps = {
 }
 
 /**
- * Herdr-side stale sweep: close omo-team workspaces whose teamRunId is no
+ * Herdr-side stale sweep: close omc-team workspaces whose teamRunId is no
  * longer active, but only when no live agent remains in them (the workspace
  * may still host a running attach). Best-effort and silent on herdr errors:
  * no herdr dependency is required when herdr is absent.
@@ -110,7 +110,7 @@ export async function sweepStaleHerdrTeamWorkspacesWith(
 
 export async function sweepStaleHerdrTeamWorkspaces(activeTeamRunIds: ReadonlySet<string>): Promise<string[]> {
 	const { log } = await import("../logger")
-	const tmuxCore = await import("@oh-my-opencode/tmux-core")
+	const tmuxCore = await import("@oh-my-cybersecurity/tmux-core")
 	try {
 		return await sweepStaleHerdrTeamWorkspacesWith(activeTeamRunIds, {
 			listWorkspaces: () => tmuxCore.herdrListTeamWorkspaces(tmuxCore.defaultHerdrOpsDeps),

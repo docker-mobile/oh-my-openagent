@@ -53,7 +53,7 @@ Selected skills; the provider registry is defined in `skills.ts`.
 | `review-work` | — | Post-implementation gate review (orchestrator manual QA + one gate reviewer) |
 | `debugging` | — | Debugging methodology |
 | `visual-qa` | — | Visual QA |
-| `$omo:remove-ai-slops` | — | Remove AI-generated code smells |
+| `$omc:remove-ai-slops` | — | Remove AI-generated code smells |
 | `init-deep` | — | Hierarchical AGENTS.md generation |
 | `security-research` | — | Team Mode exploitability-driven security research |
 | `security-review` | — | Reuses security-research |

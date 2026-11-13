@@ -1,5 +1,5 @@
 import type { AgentToolResult, ToolDefinition } from "@code-yeongyu/senpi"
-import type { Task } from "@oh-my-opencode/team-core/types"
+import type { Task } from "@oh-my-cybersecurity/team-core/types"
 import { Type } from "typebox"
 import type { Static } from "typebox"
 

@@ -94,7 +94,7 @@ describe("evaluateInvocationGuard", () => {
     // then
     expect(verdict.kind).toBe("deny")
     if (verdict.kind !== "deny") throw new Error("expected deny")
-    expect(verdict.message).toContain(".omo/plans")
+    expect(verdict.message).toContain(".omc/plans")
   })
 
   test("#given a user request and a plan artifact #when plan-reviewer is evaluated #then it allows", () => {
@@ -139,8 +139,8 @@ describe("SkillInvocationState planArtifactReferences", () => {
   test("#given a state built with plan references #when queried #then the widened member returns them", () => {
     // given
     const references: readonly PlanArtifactReference[] = [
-      { path: "/repo/.omo/plans/alpha.md", count: 3, lastTouchedAt: 7 },
-      { path: "/repo/.omo/plans/beta.md", count: 1, lastTouchedAt: 9 },
+      { path: "/repo/.omc/plans/alpha.md", count: 3, lastTouchedAt: 7 },
+      { path: "/repo/.omc/plans/beta.md", count: 1, lastTouchedAt: 9 },
     ]
 
     // when
@@ -173,7 +173,7 @@ describe("evaluateInvocationGuard - denial names the real unlock path", () => {
     // then
     expect(verdict.kind).toBe("deny")
     if (verdict.kind !== "deny") return
-    expect(verdict.message).toContain(".omo/plans")
+    expect(verdict.message).toContain(".omc/plans")
   })
 
   test("#given ulw-execute already invoked #when plan-reviewer is evaluated #then the terminal denial does not advertise an unlock", () => {

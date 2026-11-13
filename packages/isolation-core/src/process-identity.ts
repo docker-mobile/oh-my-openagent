@@ -2,11 +2,11 @@ import {
   createProcessStartIdentityReader,
   getProcessStartIdentity as readSharedIdentity,
   startIdentitiesConflict,
-} from "@oh-my-opencode/memory-core/process-identity"
+} from "@oh-my-cybersecurity/memory-core/process-identity"
 import {
   readDarwinProcessStartSeconds,
   readWin32ProcessCreationFiletime,
-} from "@oh-my-opencode/memory-core/process-start-time"
+} from "@oh-my-cybersecurity/memory-core/process-start-time"
 import type { OwnerProbe } from "./owner"
 
 export const getProcessStartIdentity = createProcessStartIdentityReader(async (pid) => {

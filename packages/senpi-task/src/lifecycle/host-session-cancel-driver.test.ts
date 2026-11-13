@@ -5,7 +5,7 @@ import { cleanupProjects } from "./__fixtures__/lifecycle-fakes"
 
 afterEach(cleanupProjects)
 
-// Contract (omo#11765): a no-handle cancel that did not end on its first pass is re-driven on the injected
+// Contract (omc#11765): a no-handle cancel that did not end on its first pass is re-driven on the injected
 // backoff until it ends, and every exit but an engine dispose settles the stop exactly once.
 
 const drainMicrotasks = (): Promise<void> => new Promise((resolve) => setImmediate(resolve))

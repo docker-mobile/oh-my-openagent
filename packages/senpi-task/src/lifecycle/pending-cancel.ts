@@ -7,18 +7,18 @@ import type { ReconcileOutcome } from "./types"
 
 /**
  * A task_cancel accepted while the child was unreachable outlives the process that accepted it
- * (omo#9403): its parent shut down, or its host shard crashed, before the stop landed. Whichever
+ * (omc#9403): its parent shut down, or its host shard crashed, before the stop landed. Whichever
  * revival reaches the record next - session-start reconcile, daemon-loss retry, a send - finishes the
  * cancel instead: the session is ended on its host, the record is cancelled, and nothing runs.
  *
  * The session is ended FIRST. A close the host refuses or does not confirm in time returns undefined
  * and leaves the cancel pending on the record, so the next revival retries it: a cancelled record whose
  * session still runs would let the child keep working until the TTL sweep caught it. A host that answers
- * but cannot list its sessions leaves the cancel pending the same way (omo#9450).
+ * but cannot list its sessions leaves the cancel pending the same way (omc#9450).
  */
 export async function finishPendingCancel(context: LifecycleContext, record: TaskRecord): Promise<ReconcileOutcome | undefined> {
   if (isHostSessionRecord(record) && context.registry.get(record.task_id) === undefined) {
-    // Not listed on the recorded socket is not an end: a draining generation may still run it (omo#11765).
+    // Not listed on the recorded socket is not an end: a draining generation may still run it (omc#11765).
     if ((await endHostSessionChild(context, record)).kind !== "ended") return undefined
   }
   const reason = record.cancel_requested?.reason

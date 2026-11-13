@@ -5,7 +5,7 @@ import type { PersistedTaskEvent } from "../store"
 import { createCompletionNotifier } from "./notifier"
 import type { ParentNotifier, ParentNotifierMessage } from "./types"
 
-// The adapter under contract here is omo-senpi's ParentNotifier: it enqueues into the shared
+// The adapter under contract here is omc-senpi's ParentNotifier: it enqueues into the shared
 // idle-injection coordinator, so a returning enqueue only means QUEUED. A batch window dropped by a
 // /reload (or any failed flush) reports back through recordDeliveryFailure, and the bookkeeping that
 // receipt performs is the ONLY thing standing between "the parent gets its completion after the

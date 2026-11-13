@@ -1,5 +1,5 @@
 import type { defineTool, ToolDefinition } from "@code-yeongyu/senpi"
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 import type { TSchema } from "typebox"
 
 import { settledWithin } from "../../manager/settled-within"

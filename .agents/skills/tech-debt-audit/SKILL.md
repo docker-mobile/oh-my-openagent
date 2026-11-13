@@ -5,7 +5,7 @@ description: "Thorough, file-cited technical debt audit across 9 dimensions usin
 
 # Tech Debt Audit Protocol
 
-Model-agnostic technical debt audit for oh-my-openagent (OMO). Uses OMO's built-in tools (`grep`, `glob`, `bash` with `sg`, `read`, `lsp_diagnostics`, `task`). Produces a grounded, citable `TECH_DEBT_AUDIT.md` artifact.
+Model-agnostic technical debt audit for oh-my-cybersecurity (OMO). Uses OMO's built-in tools (`grep`, `glob`, `bash` with `sg`, `read`, `lsp_diagnostics`, `task`). Produces a grounded, citable `TECH_DEBT_AUDIT.md` artifact.
 
 ## Output
 

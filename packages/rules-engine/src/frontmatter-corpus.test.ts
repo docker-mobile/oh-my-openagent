@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "bun:test";
 
-import { parseFrontmatter } from "@oh-my-opencode/utils";
+import { parseFrontmatter } from "@oh-my-cybersecurity/utils";
 
 import { parseRuleFrontmatter } from "./parser";
 const corpusPaths = [
@@ -10,7 +10,7 @@ const corpusPaths = [
   ".agents/skills/security-research/SKILL.md",
   "packages/skills-loader-core/src/features/builtin-skills/dev-browser/SKILL.md",
   "packages/skills-loader-core/src/features/builtin-skills/git-master/SKILL.md",
-  ".omo/rules/test-discipline.md",
+  ".omc/rules/test-discipline.md",
 ] as const;
 
 const syntheticRuleCorpus = [

@@ -22,7 +22,7 @@ export type RunGitBashCommand = (input: GitBashRunInput) => Promise<GitBashRunRe
 
 export async function runGitBashCommand(input: GitBashRunInput): Promise<GitBashRunResult> {
   return await new Promise<GitBashRunResult>((resolve, reject) => {
-    const outputDirectory = mkdtempSync(join(tmpdir(), "omo-git-bash-run-"));
+    const outputDirectory = mkdtempSync(join(tmpdir(), "omc-git-bash-run-"));
     const stdoutPath = join(outputDirectory, "stdout");
     const stderrPath = join(outputDirectory, "stderr");
     const stdoutFd = openSync(stdoutPath, "w+");

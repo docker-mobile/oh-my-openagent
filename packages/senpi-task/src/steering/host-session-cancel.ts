@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import type { HostSessionEnd } from "../lifecycle/host-session"
 import type { TaskRecord } from "../state"
@@ -13,7 +13,7 @@ export type UnhandledHostSessionCancelDeps = {
 }
 
 /**
- * task_cancel on a daemon-hosted child this process holds no handle for (omo#11765). The session may be
+ * task_cancel on a daemon-hosted child this process holds no handle for (omc#11765). The session may be
  * running on a generation the recorded socket no longer reaches, so the record is cancelled only after
  * the lifecycle confirmed the session's end: until then the answer is `cancel_pending`, the obligation stays
  * on the record, and the lifecycle's driver keeps trying. A repeat cancel joins the one already pending.

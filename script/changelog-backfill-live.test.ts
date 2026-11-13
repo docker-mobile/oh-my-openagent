@@ -187,7 +187,7 @@ describe("backfillChangelog", () => {
   })
 
   test("#given already-backfilled changelog #when backfilled again #then returns error", () => {
-    const marker = `<!-- omo-live-backfill-${manifest} -->`
+    const marker = `<!-- omc-live-backfill-${manifest} -->`
     const modified = `${unreleasedChangelog}\n\n${marker}\n\nPrevious backfill`
     const result = backfillChangelog(modified, backfillSection, manifest)
     expect(result.error).toContain("already applied")

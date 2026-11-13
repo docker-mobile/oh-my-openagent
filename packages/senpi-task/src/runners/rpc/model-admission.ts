@@ -1,5 +1,5 @@
-import { excludedModelPattern } from "@oh-my-opencode/omo-config-core"
-import { log } from "@oh-my-opencode/utils"
+import { excludedModelPattern } from "@oh-my-cybersecurity/omc-config-core"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import { RunnerError } from "../in-process/runner-error"
 import type { RunnerFailureReason } from "../in-process/child-handle"
@@ -50,8 +50,8 @@ export type RpcModelAdmissionVerdict =
 export type RpcModelAdmission = (spec: RpcRunnerSpec) => Promise<void>
 
 export type RpcModelAdmissionOptions = {
-  // omo.json exclude_models: a spawn or revival on an excluded model fails before any probe. A getter
-  // is read at every admission, so a mid-session omo.json edit applies to the next launch.
+  // omc.json exclude_models: a spawn or revival on an excluded model fails before any probe. A getter
+  // is read at every admission, so a mid-session omc.json edit applies to the next launch.
   readonly excludeModels?: ExcludedModelPatterns
   readonly buildSpawn?: (spec: RpcRunnerSpec) => RpcSpawnDescriptor
   readonly probe?: (descriptor: RpcSpawnDescriptor) => Promise<ModelCatalogProbeResult>
@@ -84,7 +84,7 @@ function profileKey(descriptor: RpcSpawnDescriptor): string {
     descriptor.command,
     descriptor.args,
     descriptor.cwd,
-    descriptor.env.OMO_CODING_AGENT_DIR,
+    descriptor.env.OMC_CODING_AGENT_DIR,
     descriptor.env.SENPI_CODING_AGENT_DIR,
     descriptor.env.PI_CODING_AGENT_DIR,
     descriptor.env.HOME,
@@ -200,7 +200,7 @@ export function createRpcModelAdmission(options: RpcModelAdmissionOptions = {}):
     if (excludedBy !== undefined) {
       throw new RunnerError({
         kind: "model_unavailable",
-        message: `process model admission refused ${model}: exclude_models in omo.json keeps it out ("${excludedBy}")`,
+        message: `process model admission refused ${model}: exclude_models in omc.json keeps it out ("${excludedBy}")`,
       })
     }
     const startedAt = now()

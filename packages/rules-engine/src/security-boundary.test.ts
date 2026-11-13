@@ -26,7 +26,7 @@ afterEach(() => {
 });
 
 describe("rules-core security boundary", () => {
-  it("#given a project .omo/rules directory symlink escapes the workspace #when finding rule files #then escaped rules are rejected", () => {
+  it("#given a project .omc/rules directory symlink escapes the workspace #when finding rule files #then escaped rules are rejected", () => {
     // given
     const root = createTestRoot("rules-core-project-dir-symlink-escape");
     const projectRoot = join(root, "repo");
@@ -36,13 +36,13 @@ describe("rules-core security boundary", () => {
     const escapedRule = join(outsideDir, "leak.md");
     mkdirSync(projectRoot, { recursive: true });
     mkdirSync(join(projectRoot, ".git"));
-    mkdirSync(join(projectRoot, ".omo"), { recursive: true });
+    mkdirSync(join(projectRoot, ".omc"), { recursive: true });
     mkdirSync(join(projectRoot, "src"), { recursive: true });
     mkdirSync(homeDir, { recursive: true });
     mkdirSync(outsideDir, { recursive: true });
     writeFileSync(currentFile, "export {};");
     writeFileSync(escapedRule, "do not inject this external project rule");
-    symlinkSync(outsideDir, join(projectRoot, ".omo", "rules"), "dir");
+    symlinkSync(outsideDir, join(projectRoot, ".omc", "rules"), "dir");
 
     // when
     const found = findRuleFiles(projectRoot, homeDir, currentFile);

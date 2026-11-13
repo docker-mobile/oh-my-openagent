@@ -1,13 +1,13 @@
 import { describe, expect, test } from "bun:test"
 
-import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
+import type { OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { TaskManager } from "../../manager"
 import { createTaskTool } from "./tool"
 import type { TaskToolDeps } from "./types"
 import { resolveSpawnItems } from "./validation"
 
-const OMO_CONFIG: OmoConfig = { categories: {}, agents: {} }
+const OMC_CONFIG: OmoConfig = { categories: {}, agents: {} }
 
 function notImplemented(name: string): never {
   throw new Error(`fake TaskManager.${name} not configured`)
@@ -39,7 +39,7 @@ function fakeManager(): TaskManager {
 function createTool() {
   const deps: TaskToolDeps = {
     manager: fakeManager(),
-    omoConfig: OMO_CONFIG,
+    omoConfig: OMC_CONFIG,
     agents: { explore: { name: "explore", description: "Read-only code search" } },
   }
   return createTaskTool(deps)

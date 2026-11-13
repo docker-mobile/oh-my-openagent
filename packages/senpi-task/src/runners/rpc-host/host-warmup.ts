@@ -51,7 +51,7 @@ export class HostWarmRefusedError extends Error {
   }
 }
 
-const WARM_REQUEST_ID = "omo-task-host-warm"
+const WARM_REQUEST_ID = "omc-task-host-warm"
 // The first load compiles the extension graph; a loaded host answers in well under a second.
 const WARM_TIMEOUT_MS = 60_000
 // What an engine that KNOWS `warm` refuses it with. Any other refusal (`missing_session_id` from a
@@ -64,7 +64,7 @@ type WarmAnswer =
   | { readonly kind: "refused"; readonly code: string }
 
 export async function warmTaskHost(input: WarmHostSessionInput): Promise<TaskHostWarmth> {
-  const stateDir = await mkdtemp(join(input.tempRoot ?? tmpdir(), "omo-host-warmup-"))
+  const stateDir = await mkdtemp(join(input.tempRoot ?? tmpdir(), "omc-host-warmup-"))
   const context = { role: "child", task_id: HOST_WARMUP_TASK_ID, state_dir: stateDir, [HOST_WARMUP_CONTEXT]: "1" }
   try {
     const request = { id: WARM_REQUEST_ID, type: "warm", cwd: input.cwd, kind: "worker", context }

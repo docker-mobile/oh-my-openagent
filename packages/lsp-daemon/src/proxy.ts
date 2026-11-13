@@ -1,10 +1,10 @@
 import { existsSync, realpathSync } from "node:fs";
 import { basename, delimiter, dirname, isAbsolute } from "node:path";
 import type { Readable, Writable } from "node:stream";
-import { handleLspMcpRequest, type JsonRpcId, type JsonRpcResponse } from "@oh-my-opencode/lsp-core/mcp";
-import { createStandaloneMcpRequestContext, runWithRequestContext } from "@oh-my-opencode/lsp-core/request-context";
-import { jsonRpcId, type ParentWatchdogConfig, runJsonRpcStdioServer, successResponse } from "@oh-my-opencode/mcp-stdio-core";
-import { isPlainRecord } from "@oh-my-opencode/mcp-stdio-core/record";
+import { handleLspMcpRequest, type JsonRpcId, type JsonRpcResponse } from "@oh-my-cybersecurity/lsp-core/mcp";
+import { createStandaloneMcpRequestContext, runWithRequestContext } from "@oh-my-cybersecurity/lsp-core/request-context";
+import { jsonRpcId, type ParentWatchdogConfig, runJsonRpcStdioServer, successResponse } from "@oh-my-cybersecurity/mcp-stdio-core";
+import { isPlainRecord } from "@oh-my-cybersecurity/mcp-stdio-core/record";
 
 import { type CallToolOptions, callToolViaDaemon, type DaemonToolContext } from "./daemon-client.js";
 import { type DaemonPaths, daemonPaths } from "./paths.js";
@@ -169,6 +169,6 @@ function projectRootFromOpenCodeConfigPath(path: string): string | undefined {
 	if (basename(path) !== "lsp.json" && basename(path) !== "lsp-client.json") return undefined;
 	const configDir = dirname(path);
 	const configDirName = basename(configDir);
-	if (configDirName !== ".opencode" && configDirName !== ".omo") return undefined;
+	if (configDirName !== ".opencode" && configDirName !== ".omc") return undefined;
 	return dirname(configDir);
 }

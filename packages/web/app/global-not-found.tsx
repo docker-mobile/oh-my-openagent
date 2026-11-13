@@ -6,7 +6,7 @@ import { NotFoundView } from "@/app/_components/not-found-view"
 import { siteViewport } from "@/app/_components/site-metadata"
 import { defaultLocale, languageTag } from "@/i18n/config"
 
-export const metadata: Metadata = { title: "404 | OmO", robots: { index: false } }
+export const metadata: Metadata = { title: "404 | OmC", robots: { index: false } }
 export const viewport = siteViewport
 
 /** Unmatched URLs bypass every layout (the root layouts sit under dynamic or route segments). */

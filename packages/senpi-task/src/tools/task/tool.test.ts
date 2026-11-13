@@ -1,14 +1,14 @@
 import { describe, expect, test } from "bun:test"
 
 import type { Theme } from "@code-yeongyu/senpi"
-import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
+import type { OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { TaskManager } from "../../manager"
 import { rendererVisibleWidth } from "./renderers"
 import { TASK_TOOL_NAME, createTaskTool } from "./tool"
 import type { TaskToolDeps } from "./types"
 
-const OMO_CONFIG: OmoConfig = {
+const OMC_CONFIG: OmoConfig = {
   categories: { "release-crew": { description: "Ships the release train" } },
   agents: {},
 }
@@ -50,7 +50,7 @@ function fakeManager(overrides: Partial<TaskManager>): TaskManager {
 }
 
 function deps(manager: TaskManager): TaskToolDeps {
-  return { manager, omoConfig: OMO_CONFIG, agents: { "plan-reviewer": { name: "plan-reviewer", description: "Deep reasoning" } } }
+  return { manager, omoConfig: OMC_CONFIG, agents: { "plan-reviewer": { name: "plan-reviewer", description: "Deep reasoning" } } }
 }
 
 function renderedLines(component: unknown, width: number): string[] {
@@ -83,7 +83,7 @@ describe("createTaskTool", () => {
     expect(typeof tool.renderResult).toBe("function")
   })
 
-  test("#given a custom omo.json category #when the description is read #then it lists that category (dynamic snapshot)", () => {
+  test("#given a custom omc.json category #when the description is read #then it lists that category (dynamic snapshot)", () => {
     // given
     const tool = createTaskTool(deps(fakeManager({})))
 
@@ -254,9 +254,9 @@ describe("createTaskTool", () => {
           mode: "spawn",
           category: "ultrabrain",
           resolved_model: {
-            provider: "omo-mock",
+            provider: "omc-mock",
             model_id: "mock-1",
-            display: "omo-mock/mock-1",
+            display: "omc-mock/mock-1",
             reasoning_effort: "xhigh",
             source: "category",
           },
@@ -271,7 +271,7 @@ describe("createTaskTool", () => {
 
     // then
     expect(row).toContain("category:ultrabrain")
-    expect(row).toContain("omo-mock/mock-1")
+    expect(row).toContain("omc-mock/mock-1")
     expect(row).toContain("xhigh")
     expect(row).toContain(`${ANSI_ITALIC}background${ANSI_ITALIC_END}`)
     expect(row).toContain("running")

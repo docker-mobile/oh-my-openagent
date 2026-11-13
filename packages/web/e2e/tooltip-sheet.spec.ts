@@ -106,7 +106,7 @@ test("Escape closes the sheet without stealing focus that is outside it", async 
   await page.getByRole("button", { name: "Open menu" }).click()
   const sheet = page.locator("#mobile-nav")
   await expect(sheet).toBeVisible()
-  const brand = page.locator("header").getByRole("link", { name: "OmO" }).first()
+  const brand = page.locator("header").getByRole("link", { name: "OmC" }).first()
   await brand.focus()
 
   // when

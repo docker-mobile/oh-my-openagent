@@ -15,7 +15,7 @@ import {
 describe("memory identity layout constants", () => {
   it("#given the layout module #when constants are inspected #then they pin the decided directory names", () => {
     // given / when / then
-    expect(MEMORY_ROOT_ENV_VAR).toBe("OMO_MEMORY_HOME")
+    expect(MEMORY_ROOT_ENV_VAR).toBe("OMC_MEMORY_HOME")
     expect(AGENTS_DIRNAME).toBe("agents")
     expect(REPO_DIRNAME).toBe("repo")
     expect(RUNTIME_DIRNAME).toBe("runtime")
@@ -36,16 +36,16 @@ describe("memory identity layout constants", () => {
 })
 
 describe("defaultMemoryRoot", () => {
-  it("#given no override #when the default root is computed #then it is ~/.omo/memory", () => {
+  it("#given no override #when the default root is computed #then it is ~/.omc/memory", () => {
     // given / when
     const root = defaultMemoryRoot()
     // then
-    expect(root).toBe(join(homedir(), ".omo", "memory"))
+    expect(root).toBe(join(homedir(), ".omc", "memory"))
   })
 })
 
 describe("resolveMemoryRoot", () => {
-  it("#given an absolute OMO_MEMORY_HOME #when the root is resolved #then the override is used verbatim", () => {
+  it("#given an absolute OMC_MEMORY_HOME #when the root is resolved #then the override is used verbatim", () => {
     // given (tmpdir() is absolute on every platform, so "verbatim" holds on Windows too)
     const overrideRoot = join(tmpdir(), "qa-memory-home")
     const env = { [MEMORY_ROOT_ENV_VAR]: overrideRoot }
@@ -55,7 +55,7 @@ describe("resolveMemoryRoot", () => {
     expect(root).toBe(overrideRoot)
   })
 
-  it("#given a relative OMO_MEMORY_HOME #when the root is resolved #then it resolves against the given cwd", () => {
+  it("#given a relative OMC_MEMORY_HOME #when the root is resolved #then it resolves against the given cwd", () => {
     // given
     const env = { [MEMORY_ROOT_ENV_VAR]: "qa-home" }
     // when
@@ -64,9 +64,9 @@ describe("resolveMemoryRoot", () => {
     expect(root).toBe(resolve("/work/proj", "qa-home"))
   })
 
-  it("#given an empty or whitespace OMO_MEMORY_HOME #when the root is resolved #then the default root is used", () => {
+  it("#given an empty or whitespace OMC_MEMORY_HOME #when the root is resolved #then the default root is used", () => {
     // given
-    const expected = join(homedir(), ".omo", "memory")
+    const expected = join(homedir(), ".omc", "memory")
     // when / then
     expect(resolveMemoryRoot({ [MEMORY_ROOT_ENV_VAR]: "" }, "/work/proj")).toBe(expected)
     expect(resolveMemoryRoot({ [MEMORY_ROOT_ENV_VAR]: "   " }, "/work/proj")).toBe(expected)

@@ -1,4 +1,4 @@
-import type { OmoTaskSettings } from "@oh-my-opencode/omo-config-core"
+import type { OmoTaskSettings } from "@oh-my-cybersecurity/omc-config-core"
 import type { TeardownStepDeadline } from "./teardown-budget"
 
 import type { ManagedChildHandle } from "../manager/child-handle"
@@ -44,13 +44,13 @@ export type ResidentHandle = {
   // Rpc: SIGTERM then SIGKILL escalation. Host-session: abort + close_session, never a signal.
   // In-process: no-op (no OS process to signal).
   terminate(): Promise<void>
-  // From here no transport recovery may bring the child back; a host reached again only ends it (omo#9403).
+  // From here no transport recovery may bring the child back; a host reached again only ends it (omc#9403).
   markStopping?(): void
   // Host-session: the host ANSWERED this handle's end of the session (its close_session, or a close it
-  // reported itself). A released port - park, detach, transport loss - never counts (omo#11765).
+  // reported itself). A released port - park, detach, transport loss - never counts (omc#11765).
   hostEndAnswered?(): boolean
   // Host-session: publish `task_status` in the session's context while still attached, so a successor
-  // host drops a finished session's park instead of reopening it unattended (omo#10778).
+  // host drops a finished session's park instead of reopening it unattended (omc#10778).
   publishTaskStatus?(status: TaskStatus): Promise<void>
 }
 
@@ -72,7 +72,7 @@ export type ResidencyRegistry = {
   isEvicting?(taskId: string): boolean
   tryBeginSend?(taskId: string): boolean
   endSend?(taskId: string): void
-  // Whether THIS engine's session owns the record (omo#9785). One process can host one engine per
+  // Whether THIS engine's session owns the record (omc#9785). One process can host one engine per
   // session, so host_pid alone cannot tell a handle-less child of this session from a live sibling's.
   ownsRecord?(record: Pick<TaskRecord, "parent_session_id">): boolean
 }
@@ -236,7 +236,7 @@ export type LifecycleDeps = {
   // Injectable timer seam keeps lifecycle tests deterministic and prevents test-created timers.
   readonly idleReclaimerScheduler?: IdleReclaimerScheduler
   readonly hostCloseScheduler?: IdleReclaimerScheduler
-  // How long one teardown step (abort, terminate, dispose) may hold its caller (omo#9785).
+  // How long one teardown step (abort, terminate, dispose) may hold its caller (omc#9785).
   readonly teardownStepDeadline?: TeardownStepDeadline
   // The engine's runtime-only parent kernel-tool map. Destruction and expunge release a child's
   // binding through it; idle parking keeps the binding so a same-host revive still reaches it.
@@ -245,7 +245,7 @@ export type LifecycleDeps = {
   // never reach a daemon, so a deployment without one behaves exactly as it does today.
   readonly hostSessionProbe?: HostSessionProbe
   readonly hostSessionClose?: HostSessionCloser
-  // What a cancel reads once the serving generation does not list a child (omo#11765). Absent: "not listed"
+  // What a cancel reads once the serving generation does not list a child (omc#11765). Absent: "not listed"
   // keeps reading as ended, as it did before the view existed.
   readonly hostGenerationView?: HostGenerationView
   readonly hostRetry?: HostSessionRetryPolicy

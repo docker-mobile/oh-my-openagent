@@ -34,7 +34,7 @@ describe("git_bash MCP", () => {
       },
       {
         platform: "win32",
-        env: { OMO_CODEX_GIT_BASH_PATH: "C:\\Tools\\Git\\bin\\bash.exe" },
+        env: { OMC_CODEX_GIT_BASH_PATH: "C:\\Tools\\Git\\bin\\bash.exe" },
         exists: (path) => path === "C:\\Tools\\Git\\bin\\bash.exe",
         where: () => [],
       },
@@ -121,7 +121,7 @@ describe("git_bash MCP", () => {
       },
       {
         platform: "win32",
-        env: { OMO_CODEX_GIT_BASH_PATH: "C:\\Program Files\\Git\\bin\\bash.exe" },
+        env: { OMC_CODEX_GIT_BASH_PATH: "C:\\Program Files\\Git\\bin\\bash.exe" },
         exists: (path) => path === "C:\\Program Files\\Git\\bin\\bash.exe",
         where: () => [],
         runGitBash,
@@ -150,7 +150,7 @@ describe("git_bash MCP", () => {
       },
       {
         platform: "win32",
-        env: { OMO_CODEX_GIT_BASH_PATH: "C:\\Program Files\\Git\\bin\\bash.exe" },
+        env: { OMC_CODEX_GIT_BASH_PATH: "C:\\Program Files\\Git\\bin\\bash.exe" },
         exists: () => true,
         where: () => [],
         runGitBash: async () => {

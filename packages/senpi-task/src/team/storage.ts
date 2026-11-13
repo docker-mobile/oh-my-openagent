@@ -6,7 +6,7 @@ import {
   getRuntimeStateDir,
   getTasksDir,
   getTeamSpecPath,
-} from "@oh-my-opencode/team-core/team-registry"
+} from "@oh-my-cybersecurity/team-core/team-registry"
 
 import { resolveStateDir } from "../store"
 import type { StateDirConfig } from "../store"
@@ -19,7 +19,7 @@ export type TeamRuntimeDirs = {
 
 /**
  * Runtime-state base dir for ALL senpi team storage: `<resolveStateDir(cfg)>/teams`. This is the
- * baseDir passed to the team-core path helpers, NOT the omo-compatible `.omo/teams` discovery path.
+ * baseDir passed to the team-core path helpers, NOT the omc-compatible `.omc/teams` discovery path.
  */
 export function teamStorageBaseDir(config: StateDirConfig): string {
   return join(resolveStateDir(config), "teams")
@@ -39,7 +39,7 @@ export function resolveTeamMemberInboxDir(config: StateDirConfig, teamRunId: str
 }
 
 /**
- * The omo-compatible `<projectRoot>/.omo/teams/<name>/config.json` path. Discovery-only: it is read
+ * The omc-compatible `<projectRoot>/.omc/teams/<name>/config.json` path. Discovery-only: it is read
  * for spec discovery and is NEVER a runtime-write target (runtime state lives under the state dir).
  */
 export function resolveProjectTeamSpecPath(projectRoot: string, teamName: string): string {

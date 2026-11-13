@@ -15,7 +15,7 @@ import { link } from "../fs/resilient"
 import { sweepStrandedGitLockFiles } from "./repo-lock-sweep"
 import { settlesWithin } from "./settles-within.test-support"
 
-// omo #10199 r5 delta review LOW: the proof that the writer lock's previous owner died authorizes
+// omc #10199 r5 delta review LOW: the proof that the writer lock's previous owner died authorizes
 // reclaiming git locks only for the acquisition that took the lock over FROM that owner. If a live
 // writer B takes the lock between the dead owner's reclamation and this acquisition, B's writes and
 // git children came after the death, so this acquisition succeeds B, not the dead owner, and must
@@ -55,7 +55,7 @@ async function deadOwnerWithStrandedIndexLock(): Promise<ReturnType<typeof build
   return paths
 }
 
-describe("the dead-owner proof goes only to the dead owner's immediate successor (omo #10199 r5 delta LOW)", () => {
+describe("the dead-owner proof goes only to the dead owner's immediate successor (omc #10199 r5 delta LOW)", () => {
   for (const { path: takeoverPath, acquire } of takeoverPaths) test.skipIf(process.platform === "win32")(`#given a live writer takes the lock between the dead owner's reclamation by ${takeoverPath} and this acquisition #when this acquisition sweeps #then the stranded lock is kept`, async () => {
     // #given: a dead recorded owner A, and a killed git holder's stranded index.lock
     const paths = await deadOwnerWithStrandedIndexLock()

@@ -19,15 +19,15 @@ a copy of that profile, and exists only where the user installed and enabled the
 the attached engine is not set up, run the onboarding script and tell the user its one remaining
 step.
 
-## Step 0 — inside OmO Desktop: everything above, plus the app's built-in browser
+## Step 0 — inside OmC Desktop: everything above, plus the app's built-in browser
 
-When `OMO_BROWSER_ENGINE` is set (the OmO desktop app sets it for every session), everything above works exactly
+When `OMC_BROWSER_ENGINE` is set (the OmC desktop app sets it for every session), everything above works exactly
 as in the terminal: `connectBrowserSkill()` for the user's own browser, `connectPipe()` / `connectCloakProfile()` /
 `connect()` for a browser of your own, with the same table to choose between them. The app adds one more option:
 
 | Option | What it is | Use it when |
 |---|---|---|
-| `connectBuiltinBrowser()` | OmO's built-in browser for this thread: the tab the user sees beside the chat, which they can watch, take over and share | the user should see the page while you work, the task is QA of something in the app, or a sign-in the user should do themselves in a visible tab |
+| `connectBuiltinBrowser()` | OmC's built-in browser for this thread: the tab the user sees beside the chat, which they can watch, take over and share | the user should see the page while you work, the task is QA of something in the app, or a sign-in the user should do themselves in a visible tab |
 
 ```js
 const browser = await omowright.connectBuiltinBrowser()

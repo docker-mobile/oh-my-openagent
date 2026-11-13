@@ -1,6 +1,6 @@
-import { resolveModelForDelegateTask } from "@oh-my-opencode/delegate-core"
-import type { DelegateFallbackEntry } from "@oh-my-opencode/delegate-core"
-import { canonicalCategoryName, type OmoConfig } from "@oh-my-opencode/omo-config-core"
+import { resolveModelForDelegateTask } from "@oh-my-cybersecurity/delegate-core"
+import type { DelegateFallbackEntry } from "@oh-my-cybersecurity/delegate-core"
+import { canonicalCategoryName, type OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import {
   CATEGORY_DESCRIPTIONS,
@@ -93,7 +93,7 @@ export function resolveCategory<TModel extends SenpiModelPort>(
     return {
       kind: "disabled",
       category: categoryName,
-      reason: `Category "${categoryName}" is disabled by omo.json`,
+      reason: `Category "${categoryName}" is disabled by omc.json`,
       availableCategories: gatedAvailableCategories(omoConfig, senpiModelRegistry),
     }
   }
@@ -216,7 +216,7 @@ export function resolveCategory<TModel extends SenpiModelPort>(
       fallbackEntry: resolution.fallbackEntry,
       matchedFallback: resolution.matchedFallback,
       // A user model always answers from the user branch (as itself or a promoted user fallback); with none, a
-      // fallback match without a chain rung is a user fallback_models entry. Defaults and chain rungs are omo's.
+      // fallback match without a chain rung is a user fallback_models entry. Defaults and chain rungs are omc's.
       source: userModel !== undefined || (resolution.matchedFallback === true && resolution.fallbackEntry === undefined)
         ? "user"
         : "builtin",

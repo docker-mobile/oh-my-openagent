@@ -84,14 +84,14 @@ in a `node:worker_threads` worker, one fresh VM per run.**
 Reasons:
 
 1. It is already proven in the shipped runtime. Senpi's eval sandbox cell (`@code-yeongyu/senpi-codemode`,
-   `src/kernels/sandbox/`) depends on `quickjs-wasi` 3.6.2, and omo stages it and its `quickjs.wasm`
-   (637,405 bytes) as required sidecars of the omo-ai distribution, nested under senpi-codemode
+   `src/kernels/sandbox/`) depends on `quickjs-wasi` 3.6.2, and omc stages it and its `quickjs.wasm`
+   (637,405 bytes) as required sidecars of the omc-ai distribution, nested under senpi-codemode
    (`script/engine-sidecar-sources.ts:110-157`, `script/engine-sidecar-sources.test.ts:213-220`). Using the
    same pin means the same engine build and the same behaviour, not zero weight (see the resolution below).
 2. It already does what section 6 needs and it is proven on Bun: `QuickJS.create({ memoryLimit,
    maxStackSize, interruptHandler })`, where the interrupt handler reads a `SharedArrayBuffer` flag the host
-   sets, so a spinning script stops without the host thread being blocked. omo's native eval smoke asserts the
-   sandbox cell reports `quickjs`, has no `process` and no `fetch` (`script/qa/omo-native-eval-smoke-assertions.mjs:42-77`).
+   sets, so a spinning script stops without the host thread being blocked. omc's native eval smoke asserts the
+   sandbox cell reports `quickjs`, has no `process` and no `fetch` (`script/qa/omc-native-eval-smoke-assertions.mjs:42-77`).
 3. `quickjs-emscripten` would be a new dependency with several build variants (sync vs asyncify), a
    larger payload, and no in-repo precedent; its asyncify variant is the only one that lets a host call be
    awaited synchronously, which we do not need (section 5 settles promises from the host instead).
@@ -100,7 +100,7 @@ Reasons:
 
 Resolution (decided here for row 22): `senpi-desktop-service` takes `quickjs-wasi` as its own exact-pinned
 dependency (3.6.2, matching senpi-codemode's) and writes its own small worker. The service runtime ships inside
-the bundle `packages/omo-senpi/plugin/extensions/omo-computer-use.js` (163,697 bytes today, no QuickJS in it), so
+the bundle `packages/omc-senpi/plugin/extensions/omc-computer-use.js` (163,697 bytes today, no QuickJS in it), so
 the bundle keeps `quickjs-wasi` external and the sidecar list gains an entry for the service's own copy with its
 `.wasm`. The sidecar rule stages the whole dependency directory
 (`script/engine-sidecar-sources.ts:116`): 1,524,119 bytes, of which `dist` plus `quickjs.wasm` are 946,844 and five
@@ -239,7 +239,7 @@ counterpart that asserts the `ReferenceError` (row 32); no test is skipped.
 | Id | Site | Uses | What it does | Migration |
 |---|---|---|---|---|
 | M1 | `packages/senpi-desktop-service/test/run.test.ts:303` | `tool` | "reaches the host executeTool from tool.<name> inside the run" (`tool.read`) | not available under quickjs; vm-only. Row 32 keeps it under vm and adds a quickjs counterpart expecting `ReferenceError: tool is not defined` |
-| M2 | `packages/omo-senpi/scripts/qa/computer-control-live-macos-scenarios.mjs:149` | `wait` | `interrupted` live scenario: acquire the grant, then `await wait(30000)` to keep the run open while the driver aborts it | `wait` -> `computer.verify` with a condition that never holds and a 30 s deadline (keeps a host call in flight, so the abort still cancels it); until verify exists the driver pins `computer.run_sandbox: "vm"` |
+| M2 | `packages/omc-senpi/scripts/qa/computer-control-live-macos-scenarios.mjs:149` | `wait` | `interrupted` live scenario: acquire the grant, then `await wait(30000)` to keep the run open while the driver aborts it | `wait` -> `computer.verify` with a condition that never holds and a 30 s deadline (keeps a host call in flight, so the abort still cancels it); until verify exists the driver pins `computer.run_sandbox: "vm"` |
 | M3 | `packages/senpi-desktop-prelude/docs/computer.md:54` | `wait` (doc) | guide entry: functions receive `{ desktop, wait, assert }`; "Not sandboxed" | when quickjs is selectable, the guide says functions receive `{ computer, desktop, assert }` under quickjs, `wait` -> `computer.verify`, and states the sandbox per setting (regenerated guide, P14) |
 | M4 | `packages/senpi-desktop-prelude/README.md:22` | `wait` (doc) | documents the serialized `computer.run(fn)` call `({ desktop, wait, assert }, ...args)` | same doc change as M3, in step with M5 |
 | M5 | `packages/senpi-desktop-prelude/src/prelude.js:132` | `wait` (generated) | `computer.run(fn)` serializes every function as `return await (fn)({ desktop, wait, assert }, ...args);` | **blocks every function-form run under quickjs**: the shorthand `wait` is a reference, so even a function that never uses `wait` throws `ReferenceError`. The generated call must stop naming absent globals (pass `{ desktop, computer: desktop, assert }` under quickjs, or one runtime-provided scope object). Owner: the prelude rows (P4a/P14), which must also regenerate the two tracked `assets.generated.json` copies and `test/assets.sha256.json` (plan row 26, `senpi-desktop-prelude/scripts/generate-assets.ts`); a prerequisite of the default flip; the test harness that executes the generated body, `packages/senpi-desktop-prelude/test/js-facade.test.ts:141` (`new AsyncFunction("desktop", "wait", "assert", code)`), changes in the same PR; row 32's quickjs tests include a body in this generated shape |
@@ -252,16 +252,16 @@ Model-facing contract text. The model reads these before it writes a run body, a
 
 | Id | Site | Uses | What it is | Migration |
 |---|---|---|---|---|
-| M9 | `docs/reference/computer.md:22` | `wait`, `tool` (contract text) | omo `computer` tool reference: `run` takes a body with `desktop`, `wait`, `assert` and `tool` | see below |
-| M10 | `packages/omo-senpi/scripts/qa/fused-equivalence-golden/darwin-arm64/E21.json:1878` | `wait`, `tool` (contract text) | recorded golden of the tool description (darwin-arm64) | see below |
-| M11 | `packages/omo-senpi/scripts/qa/fused-equivalence-golden/darwin-arm64/E21.json:1919` | `wait`, `tool` (contract text) | recorded golden of the `code` parameter description (darwin-arm64) | see below |
-| M12 | `packages/omo-senpi/scripts/qa/fused-equivalence-golden/darwin-arm64/E21.json:3714` | `wait`, `tool` (contract text) | second recorded copy of the tool description (darwin-arm64) | see below |
-| M13 | `packages/omo-senpi/scripts/qa/fused-equivalence-golden/darwin-arm64/E21.json:3755` | `wait`, `tool` (contract text) | second recorded copy of the `code` parameter description (darwin-arm64) | see below |
-| M14 | `packages/omo-senpi/scripts/qa/fused-equivalence-golden/linux-x64/E21.json:1878` | `wait`, `tool` (contract text) | recorded golden of the tool description (linux-x64) | see below |
-| M15 | `packages/omo-senpi/scripts/qa/fused-equivalence-golden/linux-x64/E21.json:1919` | `wait`, `tool` (contract text) | recorded golden of the `code` parameter description (linux-x64) | see below |
-| M16 | `packages/omo-senpi/scripts/qa/fused-equivalence-golden/linux-x64/E21.json:3714` | `wait`, `tool` (contract text) | second recorded copy of the tool description (linux-x64) | see below |
-| M17 | `packages/omo-senpi/scripts/qa/fused-equivalence-golden/linux-x64/E21.json:3755` | `wait`, `tool` (contract text) | second recorded copy of the `code` parameter description (linux-x64) | see below |
-| M18 | `packages/omo-senpi/src/components/computer-use/published-parameters.fixture.json:42` | `wait`, `tool` (contract text) | frozen published `code` parameter description | see below |
+| M9 | `docs/reference/computer.md:22` | `wait`, `tool` (contract text) | omc `computer` tool reference: `run` takes a body with `desktop`, `wait`, `assert` and `tool` | see below |
+| M10 | `packages/omc-senpi/scripts/qa/fused-equivalence-golden/darwin-arm64/E21.json:1878` | `wait`, `tool` (contract text) | recorded golden of the tool description (darwin-arm64) | see below |
+| M11 | `packages/omc-senpi/scripts/qa/fused-equivalence-golden/darwin-arm64/E21.json:1919` | `wait`, `tool` (contract text) | recorded golden of the `code` parameter description (darwin-arm64) | see below |
+| M12 | `packages/omc-senpi/scripts/qa/fused-equivalence-golden/darwin-arm64/E21.json:3714` | `wait`, `tool` (contract text) | second recorded copy of the tool description (darwin-arm64) | see below |
+| M13 | `packages/omc-senpi/scripts/qa/fused-equivalence-golden/darwin-arm64/E21.json:3755` | `wait`, `tool` (contract text) | second recorded copy of the `code` parameter description (darwin-arm64) | see below |
+| M14 | `packages/omc-senpi/scripts/qa/fused-equivalence-golden/linux-x64/E21.json:1878` | `wait`, `tool` (contract text) | recorded golden of the tool description (linux-x64) | see below |
+| M15 | `packages/omc-senpi/scripts/qa/fused-equivalence-golden/linux-x64/E21.json:1919` | `wait`, `tool` (contract text) | recorded golden of the `code` parameter description (linux-x64) | see below |
+| M16 | `packages/omc-senpi/scripts/qa/fused-equivalence-golden/linux-x64/E21.json:3714` | `wait`, `tool` (contract text) | second recorded copy of the tool description (linux-x64) | see below |
+| M17 | `packages/omc-senpi/scripts/qa/fused-equivalence-golden/linux-x64/E21.json:3755` | `wait`, `tool` (contract text) | second recorded copy of the `code` parameter description (linux-x64) | see below |
+| M18 | `packages/omc-senpi/src/components/computer-use/published-parameters.fixture.json:42` | `wait`, `tool` (contract text) | frozen published `code` parameter description | see below |
 | M19 | `packages/senpi-desktop-tool/src/params.ts:41` | `wait`, `tool` (contract text) | `code` parameter description of the `run` action (published) | see below |
 | M20 | `packages/senpi-desktop-tool/src/params.ts:77` | `wait`, `tool` (contract text) | `code` parameter description of the flat schema (published) | see below |
 | M21 | `packages/senpi-desktop-tool/src/tool-definition.ts:27` | `wait`, `tool` (contract text) | `computer` tool description the model reads | see below |
@@ -369,28 +369,28 @@ Two scans, both re-runnable from the repository root.
 Plain grep over the acceptance-named sources (every hit classified below the output):
 
 ```sh
-grep -nE '\bwait\(|\btool\.[A-Za-z_]+\(|\{ desktop, wait' packages/senpi-desktop-service/test/run.test.ts packages/omo-senpi/scripts/qa/*.mjs packages/senpi-desktop-prelude/docs/computer.md
+grep -nE '\bwait\(|\btool\.[A-Za-z_]+\(|\{ desktop, wait' packages/senpi-desktop-service/test/run.test.ts packages/omc-senpi/scripts/qa/*.mjs packages/senpi-desktop-prelude/docs/computer.md
 ```
 
 ```text
 packages/senpi-desktop-service/test/run.test.ts:303:    const result = await run(service, `return (await tool.read({ path: "notes.txt" })).content[0].text;`, {
-packages/omo-senpi/scripts/qa/agent-toolkit-catalog-qa.mjs:39:    return tool.execute("qa-call", {}, undefined, undefined, {})
-packages/omo-senpi/scripts/qa/claim-receipt-e2e.mjs:43:        code: "const r = await tool.bash({ command: \"echo 'bun test (simulated)'; printf ' 3 pass\\\\n 0 fail\\\\n'\" }); print(r.text)",
-packages/omo-senpi/scripts/qa/computer-control-live-macos-scenarios.mjs:149:      run(`${acquire} await wait(30000); return JSON.stringify(state)`),
-packages/omo-senpi/scripts/qa/desktop-toolkit-rpc-e2e.mjs:35:  code: 'const r = await tool.omo_desktop_toolkit({ op: "acquire", toolkit: "browser" }); print("TOOLKIT_RESULT " + JSON.stringify(r.details ?? r))',
-packages/omo-senpi/scripts/qa/fused-equivalence-support.mjs:186:const pauseSync = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
-packages/omo-senpi/scripts/qa/kernel-tools-python-e2e.mjs:3:// omo child by that Python cell (`tool.task(..., tools=["add"])`); the child calls it and the call runs back in the parent kernel.
-packages/omo-senpi/scripts/qa/kernel-tools-python-e2e.mjs:28:const CALL_CHILD = "reply = tool.task(prompt='MOCK' + 'ROLE=quick add 1 and 2 with the add tool', subagent_type='fixture', tools=['add'])\nreply"
-packages/omo-senpi/scripts/qa/parallelism-eval-e2e.mjs:43:          '  tool.read({ path: "qa-note.txt" }),',
-packages/omo-senpi/scripts/qa/parallelism-eval-e2e.mjs:44:          '  tool.bash({ command: "printf qa-eval-e2e" }),',
-packages/omo-senpi/scripts/qa/plan-gated-agents-e2e.mjs:202:          code: `const started = await tool.workflow(${JSON.stringify({ action: "start", definition: DAG_RETIRED_DEFINITION })});\nconsole.log(JSON.stringify(started));`,
-packages/omo-senpi/scripts/qa/probe-continuation.mjs:139:      wait(250)
-packages/omo-senpi/scripts/qa/probe-continuation.mjs:176:function wait(milliseconds) {
-packages/omo-senpi/scripts/qa/probe-continuation.mjs:177:  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, milliseconds)
-packages/omo-senpi/scripts/qa/task-host-e2e-storm.mjs:13:      code: `var result = await tool.bash({ command: "true # storm-${index}" });
-packages/omo-senpi/scripts/qa/task-lane-spill-e2e.mjs:254:  // Attached and NOT unref'd on purpose: a detached+unref'd helper is never wait()ed on, so it
-packages/omo-senpi/scripts/qa/task-load-skills-e2e.mjs:81:        code: `const result = await tool.bash({ command: "printf 'bounded executor output\\\\n' > executor.txt && git add executor.txt && git -c user.name='QA Executor' -c  [...]
-packages/omo-senpi/scripts/qa/ulw-goal-footer-tui.mjs:190:                'const out = await tool.bash({ command: \'"$OMO_BIN" ulw-loop create-goals\' })',
+packages/omc-senpi/scripts/qa/agent-toolkit-catalog-qa.mjs:39:    return tool.execute("qa-call", {}, undefined, undefined, {})
+packages/omc-senpi/scripts/qa/claim-receipt-e2e.mjs:43:        code: "const r = await tool.bash({ command: \"echo 'bun test (simulated)'; printf ' 3 pass\\\\n 0 fail\\\\n'\" }); print(r.text)",
+packages/omc-senpi/scripts/qa/computer-control-live-macos-scenarios.mjs:149:      run(`${acquire} await wait(30000); return JSON.stringify(state)`),
+packages/omc-senpi/scripts/qa/desktop-toolkit-rpc-e2e.mjs:35:  code: 'const r = await tool.omc_desktop_toolkit({ op: "acquire", toolkit: "browser" }); print("TOOLKIT_RESULT " + JSON.stringify(r.details ?? r))',
+packages/omc-senpi/scripts/qa/fused-equivalence-support.mjs:186:const pauseSync = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+packages/omc-senpi/scripts/qa/kernel-tools-python-e2e.mjs:3:// omc child by that Python cell (`tool.task(..., tools=["add"])`); the child calls it and the call runs back in the parent kernel.
+packages/omc-senpi/scripts/qa/kernel-tools-python-e2e.mjs:28:const CALL_CHILD = "reply = tool.task(prompt='MOCK' + 'ROLE=quick add 1 and 2 with the add tool', subagent_type='fixture', tools=['add'])\nreply"
+packages/omc-senpi/scripts/qa/parallelism-eval-e2e.mjs:43:          '  tool.read({ path: "qa-note.txt" }),',
+packages/omc-senpi/scripts/qa/parallelism-eval-e2e.mjs:44:          '  tool.bash({ command: "printf qa-eval-e2e" }),',
+packages/omc-senpi/scripts/qa/plan-gated-agents-e2e.mjs:202:          code: `const started = await tool.workflow(${JSON.stringify({ action: "start", definition: DAG_RETIRED_DEFINITION })});\nconsole.log(JSON.stringify(started));`,
+packages/omc-senpi/scripts/qa/probe-continuation.mjs:139:      wait(250)
+packages/omc-senpi/scripts/qa/probe-continuation.mjs:176:function wait(milliseconds) {
+packages/omc-senpi/scripts/qa/probe-continuation.mjs:177:  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, milliseconds)
+packages/omc-senpi/scripts/qa/task-host-e2e-storm.mjs:13:      code: `var result = await tool.bash({ command: "true # storm-${index}" });
+packages/omc-senpi/scripts/qa/task-lane-spill-e2e.mjs:254:  // Attached and NOT unref'd on purpose: a detached+unref'd helper is never wait()ed on, so it
+packages/omc-senpi/scripts/qa/task-load-skills-e2e.mjs:81:        code: `const result = await tool.bash({ command: "printf 'bounded executor output\\\\n' > executor.txt && git add executor.txt && git -c user.name='QA Executor' -c  [...]
+packages/omc-senpi/scripts/qa/ulw-goal-footer-tui.mjs:190:                'const out = await tool.bash({ command: \'"$OMC_BIN" ulw-loop create-goals\' })',
 packages/senpi-desktop-prelude/docs/computer.md:4:    Every helper is one `tool.computer({ action: "call", chain })` call. Permission tiers: inspection needs `computer:read`, input and mutation need `computer:exec`; a denied call  [...]
 packages/senpi-desktop-prelude/docs/computer.md:55:    One multi-step JS run in the persistent desktop session. Functions receive `{ desktop, wait, assert }` (`desktop` = same helpers) and cannot capture cell closures; `args` pass [...]
 ```
@@ -415,23 +415,23 @@ other string literal of those files; one that fails to parse is still listed whe
 `wait(`, or a backticked `` `tool` `` / `` `wait` ``. Contract text (a backticked `desktop` followed
 by a backticked `wait` or `tool`, with or without its own signature inside the backticks) in source literals, Markdown lines and JSON lines (the fixture, the goldens) is
 a matrix row of its own (M9-M22). `.py` files are walked for `"action": "run"` dicts. The script and its full output are kept as local
-evidence of the row (`.omo/evidence/` is never committed; the PR body carries their sha256 lines); its summary at 7adadfb805:
+evidence of the row (`.omc/evidence/` is never committed; the PR body carries their sha256 lines); its summary at 7adadfb805:
 
 ```text
 A  packages/senpi-desktop-service/test/run.test.ts  bodies=20  tool_or_wait=1
-A  packages/omo-senpi/scripts/qa/computer-control-live-macos-desktop.mjs  bodies=6  tool_or_wait=0
-A  packages/omo-senpi/scripts/qa/computer-control-live-macos-scenarios.mjs  bodies=6  tool_or_wait=1
-A  packages/omo-senpi/scripts/qa/computer-control-rpc-e2e.mjs  bodies=1  tool_or_wait=0
-A  packages/omo-senpi/scripts/qa/computer-use-e2e.mjs  bodies=5  tool_or_wait=0
-A  packages/omo-senpi/scripts/qa/fused-equivalence-e2e.mjs  bodies=1  tool_or_wait=0
-A  packages/omo-senpi/scripts/qa/task-stats-renderer.mjs  bodies=1  tool_or_wait=0
+A  packages/omc-senpi/scripts/qa/computer-control-live-macos-desktop.mjs  bodies=6  tool_or_wait=0
+A  packages/omc-senpi/scripts/qa/computer-control-live-macos-scenarios.mjs  bodies=6  tool_or_wait=1
+A  packages/omc-senpi/scripts/qa/computer-control-rpc-e2e.mjs  bodies=1  tool_or_wait=0
+A  packages/omc-senpi/scripts/qa/computer-use-e2e.mjs  bodies=5  tool_or_wait=0
+A  packages/omc-senpi/scripts/qa/fused-equivalence-e2e.mjs  bodies=1  tool_or_wait=0
+A  packages/omc-senpi/scripts/qa/task-stats-renderer.mjs  bodies=1  tool_or_wait=0
 A  packages/senpi-desktop-prelude/docs/computer.md  bodies=1  tool_or_wait=1
 B  docs/reference/computer.md  bodies=1  tool_or_wait=1
-B  packages/omo-senpi/scripts/qa/fused-equivalence-golden/darwin-arm64/E21.json  bodies=4  tool_or_wait=4
-B  packages/omo-senpi/scripts/qa/fused-equivalence-golden/linux-x64/E21.json  bodies=4  tool_or_wait=4
-B  packages/omo-senpi/src/components/computer-use/index.telemetry.test.ts  bodies=1  tool_or_wait=0
-B  packages/omo-senpi/src/components/computer-use/published-parameters.fixture.json  bodies=1  tool_or_wait=1
-B  packages/omo-senpi/src/components/computer-use/telemetry.test.ts  bodies=3  tool_or_wait=0
+B  packages/omc-senpi/scripts/qa/fused-equivalence-golden/darwin-arm64/E21.json  bodies=4  tool_or_wait=4
+B  packages/omc-senpi/scripts/qa/fused-equivalence-golden/linux-x64/E21.json  bodies=4  tool_or_wait=4
+B  packages/omc-senpi/src/components/computer-use/index.telemetry.test.ts  bodies=1  tool_or_wait=0
+B  packages/omc-senpi/src/components/computer-use/published-parameters.fixture.json  bodies=1  tool_or_wait=1
+B  packages/omc-senpi/src/components/computer-use/telemetry.test.ts  bodies=3  tool_or_wait=0
 B  packages/senpi-desktop-prelude/README.md  bodies=1  tool_or_wait=1
 B  packages/senpi-desktop-prelude/src/prelude.js  bodies=1  tool_or_wait=1
 B  packages/senpi-desktop-prelude/src/prelude.py  bodies=2  tool_or_wait=0
@@ -465,18 +465,18 @@ B  script/qa/desktop/macos/scenarios-safety.ts  bodies=1  tool_or_wait=0
 ## totals: bodies=156 (tier A 41, tier B 115); referencing tool/wait=22; bodies that did not parse=5
 
 ROW A packages/senpi-desktop-service/test/run.test.ts:303 refs=tool kind=helper run() :: return (await tool.read({ path: "notes.txt" })).content[0].text;
-ROW A packages/omo-senpi/scripts/qa/computer-control-live-macos-scenarios.mjs:149 refs=wait kind=helper run() :: const state = await desktop.control.acquire({ reason: __SUB__ }); await wait(30000); return JSON.stringify(state)
+ROW A packages/omc-senpi/scripts/qa/computer-control-live-macos-scenarios.mjs:149 refs=wait kind=helper run() :: const state = await desktop.control.acquire({ reason: __SUB__ }); await wait(30000); return JSON.stringify(state)
 ROW A packages/senpi-desktop-prelude/docs/computer.md:54 refs=wait kind=markdown entry :: computer.run(fnOrCode, { args?, read_only?, timeout? }?) → value One multi-step JS run in the persistent desktop session. Functions receive `{ desktop [...]
 ROW B docs/reference/computer.md:22 refs=tool,wait kind=contract text (markdown) :: | `run` | `code`: JavaScript async function body with `desktop`, `wait`, `assert` and `tool`; optional `read_only` and `timeout` in seconds | The returned v [...]
-ROW B packages/omo-senpi/scripts/qa/fused-equivalence-golden/darwin-arm64/E21.json:1878 refs=tool,wait kind=contract text (json) :: "description": "Drive the user's real desktop (experimental): windows, screenshots, native mouse and keyboar [...]
-ROW B packages/omo-senpi/scripts/qa/fused-equivalence-golden/darwin-arm64/E21.json:1919 refs=tool,wait kind=contract text (json) :: "description": "run (required): JavaScript async function body; `desktop`, `wait`, `assert`, `tool` in scope [...]
-ROW B packages/omo-senpi/scripts/qa/fused-equivalence-golden/darwin-arm64/E21.json:3714 refs=tool,wait kind=contract text (json) :: "description": "Drive the user's real desktop (experimental): windows, screenshots, native mouse and keyboar [...]
-ROW B packages/omo-senpi/scripts/qa/fused-equivalence-golden/darwin-arm64/E21.json:3755 refs=tool,wait kind=contract text (json) :: "description": "run (required): JavaScript async function body; `desktop`, `wait`, `assert`, `tool` in scope [...]
-ROW B packages/omo-senpi/scripts/qa/fused-equivalence-golden/linux-x64/E21.json:1878 refs=tool,wait kind=contract text (json) :: "description": "Drive the user's real desktop (experimental): windows, screenshots, native mouse and keyboard i [...]
-ROW B packages/omo-senpi/scripts/qa/fused-equivalence-golden/linux-x64/E21.json:1919 refs=tool,wait kind=contract text (json) :: "description": "run (required): JavaScript async function body; `desktop`, `wait`, `assert`, `tool` in scope; ` [...]
-ROW B packages/omo-senpi/scripts/qa/fused-equivalence-golden/linux-x64/E21.json:3714 refs=tool,wait kind=contract text (json) :: "description": "Drive the user's real desktop (experimental): windows, screenshots, native mouse and keyboard i [...]
-ROW B packages/omo-senpi/scripts/qa/fused-equivalence-golden/linux-x64/E21.json:3755 refs=tool,wait kind=contract text (json) :: "description": "run (required): JavaScript async function body; `desktop`, `wait`, `assert`, `tool` in scope; ` [...]
-ROW B packages/omo-senpi/src/components/computer-use/published-parameters.fixture.json:42 refs=tool,wait kind=contract text (json) :: "description": "run (required): JavaScript async function body; `desktop`, `wait`, `assert`, `tool` in sco [...]
+ROW B packages/omc-senpi/scripts/qa/fused-equivalence-golden/darwin-arm64/E21.json:1878 refs=tool,wait kind=contract text (json) :: "description": "Drive the user's real desktop (experimental): windows, screenshots, native mouse and keyboar [...]
+ROW B packages/omc-senpi/scripts/qa/fused-equivalence-golden/darwin-arm64/E21.json:1919 refs=tool,wait kind=contract text (json) :: "description": "run (required): JavaScript async function body; `desktop`, `wait`, `assert`, `tool` in scope [...]
+ROW B packages/omc-senpi/scripts/qa/fused-equivalence-golden/darwin-arm64/E21.json:3714 refs=tool,wait kind=contract text (json) :: "description": "Drive the user's real desktop (experimental): windows, screenshots, native mouse and keyboar [...]
+ROW B packages/omc-senpi/scripts/qa/fused-equivalence-golden/darwin-arm64/E21.json:3755 refs=tool,wait kind=contract text (json) :: "description": "run (required): JavaScript async function body; `desktop`, `wait`, `assert`, `tool` in scope [...]
+ROW B packages/omc-senpi/scripts/qa/fused-equivalence-golden/linux-x64/E21.json:1878 refs=tool,wait kind=contract text (json) :: "description": "Drive the user's real desktop (experimental): windows, screenshots, native mouse and keyboard i [...]
+ROW B packages/omc-senpi/scripts/qa/fused-equivalence-golden/linux-x64/E21.json:1919 refs=tool,wait kind=contract text (json) :: "description": "run (required): JavaScript async function body; `desktop`, `wait`, `assert`, `tool` in scope; ` [...]
+ROW B packages/omc-senpi/scripts/qa/fused-equivalence-golden/linux-x64/E21.json:3714 refs=tool,wait kind=contract text (json) :: "description": "Drive the user's real desktop (experimental): windows, screenshots, native mouse and keyboard i [...]
+ROW B packages/omc-senpi/scripts/qa/fused-equivalence-golden/linux-x64/E21.json:3755 refs=tool,wait kind=contract text (json) :: "description": "run (required): JavaScript async function body; `desktop`, `wait`, `assert`, `tool` in scope; ` [...]
+ROW B packages/omc-senpi/src/components/computer-use/published-parameters.fixture.json:42 refs=tool,wait kind=contract text (json) :: "description": "run (required): JavaScript async function body; `desktop`, `wait`, `assert`, `tool` in sco [...]
 ROW B packages/senpi-desktop-prelude/README.md:22 refs=wait kind=markdown entry :: - `{ action: "run", code, read_only?, timeout? }`: `code` is an async function body. `computer.run(fn, { args })` serializes `fn` and each argument (JSON dat [...]
 ROW B packages/senpi-desktop-prelude/src/prelude.js:132 refs=wait kind=generated code = ... :: return await (__SUB__)({ desktop, wait, assert }__SUB__);
 ROW B packages/senpi-desktop-service/README.md:18 refs=tool,wait kind=contract text (markdown) :: - The context's globals are `desktop` (the facade), `wait(ms | predicate, {timeout, interval})`, `assert(condition, message)`, `console`, and  [...]

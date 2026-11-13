@@ -1,0 +1,280 @@
+import { isMainThread } from "node:worker_threads"
+import { installLockWorkerObserver } from "@oh-my-cybersecurity/team-core/team-state-store/lock-worker-lifetime"
+import type { OmoMemorySettings } from "@oh-my-cybersecurity/omc-config-core"
+import { InFlightReads, resolveMemoryRoot, syncPinDir } from "@oh-my-cybersecurity/memory-core"
+
+import type { ComponentContext, OmoSenpiComponent, SenpiExtensionAPI } from "../../extension/types"
+import { loadSenpiOmoConfig, type SenpiOmoConfigResult } from "../config-resolution"
+import { MEMORY_BINDING_CUSTOM_TYPE } from "./binding"
+import { renderMemoryBindingEntry } from "./bindings/entry-renderer"
+import { hasMemoryCapabilities, missingMemoryCapabilities } from "./capabilities"
+import { primeMemoryPersonaAssets } from "./persona-prime"
+import { shutdownDeadlineAt, type ShutdownReason } from "./shutdown-drain"
+import { resolveMemorySettings } from "./identity-runtime"
+import { registerMemoryReadClassifier } from "./read-classifier-wiring"
+import { createSessionBinder, readSessionSurface, releaseSession, type SessionState } from "./session-binding"
+import { finalizeIdentityRun } from "./transient-identity"
+import type { DeviceAccountSource } from "./device-session/account-source"
+import { selectedDeviceAccountSource } from "./device-session/account-runtime-loader"
+import { createDeviceSessionResolver } from "./device-session/resolver"
+import { trackMemoryHooks } from "./hook-work"
+import { createSyncRunner, type SyncRunner } from "./sync-runner"
+import { readMemoryRpcSync } from "./memory-rpc-sync"
+import { wireSyncRpc } from "./sync-rpc-wiring"
+import { sweepTransientMemoryRuns, type TransientSweep } from "./transient-sweep"
+import { scheduleTransientSweepOnce } from "./transient-sweep-once"
+import { registerRecallMemoryReporter } from "./memory-reporter"
+import { createMemoryWiring, type MemoryWiringOptions } from "./wiring"
+
+const GLOBAL_DISABLED_FLAG = "omc-senpi-disabled"
+const MEMORY_DISABLED_FLAG = "omc-senpi-memory-disabled"
+const CONFIG_WATCH_RELOADED = "config-watch:reloaded"
+const RESTART_REQUIRED_NOTICE = "restart required to apply memory config change"
+
+export type ResolvedMemoryConfig = OmoMemorySettings
+
+export interface MemoryComponentOptions {
+  readonly env?: Record<string, string | undefined>
+  readonly loadConfig?: (options?: { readonly cwd?: string }) => SenpiOmoConfigResult
+  readonly now?: () => number
+  readonly resolveCwd?: () => string
+  readonly createRuntime?: MemoryWiringOptions["createRuntime"]
+  readonly refreshStatus?: MemoryWiringOptions["refreshStatus"]
+  /** Seam for the registration-time transient sweep (transient-sweep.ts). */
+  readonly sweepTransientRuns?: TransientSweep
+  /** Delay before the once-per-process sweep starts (transient-sweep-once.ts). */
+  readonly transientSweepDeferMs?: number
+  /** Seam for the end-to-end encrypted sync runner (sync-runner.ts). */
+  readonly syncRunner?: SyncRunner
+  /** The host's signed-in device; the default reads the credentials `omc login` keeps. */
+  readonly deviceAccount?: DeviceAccountSource
+}
+
+export { MEMORY_BINDING_CUSTOM_TYPE } from "./binding"
+export { ensureIdentityRuntimeDirs, getMemoryRepo } from "./context"
+export type { MemoryIdentityContext, MemoryPendingLedger, MemoryRepoAccess } from "./context"
+export { memoryModuleSupervisor } from "./supervisor"
+
+export function createMemoryComponent(options: MemoryComponentOptions = {}): OmoSenpiComponent {
+  const loadConfig = options.loadConfig ?? loadSenpiOmoConfig
+  const now = options.now ?? Date.now
+  const env = options.env ?? process.env
+  const sweepTransientRuns = options.sweepTransientRuns ?? sweepTransientMemoryRuns
+  const sessions = new Map<string, SessionState>()
+
+  return {
+    name: "memory",
+    register(hostPi: SenpiExtensionAPI, ctx: ComponentContext): void {
+      if (isMainThread) installLockWorkerObserver()
+      const resolveCwd = options.resolveCwd ?? (() => extensionCwd(hostPi))
+      const cwd = resolveCwd()
+      const bootConfig = resolveMemoryConfig(loadConfig({ cwd }))
+      if (!isEnabled(bootConfig, ctx, env)) return
+
+      const missing = missingMemoryCapabilities(hostPi)
+      if (missing.length > 0 || !hasMemoryCapabilities(hostPi)) {
+        ctx.logger.warn("omc-senpi memory component skipped: missing ExtensionAPI capabilities", { missing })
+        return
+      }
+      // Everything the session_shutdown drain must wait on before the identity directory is released (#11135).
+      const work = new InFlightReads()
+      const pi = trackMemoryHooks(hostPi, work)
+
+      // The runner reports sync status transitions to the wiring, which exists only after the runner.
+      const syncStatusChanged: { current?: (repo: string) => void } = {}
+      const memoryRoot = resolveMemoryRoot(env, cwd)
+      const pinDir = syncPinDir(memoryRoot)
+      const deviceAccount = options.deviceAccount ?? selectedDeviceAccountSource({ env, pinDir, logger: ctx.logger })
+      const syncRunner = options.syncRunner ?? createSyncRunner({
+        logger: ctx.logger,
+        onStatusChange: (repo) => syncStatusChanged.current?.(repo),
+        resolveSession: createDeviceSessionResolver({
+          source: deviceAccount,
+          pinDir,
+          loadRuntime: () => import("#omc-memory-sync-runtime"),
+        }),
+      })
+      const syncLifetime = new AbortController()
+      let syncSessionId: string | undefined
+      const rpcHandle = pi.rpc?.handle?.bind(pi.rpc)
+      const syncRpc = rpcHandle === undefined ? undefined : wireSyncRpc({
+        rpc: { handle: rpcHandle }, source: deviceAccount, memoryRoot, pinDir, signal: syncLifetime.signal,
+        syncStatus: async () => {
+          const repo = syncSessionId === undefined ? undefined : sessions.get(syncSessionId)?.context?.identityPaths.repo
+          return repo === undefined ? undefined : readMemoryRpcSync((path) => syncRunner.status(path), repo)
+        },
+      })
+      primeMemoryPersonaAssets({ logger: ctx.logger })
+      // Reclaim runs an abnormal exit left behind (#7765): once per memory root per day in this
+      // process, after the open, never inside it. A slow or failing sweep must never delay or break binding.
+      const transientSweep = scheduleTransientSweepOnce({
+        memoryRoot,
+        now,
+        ...(options.transientSweepDeferMs === undefined ? {} : { deferMs: options.transientSweepDeferMs }),
+        start: () => {
+          void work.track(() => sweepTransientRuns({
+            memoryRoot,
+            warn: (message, fields) => ctx.logger.warn(message, fields),
+          })).catch((error: unknown) => {
+            ctx.logger.warn("omc-senpi memory transient sweep failed", { error: describeError(error) })
+          })
+        },
+      })
+
+      const wiring = createMemoryWiring({
+        sessions,
+        loadConfig,
+        cwd: resolveCwd,
+        env,
+        now,
+        logger: ctx.logger,
+        deviceName: (principal) => syncRunner.deviceName(principal),
+        syncStatus: (repo) => syncRunner.status(repo),
+        work,
+        ...(options.createRuntime === undefined ? {} : { createRuntime: options.createRuntime }),
+        ...(options.refreshStatus === undefined ? {} : { refreshStatus: options.refreshStatus }),
+        // Reuse the boot snapshot: registration must not add a loadConfig() call, because the
+        // enablement latch depends on the ORDER of reads across boot -> session_start -> reload.
+      })
+      const bindSession = createSessionBinder({
+        pi,
+        ctx,
+        env,
+        now,
+        cwd,
+        loadConfig,
+        sessions,
+        wiring,
+        syncRunner,
+        work,
+        isEnabled: (config) => isEnabled(config, ctx, env),
+        resolveConfig: resolveMemoryConfig,
+      })
+      syncStatusChanged.current = (repo) => {
+        void work.track(() => wiring.onSyncStatusChanged(repo)).catch((error: unknown) => {
+          ctx.logger.warn("memory sync status refresh failed", { error: describeError(error) })
+        })
+      }
+      wiring.registerStatic(pi, ctx)
+      // A session that reaches a turn without session_start in this runner generation (a host
+      // restart or reload that resumed an open conversation) is bound here from its own recorded
+      // binding. Registered after the static handlers so their projection-first result order holds:
+      // the memory tool is live on this turn (afterBind marks the session active) and the prompt
+      // block follows on the next one.
+      pi.on("before_agent_start", (payload, eventCtx) => {
+        if (isRecord(payload) && payload.preview === true) return undefined
+        const surface = readSessionSurface(eventCtx)
+        if (surface.id === "unknown-session") return undefined
+        const state = sessions.get(surface.id)
+        if (state?.context !== undefined) return undefined
+        if (state !== undefined && !state.enabled) return undefined
+        syncRpc?.retireBinding()
+        syncSessionId = surface.id
+        bindSession(surface, eventCtx, { existing: state, verifyRepository: true })
+        return undefined
+      }, { previewSafe: true })
+      const unregisterReadClassifier = registerMemoryReadClassifier(pi, {
+        resolveRepos: function* () {
+          for (const state of sessions.values()) {
+            if (state.context !== undefined) yield state.context.identityPaths.repo
+          }
+        },
+        logger: ctx.logger,
+      })
+      pi.registerEntryRenderer(MEMORY_BINDING_CUSTOM_TYPE, renderMemoryBindingEntry)
+      registerRecallMemoryReporter(pi)
+      const unsubscribeReload = pi.events?.on(CONFIG_WATCH_RELOADED, (payload) => {
+        if (!isOmoConfigReload(payload)) return
+        const enabled = isEnabled(resolveMemoryConfig(loadConfig({ cwd })), ctx, env)
+        for (const state of sessions.values()) {
+          if (state.enabled === enabled || state.restartNotified) continue
+          state.restartNotified = true
+          state.ui?.notify(RESTART_REQUIRED_NOTICE, "warning")
+        }
+      })
+
+      pi.on("session_start", (_payload, eventCtx) => {
+        const surface = readSessionSurface(eventCtx)
+        syncRpc?.retireBinding()
+        syncSessionId = surface.id
+        wiring.clearStatus(eventCtx)
+        releaseSession(sessions.get(surface.id), syncRunner)
+        bindSession(surface, eventCtx, { existing: undefined, verifyRepository: false })
+      })
+
+      pi.on("session_shutdown", async (payload, eventCtx) => {
+        transientSweep?.cancel()
+        const sessionId = readSessionSurface(eventCtx).id
+        if (syncSessionId === sessionId) {
+          syncRpc?.retireBinding()
+          syncSessionId = undefined
+        }
+        // The drain runs BEFORE the session is released: its steps read the bound identity.
+        await wiring.onSessionShutdown({
+          reason: readShutdownReason(payload),
+          sessionId,
+          deadlineAt: shutdownDeadlineAt(now),
+          now,
+        })
+        wiring.clearStatus(eventCtx)
+        const state = sessions.get(sessionId)
+        const syncRelease = state?.syncRepo === undefined ? undefined : syncRunner.release(state.syncRepo)
+        releaseSession(state)
+        sessions.delete(sessionId)
+        await syncRelease
+        if (state?.run !== undefined) {
+          await finalizeIdentityRun({ run: state.run, warn: (message, fields) => ctx.logger.warn(message, fields) })
+        }
+        if (sessions.size === 0) unregisterReadClassifier?.()
+        unsubscribeReload?.()
+      })
+    },
+  }
+}
+
+export function resolveMemoryConfig(loaded: SenpiOmoConfigResult): ResolvedMemoryConfig {
+  return resolveMemorySettings(loaded.config.memory)
+}
+
+// Detached memory workers carry sentinels so their own settles do not recursively trigger memory.
+const CHILD_SENTINELS = ["SENPI_MEMORY_REFLECTION", "SENPI_MEMORY_FACTS"] as const
+
+export function isMemoryChildProcess(env: Record<string, string | undefined>): boolean {
+  return CHILD_SENTINELS.some((sentinel) => env[sentinel] === "1")
+}
+
+function isEnabled(
+  config: ResolvedMemoryConfig,
+  ctx: ComponentContext,
+  env: Record<string, string | undefined>,
+): boolean {
+  return config.enabled
+    && !isMemoryChildProcess(env)
+    && ctx.config.getFlag(GLOBAL_DISABLED_FLAG) !== true
+    && ctx.config.getFlag(MEMORY_DISABLED_FLAG) !== true
+}
+
+function extensionCwd(pi: SenpiExtensionAPI): string {
+  return typeof pi.cwd === "string" && pi.cwd.length > 0 ? pi.cwd : process.cwd()
+}
+
+const SHUTDOWN_REASONS: readonly ShutdownReason[] = ["quit", "reload", "new", "resume", "fork"]
+
+/** An unknown or absent reason drains conservatively: flush and enqueue, launch nothing. */
+function readShutdownReason(payload: unknown): ShutdownReason {
+  if (!isRecord(payload)) return "reload"
+  const reason = payload.reason
+  return SHUTDOWN_REASONS.find((candidate) => candidate === reason) ?? "reload"
+}
+
+function isOmoConfigReload(value: unknown): boolean {
+  return isRecord(value) && value.registrationId === "omc"
+}
+
+function describeError(error: unknown): string {
+  return error instanceof Error ? error.message : String(error)
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value)
+}

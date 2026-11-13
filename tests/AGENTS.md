@@ -8,12 +8,12 @@ Cross-package invariants and integration fixtures that do not belong to one pack
 
 ```
 tests/
-├── omo-config-category-drift.test.ts  # Config/category contract stays synchronized
-├── omo-schema-freshness.test.ts       # Generated omo.schema.json matches source
-├── omo-schema-unique-ids.test.ts      # omo.schema.json gives each $id one schema; profiles $ref the [opencode] block (issue #6444)
+├── omc-config-category-drift.test.ts  # Config/category contract stays synchronized
+├── omc-schema-freshness.test.ts       # Generated omc.schema.json matches source
+├── omc-schema-unique-ids.test.ts      # omc.schema.json gives each $id one schema; profiles $ref the [opencode] block (issue #6444)
 ├── schema-defaulted-fields-optional.test.ts  # committed config schemas never list a defaulted field as required (issue #6445)
-├── reasoning-vocabulary-parity.test.ts  # model-core vs omo-config-core reasoning levels + normalization agree
-├── ulw-loop-define-goal-reference.test.ts  # ulw-loop skills (omo-senpi + omo-codex editions) ship define-goal.md beside full-workflow.md
+├── reasoning-vocabulary-parity.test.ts  # model-core vs omc-config-core reasoning levels + normalization agree
+├── ulw-loop-define-goal-reference.test.ts  # ulw-loop skills (omc-senpi + omc-codex editions) ship define-goal.md beside full-workflow.md
 ├── ulw-plan-review-convergence-contract.test.ts  # bounded review-convergence contract JSON present in every edition's full-workflow.md (issues #6128, #10378)
 └── hashline/                          # Standalone headless Hashline exercise package
     ├── package.json
@@ -46,4 +46,4 @@ tests/
 
 - Do not turn `tests/` into a second home for ordinary package unit tests.
 - Do not remove, skip, or isolate a failing cross-package invariant to make the root suite green.
-- The synthetic AGENTS.md benchmark fixture under `packages/omo-opencode/src/__tests__/perf/fixtures/` is governed by its own local guide; this guide only cross-references it and does not govern its contents.
+- The synthetic AGENTS.md benchmark fixture under `packages/omc-opencode/src/__tests__/perf/fixtures/` is governed by its own local guide; this guide only cross-references it and does not govern its contents.

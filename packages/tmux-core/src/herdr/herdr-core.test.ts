@@ -109,7 +109,7 @@ describe("buildHerdrPaneAuthEnv", () => {
       username: process.env["OPENCODE_SERVER_USERNAME"],
     }
     process.env["OPENCODE_SERVER_PASSWORD"] = fixturePassword
-    process.env["OPENCODE_SERVER_USERNAME"] = "omo-user"
+    process.env["OPENCODE_SERVER_USERNAME"] = "omc-user"
     delete process.env["OPENCODE_SERVER_PASSWORD_FILE"]
     const cleanupAuthDirectory = createPaneAuthDirectory()
     let passwordFile: string | undefined
@@ -119,7 +119,7 @@ describe("buildHerdrPaneAuthEnv", () => {
 
       // then
       expect(Object.keys(env).sort()).toEqual(["OPENCODE_SERVER_PASSWORD_FILE", "OPENCODE_SERVER_USERNAME"])
-      expect(env["OPENCODE_SERVER_USERNAME"]).toBe("omo-user")
+      expect(env["OPENCODE_SERVER_USERNAME"]).toBe("omc-user")
       passwordFile = env["OPENCODE_SERVER_PASSWORD_FILE"]
       if (!passwordFile) throw new Error("missing password file")
       expect(Object.values(env).some((value) => value.includes(fixturePassword))).toBe(false)
@@ -141,7 +141,7 @@ describe("buildHerdrPaneAuthEnv", () => {
 describe.skipIf(process.platform === "win32")("runHerdrCommandDefault", () => {
   test("resolves herdr through PATH and settles without waiting out the timeout window", async () => {
     // given
-    const dir = mkdtempSync(join(tmpdir(), "omo-herdr-exec-"))
+    const dir = mkdtempSync(join(tmpdir(), "omc-herdr-exec-"))
     try {
       // absolute binaries only: the child PATH is the temp dir alone, so a
       // bare command would fall back to the shell's default-PATH behavior
@@ -164,7 +164,7 @@ describe.skipIf(process.platform === "win32")("runHerdrCommandDefault", () => {
 
   test("reports a typed timeout when the command exceeds the deadline", async () => {
     // given
-    const dir = mkdtempSync(join(tmpdir(), "omo-herdr-exec-"))
+    const dir = mkdtempSync(join(tmpdir(), "omc-herdr-exec-"))
     try {
       // exec /bin/sleep keeps the child alive past the deadline regardless of
       // PATH (a bare `sleep` would exit 127 under dash and never time out)
@@ -189,7 +189,7 @@ describe.skipIf(process.platform === "win32")("runHerdrCommandDefault", () => {
 
   test("clears the watchdog timer once settled: a fast exec does not hold the process for the window", async () => {
     // given
-    const dir = mkdtempSync(join(tmpdir(), "omo-herdr-timer-"))
+    const dir = mkdtempSync(join(tmpdir(), "omc-herdr-timer-"))
     try {
       writeFileSync(join(dir, "herdr"), "#!/bin/sh\nexec /bin/echo hi\n", { mode: 0o755 })
       // A child bun process runs one exec against a fast fake herdr with a
@@ -228,12 +228,12 @@ describe("herdr ops", () => {
     const { deps, calls } = fakeOps(() => ok(envelope({ workspace: { workspace_id: "w9" }, root_pane: { pane_id: "w9:p1" } })))
 
     // when
-    const created = await herdrCreateWorkspace("/repo", "omo-team-x", deps)
+    const created = await herdrCreateWorkspace("/repo", "omc-team-x", deps)
 
     // then
     expect(created.workspaceId).toBe("w9")
     expect(created.rootPaneId).toBe("w9:p1")
-    expect(calls[0]).toEqual(["workspace", "create", "--cwd", "/repo", "--label", "omo-team-x", "--no-focus"])
+    expect(calls[0]).toEqual(["workspace", "create", "--cwd", "/repo", "--label", "omc-team-x", "--no-focus"])
   })
 
   test("tab create always pins the workspace and forwards env", async () => {
@@ -289,7 +289,7 @@ describe("herdr ops", () => {
     const teams = await herdrListTeamWorkspaces(deps)
 
     // then
-    expect(teams).toEqual([{ workspaceId: "w2", label: "omo-team-abc" }])
+    expect(teams).toEqual([{ workspaceId: "w2", label: "omc-team-abc" }])
   })
 
   test("workspace close surfaces typed failures", async () => {

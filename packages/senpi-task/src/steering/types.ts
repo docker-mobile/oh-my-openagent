@@ -14,10 +14,10 @@ export type DestructionCause = "cancel" | "cancel_without_abort" | "fallback_han
 // and NEVER calls dispose()/terminate()/SIGTERM itself (the dispose single-writer rule). Idempotent.
 export type DestructionPort = {
   destroyResidentTask(taskId: string, cause: DestructionCause): Promise<void>
-  // Releases a finished child still resident here; false when there is none (omo#9785).
+  // Releases a finished child still resident here; false when there is none (omc#9785).
   parkTerminalResident?(taskId: string): Promise<boolean>
   // Ends a daemon-hosted child this process holds no handle for, and re-drives it; absent, such a cancel
-  // stays pending on its record (omo#11765).
+  // stays pending on its record (omc#11765).
   hostSessionCancel?: HostSessionCancelPort
 }
 
@@ -60,7 +60,7 @@ export type SteeringPort = {
   stopSettled?(taskId: string): void
   // A reopened child handed back parked runs nowhere: no epoch of it keeps a lane slot.
   releaseTaskLeases?(taskId: string): void
-  // How long a running child's abort may hold a cancel or interrupt before it moves on (omo#9791).
+  // How long a running child's abort may hold a cancel or interrupt before it moves on (omc#9791).
   readonly abortDeadline?: TeardownStepDeadline
   now(): number
 }
@@ -127,11 +127,11 @@ export type CancelOutcome =
   // reachable (or the child ends when its connection does not come back), and only then is it cancelled.
   | { readonly kind: "cancel_pending"; readonly task_id: string; readonly previous_status: TaskStatus; readonly reason: string; readonly undelivered_messages?: number }
   | { readonly kind: "noop"; readonly task_id: string; readonly status: TaskStatus; readonly reason: string }
-  // The task had already finished; cancel released the child it still kept resident (omo#9785).
+  // The task had already finished; cancel released the child it still kept resident (omc#9785).
   | { readonly kind: "released"; readonly task_id: string; readonly status: TaskStatus; readonly undelivered_messages?: number }
   /** The caller named an earlier run (`expectedRunEpoch`) and the task has moved on; nothing was cancelled. */
   | { readonly kind: "stale"; readonly task_id: string; readonly status: TaskStatus; readonly run_epoch: number; readonly reason: string }
-  // The child runs in another live omo process that cannot take this cancel from here (#12349 compatibility edge).
+  // The child runs in another live omc process that cannot take this cancel from here (#12349 compatibility edge).
   | { readonly kind: "owner_cannot_apply"; readonly task_id: string; readonly owner_pid: number; readonly reason: "owner_unsupported" | "handle_gone" | "channel_disabled" }
   | { readonly kind: "not_found"; readonly reason: string }
 

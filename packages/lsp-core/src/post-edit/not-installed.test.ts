@@ -66,7 +66,7 @@ describe("classifyPostEditFileLocation", () => {
 	it("#given a file under the agent config dir inside a git repository #when classified #then the agent config dir wins", () => {
 		const root = tempRoot("lsp-postedit-agentdir-");
 		mkdirSync(join(root, ".git"));
-		const agentDir = join(root, ".omo", "agent");
+		const agentDir = join(root, ".omc", "agent");
 		const file = touch(join(agentDir, "models.json"), "{}\n");
 
 		expect(classifyPostEditFileLocation(file, { cwd: root, agentDirs: [agentDir], tempDirs: [] })).toBe(

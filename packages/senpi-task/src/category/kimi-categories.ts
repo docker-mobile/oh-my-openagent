@@ -1,7 +1,7 @@
 import type { BuiltinCategoryDefinition } from "./types"
-import { LATEST_MODEL_BY_FAMILY } from "@oh-my-opencode/model-core/latest-models"
+import { LATEST_MODEL_BY_FAMILY } from "@oh-my-cybersecurity/model-core/latest-models"
 
-// Ported from packages/omo-opencode/src/tools/delegate-task/kimi-categories.ts.
+// Ported from packages/omc-opencode/src/tools/delegate-task/kimi-categories.ts.
 const WRITING_CATEGORY_PROMPT_APPEND = `<Category_Context>
 You are working on WRITING / PROSE tasks.
 

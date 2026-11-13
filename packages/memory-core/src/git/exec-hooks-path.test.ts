@@ -11,7 +11,7 @@ import { removeTreeSync } from "../../../../test-support/remove-tree"
 
 // A global core.hooksPath silently redirects hook lookup away from the hooks
 // memory installs, so a commit through the exec must pin the memory hooks dir
-// next to NO_FSMONITOR (omo #12367). The positive control proves the fixture
+// next to NO_FSMONITOR (omc #12367). The positive control proves the fixture
 // really skips hooks without the pin; the exec run proves the pin restores them.
 const BAD_FRONTMATTER = "no frontmatter\n"
 
@@ -29,7 +29,7 @@ async function commitBadFile(fixture: HooksPathFixture, file: string, message: s
 }
 
 async function makeGlobalConfigFixture(): Promise<HooksPathFixture> {
-  const root = mkdtempSync(join(tmpdir(), "omo-git-hookspath-e2e-"))
+  const root = mkdtempSync(join(tmpdir(), "omc-git-hookspath-e2e-"))
   const configPath = join(root, "gitconfig")
   writeFileSync(configPath, "[core]\n\thooksPath = /dev/null\n")
   const env: NodeJS.ProcessEnv = {
@@ -44,7 +44,7 @@ async function makeGlobalConfigFixture(): Promise<HooksPathFixture> {
 }
 
 async function makeSandboxedHomeFixture(): Promise<HooksPathFixture> {
-  const root = mkdtempSync(join(tmpdir(), "omo-git-hookspath-e2e-"))
+  const root = mkdtempSync(join(tmpdir(), "omc-git-hookspath-e2e-"))
   writeFileSync(join(root, ".gitconfig"), "[core]\n\thooksPath = /dev/null\n")
   // The test preload owns GIT_CONFIG_GLOBAL, which would replace $HOME/.gitconfig,
   // so this variant builds its git environment from scratch instead of spreading
@@ -67,7 +67,7 @@ async function makeSandboxedHomeFixture(): Promise<HooksPathFixture> {
 
 describe("createNodeGitExec hooksPath", () => {
   test("#given a repository cwd #when any git command runs #then argv pins core.hooksPath to the memory hooks dir", async () => {
-    const cwd = mkdtempSync(join(tmpdir(), "omo-git-hookspath-"))
+    const cwd = mkdtempSync(join(tmpdir(), "omc-git-hookspath-"))
     onTestFinished(() => removeTreeSync(cwd, { maxRetries: 10, retryDelay: 200 }))
     const seen: (readonly string[])[] = []
     const exec = createNodeGitExec({

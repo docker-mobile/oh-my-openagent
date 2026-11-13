@@ -1,7 +1,7 @@
 /**
  * Herdr backend core (terminal multiplexer, https://herdr.dev).
  *
- * omo's tmux layer is a *visualization* surface: panes run `opencode attach`.
+ * omc's tmux layer is a *visualization* surface: panes run `opencode attach`.
  * On the herdr backend the same visualization maps to one Herdr workspace per
  * team with one tab per member, driven through Herdr's JSON control surface
  * (`{"id","result"|"error"}` envelopes) instead of tmux formats.
@@ -20,13 +20,13 @@
 
 import { existsSync, statSync } from "node:fs"
 import { delimiter, join } from "node:path"
-import { spawn } from "@oh-my-opencode/utils/runtime"
+import { spawn } from "@oh-my-cybersecurity/utils/runtime"
 import { createPaneAuthHandoff } from "../pane-auth"
 
-export const HERDR_TEAM_WORKSPACE_LABEL_PREFIX = "omo-team-"
+export const HERDR_TEAM_WORKSPACE_LABEL_PREFIX = "omc-team-"
 
-/** Subagent panes get their own workspaces, mirroring tmux's `omo-agents-<pid>` sessions. */
-export const HERDR_AGENTS_WORKSPACE_LABEL_PREFIX = "omo-agents-"
+/** Subagent panes get their own workspaces, mirroring tmux's `omc-agents-<pid>` sessions. */
+export const HERDR_AGENTS_WORKSPACE_LABEL_PREFIX = "omc-agents-"
 
 const HERDR_DEFAULT_EXEC_TIMEOUT_MS = 20_000
 const HERDR_SERVER_START_TIMEOUT_MS = 30_000
@@ -202,7 +202,7 @@ export const runHerdrCommandDefault: RunHerdrCommand = async (args, options = {}
 /**
  * Ensure a Herdr server owns the socket: probe with a cheap control command,
  * spawn the headless `herdr server` detached on `server_not_running`, and
- * poll until commands answer. Panes then outlive the omo process, which is
+ * poll until commands answer. Panes then outlive the omc process, which is
  * the Herdr model.
  */
 export async function ensureHerdrServer(

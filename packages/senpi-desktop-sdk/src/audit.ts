@@ -1,4 +1,4 @@
-import type { AuditEvent } from "@oh-my-opencode/senpi-desktop-protocol";
+import type { AuditEvent } from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import type { Events } from "./facade";
 import type { Link } from "./link";
 

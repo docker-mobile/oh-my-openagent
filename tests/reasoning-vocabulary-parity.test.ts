@@ -4,14 +4,14 @@ import {
   normalizeReasoning as coreNormalize,
   splitReasoningSuffix as coreSplit,
   REASONING_LEVELS as CORE_LEVELS,
-} from "../packages/omo-config-core/src/schema/reasoning-vocabulary"
+} from "../packages/omc-config-core/src/schema/reasoning-vocabulary"
 import {
   normalizeReasoning as mcNormalize,
   splitReasoningSuffix as mcSplit,
   REASONING_LEVELS as MC_LEVELS,
 } from "../packages/model-core/src/reasoning-level"
 
-describe("reasoning vocabulary parity between model-core and omo-config-core", () => {
+describe("reasoning vocabulary parity between model-core and omc-config-core", () => {
   test("#given both modules #when compared #then the level sets and normalization agree", () => {
     // given both implementations (kept separate so the config core does not drag model-core
     // into stricter downstream tsconfigs)

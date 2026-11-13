@@ -63,7 +63,7 @@ export type TurnSettlement = {
 }
 
 /**
- * A run's `agent_end` is not the child's last word (omo#9069). The session may continue on its own
+ * A run's `agent_end` is not the child's last word (omc#9069). The session may continue on its own
  * after it: a stream rule's corrective nudge, a goal backstop or any other settle-time continuation
  * starts a NEW run in the same session. senpi says the session is really done with `agent_idle`,
  * which it emits only when no deferred continuation started and no session work is pending; a
@@ -91,7 +91,7 @@ export function sessionIsIdle(state: {
   )
 }
 
-// omo#9711: a usage limit stays spent until a reset hours away, so neither a wake source nor an announced engine
+// omc#9711: a usage limit stays spent until a reset hours away, so neither a wake source nor an announced engine
 // retry can make progress on it. Give an announced retry its stated backoff plus one confirmation interval
 // to emit agent_start, then settle the limit even when unrelated wake sources remain live.
 const isUsageLimit = (outcome: RunnerOutcome): boolean =>
@@ -204,7 +204,7 @@ export function createTurnSettlement(input: TurnSettlementInput): TurnSettlement
           const outcome = endOutcome(event)
           const spent = isUsageLimit(outcome)
           if (event.willRetry !== false) {
-            // On a spent account the engine can announce a retry it never starts (omo#9711): no agent_start and no
+            // On a spent account the engine can announce a retry it never starts (omc#9711): no agent_start and no
             // terminal end follow, so the announced end is held like a terminal one and the bound settles it.
             if (!spent) return
             held = outcome

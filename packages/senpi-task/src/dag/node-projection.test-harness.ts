@@ -2,7 +2,7 @@ import * as fs from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 
-import { OmoTaskSettingsSchema } from "@oh-my-opencode/omo-config-core"
+import { OmoTaskSettingsSchema } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { ManagedChildEvent, ManagedChildHandle } from "../manager/child-handle"
 import { createTaskManager } from "../manager/manager"

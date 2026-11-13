@@ -1,4 +1,4 @@
-import type { RuntimeState } from "@oh-my-opencode/team-core/types"
+import type { RuntimeState } from "@oh-my-cybersecurity/team-core/types"
 
 import type { TaskLifecycle } from "../lifecycle"
 import type { ManagerStartSpec, StartResult } from "../manager"
@@ -6,7 +6,7 @@ import type { ResolvedModelRecord, TaskRecord } from "../state"
 import type { CancelOutcome } from "../steering"
 import type { InheritedExtensions } from "../runners/rpc/parent-extensions"
 import type { StateDirConfig } from "../store"
-import type { OmoTaskSettings } from "@oh-my-opencode/omo-config-core"
+import type { OmoTaskSettings } from "@oh-my-cybersecurity/omc-config-core"
 import type { MemberTaskMap } from "./member-map"
 import type { RuntimeMemberStatus } from "./member-projection"
 

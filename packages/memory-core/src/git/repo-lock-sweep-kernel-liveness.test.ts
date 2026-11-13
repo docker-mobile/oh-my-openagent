@@ -18,7 +18,7 @@ import { sweepStrandedGitLockFiles } from "./repo-lock-sweep"
 
 setDefaultTimeout(60_000)
 
-// omo #10322: on Linux the /proc holder and repository-user scans cannot answer whenever a
+// omc #10322: on Linux the /proc holder and repository-user scans cannot answer whenever a
 // same-uid process is not dumpable ((sd-pam), an sshd session, and on hosted runners the user's
 // own live git), so the dead-writer reclaim never fired there. Liveness of the memory writers'
 // git now comes from the kernel: every memory-core git run holds a shared flock that its git
@@ -49,7 +49,7 @@ async function identityRepo(agentId: string) {
   await mkdir(paths.locks, { recursive: true })
   await git(paths.repo, ["init", "-b", "main"])
   disableFixtureAutoMaintenance(paths.repo)
-  for (const [key, value] of [["commit.gpgsign", "false"], ["user.name", "Kernel Liveness"], ["user.email", "kernel@omo.local"]] as const) {
+  for (const [key, value] of [["commit.gpgsign", "false"], ["user.name", "Kernel Liveness"], ["user.email", "kernel@omc.local"]] as const) {
     await git(paths.repo, ["config", key, value])
   }
   return { root, paths, writerLockPath: memoryWriterLockPath(paths.locks) }
@@ -93,7 +93,7 @@ async function sweepAsSuccessor(writerLockPath: string, repoDir: string, scans: 
   }
 }
 
-describe("the git-activity lock never recreates a removed memory home (omo #10322)", () => {
+describe("the git-activity lock never recreates a removed memory home (omc #10322)", () => {
   test.skipIf(process.platform === "win32")("#given an identity whose directory was removed #when a git command runs in its repo #then nothing is recreated", async () => {
     // #given
     const { root, paths } = await identityRepo("kernel-removed-home")
@@ -109,7 +109,7 @@ describe("the git-activity lock never recreates a removed memory home (omo #1032
     expect(existsSync(root)).toBe(true)
   })
 
-  test.skipIf(process.platform === "win32" || process.getuid?.() === 0)("#given a memory home whose lock directory this user cannot write #when a read-only git command runs #then it still runs (omo #10604 review LOW 3)", async () => {
+  test.skipIf(process.platform === "win32" || process.getuid?.() === 0)("#given a memory home whose lock directory this user cannot write #when a read-only git command runs #then it still runs (omc #10604 review LOW 3)", async () => {
     // #given
     const { paths } = await identityRepo("kernel-unwritable-locks")
     await chmod(paths.locks, 0o500)
@@ -126,7 +126,7 @@ describe("the git-activity lock never recreates a removed memory home (omo #1032
   })
 })
 
-describe("dead-writer git-lock reclaim on hosts whose /proc scans cannot answer (omo #10322)", () => {
+describe("dead-writer git-lock reclaim on hosts whose /proc scans cannot answer (omc #10322)", () => {
   test.skipIf(process.platform === "win32")("#given a dead writer that ran its git under the activity lock #when its successor sweeps on a blind host #then the stranded lock is reclaimed", async () => {
     // #given
     const { paths, writerLockPath } = await identityRepo("kernel-dead")

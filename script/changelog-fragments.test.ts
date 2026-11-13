@@ -9,7 +9,7 @@ import {
 
 describe("fragment parsing", () => {
   test.each([
-    ["accepts a numeric fragment", "42.md", "**Fixed.** A fix. ([#42](https://github.com/code-yeongyu/oh-my-openagent/pull/42))"],
+    ["accepts a numeric fragment", "42.md", "**Fixed.** A fix. ([#42](https://github.com/code-yeongyu/oh-my-cybersecurity/pull/42))"],
     ["accepts a fragment with leading zeros in its id", "042.md", "note"],
   ])("%s", (_name, file, content) => {
     expect(parseFragment(file, content)).toEqual({ pr: 42, content })

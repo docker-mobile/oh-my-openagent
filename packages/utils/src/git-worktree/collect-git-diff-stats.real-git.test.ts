@@ -47,7 +47,7 @@ describe("collectGitDiffStats with a real repository", () => {
     )
     for (const key of REPOSITORY_SELECTING_GIT_ENV) delete process.env[key]
     Object.assign(process.env, HERMETIC_GIT_ENV)
-    root = mkdtempSync(join(tmpdir(), "omo-diff-stats-"))
+    root = mkdtempSync(join(tmpdir(), "omc-diff-stats-"))
     writeFileSync(join(root, "gitconfig"), "")
     process.env.GIT_CONFIG_GLOBAL = join(root, "gitconfig")
     repo = join(root, "repo")

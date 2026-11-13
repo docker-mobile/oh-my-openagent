@@ -23,7 +23,7 @@ import { DaemonAlreadyRunningError, DaemonStartupDeferredError, startDaemonServe
 import { probeDaemon } from "../src/ensure-daemon.js";
 import { ensurePrivateDirectory } from "../src/ipc-protocol.js";
 import { acquireStartupLease, readDaemonOwner, removeDaemonMetadataForOwner } from "../src/ownership.js";
-import { type DaemonPaths, daemonPaths, OMO_LSP_DAEMON_DIR } from "../src/paths.js";
+import { type DaemonPaths, daemonPaths, OMC_LSP_DAEMON_DIR } from "../src/paths.js";
 import { createLineDecoder, encodeJsonLine } from "../src/socket-jsonrpc.js";
 import { daemonTestPaths } from "./daemon-path-fixture.js";
 
@@ -42,12 +42,12 @@ function tempPaths(): DaemonPaths {
 }
 
 function fallbackTempPaths(): DaemonPaths {
-	const root = mkdtempSync("/tmp/omo-lsp-security-smoke-");
+	const root = mkdtempSync("/tmp/omc-lsp-security-smoke-");
 	tempDirectories.push(root);
 	const longBase = join(root, "state", "..", "state", "x".repeat(130));
 	const endpointTmp = join(root, "tmp");
 	return daemonPaths(
-		{ [OMO_LSP_DAEMON_DIR]: longBase },
+		{ [OMC_LSP_DAEMON_DIR]: longBase },
 		{ cliPath: join(root, "packaged-cli.js"), version: "test" },
 		{
 			platform: "linux",

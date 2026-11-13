@@ -24,7 +24,7 @@ export interface RuntimeRetentionOptions extends Omit<RetentionContext, "budget"
   /** `memory.runtime.max_bytes`: when set, the size cap (design 3) runs after retention; `0` measures only. */
   readonly maxBytes?: number
   /**
-   * The cap's journal floor for a caller that cannot see live sessions (the host sweep, `omo doctor
+   * The cap's journal floor for a caller that cannot see live sessions (the host sweep, `omc doctor
    * --fix`): `retention_days`, so an idle but alive session keeps its journal. Unset keeps the 24 h floor.
    */
   readonly journalFloorMs?: number

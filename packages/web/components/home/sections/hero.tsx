@@ -9,7 +9,7 @@ import { desktopDownloadEnabled, PUBLIC_DESKTOP_BETA_URL } from "@/lib/desktop-d
 
 /**
  * doriterm.com's live hero: centred two-tone headline over a static dot field, one solid button, the makers line,
- * then the workflow graph panel of the current omo.dev hero.
+ * then the workflow graph panel of the current omc.nga.hm hero.
  * The headline is the LCP element, so the hero has no scroll reveal.
  */
 export async function HeroSection(): Promise<JSX.Element> {

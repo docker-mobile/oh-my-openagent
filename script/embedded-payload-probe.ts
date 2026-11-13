@@ -2,7 +2,7 @@ import { spawnSync } from "node:child_process"
 import { mkdtempSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
-import type { RuntimeManifest } from "./build-omo-binary"
+import type { RuntimeManifest } from "./build-omc-binary"
 import { relPathForEmbeddedName, RUNTIME_MANIFEST_REL_PATH } from "./embedded-payload-naming"
 import { removeTempRoot } from "./remove-temp-root"
 
@@ -35,7 +35,7 @@ export function reportEmbeddedPayload(
   stageDir: string,
   removeProbeRoot: (root: string) => void = removeTempRoot,
 ): EmbeddedPayloadReport {
-  const probeRoot = mkdtempSync(join(tmpdir(), "omo-embed-probe-"))
+  const probeRoot = mkdtempSync(join(tmpdir(), "omc-embed-probe-"))
   try {
     const probeEntry = join(probeRoot, "probe.ts")
     const probeBinary = join(probeRoot, "probe")

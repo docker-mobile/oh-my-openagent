@@ -10,7 +10,7 @@ import { LIVE_PARENT_SUSPENSION_BUDGET_MS } from "../lifecycle/live-parent-recov
 import type { ReattachOutcome } from "./rpc-host/handle-reattach"
 
 /**
- * omo#9403, omo#10023: a child whose host transport drops must, within a bound, either run again or
+ * omc#9403, omc#10023: a child whose host transport drops must, within a bound, either run again or
  * park for live-parent recovery with its lane released - never stay running on a connection that is
  * gone. A parked child is respawned from its recorded launch when the host and a slot allow it, and
  * only when that fails does it end with one plain notice naming the cause and the user's action.

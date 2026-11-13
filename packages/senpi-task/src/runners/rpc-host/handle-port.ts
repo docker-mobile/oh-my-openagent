@@ -134,7 +134,7 @@ export type HostSessionChildHandle = RpcChildHandle & {
   transportRecovering(): boolean
   /** A cancel was accepted: a recovery that reaches the host ends the session instead of resuming it. */
   markStopping(): void
-  /** The host answered this child's end of its session (omo#11765); a park, detach or transport loss never counts. */
+  /** The host answered this child's end of its session (omc#11765); a park, detach or transport loss never counts. */
   hostEndAnswered(): boolean
   /**
    * Stop the child. With its transport down the stop waits for the recovered connection and runs

@@ -59,7 +59,7 @@ describe("team storage layout", () => {
     )
   })
 
-  test("#given the discovery-only project spec path #when resolved #then it maps to the omo-compatible .omo/teams path", () => {
+  test("#given the discovery-only project spec path #when resolved #then it maps to the omc-compatible .omc/teams path", () => {
     // given
     const projectDir = makeProjectDir()
 
@@ -67,7 +67,7 @@ describe("team storage layout", () => {
     const specPath = resolveProjectTeamSpecPath(projectDir, "research-team")
 
     // then
-    expect(specPath).toBe(join(projectDir, ".omo", "teams", "research-team", "config.json"))
+    expect(specPath).toBe(join(projectDir, ".omc", "teams", "research-team", "config.json"))
     expect(specPath.includes(`${sep}senpi-task${sep}`)).toBe(false)
   })
 

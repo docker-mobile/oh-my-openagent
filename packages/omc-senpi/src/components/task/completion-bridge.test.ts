@@ -1,0 +1,262 @@
+import { mkdtempSync, rmSync } from "node:fs"
+import { tmpdir } from "node:os"
+import { join } from "node:path"
+import { afterEach, describe, expect, it } from "bun:test"
+
+import { OmoTaskSettingsSchema } from "@oh-my-cybersecurity/omc-config-core"
+import {
+  createCompletionNotifier,
+  createTaskManager,
+  createTaskRecordStore,
+  markRecordLostForReconciliation,
+  RunnerError,
+  type ManagedChildHandle,
+  type ManagedRunner,
+  type ParentNotifierMessage,
+  type TaskManager,
+  type TaskRecordStore,
+} from "@oh-my-cybersecurity/senpi-task"
+
+import { seedRecord } from "../../../../senpi-task/src/lifecycle/__fixtures__/lifecycle-fakes"
+import { createCompletionObservingStore } from "./completion-bridge"
+import { remainingTestTime } from "../../../../../test-support/test-deadline"
+
+const projects: string[] = []
+
+function tempProject(): string {
+  const project = mkdtempSync(join(tmpdir(), "omc-senpi-completion-bridge-"))
+  projects.push(project)
+  return project
+}
+
+function pendingRunner(): ManagedRunner {
+  return {
+    start: (spec): Promise<ManagedChildHandle> => Promise.resolve({
+      task_id: spec.taskId,
+      sessionId: `session-${spec.taskId}`,
+      pid: undefined,
+      steer: () => Promise.resolve(),
+      followUp: () => Promise.resolve(),
+      abort: () => Promise.resolve(),
+      subscribe: () => () => {},
+      waitForOutcome: () => new Promise(() => {}),
+      lastAssistantText: () => undefined,
+      dispose: () => Promise.resolve(),
+    }),
+  }
+}
+
+function createHarness(options: {
+  currentSessionId?: string | null
+  runner?: ManagedRunner
+  onMessage?: (message: ParentNotifierMessage) => void
+} = {}): {
+  readonly manager: ReturnType<typeof createTaskManager>
+  readonly store: TaskRecordStore
+  readonly messages: ParentNotifierMessage[]
+  readonly complete: (taskId: string) => void
+  readonly lose: (taskId: string) => void
+  readonly notifyCalls: () => number
+  readonly notifiedEpoch: (taskId: string) => number | undefined
+} {
+  const backing = createTaskRecordStore({ project_dir: tempProject() })
+  const messages: ParentNotifierMessage[] = []
+  const completion = createCompletionNotifier({
+    notifier: { enqueue: (message) => { messages.push(message); options.onMessage?.(message) } },
+    store: backing,
+  })
+  let managerRef: TaskManager | undefined
+  let notifyCalls = 0
+  const store = createCompletionObservingStore(backing, {
+    // Counts the bridge's own calls, so "once" is the bridge's guarantee, not the notifier's dedupe.
+    notifier: { ...completion, notifyTerminal: (input) => { notifyCalls += 1; return completion.notifyTerminal(input) } },
+    parentState: () => ({ kind: "idle" }),
+    wasBackground: (taskId) => managerRef?.wasBackground(taskId) ?? false,
+    currentSessionId: () => (options.currentSessionId === null ? undefined : (options.currentSessionId ?? "parent-session")),
+  })
+  const runner = options.runner ?? pendingRunner()
+  const manager = createTaskManager({
+    store,
+    runners: { "in-process": runner, process: runner },
+    planner: () => ({ kind: "resolved", plan: { model: "anthropic/claude" } }),
+    config: OmoTaskSettingsSchema.parse({ default_concurrency: 5, max_depth: 1 }),
+    cwd: backing.stateDir,
+  })
+  managerRef = manager
+  return {
+    manager,
+    store,
+    messages,
+    notifyCalls: () => notifyCalls,
+    notifiedEpoch: (taskId) => backing.load(taskId)?.notification.notified_epoch,
+    complete: (taskId) => {
+      store.transition(taskId, {
+        type: "complete",
+        timestamp: "2026-07-28T00:00:01.000Z",
+        final_response: "completed after conversion",
+      })
+    },
+    lose: (taskId) => {
+      store.mutate(taskId, (record) => markRecordLostForReconciliation(record, {
+        timestamp: "2026-07-28T00:00:01.000Z",
+        error_message: "revival deferred: model_unavailable; exhausted 3 retry attempts",
+      }).record)
+    },
+  }
+}
+
+afterEach(() => {
+  for (const project of projects.splice(0)) rmSync(project, { recursive: true, force: true })
+})
+
+describe("completion bridge live background promotion", () => {
+  it("#given a background child #when bounded revival marks it lost through mutate #then its parent is notified exactly once without another session start (omc#9498)", async () => {
+    const harness = createHarness()
+    const started = await harness.manager.start({
+      prompt: "work",
+      parent_session_id: "parent-session",
+      depth: 1,
+      category: "quick",
+      run_in_background: true,
+    })
+    if (started.kind !== "started") throw new Error("expected started task")
+    harness.lose(started.task_id)
+    harness.lose(started.task_id)
+    expect(harness.notifyCalls()).toBe(1)
+    expect(harness.messages).toHaveLength(1)
+    expect(harness.messages[0]?.details[0]?.task_id).toBe(started.task_id)
+    expect(harness.messages[0]?.details[0]?.status).toBe("lost")
+  })
+
+  it("#given another session's child #when a reconcile marks it lost #then this session is not notified and the child's own notification stays pending (review of omc#9714)", async () => {
+    const harness = createHarness({ currentSessionId: "other-session" })
+    const started = await harness.manager.start({
+      prompt: "work",
+      parent_session_id: "parent-session",
+      depth: 1,
+      category: "quick",
+      run_in_background: true,
+    })
+    if (started.kind !== "started") throw new Error("expected started task")
+    harness.lose(started.task_id)
+    expect(harness.notifyCalls()).toBe(0)
+    expect(harness.messages).toHaveLength(0)
+    // Still owed: the owning session's next start delivers it.
+    expect(harness.notifiedEpoch(started.task_id)).toBe(-1)
+  })
+
+  it("#given no known current session #when a reconcile marks a child lost #then nothing is notified and the notice stays owed", async () => {
+    const harness = createHarness({ currentSessionId: null })
+    const started = await harness.manager.start({
+      prompt: "work",
+      parent_session_id: "parent-session",
+      depth: 1,
+      category: "quick",
+      run_in_background: true,
+    })
+    if (started.kind !== "started") throw new Error("expected started task")
+    harness.lose(started.task_id)
+    expect(harness.notifyCalls()).toBe(0)
+    expect(harness.notifiedEpoch(started.task_id)).toBe(-1)
+  })
+
+  it("#given a foreground start promoted before terminal #when completion applies #then the live manager flag delivers a notification", async () => {
+    // given
+    const harness = createHarness()
+    const started = await harness.manager.start({
+      prompt: "work",
+      parent_session_id: "parent-session",
+      depth: 1,
+      category: "quick",
+      run_in_background: false,
+    })
+    if (started.kind !== "started") throw new Error("expected started task")
+    expect(harness.manager.wasBackground(started.task_id)).toBe(false)
+
+    // when
+    expect(harness.manager.promoteToBackground(started.task_id)).toBe(true)
+    expect(harness.manager.promoteToBackground(started.task_id)).toBe(false)
+    harness.complete(started.task_id)
+
+    // then
+    expect(harness.manager.wasBackground(started.task_id)).toBe(true)
+    expect(harness.messages).toHaveLength(1)
+    expect(harness.messages[0]?.details[0]?.task_id).toBe(started.task_id)
+  })
+
+  it("#given a genuinely foreground start #when completion applies without promotion #then sync-task notification suppression remains intact", async () => {
+    // given
+    const harness = createHarness()
+    const started = await harness.manager.start({
+      prompt: "work",
+      parent_session_id: "parent-session",
+      depth: 1,
+      category: "quick",
+      run_in_background: false,
+    })
+    if (started.kind !== "started") throw new Error("expected started task")
+
+    // when
+    harness.complete(started.task_id)
+
+    // then
+    expect(harness.manager.wasBackground(started.task_id)).toBe(false)
+    expect(harness.messages).toHaveLength(0)
+  })
+
+  it("#given a background start the task host refuses after the caller stopped waiting #when the refusal lands #then the parent is notified exactly once (omc#10042)", async () => {
+    // given
+    const release = Promise.withResolvers<void>()
+    const refusing: ManagedRunner = {
+      start: () => release.promise.then(() => {
+        throw new RunnerError({ kind: "host_unavailable", reason: "host_busy", message: "the task host is not answering" })
+      }),
+    }
+    const arrived = Promise.withResolvers<ParentNotifierMessage>()
+    const harness = createHarness({ runner: refusing, onMessage: arrived.resolve })
+    const started = await harness.manager.start({
+      prompt: "work",
+      parent_session_id: "parent-session",
+      depth: 1,
+      category: "quick",
+      run_in_background: true,
+    })
+    if (started.kind !== "started") throw new Error("expected started task")
+    expect(started.starting).toBe(true)
+
+    // when
+    release.resolve()
+    const message = await Promise.race([
+      arrived.promise,
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("waited out the test budget for the start-failure notification, it never came")), remainingTestTime())),
+    ])
+
+    // then
+    expect(message.details[0]?.task_id).toBe(started.task_id)
+    expect(message.details[0]?.status).toBe("error")
+    expect(harness.notifyCalls()).toBe(1)
+    expect(harness.messages).toHaveLength(1)
+  })
+
+  it("#given a paused child its run's Resume could not restore #when the manager ends that run #then the parent is told once that it failed", async () => {
+    // given
+    const arrived = Promise.withResolvers<ParentNotifierMessage>()
+    const harness = createHarness({ onMessage: arrived.resolve })
+    const paused = seedRecord(harness.store, {
+      task_id: "st_0e1d0003", status: "paused", parent_session_id: "parent-session", run_epoch: 0, notify_on_terminal: true,
+    })
+
+    // when
+    const ended = harness.manager.endLostPausedTask(paused.task_id, "paused child restore failed (respawn_failed)")
+    const message = await Promise.race([
+      arrived.promise,
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("waited out the test budget for the ended-run notification, it never came")), remainingTestTime())),
+    ])
+
+    // then
+    expect(ended).toBe(true)
+    expect(message.details[0]?.task_id).toBe(paused.task_id)
+    expect(message.details[0]?.status).toBe("error")
+    expect(harness.notifyCalls()).toBe(1)
+  })
+})

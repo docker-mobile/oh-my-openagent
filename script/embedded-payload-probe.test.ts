@@ -2,13 +2,13 @@ import { afterAll, describe, expect, spyOn, test } from "bun:test"
 import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
-import { TEARDOWN_FAILURE_PREFIX } from "../packages/omo-native/test/teardown.test-support"
+import { TEARDOWN_FAILURE_PREFIX } from "../packages/omc-native/test/teardown.test-support"
 import { RUNTIME_MANIFEST_REL_PATH } from "./embedded-payload-naming"
 import { reportEmbeddedPayload } from "./embedded-payload-probe"
 import { removeTempRoot } from "./remove-temp-root"
 
-const stageRoot = mkdtempSync(join(tmpdir(), "omo-embed-probe-stage-"))
-const stageDir = join(stageRoot, "omo-runtime")
+const stageRoot = mkdtempSync(join(tmpdir(), "omc-embed-probe-stage-"))
+const stageDir = join(stageRoot, "omc-runtime")
 mkdirSync(stageDir, { recursive: true })
 writeFileSync(join(stageDir, "package.json"), JSON.stringify({ version: "0.0.0-test" }))
 writeFileSync(join(stageDir, RUNTIME_MANIFEST_REL_PATH), JSON.stringify({ omoAiVersion: "0.0.0-test", entries: [] }))

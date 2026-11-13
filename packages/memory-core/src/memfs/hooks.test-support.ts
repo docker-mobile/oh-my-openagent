@@ -58,8 +58,8 @@ export async function createRepo(options: Parameters<typeof installHooks>[1] = {
   const dir = await tempDir("memory-hooks-")
   await run(["git", "init", "--quiet"], dir)
   await run(["git", "symbolic-ref", "HEAD", "refs/heads/main"], dir)
-  await run(["git", "config", "user.email", "agent@omo.local"], dir)
-  await run(["git", "config", "user.name", "OmO Agent"], dir)
+  await run(["git", "config", "user.email", "agent@omc.local"], dir)
+  await run(["git", "config", "user.name", "OmC Agent"], dir)
   await run(["git", "config", "commit.gpgsign", "false"], dir)
   // A commit otherwise starts `git maintenance run --auto --detach`: a process this support never spawned, so
   // removeTempDirs cannot reap it, and it can still write into the repo while teardown removes it (#10945). The

@@ -1,5 +1,5 @@
 {
-  "name": "@oh-my-opencode/isolation-core",
+  "name": "@oh-my-cybersecurity/isolation-core",
   "version": "0.1.0",
   "type": "module",
   "private": true,
@@ -14,7 +14,7 @@
     "test": "bun test src/"
   },
   "dependencies": {
-    "@oh-my-opencode/memory-core": "workspace:*"
+    "@oh-my-cybersecurity/memory-core": "workspace:*"
   },
   "sideEffects": false
 }

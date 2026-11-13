@@ -1,6 +1,6 @@
 # tools/task - The `task` Tool
 
-Single or `tasks:[...]` batch spawn of child tasks routed by category or agent. Tool contracts, plan-gated agents, and batch semantics live in the package AGENTS.md; this file maps the modules and the validation rules. 54 files, the largest tool subtree.
+Single or `tasks:[...]` batch spawn of child tasks routed by category or agent. Tool contracts, plan-gated agents, and batch semantics live in the package AGENTS.md; this file maps the modules and the validation rules. 74 files (28 non-test), the largest tool subtree.
 
 ## Anatomy
 

@@ -65,9 +65,9 @@ describe("sharedSkillsRootPath", () => {
 	});
 
 	test("#given the Codex marketplace layout #when the root is resolved #then the skills directory two levels up is used", async () => {
-		// given: `plugin/` is copied to `plugins/omo/` (so skills land at `plugins/omo/skills`)
-		// while the root CLI runtimes are bundled to `plugins/omo/dist/cli` and
-		// `plugins/omo/dist/cli-node`, two levels below the skills directory (AGENTS.md).
+		// given: `plugin/` is copied to `plugins/omc/` (so skills land at `plugins/omc/skills`)
+		// while the root CLI runtimes are bundled to `plugins/omc/dist/cli` and
+		// `plugins/omc/dist/cli-node`, two levels below the skills directory (AGENTS.md).
 		const root = createFixtureRoot();
 		mkdirSync(join(root, "skills", "ast-grep"), { recursive: true });
 		const bundleDirectory = join(root, "dist", "cli");

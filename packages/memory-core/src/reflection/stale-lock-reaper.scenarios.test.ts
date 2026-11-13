@@ -25,7 +25,7 @@ describe("stale reflection-lock reaper decision table (#11976)", () => {
     },
   )
 
-  // Generated-bundle contract: `omo doctor` runs a bundle of this table, and the parity test only
+  // Generated-bundle contract: `omc doctor` runs a bundle of this table, and the parity test only
   // compares the scenarios listed here, so every rule in the source must have one.
   test("#given the reaper source #when its rule tags are listed #then each has exactly the scenarios that name it", () => {
     const source = readFileSync(new URL("./stale-lock-reaper.ts", import.meta.url), "utf8")

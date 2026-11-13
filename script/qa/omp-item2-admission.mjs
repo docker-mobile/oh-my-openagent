@@ -7,8 +7,8 @@ import { createHash } from "node:crypto"
 import { homedir } from "node:os"
 import { dirname, join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
-import { createSandbox, seedSandbox, credentialDigest } from "../../packages/omo-senpi/scripts/qa/drive.mjs"
-import { withTelemetryOptOut } from "../../packages/omo-senpi/scripts/qa/telemetry-opt-out-env.mjs"
+import { createSandbox, seedSandbox, credentialDigest } from "../../packages/omc-senpi/scripts/qa/drive.mjs"
+import { withTelemetryOptOut } from "../../packages/omc-senpi/scripts/qa/telemetry-opt-out-env.mjs"
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), "../..")
 const args = process.argv.slice(2)
@@ -22,10 +22,10 @@ const cli = fileURLToPath(new URL("./cli.js", import.meta.resolve("@code-yeongyu
 const sandbox = createSandbox()
 seedSandbox(sandbox)
 writeFileSync(join(sandbox.root, "workpool-qa-owner.json"), JSON.stringify({ out, scenario, source: import.meta.url }))
-const state = join(sandbox.cwd, ".omo", "senpi-task")
+const state = join(sandbox.cwd, ".omc", "senpi-task")
 mkdirSync(join(state, "tasks"), { recursive: true })
 const before = credentialDigest(join(homedir(), ".senpi", "agent"))
-const beforeOmo = credentialDigest(join(homedir(), ".omo", "agent"))
+const beforeOmo = credentialDigest(join(homedir(), ".omc", "agent"))
 const events = []
 let parentStep = 0
 let workerStep = 0
@@ -171,8 +171,8 @@ server.listen(0, "127.0.0.1")
 await listening
 const baseUrl = `http://127.0.0.1:${server.address().port}/v1`
 writeFileSync(join(sandbox.agentDir, "models.json"), JSON.stringify({ providers: { fixture: { baseUrl, api: "openai-completions", apiKey: "fixture", models: [{ id: "fixture", name: "fixture", reasoning: false, input: ["text"], contextWindow: 128000, maxTokens: 4096, cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 } }] } } }))
-writeFileSync(join(sandbox.cwd, ".omo", "omo.json"), JSON.stringify({ task: { global_concurrency: 1, default_concurrency: 1, default_execution_mode: executionMode, ...(batched ? { resident_idle_timeout_ms: 37 } : {}) }, categories: { fixture: { model: "fixture/fixture" } }, memory: { enabled: false } }))
-const baseEnv = { ...process.env, HOME: sandbox.homeDir, USERPROFILE: sandbox.homeDir, OMO_CODING_AGENT_DIR: sandbox.agentDir, SENPI_CODING_AGENT_DIR: sandbox.agentDir, PI_CODING_AGENT_DIR: sandbox.agentDir, XDG_CONFIG_HOME: sandbox.xdgConfigHome, XDG_DATA_HOME: sandbox.xdgDataHome, XDG_CACHE_HOME: sandbox.xdgCacheHome, XDG_STATE_HOME: join(sandbox.root, "xdg-state"), PI_OFFLINE: "1", OMO_SENPI_QA: "1" }
+writeFileSync(join(sandbox.cwd, ".omc", "omc.json"), JSON.stringify({ task: { global_concurrency: 1, default_concurrency: 1, default_execution_mode: executionMode, ...(batched ? { resident_idle_timeout_ms: 37 } : {}) }, categories: { fixture: { model: "fixture/fixture" } }, memory: { enabled: false } }))
+const baseEnv = { ...process.env, HOME: sandbox.homeDir, USERPROFILE: sandbox.homeDir, OMC_CODING_AGENT_DIR: sandbox.agentDir, SENPI_CODING_AGENT_DIR: sandbox.agentDir, PI_CODING_AGENT_DIR: sandbox.agentDir, XDG_CONFIG_HOME: sandbox.xdgConfigHome, XDG_DATA_HOME: sandbox.xdgDataHome, XDG_CACHE_HOME: sandbox.xdgCacheHome, XDG_STATE_HOME: join(sandbox.root, "xdg-state"), PI_OFFLINE: "1", OMC_SENPI_QA: "1" }
 for (const key of Object.keys(baseEnv)) if (key.endsWith("_PACKAGE_DIR") || /API_KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/i.test(key)) delete baseEnv[key]
 const env = withTelemetryOptOut(baseEnv)
 let stdout = ""
@@ -193,8 +193,8 @@ try {
   const pool = readPool()
   assert.equal(pool.status, "cancelled")
   report = { status: "PASS", executionMode, scenario, events, pool, keyedYields, provider: "local deterministic HTTP fixture", paidProviderCalls: 0,
-    realSenpiUntouched: before === credentialDigest(join(homedir(), ".senpi", "agent")), realOmoProtectedStateUnchanged: beforeOmo === credentialDigest(join(homedir(), ".omo", "agent")),
-    isolatedAgentDir: sandbox.agentDir, cli, bundleSha256: createHash("sha256").update(readFileSync(join(repo, "packages/omo-senpi/plugin/extensions/omo-task.js"))).digest("hex") }
+    realSenpiUntouched: before === credentialDigest(join(homedir(), ".senpi", "agent")), realOmoProtectedStateUnchanged: beforeOmo === credentialDigest(join(homedir(), ".omc", "agent")),
+    isolatedAgentDir: sandbox.agentDir, cli, bundleSha256: createHash("sha256").update(readFileSync(join(repo, "packages/omc-senpi/plugin/extensions/omc-task.js"))).digest("hex") }
   assert.ok(report.realSenpiUntouched && report.realOmoProtectedStateUnchanged)
 } catch (error) { report = { status: "FAIL", error: String(error), events }; process.exitCode = 1 }
 finally {

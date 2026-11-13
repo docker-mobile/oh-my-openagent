@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import { sessionTailReconciliation } from "../../manager/interrupted-turn"
 import type { TaskRecord } from "../../state"

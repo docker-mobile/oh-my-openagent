@@ -13,10 +13,10 @@ import {
 import { remainingTestTime } from "../../../../test-support/test-deadline"
 
 describe("runAstGrepSkillInstall", () => {
-  test("#given install.sh exists #when provisioning runs #then OMO_AST_GREP_BIN_DIR targets the runtime slug", async () => {
+  test("#given install.sh exists #when provisioning runs #then OMC_AST_GREP_BIN_DIR targets the runtime slug", async () => {
     // given
     const invocations: Array<{ readonly command: string; readonly binDir: string | undefined }> = []
-    const targetDir = astGrepRuntimeDir("/home/test/.omo", "darwin", "arm64")
+    const targetDir = astGrepRuntimeDir("/home/test/.omc", "darwin", "arm64")
     const spawnProcess: AstGrepInstallSpawn = (command, _args, options) => {
       invocations.push({ command, binDir: options.env[AST_GREP_BIN_DIR_ENV_KEY] })
       return { kill: () => undefined, outcome: Promise.resolve({ kind: "exit", code: 0, signal: null }) }
@@ -34,7 +34,7 @@ describe("runAstGrepSkillInstall", () => {
     // then
     expect(result.kind).toBe("succeeded")
     expect(invocations).toEqual([{ command: "bash", binDir: targetDir }])
-    expect(targetDir).toBe(join("/home/test/.omo", "runtime", "ast-grep", "darwin-arm64"))
+    expect(targetDir).toBe(join("/home/test/.omc", "runtime", "ast-grep", "darwin-arm64"))
   })
 
   test("#given install script exits one #when provisioning runs #then the failure is returned without throwing", async () => {
@@ -50,7 +50,7 @@ describe("runAstGrepSkillInstall", () => {
       platform: "linux",
       skillDir: "/skills/ast-grep",
       spawnProcess,
-      targetDir: "/home/test/.omo/runtime/ast-grep/linux-x64",
+      targetDir: "/home/test/.omc/runtime/ast-grep/linux-x64",
     })
 
     // then
@@ -77,7 +77,7 @@ describe("runAstGrepSkillInstall", () => {
       platform: "linux",
       skillDir: "/skills/ast-grep",
       spawnProcess,
-      targetDir: "/home/test/.omo/runtime/ast-grep/linux-x64",
+      targetDir: "/home/test/.omc/runtime/ast-grep/linux-x64",
       timeoutMs: 1,
     })
 
@@ -110,7 +110,7 @@ describe("runAstGrepSkillInstall", () => {
         platform: "linux",
         skillDir: "/skills/ast-grep",
         spawnProcess,
-        targetDir: "/home/test/.omo/runtime/ast-grep/linux-x64",
+        targetDir: "/home/test/.omc/runtime/ast-grep/linux-x64",
         timeoutMs: 5,
       }),
       breaker,

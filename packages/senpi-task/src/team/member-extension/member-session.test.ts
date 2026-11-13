@@ -4,7 +4,7 @@ import { join, sep } from "node:path"
 
 import { afterEach, describe, expect, test } from "bun:test"
 import type { ExtensionAPI } from "@code-yeongyu/senpi"
-import { TeamModeConfigSchema } from "@oh-my-opencode/team-core/config"
+import { TeamModeConfigSchema } from "@oh-my-cybersecurity/team-core/config"
 
 import { MEMBER_WAKE_SOURCE, MEMBER_WAKE_SOURCE_STATE_EVENT, createMemberWakeSource, resolveMemberExtensionConfig } from "./member-session"
 

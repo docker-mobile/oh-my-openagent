@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import { asSenpiThinkingLevel } from "../../senpi/thinking-level"
 import { splitModelDecorators } from "../../senpi/explicit-pin"

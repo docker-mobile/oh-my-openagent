@@ -138,8 +138,8 @@ fn rejects_forbidden_entitlement_presence() {
 fn rejects_all_non_controller_clients() {
     // given: even correctly hardened same-team artifacts cannot gain a role.
     for identifier in [
-        "com.omo.desktop",
-        "com.mengmota.omo-desktop-runtime",
+        "com.omc.desktop",
+        "com.mengmota.omc-desktop-runtime",
         "node",
         "org.nodejs.node",
         "bun",

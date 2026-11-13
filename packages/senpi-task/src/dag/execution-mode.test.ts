@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 
-import { OmoConfigSchema } from "@oh-my-opencode/omo-config-core"
+import { OmoConfigSchema } from "@oh-my-cybersecurity/omc-config-core"
 
 import { BUILTIN_AGENTS } from "../agents/builtin"
 import type { AgentDefinition } from "../agents/types"
@@ -18,7 +18,7 @@ describe("resolveDagNodeExecutionMode", () => {
     expect(mode).toBe("in-process")
   })
 
-  test("#given an omo.json task.default_execution_mode #when resolved #then the config mode is honored", () => {
+  test("#given an omc.json task.default_execution_mode #when resolved #then the config mode is honored", () => {
     // given
     const route = { kind: "category" as const, category: "quick" }
     const config = { task: { default_execution_mode: "process" as const } }

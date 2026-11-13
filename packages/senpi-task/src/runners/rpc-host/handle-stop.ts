@@ -31,7 +31,7 @@ export interface HandleStop {
 }
 
 /**
- * The handle's side of task_cancel (omo#9403). Once a cancel is accepted the child is stopping: no
+ * The handle's side of task_cancel (omc#9403). Once a cancel is accepted the child is stopping: no
  * transport recovery brings it back, a session a recovery reopens is ended on its host, and a stop is
  * never left waiting on a recovery that ended without applying it - without a recovered port the child
  * stops on this side. A detached child (its parent shut down) is not this process's to stop: its

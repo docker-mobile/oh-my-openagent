@@ -4,8 +4,9 @@
 
 Queues extracted facts durably, caps payloads, routes them to people cards, and
 recovers from crashes — all with monotonic watermarks and fail-closed parsing.
-Largest memory-core subsystem (33 files, ~5.1k LOC); earned its own file for
-that plus strict wire contracts. Parent: [`packages/memory-core/AGENTS.md`](../../AGENTS.md).
+Second-largest memory-core subsystem (46 files, ~6.5k LOC); `src/sync/`
+(350 files) is the largest. Earned its file for strict wire contracts. Parent:
+[`packages/memory-core/AGENTS.md`](../../AGENTS.md).
 
 ## WHERE TO LOOK
 
@@ -14,7 +15,7 @@ that plus strict wire contracts. Parent: [`packages/memory-core/AGENTS.md`](../.
 | `queue.ts` | `FactsQueue` — atomic enqueue/publish with monotonic watermarks |
 | `schema.ts` | Versioned queue/cursor/consumed record shapes; fail-closed validation |
 | `extraction.ts` | `applyFactsBatch()`, `parseFactsExtractionJsonl()` validation |
-| `payload-cap.ts` | `selectCappedFactsBatch()` — 128 KiB envelope budget (`MAX_FACTS_PAYLOAD_BYTES`); a single entry above it is reported in `oversized`, which the omo-senpi adapter may run alone under its bounded oversized budget (#8984, ≤512 KiB) |
+| `payload-cap.ts` | `selectCappedFactsBatch()` — 128 KiB envelope budget (`MAX_FACTS_PAYLOAD_BYTES`); a single entry above it is reported in `oversized`, which the omc-senpi adapter may run alone under its bounded oversized budget (#8984, ≤512 KiB) |
 | `failures-{schema,backoff,store,selection}.ts` | Failure records, backoff/clear-on-success, starvation-aware `selectLaunchable()` |
 | `person-routing.ts` | `planFactsRouting()` — alias resolution, observation normalization, render targets |
 | `mutation-plan.ts` | `planFactsMutation()` + `factsRecordsHash()` — dirty-parent guard, deterministic ops |

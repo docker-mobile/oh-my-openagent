@@ -18,7 +18,7 @@ afterEach(async () => {
 const runCategoryChild = (input: DesignatedChildInput) => runChild(input, (adopted) => { world = adopted })
 const limited = (step: Step) => Object.fromEntries(RUNGS.map((model) => [model, Array<Step>(ALWAYS).fill(step)]))
 
-describe("a one-provider category chain whose every rung is usage-limited (omo#9711)", () => {
+describe("a one-provider category chain whose every rung is usage-limited (omc#9711)", () => {
   test.each(["quota", "weekly"] as const)("#given every rung fails with a %s limit #when the chain is spent #then the child fails once, typed model_chain_exhausted naming each model and why, with no retry loop", async (step) => {
     // given / when
     const { record, world: settled } = await runCategoryChild({ category: "ultrabrain", chain: RUNGS, scripts: limited(step) })

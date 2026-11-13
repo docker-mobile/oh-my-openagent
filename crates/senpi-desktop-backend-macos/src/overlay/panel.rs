@@ -68,7 +68,7 @@ impl CursorPanel {
             NSPoint::new(-hotspot.x, HEIGHT - size.height + hotspot.y),
             size,
         ));
-        let label = NSTextField::labelWithString(&NSString::from_str("omo"), mtm);
+        let label = NSTextField::labelWithString(&NSString::from_str("omc"), mtm);
         label.setFrame(NSRect::new(
             NSPoint::new(26.0, 8.0),
             NSSize::new(48.0, 26.0),

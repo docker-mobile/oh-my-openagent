@@ -7,7 +7,7 @@ describe("buildChildContext", () => {
   const baseSpec: RpcSpawnSpec = {
     task_id: "st_1a2b3c4d",
     cwd: "/tmp/project",
-    state_dir: "/tmp/project/.omo/senpi-task",
+    state_dir: "/tmp/project/.omc/senpi-task",
     prompt: "do the work",
   }
 
@@ -19,7 +19,7 @@ describe("buildChildContext", () => {
     expect(result.kind).toBe("worker")
     expect(result.context.role).toBe("child")
     expect(result.context.task_id).toBe("st_1a2b3c4d")
-    expect(result.context.state_dir).toBe("/tmp/project/.omo/senpi-task")
+    expect(result.context.state_dir).toBe("/tmp/project/.omc/senpi-task")
   })
 
   test("#given a DAG-owned child spec #when building context #then role is 'dag_child'", () => {
@@ -53,7 +53,7 @@ describe("buildChildContext", () => {
     expect(result.kind).toBe("worker")
     expect(result.context.role).toBe("member")
     expect(result.context.task_id).toBe("st_1a2b3c4d")
-    expect(result.context.state_dir).toBe("/tmp/project/.omo/senpi-task")
+    expect(result.context.state_dir).toBe("/tmp/project/.omc/senpi-task")
     expect(result.context.team_run_id).toBe(teamRunId)
     expect(result.context.member_name).toBe(memberName)
     expect(result.context.team_config).toBe(teamConfig)
@@ -133,7 +133,7 @@ describe("buildChildContext", () => {
     // when + then
     for (const spec of specs) {
       const result = buildChildContext(spec)
-      const forbiddenPattern = /^(PATH|.*_API_KEY|SENPI_|OMO_|PI_)/
+      const forbiddenPattern = /^(PATH|.*_API_KEY|SENPI_|OMC_|PI_)/
       for (const key of Object.keys(result.context)) {
         expect(forbiddenPattern.test(key)).toBe(false)
       }
@@ -144,7 +144,7 @@ describe("buildChildContext", () => {
 describe("resolveChildSessionPath", () => {
   test("#given state dir, task id, now, and uuid #when resolving path #then it is nested under <stateDir>/sessions/<taskId>/ and ends with .jsonl", () => {
     // given
-    const stateDir = "/tmp/project/.omo/senpi-task"
+    const stateDir = "/tmp/project/.omc/senpi-task"
     const taskId = "st_1a2b3c4d"
     const now = new Date("2026-09-17T12:34:56.789Z")
     const uuid = "550e8400-e29b-41d4-a716-446655440000"
@@ -161,11 +161,11 @@ describe("resolveChildSessionPath", () => {
 
   test("#given a path #when resolved #then it is absolute on this platform", () => {
     // when
-    const path = resolveChildSessionPath("/tmp/.omo/senpi-task", "st_abc123", new Date(), "550e8400-e29b-41d4-a716-446655440000")
+    const path = resolveChildSessionPath("/tmp/.omc/senpi-task", "st_abc123", new Date(), "550e8400-e29b-41d4-a716-446655440000")
 
     // then
     expect(isAbsolute(path)).toBe(true)
     const pathDir = dirname(path)
-    expect(pathDir).toContain(join("/tmp/.omo/senpi-task", "sessions", "st_abc123"))
+    expect(pathDir).toContain(join("/tmp/.omc/senpi-task", "sessions", "st_abc123"))
   })
 })

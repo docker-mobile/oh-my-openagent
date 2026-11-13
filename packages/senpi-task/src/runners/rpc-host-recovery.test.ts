@@ -7,7 +7,7 @@ import { isHostSessionHandle } from "./rpc-host"
 import { childSpec, fakeFallbackRunner, hostRunnerHarness } from "./rpc-host.test-support"
 import type { RpcRunnerSpec } from "./types"
 
-// omo#8563: the runner owns the two recoveries a daemon child needs. A lost transport is
+// omc#8563: the runner owns the two recoveries a daemon child needs. A lost transport is
 // re-ensured and the same session path reopened (bounded backoff), and a host that is above its
 // memory refuse watermark (senpi#1905 `host_memory_pressure`) is an admission WAIT - the child
 // starts when the host admits it, never on a per-child process.

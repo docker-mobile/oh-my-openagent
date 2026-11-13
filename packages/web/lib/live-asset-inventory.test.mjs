@@ -10,7 +10,7 @@ async function live({ advertised = false, marker = "data-dpl-id", broken = false
       if (path === "/en") return Response.redirect(new URL("/", server.url), 307)
       if (path === "/sitemap.xml")
         return new Response(
-          `<urlset><url><loc>https://omo.dev/ko/manifesto</loc></url><url><loc>https://omo.dev/en</loc></url></urlset>`,
+          `<urlset><url><loc>https://omc.nga.hm/ko/manifesto</loc></url><url><loc>https://omc.nga.hm/en</loc></url></urlset>`,
         )
       if (path === "/" || path === "/ko/manifesto")
         return new Response(
@@ -107,8 +107,8 @@ test("the waiver never hides an unavailable asset", async () => {
 })
 
 test("a deployment marked with its commit build id cannot be mistaken for a first migration either", async () => {
-  // Given: the live HTML carries the pipeline's data-omo-build marker, but its asset history is gone.
-  await live({ advertised: true, marker: "data-omo-build" }, async (origin) => {
+  // Given: the live HTML carries the pipeline's data-omc-build marker, but its asset history is gone.
+  await live({ advertised: true, marker: "data-omc-build" }, async (origin) => {
     // Then: bootstrap refuses, as it does for the older data-dpl-id marker.
     await expect(liveAssetInventory(origin)).rejects.toThrow("asset history is missing")
   })

@@ -92,7 +92,7 @@ describe("sanitizeToSlug", () => {
 
   it("#given mixed Korean and Latin #when sanitized #then both scripts survive with dash separators", () => {
     // given / when / then
-    expect(sanitizeToSlug("OmO 길동")).toBe("omo-길동")
+    expect(sanitizeToSlug("OmC 길동")).toBe("omc-길동")
     expect(sanitizeToSlug("팀장 Backend Lead")).toBe("팀장-backend-lead")
   })
 

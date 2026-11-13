@@ -42,7 +42,7 @@ export async function sweepStaleIsolations(
           result.kept.push(path)
           continue
         }
-        const record: unknown = JSON.parse(await readFile(join(path, ".omo-isolation-backend.json"), "utf8"))
+        const record: unknown = JSON.parse(await readFile(join(path, ".omc-isolation-backend.json"), "utf8"))
         if (typeof record !== "object" || record === null || !("backend" in record) || !isBackendKind(record.backend)) {
           result.skipped.push({ path, reason: "invalid backend marker" })
           continue

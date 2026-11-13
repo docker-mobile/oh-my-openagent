@@ -17,7 +17,7 @@ afterEach(() => {
 })
 
 function freshLockPath(): string {
-  const dir = mkdtempSync(join(tmpdir(), "omo-journal-lock-"))
+  const dir = mkdtempSync(join(tmpdir(), "omc-journal-lock-"))
   dirs.push(dir)
   return join(dir, "state.lock")
 }

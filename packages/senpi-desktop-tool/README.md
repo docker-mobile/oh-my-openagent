@@ -1,10 +1,10 @@
-# @oh-my-opencode/senpi-desktop-tool
+# @oh-my-cybersecurity/senpi-desktop-tool
 
 Defines the senpi `computer` tool: its permission tiers, settings, the `/computer` command, the supported-host policy, and the activation hook. The coding-agent `computer-use` builtin extension (todo 26) wires these into a session. This package imports neither coding-agent nor codemode. Its types are structural, and `test/coding-agent-contract.ts` pins them against coding-agent's real `ToolDefinition`, `ToolPermissionParser`, and `ExtensionContext`.
 
 ## Tool
 
-- `createComputerTool({handle, executeTool})` returns the `computer` `ToolDefinition`. It has `exposure: "search"` and `searchGroup: "desktop"`. The `searchText` and `searchKeywords` include `cua`, `computer use`, `screenshot`, and `accessibility`. The `promptGuidelines` are the safety bullets from `@oh-my-opencode/senpi-desktop-prelude`. `executionMode` is `"sequential"`.
+- `createComputerTool({handle, executeTool})` returns the `computer` `ToolDefinition`. It has `exposure: "search"` and `searchGroup: "desktop"`. The `searchText` and `searchKeywords` include `cua`, `computer use`, `screenshot`, and `accessibility`. The `promptGuidelines` are the safety bullets from `@oh-my-cybersecurity/senpi-desktop-prelude`. `executionMode` is `"sequential"`.
 - `kernelPrelude` is `computerPreludeAssets`, whose `exports` is `["computer"]`. codemode installs the `computer` global for the next eval cell while the tool is active. Nothing is passed to codemode.
 - The published parameters are `ComputerParams`: one root object with an `action` enum and every action's fields as optional, because providers reject a root-union schema (Anthropic `input_schema` needs `type: "object"`, OpenAI strict functions a root object, Gemini no root `anyOf`). `execute` narrows the arguments with `parseComputerParams` against `ComputerActionShape`, the exact per-action union, and throws `ComputerArgumentsError` (`COMPUTER_INVALID_ARGUMENTS`, naming the action and the offending field) before anything runs. The actions:
   - `{action: "call", chain}`: one desktop helper, optionally followed by one call on the window or element it returns.
@@ -72,11 +72,11 @@ Defines the senpi `computer` tool: its permission tiers, settings, the `/compute
 
 `scripts/desktop-package-boundaries.test.mjs` enforces these edges, in both `package.json` and `src/`:
 
-- `@oh-my-opencode/senpi-desktop-protocol` and `@oh-my-opencode/senpi-desktop-prelude` import no workspace package.
-- `@oh-my-opencode/senpi-desktop-engine` may import `-protocol`.
-- `@oh-my-opencode/senpi-desktop-service` may import `-protocol`, `-engine`, and `-prelude`.
-- `@oh-my-opencode/senpi-desktop-tool` may import `-protocol`, `-engine`, `-prelude`, and `-service`.
-- Only omo-senpi's computer-use component imports these packages, and only `-tool` and `-service`. senpi itself imports none of them.
+- `@oh-my-cybersecurity/senpi-desktop-protocol` and `@oh-my-cybersecurity/senpi-desktop-prelude` import no workspace package.
+- `@oh-my-cybersecurity/senpi-desktop-engine` may import `-protocol`.
+- `@oh-my-cybersecurity/senpi-desktop-service` may import `-protocol`, `-engine`, and `-prelude`.
+- `@oh-my-cybersecurity/senpi-desktop-tool` may import `-protocol`, `-engine`, `-prelude`, and `-service`.
+- Only omc-senpi's computer-use component imports these packages, and only `-tool` and `-service`. senpi itself imports none of them.
 - No desktop package imports `pi-agent-core`, `pi-ai`, or `pi-tui`. There is no shared utils package: the five desktop packages are the whole set.
 
 The Rust side runs the other way: `senpi-desktop-core` <- `-safety` <- `-session` <- backends <- `senpi-desktop-engine` (the binary). The TS packages reach it only through the engine's stdio JSON-RPC.

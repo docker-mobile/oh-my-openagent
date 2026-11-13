@@ -1,7 +1,7 @@
 import { describe, expect, spyOn, test } from "bun:test"
 import { deleteObject, putVerified, R2UploadError, signedRequest } from "./r2-signed-put"
 
-const credentials = { accountId: "dummy", accessKeyId: "test-access-key", secretAccessKey: "test-secret-key", bucket: "omo-releases" }
+const credentials = { accountId: "dummy", accessKeyId: "test-access-key", secretAccessKey: "test-secret-key", bucket: "omc-releases" }
 
 describe("R2 write diagnostics", () => {
   test.each([
@@ -76,7 +76,7 @@ describe("R2 write diagnostics", () => {
       expect(response.status).toBe(404)
       const [url, init] = fetch.mock.calls[0] ?? []
       const headers = new Headers(init?.headers)
-      expect(url).toBe("https://dummy.r2.cloudflarestorage.com/omo-releases/channels/latest")
+      expect(url).toBe("https://dummy.r2.cloudflarestorage.com/omc-releases/channels/latest")
       expect(init?.method).toBe(method)
       expect(init?.body).toBeUndefined()
       expect(headers.get("x-amz-content-sha256")).toBe("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")

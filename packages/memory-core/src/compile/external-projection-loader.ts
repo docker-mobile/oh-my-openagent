@@ -7,14 +7,14 @@ export type ExternalProjectionRendererLoad =
   | { readonly unavailable: string }
 
 export const EXTERNAL_PROJECTION_RENDERER_FIX =
-  "omo was likely updated while this process was running (the runtime keeps the package manifest it read at start), "
-  + "so restart omo and fully quit the desktop app; if a fresh start still fails, reinstall omo-ai"
+  "omc was likely updated while this process was running (the runtime keeps the package manifest it read at start), "
+  + "so restart omc and fully quit the desktop app; if a fresh start still fails, reinstall omc-ai"
 
-const EXTERNAL_PROJECTION_WARNING_CODE = "OMO_MEMORY_PROJECTION_RENDERER_UNAVAILABLE"
+const EXTERNAL_PROJECTION_WARNING_CODE = "OMC_MEMORY_PROJECTION_RENDERER_UNAVAILABLE"
 
 // memory-core is bundled into several extension files, each with its own module state; the registry symbol on
 // globalThis is shared by all of them, so the default warning fires once per process.
-const WARNED_IN_PROCESS = Symbol.for("omo.memory.external-projection-renderer-warned")
+const WARNED_IN_PROCESS = Symbol.for("omc.memory.external-projection-renderer-warned")
 
 function warnOncePerProcess(message: string): void {
   if (Reflect.get(globalThis, WARNED_IN_PROCESS) === true) return
@@ -41,7 +41,7 @@ export function createExternalProjectionRendererLoader(
       const unavailable = `<external_projection> renderer unavailable (${cause}); ${EXTERNAL_PROJECTION_RENDERER_FIX}`
       if (!warned) {
         warned = true
-        warn(`omo memory: ${unavailable}`)
+        warn(`omc memory: ${unavailable}`)
       }
       return { unavailable }
     }

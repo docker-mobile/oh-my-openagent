@@ -49,7 +49,7 @@ export class LspClient extends LspClientConnection {
 	constructor(root: string, server: ResolvedServer, options: LspClientOptions = {}) {
 		super(root, server, options);
 		const environmentFreshnessTimeoutMs = Number(
-			process.env["OMO_LSP_DIAGNOSTICS_FRESHNESS_TIMEOUT_MS"],
+			process.env["OMC_LSP_DIAGNOSTICS_FRESHNESS_TIMEOUT_MS"],
 		);
 		this.diagnosticsFreshnessTimeoutMs =
 			options.diagnosticsFreshnessTimeoutMs ??

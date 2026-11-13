@@ -129,7 +129,7 @@ export async function settleOne(context: SchedulerContext, residencyReleased?: P
   return true
 }
 
-// omo#10487: a child whose turn completed can reopen itself (its background job or monitor wakes
+// omc#10487: a child whose turn completed can reopen itself (its background job or monitor wakes
 // it). The node then follows the task: it goes back to running and folds the resumed run's outcome
 // through the normal settle loop, so a resumed run that fails turns the node failed and the run
 // summary counts it. Dependents admitted on the earlier completion keep their own outcome;

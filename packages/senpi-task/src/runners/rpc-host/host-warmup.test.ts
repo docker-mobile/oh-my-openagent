@@ -18,7 +18,7 @@ afterEach(async () => {
 async function world(options: Parameters<typeof startFakeHost>[0] = {}) {
   const host = await startFakeHost({ enforceSessionDir: true, ...options })
   hosts.push(host)
-  const tempRoot = mkdtempSync(join(tmpdir(), "omo-warmup-test-"))
+  const tempRoot = mkdtempSync(join(tmpdir(), "omc-warmup-test-"))
   roots.push(tempRoot)
   const warm = () =>
     warmTaskHost({

@@ -44,7 +44,7 @@ export type Fixture = { readonly request: string; readonly cases: readonly Fixtu
 
 export const FIXTURE_DIR = join(import.meta.dir, "fixtures");
 const CASE_MS = 30_000;
-const DEFAULT_CLIENT: ClientInfo = { name: "omo", version: "2.0.0" };
+const DEFAULT_CLIENT: ClientInfo = { name: "omc", version: "2.0.0" };
 
 export const loadFixtures = (): readonly Fixture[] =>
   readdirSync(FIXTURE_DIR)

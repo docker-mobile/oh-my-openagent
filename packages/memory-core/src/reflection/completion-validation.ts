@@ -78,7 +78,7 @@ export async function validateCompletion(
 
     // A tip that is provably the gate's own earlier link repair is set aside, so the run is screened alone and the
     // repair is recomputed on the screened tip; the screen never sees, drops or squashes the repair.
-    // The link repair is a lazy sidecar in bundles that map `#memory-completion-links` (omo-senpi's omo.js).
+    // The link repair is a lazy sidecar in bundles that map `#memory-completion-links` (omc-senpi's omc.js).
     const { applyLinkRepair, recognizeLinkRepair } = await import("#memory-completion-links")
     const prior = await recognizeLinkRepair(exec, worktree.dir, recordedBase, tipSha)
     if (prior !== undefined) await git(exec, worktree.dir, ["reset", "-q", "--hard", prior.runTip])

@@ -29,13 +29,13 @@ function release(overrides = {}) {
 describe("release announcement composition", () => {
   test("#given release notes #when composed #then the shipped Discord format and installers are present", () => {
     const content = composeMessage(tag, body)
-    expect(content.startsWith("## OmO 5.1.29\n\nSessions resume correctly.\n\n")).toBe(true)
-    expect(content).toContain("```sh\ncurl -fsSL https://get.omo.dev/install.sh | bash\n```")
-    expect(content).toContain("```powershell\nirm https://get.omo.dev/install.ps1 | iex\n```")
+    expect(content.startsWith("## OmC 5.1.29\n\nSessions resume correctly.\n\n")).toBe(true)
+    expect(content).toContain("```sh\ncurl -fsSL https://get.omc.nga.hm/install.sh | bash\n```")
+    expect(content).toContain("```powershell\nirm https://get.omc.nga.hm/install.ps1 | iex\n```")
     expect(content).toContain(headline)
     expect(content).toContain("**Tools stay available.**")
     expect(content).not.toContain("abc123")
-    expect(content.endsWith(`The full notes are at <https://github.com/code-yeongyu/oh-my-openagent/releases/tag/${tag}>`)).toBe(true)
+    expect(content.endsWith(`The full notes are at <https://github.com/code-yeongyu/oh-my-cybersecurity/releases/tag/${tag}>`)).toBe(true)
   })
 
   test("#given oversized notes #when composed #then complete paragraphs fit below 2000 characters", () => {

@@ -17,7 +17,7 @@ async function main(): Promise<void> {
 		return;
 	}
 
-	stderr.write("Usage: omo-lsp-daemon [mcp | daemon]\n");
+	stderr.write("Usage: omc-lsp-daemon [mcp | daemon]\n");
 	process.exitCode = 2;
 }
 

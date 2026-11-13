@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import { hostname } from "node:os"
 import { join } from "node:path"
 
-import type { OwnerProbe, OwnerStatus } from "@oh-my-opencode/isolation-core"
+import type { OwnerProbe, OwnerStatus } from "@oh-my-cybersecurity/isolation-core"
 
 import { createIsolationRuntime } from "../isolation"
 import type { TaskRecord } from "../state"
@@ -60,8 +60,8 @@ function makeLifecycle(store: TaskRecordStore, options: {
 function seedClone(root: string, name: string, marker: Record<string, unknown> | null): string {
   const path = join(root, name)
   mkdirSync(join(path, "m"), { recursive: true })
-  writeFileSync(join(path, ".omo-isolation-backend.json"), JSON.stringify({ backend: "rcopy" }))
-  if (marker !== null) writeFileSync(join(path, ".omo-isolation-owner.json"), JSON.stringify(marker))
+  writeFileSync(join(path, ".omc-isolation-backend.json"), JSON.stringify({ backend: "rcopy" }))
+  if (marker !== null) writeFileSync(join(path, ".omc-isolation-owner.json"), JSON.stringify(marker))
   return path
 }
 
@@ -77,7 +77,7 @@ describe("startup isolation reclamation", () => {
   test("#given stale clones of many owner kinds #when a session starts #then only the provably dead ones are reclaimed", async () => {
     const fixture = tempGitRepo()
     const store = tempStore()
-    const wt = join(fixture.homeDir, ".omo", "wt")
+    const wt = join(fixture.homeDir, ".omc", "wt")
     mkdirSync(wt, { recursive: true })
 
     const deadHost = seedClone(wt, "t0000000001", marker("t0000000001", 5001))

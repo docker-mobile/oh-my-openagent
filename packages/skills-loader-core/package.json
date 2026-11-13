@@ -1,9 +1,9 @@
 {
-  "name": "@oh-my-opencode/skills-loader-core",
+  "name": "@oh-my-cybersecurity/skills-loader-core",
   "version": "0.1.0",
   "type": "module",
   "private": true,
-  "description": "Harness-neutral skill loading, builtin skill, runtime skill, and skill matching primitives for oh-my-opencode.",
+  "description": "Harness-neutral skill loading, builtin skill, runtime skill, and skill matching primitives for oh-my-cybersecurity.",
   "exports": {
     ".": {
       "types": "./src/index.ts",
@@ -64,10 +64,10 @@
     "test": "bun test src/*.test.ts src/**/*.test.ts"
   },
   "dependencies": {
-    "@oh-my-opencode/claude-code-compat-core": "workspace:*",
-    "@oh-my-opencode/model-core": "workspace:*",
-    "@oh-my-opencode/shared-skills": "workspace:*",
-    "@oh-my-opencode/utils": "workspace:*",
+    "@oh-my-cybersecurity/claude-code-compat-core": "workspace:*",
+    "@oh-my-cybersecurity/model-core": "workspace:*",
+    "@oh-my-cybersecurity/shared-skills": "workspace:*",
+    "@oh-my-cybersecurity/utils": "workspace:*",
     "js-yaml": "^5.4.2",
     "picomatch": "^4.0.7",
     "zod": "^4.6.5"

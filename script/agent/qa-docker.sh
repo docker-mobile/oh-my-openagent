@@ -32,8 +32,8 @@ if ! command -v docker >/dev/null 2>&1 || ! docker info >/dev/null 2>&1; then
   exit 3
 fi
 
-dev_image="omo-dev"
-qa_image="omo-qa"
+dev_image="omc-dev"
+qa_image="omc-qa"
 
 if [ "${1:-}" = "--clean" ]; then
   docker rmi -f "$qa_image" "$dev_image" >/dev/null 2>&1 || true
@@ -68,10 +68,10 @@ tty_flags=(-i)
 
 docker_run() {
   exec docker run --rm "${tty_flags[@]}" \
-    -v "$REPO_ROOT:/workspaces/oh-my-openagent" \
+    -v "$REPO_ROOT:/workspaces/oh-my-cybersecurity" \
     "${config_mounts[@]}" \
     -e "OPENCODE_CONFIG_DIR=${OPENCODE_CONFIG_DIR:-}" \
-    -w /workspaces/oh-my-openagent \
+    -w /workspaces/oh-my-cybersecurity \
     "$@"
 }
 

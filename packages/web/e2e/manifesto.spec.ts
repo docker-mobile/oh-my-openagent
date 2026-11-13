@@ -23,11 +23,11 @@ test.describe("Manifesto Page", () => {
     await page.goto("/manifesto", { waitUntil: "domcontentloaded", timeout: 45000 })
 
     // when
-    const ctaLink = page.getByRole("link", { name: /Get OmO/i })
+    const ctaLink = page.getByRole("link", { name: /Get OmC/i })
 
     // then
     await expect(ctaLink).toBeVisible()
-    await expect(ctaLink).toHaveAttribute("href", "https://github.com/code-yeongyu/oh-my-openagent")
+    await expect(ctaLink).toHaveAttribute("href", "https://github.com/code-yeongyu/oh-my-cybersecurity")
   })
 
   test("links the footnote to the archived January 2026 version", async ({ page }) => {

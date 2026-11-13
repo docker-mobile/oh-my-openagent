@@ -3,10 +3,10 @@ import { join } from "node:path"
 import { existsSync, readFile, rm, writeFile } from "../fs/resilient"
 
 // A memory write that failed with its change already staged while index.lock was held cannot be
-// unstaged then (omo #10199). It records its paths and HEAD here, inside .git, and every write
+// unstaged then (omc #10199). It records its paths and HEAD here, inside .git, and every write
 // entry point of GitMemoryRepo settles the record first, once the index is free again.
 
-const PENDING_ROLLBACK = "omo-pending-rollback.json"
+const PENDING_ROLLBACK = "omc-pending-rollback.json"
 
 export interface PendingRollback {
   readonly head: string

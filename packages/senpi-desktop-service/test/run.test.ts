@@ -4,7 +4,7 @@ import {
 	DISPLAY_METHODS,
 	ELEMENT_METHODS,
 	WINDOW_METHODS,
-} from "@oh-my-opencode/senpi-desktop-protocol";
+} from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ComputerRunError, RunOutput } from "../src/run/context";
 import { type ComputerRunSandbox, type ExecuteTool, runComputerCode } from "../src/run/runtime";

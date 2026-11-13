@@ -136,7 +136,7 @@ function withoutCapabilities(hidden: readonly string[]): Transform {
 }
 
 async function hostEngine(root: string, engineEnv: Readonly<Record<string, string>>): Promise<Engine> {
-  // A socket host advertises `extension_events` (a capability omo requires of a task host) only for this client set.
+  // A socket host advertises `extension_events` (a capability omc requires of a task host) only for this client set.
   const env = { ...engineEnv, SENPI_RPC_CLIENT_CAPABILITIES: "extension_events" }
   const { dir: socketDir, socket } = shortSocketDir("model-chain-host", "h.sock")
   const rpcEntry = fileURLToPath(import.meta.resolve("@code-yeongyu/senpi/rpc-entry"))

@@ -10,9 +10,9 @@ import { fileURLToPath } from "node:url"
 
 const postinstallPath = fileURLToPath(new URL("./postinstall.mjs", import.meta.url))
 const RENAME_NOTICE =
-  "oh-my-openagent: the 'omo' command is now 'omo-agent-toolkit' (the old name was removed in this major release)."
+  "oh-my-cybersecurity: the 'omc' command is now 'omc-agent-toolkit' (the old name was removed in this major release)."
 const PACKAGE_VERSION: string = JSON.parse(readFileSync(fileURLToPath(new URL("./package.json", import.meta.url)), "utf8")).version
-const NATIVE_NOTICE = `oh-my-openagent: OmO Native is the same omo as one 'omo' command, with no OpenCode host: bun add -g ${PACKAGE_VERSION.includes("-") ? "omo-ai@beta" : "omo-ai"}`
+const NATIVE_NOTICE = `oh-my-cybersecurity: OmC Native is the same omc as one 'omc' command, with no OpenCode host: bun add -g ${PACKAGE_VERSION.includes("-") ? "omc-ai@beta" : "omc-ai"}`
 const SUBPROCESS_TEST_TIMEOUT_MS = 30_000
 const HANGING_OPENCODE_MS = 60_000
 
@@ -23,7 +23,7 @@ type PostinstallRun = {
 }
 
 function runPostinstallInFixtureEnv(options: { readonly pathPrefix?: string; readonly timeoutMs?: number } = {}): PostinstallRun {
-  const fixtureHome = mkdtempSync(join(tmpdir(), "omo-postinstall-fixture-"))
+  const fixtureHome = mkdtempSync(join(tmpdir(), "omc-postinstall-fixture-"))
   const inheritedPath = process.env.PATH ?? ""
   try {
     const result = spawnSync(process.execPath, [postinstallPath], {
@@ -44,7 +44,7 @@ function runPostinstallInFixtureEnv(options: { readonly pathPrefix?: string; rea
 }
 
 function writeHangingOpencodeShim(): string {
-  const binDir = mkdtempSync(join(tmpdir(), "omo-postinstall-hanging-opencode-"))
+  const binDir = mkdtempSync(join(tmpdir(), "omc-postinstall-hanging-opencode-"))
   const hang = `${JSON.stringify(process.execPath)} -e "setTimeout(() => {}, ${HANGING_OPENCODE_MS})"`
   writeFileSync(join(binDir, "opencode"), `#!/bin/sh\nexec ${hang}\n`)
   chmodSync(join(binDir, "opencode"), 0o755)
@@ -72,11 +72,11 @@ function countNativeNotices(output: string): number {
 describe("postinstall rename notice", () => {
   test("names the install line of the package's own channel", async () => {
     const { nativeNotice } = await import("./postinstall.mjs")
-    expect(nativeNotice("5.0.0")).toEndWith("bun add -g omo-ai")
-    expect(nativeNotice("5.0.0-beta.90")).toEndWith("bun add -g omo-ai@beta")
+    expect(nativeNotice("5.0.0")).toEndWith("bun add -g omc-ai")
+    expect(nativeNotice("5.0.0-beta.90")).toEndWith("bun add -g omc-ai@beta")
   })
 
-  test("announces the omo-agent-toolkit rename exactly once", () => {
+  test("announces the omc-agent-toolkit rename exactly once", () => {
     // #given
     // a fixture environment isolated from the real HOME and OpenCode plugin cache
 

@@ -2,8 +2,8 @@
 
 import { describe, expect, it } from "bun:test"
 
-// The plugin ships senpi-task inside more than one bundle (omo.js warms pi-tui in compose;
-// omo-task.js carries its own copy of this module and renders the DAG status widget from a
+// The plugin ships senpi-task inside more than one bundle (omc.js warms pi-tui in compose;
+// omc-task.js carries its own copy of this module and renders the DAG status widget from a
 // timer). A second module instance must observe the warm-up done through the first one, or the
 // timer render throws outside any try/catch and kills the process.
 type PiTuiBoundary = typeof import("./pi-tui")

@@ -6,7 +6,7 @@ import type { LockRecord } from "./lock-record"
 // overwritten by the new holder, so the dead owner's record would otherwise be unrecoverable by
 // the time a later consumer (the stranded-git-lock sweep) needs to justify reclamation.
 //
-// omo #10199 r5 MEDIUM 3: the proof is bound to ONE acquisition - the nonce of the record that
+// omc #10199 r5 MEDIUM 3: the proof is bound to ONE acquisition - the nonce of the record that
 // was published after the takeover - and is forgotten when that acquisition ends. A later
 // acquisition of the same lock, or any other lock, never inherits it.
 type ProvenDeadTakeover = { readonly previous: LockRecord; readonly takeoverNonce: string }

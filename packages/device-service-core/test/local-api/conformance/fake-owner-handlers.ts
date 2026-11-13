@@ -80,7 +80,7 @@ export const dispatch = (state: OwnerState, conn: Conn, request: LocalRequest): 
     }
     case "control.attach.get":
     case "control.attach.set":
-      if (role !== "desktop" && role !== "omo")
+      if (role !== "desktop" && role !== "omc")
         return refuse("forbidden", "only the desktop and the CLI read or set the attach setting");
       if (request.type === "control.attach.set")
         state.attach = { attached: request.attached, changedAt: new Date(state.now()).toISOString() };

@@ -1,5 +1,5 @@
 import type { RequestOptions } from "@modelcontextprotocol/sdk/shared/protocol.js"
-import type { ClaudeCodeMcpServer } from "@oh-my-opencode/claude-code-compat-core/claude-code-mcp-loader/types"
+import type { ClaudeCodeMcpServer } from "@oh-my-cybersecurity/claude-code-compat-core/claude-code-mcp-loader/types"
 
 // The SDK arms setTimeout with this value; a delay above 2^31-1 ms is clamped to 1 ms.
 const MAX_TIMER_DELAY_MS = 2_147_483_647

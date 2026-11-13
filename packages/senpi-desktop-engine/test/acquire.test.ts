@@ -16,7 +16,7 @@ const digest = createHash("sha256").update(bytes).digest("hex");
 
 let cacheDir: string;
 beforeEach(() => {
-	cacheDir = mkdtempSync(join(tmpdir(), "omo-engine-acquire-"));
+	cacheDir = mkdtempSync(join(tmpdir(), "omc-engine-acquire-"));
 });
 afterEach(() => {
 	rmSync(cacheDir, { recursive: true, force: true });
@@ -145,8 +145,8 @@ describe("acquireDesktopEngine", () => {
 		expect(existsSync(join(cacheDir, version, host, ".current"))).toBe(false);
 		expect(readdirSync(join(cacheDir, version, host)).some((entry) => entry.startsWith(".download-"))).toBe(false);
 		expect(requests).toEqual([
-			`https://github.com/code-yeongyu/oh-my-openagent/releases/download/v${version}/${asset}`,
-			`https://github.com/code-yeongyu/oh-my-openagent/releases/download/v${version}/${DESKTOP_ENGINE_CHECKSUMS_ASSET}`,
+			`https://github.com/code-yeongyu/oh-my-cybersecurity/releases/download/v${version}/${asset}`,
+			`https://github.com/code-yeongyu/oh-my-cybersecurity/releases/download/v${version}/${DESKTOP_ENGINE_CHECKSUMS_ASSET}`,
 		]);
 	});
 

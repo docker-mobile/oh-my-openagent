@@ -9,8 +9,8 @@ import { CTX, createFakeManager, makeDeps } from "./__fixtures__/task-tool-fakes
 import { buildTaskExecute } from "./execute"
 import { PLAN_REVIEW_DENY_MESSAGE } from "./plan-review-contract"
 
-const PLAN_A = ".omo/plans/alpha-plan.md"
-const PLAN_B = ".omo/plans/beta-plan.md"
+const PLAN_A = ".omc/plans/alpha-plan.md"
+const PLAN_B = ".omc/plans/beta-plan.md"
 
 function canonical(path: string): string {
   const physicalPath = isAbsolute(path) ? realpathSync.native(path) : path
@@ -62,13 +62,13 @@ afterEach(() => {
   for (const root of tempRoots.splice(0)) rmSync(root, { recursive: true, force: true })
 })
 
-// A real project directory with the given plan files under .omo/plans, so explicit-path resolution
+// A real project directory with the given plan files under .omc/plans, so explicit-path resolution
 // runs against the filesystem instead of the session's touched-plan bookkeeping.
 function projectWithPlans(names: readonly string[]): string {
   const root = realpathSync.native(mkdtempSync(join(tmpdir(), "plan-review-contract-")))
   tempRoots.push(root)
-  mkdirSync(join(root, ".omo", "plans"), { recursive: true })
-  for (const name of names) writeFileSync(join(root, ".omo", "plans", name), `# ${name}\n`)
+  mkdirSync(join(root, ".omc", "plans"), { recursive: true })
+  for (const name of names) writeFileSync(join(root, ".omc", "plans", name), `# ${name}\n`)
   return root
 }
 
@@ -79,8 +79,8 @@ describe("buildTaskExecute plan-review contract explicit path (#10837, #11728)",
     const alias = join(aliasRoot, "PROJEC~1")
     symlinkSync(project, alias, "junction")
 
-    expect(canonical(join(alias, ".omo", "plans", "alias-plan.md"))).toBe(
-      `Review the work plan at ${realpathSync.native(join(project, ".omo", "plans", "alias-plan.md"))} for contradictions and blocking issues.`,
+    expect(canonical(join(alias, ".omc", "plans", "alias-plan.md"))).toBe(
+      `Review the work plan at ${realpathSync.native(join(project, ".omc", "plans", "alias-plan.md"))} for contradictions and blocking issues.`,
     )
   })
 
@@ -93,7 +93,7 @@ describe("buildTaskExecute plan-review contract explicit path (#10837, #11728)",
     // when
     const result = await execute(
       "c",
-      { prompt: ".omo/plans/untouched-plan.md", subagent_type: "plan-reviewer", run_in_background: true },
+      { prompt: ".omc/plans/untouched-plan.md", subagent_type: "plan-reviewer", run_in_background: true },
       undefined,
       undefined,
       { ...CTX, cwd: project },
@@ -102,7 +102,7 @@ describe("buildTaskExecute plan-review contract explicit path (#10837, #11728)",
     // then
     expect(result.details.status).not.toBe("denied")
     expect(specs).toHaveLength(1)
-    expect(specs[0]?.prompt).toBe(canonical(join(project, ".omo", "plans", "untouched-plan.md")))
+    expect(specs[0]?.prompt).toBe(canonical(join(project, ".omc", "plans", "untouched-plan.md")))
   })
 
   test("#given an explicit plan path that does not exist and a touched plan #when spawning plan-reviewer #then the spawn is refused instead of swapped", async () => {
@@ -114,7 +114,7 @@ describe("buildTaskExecute plan-review contract explicit path (#10837, #11728)",
     // when
     const result = await execute(
       "c",
-      { prompt: "review .omo/plans/missing-plan.md", subagent_type: "plan-reviewer" },
+      { prompt: "review .omc/plans/missing-plan.md", subagent_type: "plan-reviewer" },
       undefined,
       undefined,
       { ...CTX, cwd: project },
@@ -123,14 +123,14 @@ describe("buildTaskExecute plan-review contract explicit path (#10837, #11728)",
     // then
     expect(specs).toHaveLength(0)
     expect(result.details.status).toBe("denied")
-    expect(resultText(result)).toContain(".omo/plans/missing-plan.md")
+    expect(resultText(result)).toContain(".omc/plans/missing-plan.md")
   })
 
-  test("#given an explicit existing plan outside this project's .omo/plans that was never touched #when spawning plan-reviewer #then the spawn is refused instead of swapped", async () => {
+  test("#given an explicit existing plan outside this project's .omc/plans that was never touched #when spawning plan-reviewer #then the spawn is refused instead of swapped", async () => {
     // given
     const project = projectWithPlans([])
     const elsewhere = projectWithPlans(["foreign-plan.md"])
-    const foreign = join(elsewhere, ".omo", "plans", "foreign-plan.md")
+    const foreign = join(elsewhere, ".omc", "plans", "foreign-plan.md")
     const { specs, manager } = specCapture()
     const execute = buildTaskExecute(makeDeps(manager, { resolveSkillInvocations: resolverFor(OPEN_SESSION) }))
 
@@ -148,7 +148,7 @@ describe("buildTaskExecute plan-review contract explicit path (#10837, #11728)",
     const elsewhere = projectWithPlans(["foreign-plan.md"])
     const alias = join(project, "FOREIG~1")
     symlinkSync(elsewhere, alias, "junction")
-    const foreign = join(alias, ".omo", "plans", "foreign-plan.md")
+    const foreign = join(alias, ".omc", "plans", "foreign-plan.md")
     const { specs, manager } = specCapture()
     const execute = buildTaskExecute(makeDeps(manager, { resolveSkillInvocations: resolverFor(OPEN_SESSION) }))
 
@@ -163,7 +163,7 @@ describe("buildTaskExecute plan-review contract explicit path (#10837, #11728)",
     // given
     const project = projectWithPlans([])
     const worktree = projectWithPlans(["worktree-plan.md"])
-    const recorded = join(worktree, ".omo", "plans", "worktree-plan.md")
+    const recorded = join(worktree, ".omc", "plans", "worktree-plan.md")
     const { specs, manager } = specCapture()
     const execute = buildTaskExecute(
       makeDeps(manager, {
@@ -339,7 +339,7 @@ describe("buildTaskExecute plan-review contract (plan-reviewer)", () => {
     // when
     const result = await execute(
       "c",
-      { prompt: "review ATTACKER_CONTROLLED:.omo/plans/alpha-plan.md now", subagent_type: "plan-reviewer" },
+      { prompt: "review ATTACKER_CONTROLLED:.omc/plans/alpha-plan.md now", subagent_type: "plan-reviewer" },
       undefined,
       undefined,
       CTX,
@@ -359,7 +359,7 @@ describe("buildTaskExecute plan-review contract (plan-reviewer)", () => {
     // when
     const result = await execute(
       "c",
-      { prompt: "review ../../secret/.omo/plans/gamma-plan.md", subagent_type: "plan-reviewer" },
+      { prompt: "review ../../secret/.omc/plans/gamma-plan.md", subagent_type: "plan-reviewer" },
       undefined,
       undefined,
       { ...CTX, cwd: project },
@@ -378,12 +378,12 @@ describe("buildTaskExecute plan-review contract (plan-reviewer)", () => {
     )
 
     // when
-    const result = await execute("c", { prompt: "review /tmp/untrusted/.omo/plans/delta-plan.md", subagent_type: "plan-reviewer" }, undefined, undefined, CTX)
+    const result = await execute("c", { prompt: "review /tmp/untrusted/.omc/plans/delta-plan.md", subagent_type: "plan-reviewer" }, undefined, undefined, CTX)
 
     // then
     expect(specs).toHaveLength(0)
     expect(result.details.status).toBe("denied")
-    expect(resultText(result)).toContain("/tmp/untrusted/.omo/plans/delta-plan.md")
+    expect(resultText(result)).toContain("/tmp/untrusted/.omc/plans/delta-plan.md")
   })
 
   test("#given an explore spawn with a plan path in the prompt #when executed #then the contract does not apply", async () => {

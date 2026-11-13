@@ -48,7 +48,7 @@ afterEach(async () => {
 
 describe("reflection worktree integration", () => {
   it("#given a validated tip #when auto integration merges #then the merge runs with auto-maintenance disabled", async () => {
-    // omo #10199 review MEDIUM 3: the integration merge must carry the same NO_AUTO_MAINTENANCE
+    // omc #10199 review MEDIUM 3: the integration merge must carry the same NO_AUTO_MAINTENANCE
     // flags as the repo's commit path; the injected exec captures the exact argv boundary call.
     const { worktree } = await fixture()
     await commit(worktree, "learned.md", "learned\n")

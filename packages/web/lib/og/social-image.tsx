@@ -51,7 +51,7 @@ export function SocialImage({
       {/* eslint-disable-next-line @next/next/no-img-element -- original designed-vector wordmark */}
       <img
         src={"data:image/svg+xml;utf8," + encodeURIComponent(omoWordmark)}
-        alt="OmO"
+        alt="OmC"
         width={390}
         height={(390 * 156) / 499}
         style={{ position: "absolute", left: 494, top: 204 }}

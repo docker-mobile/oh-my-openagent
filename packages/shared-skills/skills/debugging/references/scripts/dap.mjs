@@ -146,13 +146,13 @@ function adapterIdFor(spec) {
   if (base.includes("dlv") || base.includes("delve")) return "dlv";
   if (base.includes("js-debug")) return "js-debug";
   if (base.includes("gdb")) return "gdb";
-  return "omo";
+  return "omc";
 }
 async function launch(adapter, program, args) {
   if (transport) return error("adapter-error", "session already exists");
   try {
     await startAdapter(adapter);
-    await request("initialize", { clientID: "omo-dap", adapterID: adapterIdFor(adapter), linesStartAt1: true, columnsStartAt1: true, pathFormat: "path" });
+    await request("initialize", { clientID: "omc-dap", adapterID: adapterIdFor(adapter), linesStartAt1: true, columnsStartAt1: true, pathFormat: "path" });
     // Send launch BEFORE awaiting `initialized`: debugpy's adapter defers/flushes the
     // initialized event until further client activity, so waiting for it first
     // deadlocks the handshake. DAP allows launch any time after the initialize
@@ -208,7 +208,7 @@ async function command(input) {
     const [host, port] = (parts.shift() || "").split(":");
     try {
       await startAdapter(`${host}:${port}`);
-      await request("initialize", { clientID: "omo-dap", adapterID: "debugpy", linesStartAt1: true, columnsStartAt1: true, pathFormat: "path" });
+      await request("initialize", { clientID: "omc-dap", adapterID: "debugpy", linesStartAt1: true, columnsStartAt1: true, pathFormat: "path" });
       await waitInitialized();
       await request("attach", { justMyCode: false });
       await request("configurationDone");

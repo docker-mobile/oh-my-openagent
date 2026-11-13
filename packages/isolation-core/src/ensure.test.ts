@@ -13,7 +13,7 @@ test("writes marker before start and publishes only a complete directory", async
   const { baseDir } = await chooseBaseDir(f.repoRoot, f.homeDir, "one")
   const handle = await ensureIsolation({ ...f, id: "one", preferred: "rcopy", backends: [backend({
     start: async (_lower, merged) => {
-      const marker = JSON.parse(await readFile(join(dirname(merged), ".omo-isolation-owner.json"), "utf8"))
+      const marker = JSON.parse(await readFile(join(dirname(merged), ".omc-isolation-owner.json"), "utf8"))
       expect(marker.id).toBe("one")
       expect(await access(baseDir).then(() => true, () => false)).toBe(false)
       await mkdir(merged)
@@ -24,7 +24,7 @@ test("writes marker before start and publishes only a complete directory", async
   expect(handle.mergedDir).toBe(join(baseDir, "m"))
   expect(handle.baseDir).not.toContain(".creating-")
   expect(await readFile(join(handle.mergedDir, "result"), "utf8")).toBe("ready")
-  const marker = JSON.parse(await readFile(join(baseDir, ".omo-isolation-backend.json"), "utf8"))
+  const marker = JSON.parse(await readFile(join(baseDir, ".omc-isolation-backend.json"), "utf8"))
   expect(marker).toEqual({ backend: "rcopy", started_at: expect.any(String) })
   const started = Date.parse(marker.started_at)
   expect(Number.isFinite(started)).toBe(true)
@@ -57,7 +57,7 @@ test("generic start error propagates and removes the creating directory", async 
   await expect(ensureIsolation({ ...f, id: "one", preferred: "rcopy", backends: [backend({
     start: async () => { throw failure },
   })] })).rejects.toBe(failure)
-  expect(await readdir(join(f.homeDir, ".omo/wt"))).toEqual([])
+  expect(await readdir(join(f.homeDir, ".omc/wt"))).toEqual([])
 })
 test("generic probe error propagates without falling through", async () => {
   const failure = new Error("probe I/O failure")
@@ -103,7 +103,7 @@ test("retention renames the complete tree and stores the reason", async () => {
   expect(retained).toContain(`${handle.baseDir}.retained-`)
   await access(join(retained, "m"))
   expect(await access(handle.baseDir).then(() => true, () => false)).toBe(false)
-  expect(JSON.parse(await readFile(join(retained, ".omo-isolation-retained.json"), "utf8")).reason).toBe("merge conflict")
+  expect(JSON.parse(await readFile(join(retained, ".omc-isolation-retained.json"), "utf8")).reason).toBe("merge conflict")
 })
 test("another ensure cannot remove an in-flight creating directory", async () => {
   const f = await fixture()
@@ -124,7 +124,7 @@ test("another ensure cannot remove an in-flight creating directory", async () =>
     release.resolve()
   }
   const handle = await first
-  await access(join(handle.baseDir, ".omo-isolation-owner.json"))
+  await access(join(handle.baseDir, ".omc-isolation-owner.json"))
 })
 
 test("fall-through leaves no creating directory behind", async () => {
@@ -163,7 +163,7 @@ test("retry restores ownership after a mount backend removes its whole base", as
     stop: async (merged) => { await rm(dirname(merged), { recursive: true, force: true }) },
   })] })
   expect(starts).toBe(2)
-  expect(JSON.parse(await readFile(join(handle.baseDir, ".omo-isolation-owner.json"), "utf8")).id).toBe("retry-owner")
+  expect(JSON.parse(await readFile(join(handle.baseDir, ".omc-isolation-owner.json"), "utf8")).id).toBe("retry-owner")
 })
 
 test("git snapshot inconsistency after retry is a hard failure, not a fallback signal", async () => {

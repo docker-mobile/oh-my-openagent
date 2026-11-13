@@ -1,5 +1,5 @@
 // Frozen from R0 record-parse.ts, record-blocks-parse.ts, run-stats-parse.ts and
-// omo-config-core/schema/task.ts at ebd01f84e. Failure/reason sets live beside this file.
+// omc-config-core/schema/task.ts at ebd01f84e. Failure/reason sets live beside this file.
 const backends = ["auto", "apfs", "btrfs", "zfs", "reflink", "overlayfs", "block-clone", "rcopy"]
 const modelSources = ["category", "explicit", "agent"]
 export const R0_ENUM_FIELDS: Readonly<Record<string, readonly string[]>> = {

@@ -1,5 +1,5 @@
-import type { PermissionDeniedData } from "@oh-my-opencode/senpi-desktop-protocol";
-import { DesktopEngineRpcError, DesktopLaunchContextError } from "@oh-my-opencode/senpi-desktop-service";
+import type { PermissionDeniedData } from "@oh-my-cybersecurity/senpi-desktop-protocol";
+import { DesktopEngineRpcError, DesktopLaunchContextError } from "@oh-my-cybersecurity/senpi-desktop-service";
 import {
 	actionsOf,
 	actionsScript,

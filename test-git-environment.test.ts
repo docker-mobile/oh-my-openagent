@@ -16,7 +16,7 @@ describe("test git environment (#12354)", () => {
 
   test.skipIf(process.platform === "win32")("#given a fixture repository's own pre-commit hook #when a test commits with the inherited environment #then the hook runs", () => {
     // #given
-    const dir = mkdtempSync(join(tmpdir(), "omo-test-git-env-"))
+    const dir = mkdtempSync(join(tmpdir(), "omc-test-git-env-"))
     dirs.push(dir)
     const git = (...args: string[]) => spawnSync("git", args, { cwd: dir, encoding: "utf8" })
     git("init", "-q")

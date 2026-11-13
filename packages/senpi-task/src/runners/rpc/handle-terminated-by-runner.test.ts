@@ -7,7 +7,7 @@ import type { RpcProtocolClient } from "./protocol-client"
 import { createChildExtensionEvents } from "../child-extension-events"
 import type { TerminateOptions } from "../types"
 
-// omo#9471: a kill is recorded from the runner's own terminate(), never inferred from stderr. On
+// omc#9471: a kill is recorded from the runner's own terminate(), never inferred from stderr. On
 // Windows a killed child exits with code 1 and no signal, and its teardown can write memory diagnostics.
 const MEMORY_TEARDOWN_STDERR = [
   "child reaper unavailable under Bun on win32: children orphaned by a terminated worker thread stay as zombies until this host exits",
@@ -17,7 +17,7 @@ const MEMORY_TEARDOWN_STDERR = [
   "",
 ].join("\n")
 
-// omo#9546: the fake child has a pid, and the default terminate signals its process GROUP on the real
+// omc#9546: the fake child has a pid, and the default terminate signals its process GROUP on the real
 // host running the suite. Every handle here stops its child through an injected fake instead, and no
 // code path in this file may reach the real process.kill.
 let realKill: ReturnType<typeof spyOn<typeof process, "kill">>
@@ -56,7 +56,7 @@ function harness(stderrTail: string) {
   return { child, handle, stopped }
 }
 
-describe("a kill is the one the runner issued (omo#9471)", () => {
+describe("a kill is the one the runner issued (omc#9471)", () => {
   test("#given the runner terminated the child #when it exits with code 1 and memory teardown lines on stderr #then the exit is killed", async () => {
     // given
     const { child, handle, stopped } = harness(MEMORY_TEARDOWN_STDERR)
@@ -83,7 +83,7 @@ describe("a kill is the one the runner issued (omo#9471)", () => {
   })
 })
 
-describe("a fake rpc child never signals the host (omo#9546)", () => {
+describe("a fake rpc child never signals the host (omc#9546)", () => {
   test("#given a handle over a fake child with a pid #when it is terminated #then the real process.kill is never called", async () => {
     // given
     const { handle } = harness("")

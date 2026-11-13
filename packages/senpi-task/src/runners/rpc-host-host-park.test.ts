@@ -144,7 +144,7 @@ describe("a session the host parks parks its task record", () => {
     expect(child.parent.store.load(child.record.task_id)?.final_response).toBe("DONE_SENTINEL")
   })
 
-  test("#given a running child the idle sweep parked #when task_send reaches it on a free lane #then it is reopened and delivered to instead of answering lane_capacity, and its run releases the lane when it ends (omo#9403)", async () => {
+  test("#given a running child the idle sweep parked #when task_send reaches it on a free lane #then it is reopened and delivered to instead of answering lane_capacity, and its run releases the lane when it ends (omc#9403)", async () => {
     // given
     const child = await oneChild({ transcripts: true })
     const seen = parkSeen(child)

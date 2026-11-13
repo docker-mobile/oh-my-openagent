@@ -7,8 +7,8 @@ const FORBIDDEN_IMPORT_PATTERNS = [
   "@code-yeongyu/senpi",
   "@earendil-works/",
   "@mariozechner/pi-",
-  "@oh-my-opencode/omo-senpi",
-  "@oh-my-opencode/senpi-task",
+  "@oh-my-cybersecurity/omc-senpi",
+  "@oh-my-cybersecurity/senpi-task",
 ]
 
 function collectSourceFiles(dir: string): string[] {

@@ -34,7 +34,7 @@ async function loadedModules(env: Record<string, string>, consent: boolean | "th
   ].join("\n"))
   writeFileSync(join(root, "probe.ts"), [
     `const { ${via.fn}: start } = await import(${JSON.stringify(via.path)})`,
-    `const transport = await start({ productEnvPrefix: "OMO_TEST", ingestKey: "k", spoolDir: ${JSON.stringify(join(root, "spool"))}, spoolRoot: ${JSON.stringify(root)}, resource: {}, scope: { name: "omo-senpi", version: "1" }, project: () => ({}), spans: {}, env: ${JSON.stringify(env)}, consent: () => ${consent === "throws" ? '{ throw new Error("consent store unreadable") }' : consent}, autoStart: false })`,
+    `const transport = await start({ productEnvPrefix: "OMC_TEST", ingestKey: "k", spoolDir: ${JSON.stringify(join(root, "spool"))}, spoolRoot: ${JSON.stringify(root)}, resource: {}, scope: { name: "omc-senpi", version: "1" }, project: () => ({}), spans: {}, env: ${JSON.stringify(env)}, consent: () => ${consent === "throws" ? '{ throw new Error("consent store unreadable") }' : consent}, autoStart: false })`,
     'console.log(transport === null ? "RESULT null" : "RESULT transport")',
     "await transport?.shutdown()",
   ].join("\n"))
@@ -51,7 +51,7 @@ describe("the OTLP entry loads nothing while telemetry is off", () => {
   const disabled: readonly (readonly [string, Record<string, string>, boolean])[] = [
     ["DO_NOT_TRACK=1", { DO_NOT_TRACK: "1" }, true],
     ["OTEL_SDK_DISABLED=true", { OTEL_SDK_DISABLED: "true" }, true],
-    ["the product opt-out", { OMO_TEST_SEND_ANONYMOUS_TELEMETRY: "0" }, true],
+    ["the product opt-out", { OMC_TEST_SEND_ANONYMOUS_TELEMETRY: "0" }, true],
     ["first run before consent (consent() false)", {}, false],
   ]
   for (const [label, env, consent] of disabled) {
@@ -81,7 +81,7 @@ describe("the OTLP runtime refuses to start while telemetry is off, whoever call
   const disabled: readonly (readonly [string, Record<string, string>, boolean | "throws"])[] = [
     ["DO_NOT_TRACK=1", { DO_NOT_TRACK: "1" }, true],
     ["OTEL_SDK_DISABLED=true", { OTEL_SDK_DISABLED: "true" }, true],
-    ["the product opt-out", { OMO_TEST_SEND_ANONYMOUS_TELEMETRY: "0" }, true],
+    ["the product opt-out", { OMC_TEST_SEND_ANONYMOUS_TELEMETRY: "0" }, true],
     ["no consent", {}, false],
     ["a consent callback that throws", {}, "throws"],
   ]
@@ -112,7 +112,7 @@ describe("the OTLP runtime refuses to start while telemetry is off, whoever call
     expect(await transpiler.transform(optOutSource)).not.toMatch(/\bexport\s*\*/)
     const optOutExports = transpiler.scan(optOutSource).exports
     expect(optOutExports.filter((name) => !name.startsWith("purge"))).toEqual([])
-    const { purgeIdleOtlpSpool } = await import("@oh-my-opencode/telemetry-core/otlp-opt-out")
+    const { purgeIdleOtlpSpool } = await import("@oh-my-cybersecurity/telemetry-core/otlp-opt-out")
     expect(purgeIdleOtlpSpool).toBeInstanceOf(Function)
   })
 })

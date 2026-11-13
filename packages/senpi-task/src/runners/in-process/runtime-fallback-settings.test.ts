@@ -31,7 +31,7 @@ function caller(global: Record<string, unknown>, project?: Record<string, unknow
   const agentDir = join(root, "agent")
   const cwd = join(root, "project")
   mkdirSync(agentDir, { recursive: true })
-  // The project dir is the running engine's config dir: a branded process (SENPI_BRAND) reads `.omo`, not `.senpi`.
+  // The project dir is the running engine's config dir: a branded process (SENPI_BRAND) reads `.omc`, not `.senpi`.
   const projectConfigDir = join(cwd, senpiBarrel().CONFIG_DIR_NAME)
   mkdirSync(projectConfigDir, { recursive: true })
   const globalPath = join(agentDir, "settings.json")

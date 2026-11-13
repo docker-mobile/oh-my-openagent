@@ -25,7 +25,7 @@ describe("resolveXdgDataDir", () => {
     const xdgDataHome = createTempPath("utils-xdg")
 
     // when
-    const resolvedDataDir = resolveXdgDataDir("omo-codex", {
+    const resolvedDataDir = resolveXdgDataDir("omc-codex", {
       env: { XDG_DATA_HOME: xdgDataHome },
     })
 
@@ -59,7 +59,7 @@ describe("resolveXdgDataDir", () => {
     const tmpRoot = createTempPath("utils-tmp")
 
     // when
-    const resolvedDataDir = resolveXdgDataDir("omo-codex", {
+    const resolvedDataDir = resolveXdgDataDir("omc-codex", {
       env: {},
       osProvider: {
         homedir: () => homeRoot,

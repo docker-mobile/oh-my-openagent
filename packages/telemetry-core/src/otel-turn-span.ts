@@ -13,7 +13,7 @@ import { W3CTraceContextPropagator } from "@opentelemetry/core"
 import { isTraceparent } from "./turn-trace-bridge"
 import type { TurnSpanHandle, TurnSpanStart, TurnTracing } from "./types"
 
-export const TURN_SPAN_NAME = "omo.turn"
+export const TURN_SPAN_NAME = "omc.turn"
 
 const w3c = new W3CTraceContextPropagator()
 

@@ -46,8 +46,8 @@ Complete reference for Oh My OpenCode plugin configuration. Every omo harness re
 
 One unified file configures every omo harness: the OpenCode plugin, Senpi (task, config-watch), and Codex. The legacy `oh-my-openagent.json[c]` / `oh-my-opencode.json[c]` files and `~/.omo/config.jsonc` are read by nothing but the migration engine (see [Migration](#migration)).
 
-1. User layer (lowest precedence): `~/.omo/omo.jsonc` on every platform (`omo.json` is accepted as a fallback basename).
-2. Project layers: `.omo/omo.jsonc` (then `.omo/omo.json`) in every directory from the working directory up to `$HOME`. Farther ancestors merge first, so the nearest project file wins and beats the user layer. `$HOME` itself is skipped by the walk because `~/.omo` is already the user layer. If the working directory is outside `$HOME`, the walk continues to the filesystem root.
+1. User layer (lowest precedence): `~/.omc/omc.jsonc` on every platform (`omc.json` is accepted as a fallback basename).
+2. Project layers: `.omc/omc.jsonc` (then `.omc/omc.json`) in every directory from the working directory up to `$HOME`. Farther ancestors merge first, so the nearest project file wins and beats the user layer. `$HOME` itself is skipped by the walk because `~/.omc` is already the user layer. If the working directory is outside `$HOME`, the walk continues to the filesystem root.
 
 #### Resolution Order
 
@@ -58,13 +58,13 @@ Within the merged document each harness resolves its own view VSCode-style, late
 3. `profiles.<name>`
 4. `profiles.<name>.[harness]`
 
-Defaults apply once at the end. The option keys documented in this reference are the contents of the `[opencode]` block. `agents` and `categories` can also live at the shared base level so every harness sees them, using the shared field set documented in the [omo.json reference](./omo-json.md); OpenCode-specific agent options belong in `[opencode]`.
+Defaults apply once at the end. The option keys documented in this reference are the contents of the `[opencode]` block. `agents` and `categories` can also live at the shared base level so every harness sees them, using the shared field set documented in the [omc.json reference](./omc-json.md); OpenCode-specific agent options belong in `[opencode]`.
 
 #### Profiles
 
 No default profiles ship: a profile exists only when you write one under `profiles.<name>` or the migration derives one from a legacy profile directory. Activation, highest priority first:
 
-1. `OMO_PROFILE`
+1. `OMC_PROFILE`
 2. `OCX_PROFILE` (set by `ocx oc -p <name>`)
 3. An `OPENCODE_CONFIG_DIR` whose path ends in `profiles/<name>`
 4. None
@@ -84,7 +84,7 @@ Two more shared base keys, read by the Senpi harness, pick the main session mode
 | `model_profiles` | record<string, `{ display_name?, caution?, family?, tier?, models? }`> | Named ordered model chains. A name matching a builtin (`daily-normal`, `daily-heavy`, `geeky-normal`, `geeky-heavy`) replaces it wholesale; any other name adds one. Entries use the same string or object shape as a category chain and may reference `models.<catalog>` entries. |
 | `model_profile` | string | Which chain starts the session: a lane id such as `daily-normal`, or a literal `provider/model` that pins one exact model. Unset applies Daily · Normal (or the first lane that resolves) on a fresh session; the retired `recommended` id does the same. |
 
-Don't confuse these with `profiles.<name>` above: that key swaps configuration layers via `OMO_PROFILE`, while `model_profile` chooses a model within the loaded configuration. Builtin chains, session-start behavior, and override rules are in the [omo.json reference](./omo-json.md#model-profiles-native-harness).
+Don't confuse these with `profiles.<name>` above: that key swaps configuration layers via `OMC_PROFILE`, while `model_profile` chooses a model within the loaded configuration. Builtin chains, session-start behavior, and override rules are in the [omc.json reference](./omc-json.md#model-profiles-native-harness).
 
 #### Security Invariants
 
@@ -96,33 +96,33 @@ Enable schema autocomplete:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/omo.schema.json"
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-cybersecurity/dev/assets/omc.schema.json"
 }
 ```
 
-Run `bunx oh-my-openagent install` for guided setup. Run `opencode models` to list available models.
+Run `bunx oh-my-cybersecurity install` for guided setup. Run `opencode models` to list available models.
 
 #### Migration
 
 The first time a current harness starts (and again on install or via the CLI), a lock-and-journal migration engine imports the legacy files into the unified file:
 
 - Sources: `oh-my-openagent.json[c]` / `oh-my-opencode.json[c]` in the OpenCode user config directory, in each of its `profiles/<name>/` directories, and in walked project `.opencode/` directories, plus `~/.omo/config.jsonc`.
-- Targets: the legacy user file imports into `~/.omo/omo.jsonc` under `[opencode]`; each legacy profile becomes `profiles.<name>."[opencode]"` holding only the keys that differ from the user file; a project file imports into that project's `.omo/omo.jsonc`. `~/.omo/config.jsonc` imports its `[opencode]` / `[codex]` blocks, and a legacy `[omo]` block maps to `[native]`.
-- OpenCode legacy files import only model/provider controls (`disabled_providers`, `model_fallback`, `models`, and `omo_agent` renamed to `sisyphus_agent`); agent and category registries, agent disable lists, hooks, and unrelated plugin settings are not imported.
-- OmO Native's first start then reports, once, every OpenCode edition agent or category model choice (from the legacy files, their migration backups, or the `[opencode]` block) that Native does not use, each with the `"[native]": { ... }` member that would set it (`metis` as `plan-consultant`, `momus` as `plan-reviewer`, OpenCode provider ids as omo's) and a pointer to `omo setup`, which carries them over with your consent. It writes only the `2026-09-opencode-routing-notice` marker; `omo doctor` repeats the line while the gap exists.
+- Targets: the legacy user file imports into `~/.omc/omc.jsonc` under `[opencode]`; each legacy profile becomes `profiles.<name>."[opencode]"` holding only the keys that differ from the user file; a project file imports into that project's `.omc/omc.jsonc`. `~/.omc/config.jsonc` imports its `[opencode]` / `[codex]` blocks, and a legacy `[omc]` block maps to `[native]`.
+- OpenCode legacy files import only model/provider controls (`disabled_providers`, `model_fallback`, `models`, and `omc_agent` renamed to `sisyphus_agent`); agent and category registries, agent disable lists, hooks, and unrelated plugin settings are not imported.
+- OmC Native's first start then reports, once, every OpenCode edition agent or category model choice (from the legacy files, their migration backups, or the `[opencode]` block) that Native does not use, each with the `"[native]": { ... }` member that would set it (`metis` as `plan-consultant`, `momus` as `plan-reviewer`, OpenCode provider ids as omc's) and a pointer to `omc setup`, which carries them over with your consent. It writes only the `2026-09-opencode-routing-notice` marker; `omc doctor` repeats the line while the gap exists.
 - Conflict policy: no-clobber. A value already present in the target wins, and every skipped legacy value is reported as a diagnostic instead of overwriting. Prior legacy migration history is preserved under the target's `legacy_migrations` key.
-- Markers: each applied migration records its id in the target's `_migrations` array, so re-runs are no-ops. `2026-07-opencode-config-unification` covers the `oh-my-*` files; `2026-07-codex-config-jsonc` covers `~/.omo/config.jsonc`; `2026-08-reasoning-unification` rewrites persisted model and reasoning fields. Codex startup runs only the second group; OpenCode plugin startup, Senpi startup, install, and the CLI run both groups, so whichever side runs first applies each group exactly once.
-- Backups: sources move to `~/.omo/migration-backup-<UTC timestamp>-opencode-config/` (project sources to `<project>/.omo/migration-backup-<UTC timestamp>/`). An interrupted run resumes from its journal on the next start.
-- Manual run: `oh-my-openagent config migrate`. `--dry-run` prints the transform, backup move plan, and conflicts without writing; `--json` prints machine-readable output.
+- Markers: each applied migration records its id in the target's `_migrations` array, so re-runs are no-ops. `2026-07-opencode-config-unification` covers the `oh-my-*` files; `2026-07-codex-config-jsonc` covers `~/.omc/config.jsonc`; `2026-08-reasoning-unification` rewrites persisted model and reasoning fields. Codex startup runs only the second group; OpenCode plugin startup, Senpi startup, install, and the CLI run both groups, so whichever side runs first applies each group exactly once.
+- Backups: sources move to `~/.omc/migration-backup-<UTC timestamp>-opencode-config/` (project sources to `<project>/.omc/migration-backup-<UTC timestamp>/`). An interrupted run resumes from its journal on the next start.
+- Manual run: `oh-my-cybersecurity config migrate`. `--dry-run` prints the transform, backup move plan, and conflicts without writing; `--json` prints machine-readable output.
 - Diagnostics surface once per startup: an OpenCode toast, a Senpi `session_start` notification, or Codex loader warnings.
 
 ### Quick Start Example
 
-Here's a practical starting `~/.omo/omo.jsonc`. OpenCode plugin settings live inside the `[opencode]` block:
+Here's a practical starting `~/.omc/omc.jsonc`. OpenCode plugin settings live inside the `[opencode]` block:
 
 ```jsonc
 {
-  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/omo.schema.json",
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-cybersecurity/dev/assets/omc.schema.json",
 
   "[opencode]": {
     "agents": {
@@ -205,7 +205,7 @@ The OpenCode edition adds `disabled_agents`, `agent_order`, and its own core-age
 
 #### Agent Options
 
-This table is the `[opencode].agents` surface only. Shared-base agents use the core field set (`description`, `prompt`, `model`, `models`, `reasoning`, `tools`, `execution_mode`, `background`, `max_depth`, `allowed_subagents`, `disallowed_tools`, `max_turns`, `temperature`, `disable`, and deprecated `variant` / `reasoningEffort`) documented in the [omo.json reference](./omo-json.md); OpenCode-only fields are rejected there.
+This table is the `[opencode].agents` surface only. Shared-base agents use the core field set (`description`, `prompt`, `model`, `models`, `reasoning`, `tools`, `execution_mode`, `background`, `max_depth`, `allowed_subagents`, `disallowed_tools`, `max_turns`, `temperature`, `disable`, and deprecated `variant` / `reasoningEffort`) documented in the [omc.json reference](./omc-json.md); OpenCode-only fields are rejected there.
 
 | Option            | Type                    | Description                                                     |
 | ----------------- | ----------------------- | --------------------------------------------------------------- |
@@ -333,7 +333,7 @@ Both `prompt` and `prompt_append` support loading content from files via `file:/
 }
 ```
 
-Paths can be absolute (`file:///abs/path`), relative to project root (`file://./rel/path`), or home-relative (`file://~/home/path`). Home-relative files are limited to `~/.config/opencode`, `~/.config/oh-my-openagent`, `~/.omo`, and `~/.opencode`. If a file URI cannot be decoded, resolved, accepted, or read, OmO inserts a warning placeholder into the prompt instead of failing hard.
+Paths can be absolute (`file:///abs/path`), relative to project root (`file://./rel/path`), or home-relative (`file://~/home/path`). Home-relative files are limited to `~/.config/opencode`, `~/.config/oh-my-cybersecurity`, `~/.omc`, and `~/.opencode`. If a file URI cannot be decoded, resolved, accepted, or read, OmC inserts a warning placeholder into the prompt instead of failing hard.
 
 ### Categories
 
@@ -391,14 +391,14 @@ Runtime priority:
 2. **User override** - model set in config → used exactly as-is. Even on cold cache, explicit user configuration takes precedence over hardcoded fallback chains
 3. **Category default** - model inherited from the assigned category config
 4. **User `fallback_models`** - user-configured fallback list is tried before built-in fallback chains
-5. **Provider fallback chain** - built-in provider/model chain from OmO source
+5. **Provider fallback chain** - built-in provider/model chain from OmC source
 6. **System default** - OpenCode's configured default model
 
 The same resolved chain drives spawn-time selection and runtime retry fallback, so a recovered task stays on the same category chain.
 
-In the Senpi harness, `model_profile` applies to OmO Desktop and headless sessions; the interactive TUI keeps the model it started with. An explicit `--model`, scoped model or resumed session is preserved. A fresh session otherwise uses `model_profile` as a literal pin or a named chain; unset config starts on Daily · Normal, or on the first of Daily · Heavy, Obsessive · Normal and Obsessive · Heavy that resolves; the retired `recommended` id starts the same default with one log line. If no candidate is available, a notice explains the unavailable profile and the current model stays. `categories.*` and `agents.*` overrides do not select the main session model, and `model_profile` does not select delegated children. See [Model Profiles](#model-profiles).
+In the Senpi harness, `model_profile` applies to OmC Desktop and headless sessions; the interactive TUI keeps the model it started with. An explicit `--model`, scoped model or resumed session is preserved. A fresh session otherwise uses `model_profile` as a literal pin or a named chain; unset config starts on Daily · Normal, or on the first of Daily · Heavy, Obsessive · Normal and Obsessive · Heavy that resolves; the retired `recommended` id starts the same default with one log line. If no candidate is available, a notice explains the unavailable profile and the current model stays. `categories.*` and `agents.*` overrides do not select the main session model, and `model_profile` does not select delegated children. See [Model Profiles](#model-profiles).
 
-In the OpenCode plugin, every merged category appears in `availableCategories`; hiding categories with a dead fallback chain is not implemented here. That dead-chain filtering, the `model_unavailable` spawn failure, and the `task.warnings.unavailable_categories` flag belong to the Senpi/core `task` system, documented in the [omo.json reference](./omo-json.md).
+In the OpenCode plugin, every merged category appears in `availableCategories`; hiding categories with a dead fallback chain is not implemented here. That dead-chain filtering, the `model_unavailable` spawn failure, and the `task.warnings.unavailable_categories` flag belong to the Senpi/core `task` system, documented in the [omc.json reference](./omc-json.md).
 
 #### Model Settings Compatibility
 
@@ -419,7 +419,7 @@ Examples:
 - o-series models support `off` through `high`, so `xhigh` is downgraded to `high`
 - GPT-5 supports `off`, `minimal`, `low`, `medium`, `high`, and `xhigh`
 
-Capability data comes from provider runtime metadata first. OmO also ships bundled models.dev-backed capability data, supports a refreshable local models.dev cache, and falls back to heuristic family detection plus alias rules when exact metadata is unavailable. `bunx oh-my-openagent doctor` surfaces capability diagnostics and warns when a configured model relies on compatibility fallback.
+Capability data comes from provider runtime metadata first. OmC also ships bundled models.dev-backed capability data, supports a refreshable local models.dev cache, and falls back to heuristic family detection plus alias rules when exact metadata is unavailable. `bunx oh-my-cybersecurity doctor` surfaces capability diagnostics and warns when a configured model relies on compatibility fallback.
 
 
 #### Agent Provider Chains
@@ -449,7 +449,7 @@ This table mirrors the authoritative hardcoded category fallback chains: the cha
 | **Unspecified High** | `claude-opus-5-5` | `anthropic\|anthropic-api\|github-copilot\|opencode/claude-opus-5-5 (medium)` → `zai-coding-plan\|opencode-go/glm-5.3 (max)` → `kimi-for-coding\|moonshotai\|opencode-go/kimi-k3.1-pro (max)` → `opencode/kimi-k3 (max)` |
 | **Writing** | `claude-opus-5-5` | `anthropic\|anthropic-api\|github-copilot\|opencode/claude-opus-5-5 (low)` → `anthropic\|anthropic-api\|github-copilot\|opencode/claude-opus-4-6 (max)` |
 
-Run `bunx oh-my-openagent doctor --verbose` to see effective model resolution for your config.
+Run `bunx oh-my-cybersecurity doctor --verbose` to see effective model resolution for your config.
 
 ---
 
@@ -499,7 +499,7 @@ Skills bring domain-specific expertise and embedded MCPs.
 
 Selected built-in skills: `playwright`, `playwright-cli`, `dev-browser`, `git-master`, `frontend`, `review-work`, `remove-ai-slops`, `init-deep`, `debugging`, `security-research`, `security-review`, `visual-qa`, `team-mode`. The `team-mode` skill is only rendered when `team_mode.enabled` is true.
 
-Disable built-in skills: `{ "disabled_skills": ["playwright"] }`. `disabled_skills` is also a shared base key of `~/.omo/omo.jsonc`, honored by every harness including OmO Native (for example `{ "disabled_skills": ["frontend", "visual-qa"] }`); user and project layers are unioned. `skills.enable` below only filters config-sourced skills, not builtin, native, or bundled ones - use `disabled_skills` to hide those.
+Disable built-in skills: `{ "disabled_skills": ["playwright"] }`. `disabled_skills` is also a shared base key of `~/.omc/omc.jsonc`, honored by every harness including OmC Native (for example `{ "disabled_skills": ["frontend", "visual-qa"] }`); user and project layers are unioned. `skills.enable` below only filters config-sourced skills, not builtin, native, or bundled ones - use `disabled_skills` to hide those.
 
 #### Skills Configuration
 
@@ -542,7 +542,7 @@ actively: it reflects on its own, nudges when durable facts go unsaved, recalls 
 mid-session when it would change the next step, extracts facts in the background, consolidates
 during a dream pass, and keeps records about people.
 
-Configured under `memory` in `omo.json`, with per-agent overrides under `memory.agents.<name>`.
+Configured under `memory` in `omc.json`, with per-agent overrides under `memory.agents.<name>`.
 
 ```json
 {
@@ -581,8 +581,8 @@ with `--separate-git-dir` and no `core.worktree`) keep the path-derived identity
 `agent` name always wins. `auto_identity` is set on the `memory` block itself; the per-agent
 `agents` overrides do not accept it.
 
-Put the setting in the user config (`~/.omo/omo.jsonc`). Tools such as Orca create worktrees outside
-the main checkout, where its project `.omo/omo.jsonc` is not found. Sessions that are already bound
+Put the setting in the user config (`~/.omc/omc.jsonc`). Tools such as Orca create worktrees outside
+the main checkout, where its project `.omc/omc.jsonc` is not found. Sessions that are already bound
 keep their current memory; new sessions pick up the shared one. Changing `auto_identity` (on or
 off) rebinds the identity for new worktree sessions, and with it which memory sync stream they join:
 a worktree session with `"git"` reads and writes the main checkout's memory, and also syncs it
@@ -687,7 +687,7 @@ successful reflection clears the backoff. `/reflect` ignores it, so you can alwa
 | `reflection.sandbox`       | `"auto"` | `auto`, `required`, or `off`                               |
 
 Reflection and dream supervisors share FIFO slots under
-`<OMO_MEMORY_HOME>/runtime/locks` (the default memory home is `~/.omo/memory`).
+`<OMC_MEMORY_HOME>/runtime/locks` (the default memory home is `~/.omc/memory`).
 Queued work waits without a timeout and is not dropped. Queue time does not
 consume the execution budget: admission shifts both durable deadlines before
 starting the child; model fallback attempts share the remaining execution budget.
@@ -716,7 +716,7 @@ and a sidecar that finds nothing leaves no trace.
 The sidecar only spends a model turn (a "wake") when a prompt or tool call surfaces a memory
 candidate it has not judged yet in its lifetime; unchanged candidates never wake it. Wakes are
 admitted through a lease held as lock files under the memory identity's runtime directory, shared
-by every omo process on the machine that uses that memory, so at most `max_concurrent_wakes` run
+by every omc process on the machine that uses that memory, so at most `max_concurrent_wakes` run
 at once - a session that finds every slot busy keeps buffering events and tries again at its next
 hook. Inside a wake the sidecar has exactly five read-only tools:
 `read` and `grep` over the workspace, `session_entries` over the parent transcript, `memory` with
@@ -728,7 +728,7 @@ is disposed and recreated after an exponential backoff (1 s doubling to 5 min); 
 buffered is lost. When no provider serving the `recall.category` chain is connected at all, that
 is a configuration state, not a failure: the session gets one warning notice naming the category
 and its unconnected providers - run `/login <provider>` to connect one, or pin
-`categories.<name>.model` (or `recall.category`) in `omo.json` to a connected model - and judging
+`categories.<name>.model` (or `recall.category`) in `omc.json` to a connected model - and judging
 resumes by itself once a chain provider connects.
 
 When it does fire, you see a recollection in the transcript identified as Kibitzer advice: a
@@ -813,7 +813,7 @@ packs the memory repository) removes what is past these windows. Anything a live
 anything locked, reserved or not yet finished, and the newest and highest-numbered reflection run
 are always kept. Identities no session on this machine binds any more are visited by the host sweep
 (a bounded slice after a bound identity's own pass, at most once every 12 hours per machine) and by
-`omo doctor --fix`; identities a session in the running process binds are left to their own pass.
+`omc doctor --fix`; identities a session in the running process binds are left to their own pass.
 
 | Option                           | Default | Description                                                                                      |
 | -------------------------------- | ------- | ------------------------------------------------------------------------------------------------ |
@@ -822,9 +822,9 @@ are always kept. Identities no session on this machine binds any more are visite
 | `runtime.abandoned_journal_days` | `14`    | With `discard_unreflected_journals` on: days before an idle never-reflected journal is removed, or the transcript of a partly reflected one. Suspended while the identity's newest reflection outcome is a failure |
 | `runtime.completions_days`       | `30`    | Days before a delivered completion record (beyond the newest 50) and a recall ledger are removed  |
 | `runtime.pass_budget_ms`         | `60000` | Time one pass may spend on one identity; an interrupted pass resumes where it stopped at the next session start |
-| `runtime.max_bytes`              | `2147483648` (2 GiB) | Per-identity cap on everything under `runtime/`; `0` is unbounded. After retention the maintenance pass evicts oldest-first, inside the same `pass_budget_ms`, until the identity fits (the host sweep and `omo doctor --fix` run the same cap on identities no running session hosts, with the global `max_bytes` and its agent override, and keep every journal idle less than `retention_days` because they cannot see live sessions): folded reflection runs, fully reflected transcripts, sidecars idle 1 h, journals never reflected and idle 24 h and partly reflected transcripts idle 24 h (both only when `discard_unreflected_journals` is on and reflection is healthy for the identity), then failed runs past `retention_days` beyond the newest 10. Live sessions, in-flight runs and the run-id high water are never evicted. `omo doctor` and `/doctor` show the size and warn at 80 % |
+| `runtime.max_bytes`              | `2147483648` (2 GiB) | Per-identity cap on everything under `runtime/`; `0` is unbounded. After retention the maintenance pass evicts oldest-first, inside the same `pass_budget_ms`, until the identity fits (the host sweep and `omc doctor --fix` run the same cap on identities no running session hosts, with the global `max_bytes` and its agent override, and keep every journal idle less than `retention_days` because they cannot see live sessions): folded reflection runs, fully reflected transcripts, sidecars idle 1 h, journals never reflected and idle 24 h and partly reflected transcripts idle 24 h (both only when `discard_unreflected_journals` is on and reflection is healthy for the identity), then failed runs past `retention_days` beyond the newest 10. Live sessions, in-flight runs and the run-id high water are never evicted. `omc doctor` and `/doctor` show the size and warn at 80 % |
 
-Every key accepts a per-agent override under `agents.<id>.runtime`. For identities a session does not host (`omo doctor --fix` and the background host sweep), only the global config counts: every window comes from the global `runtime` and that identity's own global `agents.<id>.runtime` override, and unreflected input is discarded there only when the global `discard_unreflected_journals` is on and that identity's own override does not turn it off. A transcript removed from a
+Every key accepts a per-agent override under `agents.<id>.runtime`. For identities a session does not host (`omc doctor --fix` and the background host sweep), only the global config counts: every window comes from the global `runtime` and that identity's own global `agents.<id>.runtime` override, and unreflected input is discarded there only when the global `discard_unreflected_journals` is on and that identity's own override does not turn it off. A transcript removed from a
 journal keeps its reflection cursor in `state.json`; a resumed session rebuilds the transcript from
 its own history and continues after the last reflected message.
 
@@ -873,7 +873,7 @@ before its run started is recorded as `abandoned` with reason
 `launch_interrupted`; its worktree is already removed, so `abandoned-runs` does
 not list it.
 
-`OMO_MEMORY_KILL_POINT` is a test-only seam: when it names a recovery point
+`OMC_MEMORY_KILL_POINT` is a test-only seam: when it names a recovery point
 (`after-reserve`, `after-prelaunch`, `after-worktree`, `after-child-exit`,
 `after-validate`, `after-merge`, `before-receipt`), the process that reaches
 it kills itself. Never set it outside a crash test.
@@ -951,7 +951,7 @@ Standing agreements with your person, kept in `system/agreements.md` with how ma
 | `search.enabled` | `true`  | Enable memory search                            |
 
 In Senpi, run `/sleeptime` to see every resolved memory value, including which ones a per-agent
-override changed. OpenCode has no `/sleeptime` command; inspect the `memory` block in `omo.jsonc` instead.
+override changed. OpenCode has no `/sleeptime` command; inspect the `memory` block in `omc.jsonc` instead.
 
 ### Hooks
 
@@ -985,10 +985,10 @@ Available commands: `goal`, `refactor`, `ulw-execute`, `stop-continuation`, `rem
 ### Browser Automation
 
 `browser_automation_engine.provider` accepts only the three values below.
-Unsupported values fail schema validation and `oh-my-opencode doctor` reports
+Unsupported values fail schema validation and `oh-my-cybersecurity doctor` reports
 both the rejected value and the replacement: use the built-in browser path:
 Bun.WebView / playwright-core scripts. Remove the obsolete provider override
-from the active `[opencode]` block in `omo.jsonc` (including project/profile
+from the active `[opencode]` block in `omc.jsonc` (including project/profile
 layers); it is not silently mapped to another provider.
 
 | Provider               | Interface | Installation                                        |
@@ -1028,9 +1028,9 @@ Run background subagents in separate tmux panes. Requires running inside tmux wi
 Selects which multiplexer renders team-mode and subagent panes:
 
 - `"tmux"` (default): panes live in tmux windows/sessions; requires running inside tmux.
-- `"herdr"`: one [Herdr](https://herdr.dev) workspace per team (`omo-team-<teamRunId>`), one tab per member running the same `opencode attach` line. Works from any terminal (no tmux session required); the headless `herdr server` is started on demand and members keep running in it. Env override: `OMO_TMUX_MULTIPLEXER=herdr`.
+- `"herdr"`: one [Herdr](https://herdr.dev) workspace per team (`omc-team-<teamRunId>`), one tab per member running the same `opencode attach` line. Works from any terminal (no tmux session required); the headless `herdr server` is started on demand and members keep running in it. Env override: `OMC_TMUX_MULTIPLEXER=herdr`.
 
-On `herdr`, background subagent panes follow the same model: one workspace per omo process (`omo-agents-<pid>[-<managerId>]`, mirroring the tmux isolated-session naming) with one tab per subagent, the attach command delivered at spawn. Every `isolation` mode maps to that tab shape, the environment gate is herdr binary presence instead of a tmux session, and a stale sweep closes `omo-agents-<pid>` workspaces whose owning process is gone (skipping any that still host a live agent).
+On `herdr`, background subagent panes follow the same model: one workspace per omc process (`omc-agents-<pid>[-<managerId>]`, mirroring the tmux isolated-session naming) with one tab per subagent, the attach command delivered at spawn. Every `isolation` mode maps to that tab shape, the environment gate is herdr binary presence instead of a tmux session, and a stale sweep closes `omc-agents-<pid>` workspaces whose owning process is gone (skipping any that still host a live agent).
 
 Team runtime state stores herdr pane ids (`wN:pM`, alphanumeric past `w9`) in the same `tmuxLayout` fields; teardown and the stale-workspace sweep branch on that id grammar.
 
@@ -1056,7 +1056,7 @@ Configure git commit behavior:
 
 `include_co_authored_by` (default `true`) adds `Co-authored-by: sisyphus-dev-ai <sisyphus-dev-ai@users.noreply.github.com>` to every commit git-master writes, exactly once: it is passed with `git -c trailer.ifexists=addIfDifferent commit --trailer`, so amending or rewording a commit that already has it does not add a second copy, and after a squash git-master rewrites the joined message once. It needs git 2.32 or newer. Set it to `false` to keep the trailer out of your history. `commit_footer` (default `false`) opts in to an "Ultraworked with Sisyphus" footer in the commit body; a string replaces the builtin text. Either way, commits keep your own git author and committer.
 
-This key configures the OpenCode plugin inside `[opencode]`. The Senpi harness reads the typed shared `git_master` section instead, documented in the [omo.json reference](./omo-json.md#git_master-native-harness).
+This key configures the OpenCode plugin inside `[opencode]`. The Senpi harness reads the typed shared `git_master` section instead, documented in the [omc.json reference](./omc-json.md#git_master-native-harness).
 
 `git_env_prefix` (default `"GIT_MASTER=1"`) is prepended to git commands; set it to `""` to disable.
 
@@ -1064,8 +1064,8 @@ This key configures the OpenCode plugin inside `[opencode]`. The Senpi harness r
 
 Commit attribution can also be controlled outside configuration files:
 
-- **Git config**: Run `git config --global omo.attribution false` or `git config omo.attribution false` to suppress footers and co-author trailers. `sisyphus.attribution` is also recognized.
-- **Environment variables**: Export `NO_AI_ATTRIBUTION=1`, `OMO_NO_COMMIT_ATTRIBUTION=1`, or `OMO_GIT_ATTRIBUTION=0`.
+- **Git config**: Run `git config --global omc.attribution false` or `git config omc.attribution false` to suppress footers and co-author trailers. `sisyphus.attribution` is also recognized.
+- **Environment variables**: Export `NO_AI_ATTRIBUTION=1`, `OMC_NO_COMMIT_ATTRIBUTION=1`, or `OMC_GIT_ATTRIBUTION=0`.
 
 ### Comment Checker
 
@@ -1089,7 +1089,7 @@ Force-enable session notifications:
 
 `force_enable` (`false`) - force session-notification even if external notification plugins are detected.
 
-OpenCode also has native TUI Attention notifications in `tui.json`. Use either native Attention or OmO `session-notification` for the same events, not both, or you may receive duplicate desktop notifications. OmO auto-disables `session-notification` when it detects known external notification plugins such as `opencode-notifier`, but native Attention is OpenCode TUI config rather than a plugin entry, so OmO cannot detect it through the plugin list. Keep `session-notification` enabled when you want OmO's richer idle notification body with session title and recent message context; otherwise prefer native Attention for basic TUI notification and sound events.
+OpenCode also has native TUI Attention notifications in `tui.json`. Use either native Attention or OmC `session-notification` for the same events, not both, or you may receive duplicate desktop notifications. OmC auto-disables `session-notification` when it detects known external notification plugins such as `opencode-notifier`, but native Attention is OpenCode TUI config rather than a plugin entry, so OmC cannot detect it through the plugin list. Keep `session-notification` enabled when you want OmC's richer idle notification body with session title and recent message context; otherwise prefer native Attention for basic TUI notification and sound events.
 
 ### MCPs
 
@@ -1102,7 +1102,7 @@ Built-in MCPs (enabled by default): `websearch` (Exa AI), `context7` (library do
 #### Web search provider
 
 Exa remains the default. To select a different provider, set `websearch.provider`
-inside `[opencode]` in `~/.omo/omo.jsonc` or your project's `.omo/omo.jsonc`:
+inside `[opencode]` in `~/.omc/omc.jsonc` or your project's `.omc/omc.jsonc`:
 
 ```jsonc
 {
@@ -1140,7 +1140,7 @@ LSP tools are served by the built-in `lsp` MCP server (see [MCPs](#mcps)). The
 previous top-level `"lsp"` block in the plugin config is no longer read; the
 unified config migration strips it when importing a legacy file.
 
-To configure custom language servers, create `.opencode/lsp.json`, `.omo/lsp.json`, or `.omo/lsp-client.json` at the project root. The MCP server launches with `LSP_TOOLS_MCP_PROJECT_CONFIG` set to a platform-delimiter-separated search list of those three paths and reads the first applicable server maps. The schema lives in the
+To configure custom language servers, create `.opencode/lsp.json`, `.omc/lsp.json`, or `.omc/lsp-client.json` at the project root. The MCP server launches with `LSP_TOOLS_MCP_PROJECT_CONFIG` set to a platform-delimiter-separated search list of those three paths and reads the first applicable server maps. The schema lives in the
 `packages/lsp-tools-mcp` vendored package (upstream:
 [code-yeongyu/lsp-tools-mcp](https://github.com/code-yeongyu/lsp-tools-mcp)).
 
@@ -1267,7 +1267,7 @@ Object entries use the following shape:
 
 | Field | Type | Description |
 | ----- | ---- | ----------- |
-| `model` | string | Fallback model ID. Provider prefix is optional when OmO can inherit the current/default provider. |
+| `model` | string | Fallback model ID. Provider prefix is optional when OmC can inherit the current/default provider. |
 | `reasoning` | string | Canonical reasoning override for this fallback entry. |
 | `temperature` | number | Temperature applied if this fallback model becomes active. |
 | `top_p` | number | Top-p applied if this fallback model becomes active. |
@@ -1285,7 +1285,7 @@ Per-model settings are **fallback-only**. They are promoted only when that speci
 | `type` | string | `enabled` or `disabled` |
 | `budgetTokens` | number | Optional Anthropic thinking budget |
 
-Object entries can also omit the provider prefix when OmO can infer it from the current/default provider. Canonical `reasoning` takes precedence over deprecated `reasoningEffort`, which takes precedence over deprecated `variant`; an inline model suffix is normalized separately.
+Object entries can also omit the provider prefix when OmC can infer it from the current/default provider. Canonical `reasoning` takes precedence over deprecated `reasoningEffort`, which takes precedence over deprecated `variant`; an inline model suffix is normalized separately.
 
 #### Full examples
 
@@ -1330,7 +1330,7 @@ If the primary model already establishes the provider, fallback entries can omit
 }
 ```
 
-In this example OmO treats `gpt-6-luna-fast` and `gpt-5.6-sol` as OpenAI fallback entries because the current/default provider is already `openai`.
+In this example OmC treats `gpt-6-luna-fast` and `gpt-5.6-sol` as OpenAI fallback entries because the current/default provider is already `openai`.
 
 **3. Mixed cross-provider chain**
 
@@ -1413,15 +1413,15 @@ This final example is a **complete canonical shape reference** for `[opencode]` 
 
 ### Anthropic Prompt Cache Lifetime
 
-OmO Native caches the prompt prefix on Anthropic models. The cached prefix lives for 5 minutes by default. If your turns are usually more than 5 minutes apart (long reviews, waiting on builds, stepping away), every turn after a gap rewrites the whole prefix into the cache, and cache-write tokens dominate the bill. Anthropic also offers a 1-hour cache lifetime, and OmO Native can use it.
+OmC Native caches the prompt prefix on Anthropic models. The cached prefix lives for 5 minutes by default. If your turns are usually more than 5 minutes apart (long reviews, waiting on builds, stepping away), every turn after a gap rewrites the whole prefix into the cache, and cache-write tokens dominate the bill. Anthropic also offers a 1-hour cache lifetime, and OmC Native can use it.
 
-**Turn it on for every Anthropic model** by setting the environment variable before you start `omo`:
+**Turn it on for every Anthropic model** by setting the environment variable before you start `omc`:
 
 ```sh
 export PI_CACHE_RETENTION=long
 ```
 
-**Or turn it on per model** in `~/.omo/agent/models.json`, one entry per model id. This applies to every session that reads that agent directory, regardless of the shell it was started from:
+**Or turn it on per model** in `~/.omc/agent/models.json`, one entry per model id. This applies to every session that reads that agent directory, regardless of the shell it was started from:
 
 ```jsonc
 {
@@ -1442,7 +1442,7 @@ The 1-hour lifetime is sent only to the Anthropic API itself (`https://api.anthr
 
 **Cost trade-off.** On Anthropic, a 5-minute cache write costs 1.25x the base input price, a 1-hour cache write costs 2x, and a cache read costs 0.1x either way. The longer lifetime makes each write more expensive, so it pays off when your turns are often more than 5 minutes apart. If you usually answer within a few minutes, keep the default.
 
-**Keeping the cache warm instead.** `promptCache.keepAlive` in `~/.omo/agent/settings.json` sends a small warm-up request shortly before the cache would expire while the session is idle, so the next turn reads the cache instead of rewriting it. It is off by default and capped per session:
+**Keeping the cache warm instead.** `promptCache.keepAlive` in `~/.omc/agent/settings.json` sends a small warm-up request shortly before the cache would expire while the session is idle, so the next turn reads the cache instead of rewriting it. It is off by default and capped per session:
 
 ```jsonc
 {
@@ -1461,7 +1461,7 @@ The keep-alive also runs only for Anthropic Messages models on the Anthropic API
 
 ### Model Capabilities
 
-OmO can refresh a local models.dev capability snapshot on startup. This cache is controlled by `model_capabilities`.
+OmC can refresh a local models.dev capability snapshot on startup. This cache is controlled by `model_capabilities`.
 
 ```jsonc
 {
@@ -1484,8 +1484,8 @@ OmO can refresh a local models.dev capability snapshot on startup. This cache is
 Notes:
 
 - Startup refresh runs through the auto-update checker hook.
-- Manual refresh is available via `bunx oh-my-openagent refresh-model-capabilities`.
-- Provider runtime metadata still takes priority when OmO resolves capabilities for compatibility checks.
+- Manual refresh is available via `bunx oh-my-cybersecurity refresh-model-capabilities`.
+- Provider runtime metadata still takes priority when OmC resolves capabilities for compatibility checks.
 
 ### Hashline Edit
 
@@ -1495,7 +1495,7 @@ Replaces the built-in `Edit` tool with a hash-anchored version using `LINE#ID` r
 { "hashline_edit": true }
 ```
 
-When enabled, OmO registers the hash-anchored `edit` tool and activates the `hashline-read-enhancer` companion hook, which annotates Read output with `LINE#ID` markers. Opt in by setting `hashline_edit: true`. Disable the companion hook via `disabled_hooks` if needed.
+When enabled, OmC registers the hash-anchored `edit` tool and activates the `hashline-read-enhancer` companion hook, which annotates Read output with `LINE#ID` markers. Opt in by setting `hashline_edit: true`. Disable the companion hook via `disabled_hooks` if needed.
 
 ### Experimental
 
@@ -1533,7 +1533,7 @@ When enabled, OmO registers the hash-anchored `edit` tool and activates the `has
 | ---------------------------------------- | ---------- | ------------------------------------------------------------------------------------ |
 | `truncate_all_tool_outputs`              | `false`    | Truncate all tool outputs (not just whitelisted)                                     |
 | `aggressive_truncation`                  | `false`    | Aggressively truncate when token limit exceeded                                      |
-| `disable_omo_env`                        | `false`    | Disable auto-injected `<omo-env>` block (date/time/locale). Improves cache hit rate. |
+| `disable_omo_env`                        | `false`    | Disable auto-injected `<omc-env>` block (date/time/locale). Improves cache hit rate. |
 | `task_system`                            | `false`    | Enable the file-based task system                                                    |
 | `dynamic_context_pruning.enabled`        | `false`    | Auto-prune old tool outputs to manage context window                                 |
 | `dynamic_context_pruning.notification`   | `detailed` | Pruning notifications: `off` / `minimal` / `detailed`                                |
@@ -1583,15 +1583,15 @@ The shared base and Senpi use an object:
 | `OPENCODE_CONFIG_DIR` | Override OpenCode config directory (useful for profile isolation) |
 | `OPENGATEWAY_API_KEY` | API key for the OpenGateway provider; without this or an `opengateway` auth entry, the plugin does not inject the provider |
 | `PI_CACHE_RETENTION` | Set to `long` to use Anthropic's 1-hour prompt cache lifetime instead of 5 minutes. A per-model `cacheRetention` in `models.json` takes precedence. See [Anthropic Prompt Cache Lifetime](#anthropic-prompt-cache-lifetime). |
-| `OMO_DEBUG` | Set to `1` (any non-empty value) to print omo-senpi component `info` diagnostics on stderr. Unset, those lines are silent. `warn` and `error` still print. Component logs never go to stdout. |
-| `OMO_SEND_ANONYMOUS_TELEMETRY` | Set to `0`, `false`, or `no` to disable anonymous telemetry |
-| `OMO_DISABLE_POSTHOG` | Legacy telemetry opt-out flag. Set to `1`, `true`, or `yes` to disable PostHog |
-| `OMO_DISABLE_TELEMETRY` | Set to `1`, `true`, or `yes` to disable anonymous telemetry in every omo package |
-| `OMO_CODEX_DISABLE_POSTHOG` | Set to `1`, `true`, or `yes` to disable PostHog telemetry for the `omo-codex` adapter. Global `OMO_DISABLE_POSTHOG` also disables Codex telemetry. |
-| `OMO_CODEX_SEND_ANONYMOUS_TELEMETRY` | Set to `0`, `false`, `no`, or `yes` to disable anonymous telemetry for `omo-codex` |
-| `OMO_CODEX_GIT_BASH_PATH` | Native Windows Codex installs only. Absolute path to Git Bash, for example `C:\Program Files\Git\bin\bash.exe`, when `where bash` cannot find it |
+| `OMC_DEBUG` | Set to `1` (any non-empty value) to print omc-senpi component `info` diagnostics on stderr. Unset, those lines are silent. `warn` and `error` still print. Component logs never go to stdout. |
+| `OMC_SEND_ANONYMOUS_TELEMETRY` | Set to `0`, `false`, or `no` to disable anonymous telemetry |
+| `OMC_DISABLE_POSTHOG` | Legacy telemetry opt-out flag. Set to `1`, `true`, or `yes` to disable PostHog |
+| `OMC_DISABLE_TELEMETRY` | Set to `1`, `true`, or `yes` to disable anonymous telemetry in every omc package |
+| `OMC_CODEX_DISABLE_POSTHOG` | Set to `1`, `true`, or `yes` to disable PostHog telemetry for the `omc-codex` adapter. Global `OMC_DISABLE_POSTHOG` also disables Codex telemetry. |
+| `OMC_CODEX_SEND_ANONYMOUS_TELEMETRY` | Set to `0`, `false`, `no`, or `yes` to disable anonymous telemetry for `omc-codex` |
+| `OMC_CODEX_GIT_BASH_PATH` | Native Windows Codex installs only. Absolute path to Git Bash, for example `C:\Program Files\Git\bin\bash.exe`, when `where bash` cannot find it |
 | `LAZYCODEX_CONFIG_MIGRATION_DISABLED` | Set to `1` to skip the Codex config migration that runs on every session start (including the `multi_agent_v2` force-disable and managed reasoning-profile sync), leaving `config.toml` untouched |
-| `OMO_CODEX_CONFIG_MIGRATION_DISABLED` | Alias of `LAZYCODEX_CONFIG_MIGRATION_DISABLED` |
+| `OMC_CODEX_CONFIG_MIGRATION_DISABLED` | Alias of `LAZYCODEX_CONFIG_MIGRATION_DISABLED` |
 | `LSP_TOOLS_MCP_INSTALL_DECISIONS` | Override the LSP install-decisions path. Codex defaults to `$CODEX_HOME/lsp-install-decisions.json`; OpenCode injects its OpenCode config-directory path. |
 | `POSTHOG_API_KEY` | Optional override for the built-in PostHog project API key |
 | `POSTHOG_HOST` | Override the PostHog ingestion host. Defaults to `https://us.i.posthog.com` |
@@ -1602,15 +1602,15 @@ When an LSP tool hits a language server that is not installed, it asks once per 
 
 ### Codex Light Git Bash MCP
 
-Native Windows Codex installs bundle a `git_bash` MCP server and write `[plugins."omo@sisyphuslabs".mcp_servers.git_bash] enabled = true`. Non-Windows installs keep the bundled manifest entry but write `enabled = false`, so the plugin detail can still show the server while policy prevents exposure.
+Native Windows Codex installs bundle a `git_bash` MCP server and write `[plugins."omc@sisyphuslabs".mcp_servers.git_bash] enabled = true`. Non-Windows installs keep the bundled manifest entry but write `enabled = false`, so the plugin detail can still show the server while policy prevents exposure.
 
-The installer discovers Git Bash with `OMO_CODEX_GIT_BASH_PATH`, standard Git for Windows locations, and PATH. If discovery fails, it prints manual install guidance and stops without running `winget` or changing system dependencies. The Light plugin also emits a fixed reminder before the first Codex shell-like `Bash` hook call in a Windows session, and resets that reminder after `PostCompact` so the first post-compaction shell call recommends `git_bash` again.
+The installer discovers Git Bash with `OMC_CODEX_GIT_BASH_PATH`, standard Git for Windows locations, and PATH. If discovery fails, it prints manual install guidance and stops without running `winget` or changing system dependencies. The Light plugin also emits a fixed reminder before the first Codex shell-like `Bash` hook call in a Windows session, and resets that reminder after `PostCompact` so the first post-compaction shell call recommends `git_bash` again.
 
 ### Codex Companion Plugin Compatibility
 
 LazyCodex can coexist with other Codex plugins, but if LazyCodex is your primary Codex workflow the `codex@openai-codex` companion plugin adds its own `SessionStart` and `Stop` lifecycle hooks. Those extra hooks can produce confusing Codex hook-failure banners even when the LazyCodex hooks are healthy.
 
-`lazycodex doctor` warns when `omo@sisyphuslabs` is enabled and the companion plugin is enabled, or when stale `[hooks.state."codex@openai-codex:..."]` SessionStart/Stop trust entries remain in `~/.codex/config.toml`. The doctor only reports this condition; it does not disable or delete another plugin for you.
+`lazycodex doctor` warns when `omc@sisyphuslabs` is enabled and the companion plugin is enabled, or when stale `[hooks.state."codex@openai-codex:..."]` SessionStart/Stop trust entries remain in `~/.codex/config.toml`. The doctor only reports this condition; it does not disable or delete another plugin for you.
 
 If LazyCodex is the primary workflow, disable the companion plugin explicitly:
 
@@ -1629,7 +1629,7 @@ Install [`opencode-antigravity-auth`](https://github.com/NoeFabris/opencode-anti
 
 ##### Split Claude Routing
 
-Provider path can change Claude context limits. Confirm the active model's context window with `bunx oh-my-openagent doctor --verbose` rather than assuming 200k vs 1M.
+Provider path can change Claude context limits. Confirm the active model's context window with `bunx oh-my-cybersecurity doctor --verbose` rather than assuming 200k vs 1M.
 
 Use Antigravity for cheaper or quota-balanced work. Use direct Anthropic for long-context planning, review, and research sessions when the account, model, and required beta/header setup support a larger window.
 
@@ -1682,4 +1682,4 @@ See [Ollama Troubleshooting](../troubleshooting/ollama.md) for `JSON Parse error
 
 #### OpenGateway
 
-The `omo-opencode` plugin exposes the OpenAI-compatible `opengateway` provider at `https://apis.opengateway.ai/v1` when `OPENGATEWAY_API_KEY` is set or an `opengateway` auth entry exists. No provider is injected if neither credential is present.
+The `omc-opencode` plugin exposes the OpenAI-compatible `opengateway` provider at `https://apis.opengateway.ai/v1` when `OPENGATEWAY_API_KEY` is set or an `opengateway` auth entry exists. No provider is injected if neither credential is present.

@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// Loop driver for omo #10177: runs the two-process SIGKILL-takeover case (or the in-commit-kill
+// Loop driver for omc #10177: runs the two-process SIGKILL-takeover case (or the in-commit-kill
 // variant) N times against fresh fixture repos, checking `git fsck --full --strict` after the
 // takeover and after the follow-up commits, and reports the missing/corrupt-object failure rate.
 // The iteration protocols live in ./loop-harness.mjs.

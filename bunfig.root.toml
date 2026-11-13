@@ -7,10 +7,10 @@ pathIgnorePatterns = [
   "packages/lsp-tools-mcp/**",
   "packages/lsp-daemon/**",
   "packages/senpi-desktop-*/**",
-  "packages/omo-codex/plugin/**",
-  "packages/omo-codex/scripts/**",
+  "packages/omc-codex/plugin/**",
+  "packages/omc-codex/scripts/**",
   "packages/shared-skills/upstreams/**",
-  "packages/omo-senpi/**",
+  "packages/omc-senpi/**",
 ]
 
 [loader]

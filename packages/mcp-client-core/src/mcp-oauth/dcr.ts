@@ -1,4 +1,4 @@
-import { isRecord } from "@oh-my-opencode/utils"
+import { isRecord } from "@oh-my-cybersecurity/utils"
 export type ClientRegistrationRequest = {
   application_type: "native" | "web"
   redirect_uris: string[]

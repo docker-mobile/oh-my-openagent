@@ -7,7 +7,7 @@ import { getPostCommitHookScript } from "../sync/mirror"
  * Ported from letta-code src/agent/memory-git-hooks.ts. Two deliberate
  * deviations: the scripts are POSIX sh (letta used bash-only constructs such
  * as herestrings, `echo -e` and `$'\t'`, which break under dash on Linux), and
- * the mirror remote is read from the `omo.*` git config namespace.
+ * the mirror remote is read from the `omc.*` git config namespace.
  */
 
 /**
@@ -79,7 +79,7 @@ const SECRET_SCAN_LINES = HOOK_SECRET_PATTERNS.map(({ class: patternClass, ere, 
  */
 export const PRE_COMMIT_HOOK_SCRIPT = `#!/bin/sh
 # Validate frontmatter in staged memory .md files.
-# Installed by omo memory-core. Do not edit by hand - regenerated on startup.
+# Installed by omc memory-core. Do not edit by hand - regenerated on startup.
 
 # provenance is the claim receipt the memory tool stamps (#10488); its value is always a quoted JSON string.
 # expires is the instant a file stops being projected (#11450); an unreadable value means no expiry, never a rejection.
@@ -255,14 +255,14 @@ exit 0
  * Post-commit mirror push to an optional user-owned remote.
  *
  * The remote URL is read from the repo-local git config key
- * `omo.memoryRepository.url` (letta used `letta.*`). The hook no-ops when the
+ * `omc.memoryRepository.url` (letta used `letta.*`). The hook no-ops when the
  * key is unset, when HEAD is detached, or when the commit landed on a branch
  * other than `main` - reflection worktrees commit on temporary branches and
  * must not mirror. Push output is appended to `.git/memory-repository-push.log`
  * and failures never block the commit.
  *
  * The push is backgrounded so commits never wait on the network. Setting
- * `OMO_MEMORY_PUSH_SYNC=1` runs it in the foreground, which tests use to keep
+ * `OMC_MEMORY_PUSH_SYNC=1` runs it in the foreground, which tests use to keep
  * assertions deterministic.
  */
 // Single source of truth: sync/mirror owns this script (task-16).

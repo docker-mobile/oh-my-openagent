@@ -2,8 +2,8 @@ import { describe, expect, spyOn, test } from "bun:test"
 import { inspectChannel, parseMaintenanceArgs, recreateChannel } from "./channel-maintenance"
 import { R2UploadError } from "./r2-signed-put"
 
-const credentials = { accountId: "dummy", accessKeyId: "test-access-key", secretAccessKey: "test-secret-key", bucket: "omo-releases" }
-const base = "https://dummy.r2.cloudflarestorage.com/omo-releases"
+const credentials = { accountId: "dummy", accessKeyId: "test-access-key", secretAccessKey: "test-secret-key", bucket: "omc-releases" }
+const base = "https://dummy.r2.cloudflarestorage.com/omc-releases"
 
 type Reply = { readonly status: number; readonly body?: string; readonly headers?: Record<string, string> }
 
@@ -123,7 +123,7 @@ describe("recreateChannel", () => {
     }
   })
 
-  // Same rule as publish.yml's omo-ai metadata step: a prerelease ships on beta, a stable release on latest.
+  // Same rule as publish.yml's omc-ai metadata step: a prerelease ships on beta, a stable release on latest.
   test.each([
     { channel: "latest", version: "5.2.0-beta.1" },
     { channel: "beta", version: "5.1.49" },

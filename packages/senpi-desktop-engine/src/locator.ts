@@ -36,7 +36,7 @@ export interface DesktopEngineLocatorOptions {
 	readonly arch?: string;
 	/** Defaults to the running process's libc when `platform` is this Linux process's platform. */
 	readonly libc?: DesktopEngineLibc;
-	/** Overrides the OMO_PACKAGE_DIR extracted payload root (empty string disables it). */
+	/** Overrides the OMC_PACKAGE_DIR extracted payload root (empty string disables it). */
 	readonly runtimeDir?: string;
 	/** Directory of the running executable; a compiled senpi ships the engine as a sidecar beside it. */
 	readonly execDir?: string;
@@ -94,7 +94,7 @@ export function getDesktopEngineFileName(platform: string = process.platform): s
 	return platform === "win32" ? `${DESKTOP_ENGINE_BINARY}.exe` : DESKTOP_ENGINE_BINARY;
 }
 
-/** OMO_PACKAGE_DIR (or its explicit override) precedes the sidecar, prebuild and dev build. */
+/** OMC_PACKAGE_DIR (or its explicit override) precedes the sidecar, prebuild and dev build. */
 export function getDesktopEngineCandidatePaths(options: DesktopEngineLocatorOptions = {}): readonly string[] {
 	const host = getDesktopEngineHost(options.platform, options.arch, options.libc);
 	const file = getDesktopEngineFileName(options.platform);
@@ -102,7 +102,7 @@ export function getDesktopEngineCandidatePaths(options: DesktopEngineLocatorOpti
 	const execDir = options.execDir ?? dirname(process.execPath);
 	const repoRoot = options.repoRoot ?? join(packageDir, "..", "..");
 	const prebuild = join("native", "prebuilds", host, file);
-	const runtimeDir = options.runtimeDir ?? process.env.OMO_PACKAGE_DIR;
+	const runtimeDir = options.runtimeDir ?? process.env.OMC_PACKAGE_DIR;
 	return [
 		...(runtimeDir ? [join(runtimeDir, prebuild)] : []),
 		join(execDir, prebuild),
@@ -116,7 +116,7 @@ export function locateDesktopEngine(options: DesktopEngineLocatorOptions = {}): 
 	const host = getDesktopEngineHost(platform, options.arch, options.libc);
 	const attemptedPaths = getDesktopEngineCandidatePaths(options);
 	const execDir = options.execDir ?? dirname(process.execPath);
-	const sidecarIndex = (options.runtimeDir ?? process.env.OMO_PACKAGE_DIR) ? 1 : 0;
+	const sidecarIndex = (options.runtimeDir ?? process.env.OMC_PACKAGE_DIR) ? 1 : 0;
 	const isQuarantined = options.isQuarantined ?? ((enginePath: string) => isQuarantinedFile(enginePath, platform));
 	const causes: string[] = [];
 	const quarantinedPaths: string[] = [];
@@ -157,7 +157,7 @@ export function locateDesktopEngine(options: DesktopEngineLocatorOptions = {}): 
 
 /**
  * The sidecar belongs to the installed artifact Gatekeeper evaluated when the launcher was approved.
- * The omo release pipeline Developer-ID-signs and notarizes it (publish-platform.yml); the launcher's
+ * The omc release pipeline Developer-ID-signs and notarizes it (publish-platform.yml); the launcher's
  * build writes these checksums for the engine bytes as shipped, including any packaging re-sign.
  */
 function verifiedInstalledSidecar(enginePath: string, execDir: string, host: string): boolean {

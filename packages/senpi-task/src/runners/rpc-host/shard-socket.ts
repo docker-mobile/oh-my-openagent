@@ -14,7 +14,7 @@ import { RunnerError } from "../in-process/runner-error"
  * machine-wide host, which `resolveTaskHostSocket` keeps serving for the thread tools only.
  */
 
-export const SHARD_ROOT_ENV = "OMO_RPC_SHARD_ROOT"
+export const SHARD_ROOT_ENV = "OMC_RPC_SHARD_ROOT"
 
 /** `sun_path` is 104 bytes on macOS including its terminator (senpi `MAX_SOCKET_PATH_BYTES`). */
 export const MAX_SHARD_BIND_PATH = 103
@@ -78,7 +78,7 @@ export function shardRoot(env: Env, agentDir: string): string {
 }
 
 export function altRoot(agentDir: string): string {
-  return join(ALT_ROOT_PARENT, `omo-rpc-${sha256Hex(agentDir).slice(0, 8)}`)
+  return join(ALT_ROOT_PARENT, `omc-rpc-${sha256Hex(agentDir).slice(0, 8)}`)
 }
 
 /** The socket AND the siblings a host binds beside it (handoff, close shield) all fit `sun_path`. */

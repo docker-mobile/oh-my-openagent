@@ -9,7 +9,7 @@ const repoRoot = fileURLToPath(new URL("..", import.meta.url));
 const jsoncParserEsmEntry = fileURLToPath(new URL("../node_modules/jsonc-parser/lib/esm/main.js", import.meta.url));
 
 const result = await Bun.build({
-  entrypoints: [`${repoRoot}packages/omo-opencode/src/cli/index.ts`],
+  entrypoints: [`${repoRoot}packages/omc-opencode/src/cli/index.ts`],
   outdir: `${repoRoot}dist/cli-node`,
   target: "node",
   format: "esm",

@@ -2,7 +2,7 @@
 
 ## OVERVIEW
 
-Local stdio MCP server (`@oh-my-opencode/ast-grep-mcp`, private, bin `omo-ast-grep`) exposing structural code search/rewrite via the `sg` (ast-grep) CLI. Server name `ast_grep`, 3 tools: `search`, `rewrite`, `scan`. Built on `mcp-stdio-core` + `utils`.
+Local stdio MCP server (`@oh-my-cybersecurity/ast-grep-mcp`, private, bin `omc-ast-grep`) exposing structural code search/rewrite via the `sg` (ast-grep) CLI. Server name `ast_grep`, 3 tools: `search`, `rewrite`, `scan`. Built on `mcp-stdio-core` + `utils`.
 
 ## STRUCTURE
 
@@ -24,7 +24,7 @@ src/
 | Add/modify a tool schema | `src/mcp.ts` (tool defs) + `src/tools/*.ts` |
 | sg process invocation, timeouts | `src/sg-runner.ts` |
 | Pattern validation hints | `src/pattern-hints.ts` |
-| Senpi plugin staging | `packages/omo-senpi/plugin/scripts/stage-ast-grep-mcp-runtime.mjs` (copies `dist/cli.js` to plugin `runtime/ast-grep-mcp/`) |
+| Senpi plugin staging | `packages/omc-senpi/plugin/scripts/stage-ast-grep-mcp-runtime.mjs` (copies `dist/cli.js` to plugin `runtime/ast-grep-mcp/`) |
 
 ## CONVENTIONS
 
@@ -39,3 +39,14 @@ src/
 - No ambient `sgconfig.yml` discovery in `scan`: exactly one explicit rule source (`ruleFile` XOR `inlineRules`).
 - Model-facing tool descriptions are verbatim contracts (`search`'s is marked `do not modify`) — never reword them.
 - `sg` CLI name is deprecated in favor of `ast-grep`; the runner still invokes `sg` — don't churn the binary name.
+
+## QA
+
+```bash
+cd packages/ast-grep-mcp
+bun run typecheck   # tsgo --noEmit -p tsconfig.json
+bun run test        # bun test src/*.test.ts src/**/*.test.ts (10 co-located suites)
+bun run build       # bun build src/cli.ts --outdir dist --target node (bin omc-ast-grep)
+```
+
+From the repo root, `bun run build:ast-grep-mcp` builds it and `build:senpi-plugin` stages `dist/cli.js` into the Senpi plugin runtime. This is an MCP-layer package: it is NOT in the harness-neutral core guard list (`script/core-package-paths.ts`).

@@ -1,4 +1,4 @@
-import type { AuditEvent } from "@oh-my-opencode/senpi-desktop-protocol";
+import type { AuditEvent } from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import { runComputerCode } from "../src/run/runtime";
 import { DesktopService } from "../src/service/service";
 import { type ConfirmControl, noTools, snapshot } from "./control-harness";

@@ -3,7 +3,7 @@ import {
 	ENGINE_NOTIFICATIONS,
 	type EngineNotification,
 	type StopPathStatus,
-} from "@oh-my-opencode/senpi-desktop-protocol";
+} from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import { isStopPathStatus, parseAuditEvent } from "./parse";
 
 export type Unsubscribe = () => void;

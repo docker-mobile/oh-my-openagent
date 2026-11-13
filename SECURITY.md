@@ -3,7 +3,7 @@
 ## Report a vulnerability
 
 Report suspected vulnerabilities privately through the **Security** tab of
-[`code-yeongyu/oh-my-openagent`](https://github.com/code-yeongyu/oh-my-openagent/security/advisories/new)
+[`code-yeongyu/oh-my-cybersecurity`](https://github.com/code-yeongyu/oh-my-cybersecurity/security/advisories/new)
 ("Report a vulnerability"). Please do **not** open a public issue, pull
 request or discussion for a suspected vulnerability.
 
@@ -16,7 +16,7 @@ Include in the report:
   `packages/*`, a hook, an MCP, the installer, and so on).
 - Reproduction steps or a minimal proof of concept.
 - The version (release tag or commit SHA) and the edition you ran
-  (`omo` / OmO Native, the OpenCode plugin, or the Codex edition).
+  (`omc` / OmC Native, the OpenCode plugin, or the Codex edition).
 - Any mitigations or workarounds you have already applied.
 
 The GitHub Security tab is the only published contact. A private channel set

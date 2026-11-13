@@ -3,7 +3,7 @@ import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, w
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
-import { configureSharedSubunitLogger } from "@oh-my-opencode/utils/logger"
+import { configureSharedSubunitLogger } from "@oh-my-cybersecurity/utils/logger"
 import { startFakeHost } from "./__fixtures__/fake-host"
 import { askHost } from "./host-request"
 import { RpcIdentityError } from "./socket-auth"
@@ -92,7 +92,7 @@ describe.skipIf(process.platform === "win32")("POSIX raw task host challenge-res
     })
   })
 
-  test("#given a missing record #when an enforcing host challenges twice #then grace logs the remedy once to the omo log, never stderr, and the refusal names the endpoint and the remedy", async () => {
+  test("#given a missing record #when an enforcing host challenges twice #then grace logs the remedy once to the omc log, never stderr, and the refusal names the endpoint and the remedy", async () => {
     await withContractHost({ auth: true, prepareRecord: (path) => rmSync(path) }, async (host) => {
       const lines: string[] = []
       configureSharedSubunitLogger((message) => { lines.push(message) })
@@ -150,7 +150,7 @@ describe.skipIf(process.platform === "win32")("POSIX raw task host challenge-res
 
   const layouts: readonly [string, (home: string) => string][] = [
     ["a standalone engine (~/.senpi/agent)", (home) => join(home, ".senpi", "agent")],
-    ["the flat omo layout (~/.omo)", (home) => { mkdirSync(join(home, ".omo"), { mode: 0o700 }); writeFileSync(join(home, ".omo", "settings.json"), "{}"); return join(home, ".omo") }],
+    ["the flat omc layout (~/.omc)", (home) => { mkdirSync(join(home, ".omc"), { mode: 0o700 }); writeFileSync(join(home, ".omc", "settings.json"), "{}"); return join(home, ".omc") }],
   ]
   test.each(layouts)("#given no agent-dir override on %s #when askHost runs without options #then it reads the key record where the thread client resolves the agent dir", async (_name, agentDirOf) => {
     const home = mkdtempSync(join(tmpdir(), "rpc-home-"))

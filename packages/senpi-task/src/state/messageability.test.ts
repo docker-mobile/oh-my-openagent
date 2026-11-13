@@ -5,7 +5,7 @@ import type { HostSessionIdentity } from "./types"
 
 describe("host-session record messageability", () => {
   const hostSession: HostSessionIdentity = {
-    socket: "/tmp/omo-agent/rpc/rpc.sock",
+    socket: "/tmp/omc-agent/rpc/rpc.sock",
     routing_id: "routing-12345",
     session_path: "01a0815e-session-path",
     instance_id: "inst-uuid-001",

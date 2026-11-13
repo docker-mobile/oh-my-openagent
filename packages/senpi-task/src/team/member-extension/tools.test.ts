@@ -3,8 +3,8 @@ import { tmpdir } from "node:os"
 import { join } from "node:path"
 
 import { afterEach, describe, expect, test } from "bun:test"
-import { TeamModeConfigSchema, type TeamModeConfig } from "@oh-my-opencode/team-core/config"
-import { listUnreadMessages } from "@oh-my-opencode/team-core/team-mailbox"
+import { TeamModeConfigSchema, type TeamModeConfig } from "@oh-my-cybersecurity/team-core/config"
+import { listUnreadMessages } from "@oh-my-cybersecurity/team-core/team-mailbox"
 
 import type { PersistedTaskEvent } from "../../store"
 import { MemberExtensionConfigError, parseMemberExtensionEnv } from "./index"

@@ -1,5 +1,5 @@
 /**
- * Cancels waiting for a child's lost connection (omo#9403). While one is pending only the cancel may
+ * Cancels waiting for a child's lost connection (omc#9403). While one is pending only the cancel may
  * end that run; its settlement is what the outcome tracker waits on before it writes anything.
  */
 export class PendingStops {

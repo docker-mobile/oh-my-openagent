@@ -2,7 +2,7 @@
 # serve-wake-split-probe.sh
 # Serve-topology wake runner-split QA harness.
 #
-# Proves whether omo's plugin-origin promptAsync (parent-wake bg notifications)
+# Proves whether omc's plugin-origin promptAsync (parent-wake bg notifications)
 # forks a second concurrent LLM runner in opencode serve topology (REPRODUCED)
 # or routes correctly through the live listener (FIXED).
 #
@@ -16,7 +16,7 @@
 #                             [--self-test] [--help]
 #
 # Env:
-#   OMO_SANDBOX_OMO_CONFIG   JSON string; when set, deep-merged over the base
+#   OMC_SANDBOX_OMO_CONFIG   JSON string; when set, deep-merged over the base
 #                            agent overrides (env keys win) and written to
 #                            $XDG_CONFIG_HOME/opencode/oh-my-openagent.json
 #                            before the server starts (flag-disabled control).
@@ -166,9 +166,9 @@ swsp_stop_fake_llm() {
   fi
 }
 
-# Write the sandbox omo config: base agent overrides (explore/librarian -> the
+# Write the sandbox omc config: base agent overrides (explore/librarian -> the
 # fake provider, required for child model resolution) deep-merged with
-# OMO_SANDBOX_OMO_CONFIG when set (jq '.[0] * .[1]'; env keys win).
+# OMC_SANDBOX_OMO_CONFIG when set (jq '.[0] * .[1]'; env keys win).
 # Args: sandbox_config_dir
 swsp_write_omo_config() {
   local cfg_dir="$1"
@@ -176,15 +176,15 @@ swsp_write_omo_config() {
   local base='{"agents":{"explore":{"model":"openai/gpt-fake"},"librarian":{"model":"openai/gpt-fake"}}}'
 
   mkdir -p "$cfg_dir/opencode"
-  if [ -n "${OMO_SANDBOX_OMO_CONFIG:-}" ]; then
-    if ! printf '%s\n%s\n' "$base" "$OMO_SANDBOX_OMO_CONFIG" | jq -s '.[0] * .[1]' >"$omo_cfg" 2>/dev/null; then
-      swsp_log "FAIL: OMO_SANDBOX_OMO_CONFIG is not valid JSON"
+  if [ -n "${OMC_SANDBOX_OMO_CONFIG:-}" ]; then
+    if ! printf '%s\n%s\n' "$base" "$OMC_SANDBOX_OMO_CONFIG" | jq -s '.[0] * .[1]' >"$omc_cfg" 2>/dev/null; then
+      swsp_log "FAIL: OMC_SANDBOX_OMO_CONFIG is not valid JSON"
       return 1
     fi
-    swsp_info "wrote merged OMO_SANDBOX_OMO_CONFIG to $omo_cfg"
+    swsp_info "wrote merged OMC_SANDBOX_OMO_CONFIG to $omc_cfg"
   else
-    printf '%s\n' "$base" >"$omo_cfg"
-    swsp_info "wrote agent overrides to $omo_cfg"
+    printf '%s\n' "$base" >"$omc_cfg"
+    swsp_info "wrote agent overrides to $omc_cfg"
   fi
 }
 
@@ -199,7 +199,7 @@ swsp_write_opencode_config() {
   mkdir -p "$cfg_dir/opencode"
   cat >"$cfg_dir/opencode/opencode.jsonc" <<JSONC
 {
-  "plugin": ["file://${repo_root}/packages/omo-opencode/src/index.ts"],
+  "plugin": ["file://${repo_root}/packages/omc-opencode/src/index.ts"],
   "model": "openai/gpt-fake",
   "provider": {
     "openai": {
@@ -319,12 +319,12 @@ swsp_wait_session_idle() {
   return 0
 }
 
-# Count plugin_inits from the omo log since a byte offset, filtered to sandbox dir.
+# Count plugin_inits from the omc log since a byte offset, filtered to sandbox dir.
 # Args: log_offset sandbox_dir
 swsp_count_plugin_inits() {
   local offset="$1"
   local sandbox_dir="$2"
-  local log_path="${TMPDIR:-/tmp}/oh-my-opencode.log"
+  local log_path="${TMPDIR:-/tmp}/oh-my-cybersecurity.log"
   if [ ! -f "$log_path" ]; then
     printf '0'
     return 0
@@ -335,7 +335,7 @@ swsp_count_plugin_inits() {
 }
 
 # Detect WAKE_DISPATCHED_DURING_PARENT_TURN:
-# true iff the omo log (since offset) contains a [prompt-async-gate] promptAsync dispatching
+# true iff the omc log (since offset) contains a [prompt-async-gate] promptAsync dispatching
 # line with source containing "parent-wake", AND that line's timestamp is within the
 # parent-hold window (between branch=parent-hold line and next non-wake completion).
 # Args: log_offset fake_llm_log sandbox_dir
@@ -343,7 +343,7 @@ swsp_detect_wake_during_parent() {
   local offset="$1"
   local fake_log="$2"
   local sandbox_dir="$3"
-  local omo_log="${TMPDIR:-/tmp}/oh-my-opencode.log"
+  local omc_log="${TMPDIR:-/tmp}/oh-my-cybersecurity.log"
 
   # Find parent-hold timestamp from fake-llm.log
   local hold_ts
@@ -357,7 +357,7 @@ swsp_detect_wake_during_parent() {
 
   # Check for gate dispatch log line with parent-wake source since offset
   local dispatch_line
-  dispatch_line="$(swsp_tail_log_since_offset "$offset" "$omo_log" \
+  dispatch_line="$(swsp_tail_log_since_offset "$offset" "$omc_log" \
     | grep "promptAsync dispatching" \
     | grep -i "parent-wake\|background-agent-parent-wake" \
     | head -1)" || true
@@ -569,16 +569,16 @@ swsp_self_test() {
       fails=$((fails+1))
     fi
 
-    # OMO_SANDBOX_OMO_CONFIG env contract assertion: merge keeps base overrides
+    # OMC_SANDBOX_OMO_CONFIG env contract assertion: merge keeps base overrides
     local omo_cfg_path="$XDG_CONFIG_HOME/opencode/oh-my-openagent.json"
-    OMO_SANDBOX_OMO_CONFIG='{"_probe":true}' swsp_write_omo_config "$XDG_CONFIG_HOME"
+    OMC_SANDBOX_OMO_CONFIG='{"_probe":true}' swsp_write_omo_config "$XDG_CONFIG_HOME"
     local probe_val explore_model
-    probe_val="$(jq -r '._probe' "$omo_cfg_path" 2>/dev/null)"
-    explore_model="$(jq -r '.agents.explore.model' "$omo_cfg_path" 2>/dev/null)"
+    probe_val="$(jq -r '._probe' "$omc_cfg_path" 2>/dev/null)"
+    explore_model="$(jq -r '.agents.explore.model' "$omc_cfg_path" 2>/dev/null)"
     if [ "$probe_val" = "true" ] && [ "$explore_model" = "openai/gpt-fake" ]; then
-      swsp_info "PASS: OMO_SANDBOX_OMO_CONFIG merge assertion (env key + base overrides both present)"
+      swsp_info "PASS: OMC_SANDBOX_OMO_CONFIG merge assertion (env key + base overrides both present)"
     else
-      swsp_log "FAIL: omo config merge wrong: _probe='$probe_val' explore_model='$explore_model'"
+      swsp_log "FAIL: omc config merge wrong: _probe='$probe_val' explore_model='$explore_model'"
       fails=$((fails+1))
     fi
   fi
@@ -736,13 +736,13 @@ swsp_run_probe() {
   swsp_info "real DB session count before: $real_db_count_before"
   printf 'real_db=%s before=%s\n' "$real_db_path" "$real_db_count_before" >"$evidence_dir/isolation-receipt.txt"
 
-  # Capture omo log byte offset
-  local omo_log="${TMPDIR:-/tmp}/oh-my-opencode.log"
-  local omo_log_offset
-  if [ -f "$omo_log" ]; then
-    omo_log_offset="$(wc -c <"$omo_log" 2>/dev/null | tr -d ' ')" || omo_log_offset=0
+  # Capture omc log byte offset
+  local omc_log="${TMPDIR:-/tmp}/oh-my-cybersecurity.log"
+  local omc_log_offset
+  if [ -f "$omc_log" ]; then
+    omc_log_offset="$(wc -c <"$omc_log" 2>/dev/null | tr -d ' ')" || omc_log_offset=0
   else
-    omo_log_offset=0
+    omc_log_offset=0
   fi
 
   # Step 2: Start fake-openai server
@@ -859,7 +859,7 @@ swsp_run_probe() {
 
   # Step 8: Plugin-init count
   local plugin_inits
-  plugin_inits="$(swsp_count_plugin_inits "$omo_log_offset" "$OQA_PROJ")"
+  plugin_inits="$(swsp_count_plugin_inits "$omc_log_offset" "$OQA_PROJ")"
   plugin_inits="${plugin_inits:-0}"
   swsp_info "plugin_inits: $plugin_inits"
   printf '%s\n' "$plugin_inits" >"$evidence_dir/plugin-init-count.txt"
@@ -867,8 +867,8 @@ swsp_run_probe() {
   # Step 9: Route provenance
   local route_prov=""
   swsp_collect_route_provenance \
-    "$omo_log_offset" \
-    "$omo_log" \
+    "$omc_log_offset" \
+    "$omc_log" \
     "$OQA_PROJ" \
     "$ses_id" \
     "$evidence_dir/route-provenance.log" \
@@ -879,7 +879,7 @@ swsp_run_probe() {
 
   # WAKE_DISPATCHED_DURING_PARENT_TURN mechanism signal
   local wake_during_parent
-  wake_during_parent="$(swsp_detect_wake_during_parent "$omo_log_offset" "$fake_llm_log" "$OQA_PROJ")"
+  wake_during_parent="$(swsp_detect_wake_during_parent "$omc_log_offset" "$fake_llm_log" "$OQA_PROJ")"
   swsp_info "WAKE_DISPATCHED_DURING_PARENT_TURN=$wake_during_parent"
 
   local real_db_count_after=""

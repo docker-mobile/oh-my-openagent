@@ -3,9 +3,9 @@ import { tmpdir } from "node:os"
 import { join } from "node:path"
 
 import { afterEach, describe, expect, test } from "bun:test"
-import { TeamModeConfigSchema, type TeamModeConfig } from "@oh-my-opencode/team-core/config"
-import { sendMessage } from "@oh-my-opencode/team-core/team-mailbox"
-import type { Message } from "@oh-my-opencode/team-core/types"
+import { TeamModeConfigSchema, type TeamModeConfig } from "@oh-my-cybersecurity/team-core/config"
+import { sendMessage } from "@oh-my-cybersecurity/team-core/team-mailbox"
+import type { Message } from "@oh-my-cybersecurity/team-core/types"
 
 import { createLeadDeliveryJournal } from "./delivery-journal"
 import { createLeadPoller, type LeadInjection, type LeadPoller } from "./lead-poller"

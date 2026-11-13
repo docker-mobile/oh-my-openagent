@@ -18,7 +18,7 @@ import {
 // Test Fixtures
 // ==============================================================================
 
-const fixtureDir = new URL("../.omo/fixtures/releases.json", import.meta.url)
+const fixtureDir = new URL("../.omc/fixtures/releases.json", import.meta.url)
 
 async function loadFixture(): Promise<Release[]> {
   const text = await Bun.file(fixtureDir).text()
@@ -30,7 +30,7 @@ const validReleaseWithMarker: Release = {
   tagName: "v5.0.0-beta.3",
   publishedAt: "2026-08-10T10:16:58Z",
   isPrerelease: true,
-  body: "## Fixed\n\n- Memory extension node-load crash\n\n<!-- omo-backfill-marker: v5.0.0-beta.3 -->",
+  body: "## Fixed\n\n- Memory extension node-load crash\n\n<!-- omc-backfill-marker: v5.0.0-beta.3 -->",
 }
 
 const releaseNoMarker: Release = {
@@ -44,14 +44,14 @@ const releaseNoPublishedAt: Release = {
   tagName: "v5.0.0-beta.99",
   publishedAt: null,
   isPrerelease: true,
-  body: "## Fixed\n\n- Change\n\n<!-- omo-backfill-marker: v5.0.0-beta.99 -->",
+  body: "## Fixed\n\n- Change\n\n<!-- omc-backfill-marker: v5.0.0-beta.99 -->",
 }
 
 const releaseBadTimestamp: Release = {
   tagName: "v5.0.0-beta.99",
   publishedAt: "2026-08-10 10:16:58", // Not UTC ISO 8601
   isPrerelease: true,
-  body: "## Fixed\n\n- Change\n\n<!-- omo-backfill-marker: v5.0.0-beta.99 -->",
+  body: "## Fixed\n\n- Change\n\n<!-- omc-backfill-marker: v5.0.0-beta.99 -->",
 }
 
 // ==============================================================================
@@ -95,13 +95,13 @@ describe("stampBackfillMarker", () => {
     const version = "5.0.0-beta.3"
     const stamped = stampBackfillMarker(body, version)
 
-    expect(stamped).toContain("<!-- omo-backfill-marker: 5.0.0-beta.3 -->")
+    expect(stamped).toContain("<!-- omc-backfill-marker: 5.0.0-beta.3 -->")
     expect(stamped).toContain("## Fixed\n\n- Change")
   })
 
   test("#given body already stamped with same version #when stamped again #then unchanged", () => {
     const version = "5.0.0-beta.3"
-    const body = "## Fixed\n\n- Change\n\n<!-- omo-backfill-marker: 5.0.0-beta.3 -->"
+    const body = "## Fixed\n\n- Change\n\n<!-- omc-backfill-marker: 5.0.0-beta.3 -->"
     const stamped = stampBackfillMarker(body, version)
 
     expect(stamped).toBe(body) // Idempotent
@@ -133,7 +133,7 @@ describe("stampBackfillMarker", () => {
 
 describe("extractBackfillMarker", () => {
   test("#given body with marker #when extracted #then marked is true and version matches", () => {
-    const body = "## Fixed\n\n- Item\n\n<!-- omo-backfill-marker: 5.0.0-beta.3 -->"
+    const body = "## Fixed\n\n- Item\n\n<!-- omc-backfill-marker: 5.0.0-beta.3 -->"
     const { marked, version } = extractBackfillMarker(body)
 
     expect(marked).toBe(true)
@@ -419,7 +419,7 @@ describe("Idempotency guarantee", () => {
 
     expect(extracted).toBe(version)
     expect(stamped).toBe(restamped)
-    const markerCount = (restamped.match(/<!-- omo-backfill-marker:/g) || []).length
+    const markerCount = (restamped.match(/<!-- omc-backfill-marker:/g) || []).length
     expect(markerCount).toBe(1)
   })
 })

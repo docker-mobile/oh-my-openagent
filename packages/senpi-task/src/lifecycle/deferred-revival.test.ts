@@ -7,7 +7,7 @@ import { cleanupProjects, seedRecord } from "./__fixtures__/lifecycle-fakes"
 
 afterEach(cleanupProjects)
 
-describe("bounded resumed-child revival (omo#9498)", () => {
+describe("bounded resumed-child revival (omc#9498)", () => {
   test("model_unavailable on session start revives on the first retry without a new session start", async () => {
     const h = harness({ succeeds: true })
     try {
@@ -121,5 +121,5 @@ describe("bounded resumed-child revival (omo#9498)", () => {
     }
   }, 10_000)
 
-  // Review of omo#9714 (H1): a retry must not outlive the session that scheduled it.
+  // Review of omc#9714 (H1): a retry must not outlive the session that scheduled it.
 })

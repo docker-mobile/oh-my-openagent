@@ -52,7 +52,7 @@ test("reserve, upload and append land a batch the other device pulls and downloa
   expect(await b.download(entry.objectId)).toEqual(bytes)
 })
 
-test("a token that cannot be refreshed fails the request as SyncAuthError, and a token the server refuses as a 401 (omo #10637)", async () => {
+test("a token that cannot be refreshed fails the request as SyncAuthError, and a token the server refuses as a 401 (omc #10637)", async () => {
   const { server } = await pair()
   const refused = new Error("refresh refused")
   const unrefreshable = createHttpTransport({ baseUrl: server.url, token: () => Promise.reject(refused) })
@@ -65,7 +65,7 @@ test("a token that cannot be refreshed fails the request as SyncAuthError, and a
   expect(refusal).toMatchObject({ code: "unauthorized", status: 401, transient: false })
 })
 
-test("a sync service that cannot be reached fails the request as SyncNetworkError, keeping the fetch error (omo #10637)", async () => {
+test("a sync service that cannot be reached fails the request as SyncNetworkError, keeping the fetch error (omc #10637)", async () => {
   const refused = new TypeError("fetch failed")
   const unreachable = createHttpTransport({ baseUrl: "http://sync.invalid", token: () => "tok", fetch: (() => Promise.reject(refused)) as unknown as typeof fetch })
   const failure = await unreachable.pull(0, 500).then(() => null, (error: unknown) => error)

@@ -78,12 +78,12 @@ describe("mcp stdio proxy", () => {
 		const homeRoot = mkdtempSync(join(tmpdir(), "lsp-daemon-opencode-home-"));
 		tempDirectories.push(projectRoot, homeRoot);
 		const opencodeConfig = join(projectRoot, ".opencode", "lsp.json");
-		const omoConfig = join(projectRoot, ".omo", "lsp.json");
-		const omoClientConfig = join(projectRoot, ".omo", "lsp-client.json");
+		const omoConfig = join(projectRoot, ".omc", "lsp.json");
+		const omoClientConfig = join(projectRoot, ".omc", "lsp-client.json");
 		const userConfig = join(homeRoot, "opencode", "lsp.json");
 		const decisionsPath = join(homeRoot, "opencode", "lsp-install-decisions.json");
 		mkdirSync(join(projectRoot, ".opencode"), { recursive: true });
-		mkdirSync(join(projectRoot, ".omo"), { recursive: true });
+		mkdirSync(join(projectRoot, ".omc"), { recursive: true });
 		mkdirSync(join(homeRoot, "opencode"), { recursive: true });
 		writeFileSync(opencodeConfig, JSON.stringify({ lsp: { typescript: { disabled: true } } }));
 		writeFileSync(omoConfig, JSON.stringify({ lsp: { typescript: { priority: 99 } } }));

@@ -1,5 +1,5 @@
 /**
- * Default memory block content constants — omo-adapted from Letta's
+ * Default memory block content constants — omc-adapted from Letta's
  * persona/human seeds (letta src/agent/prompts/{persona,human}.mdx @ a75f4d93e).
  *
  * Divergences from Letta source (per plan todo 33):

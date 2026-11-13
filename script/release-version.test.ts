@@ -42,14 +42,14 @@ test("the actual metadata step validates before npm reads and forwards channel o
   } finally { rmSync(dir, { recursive: true, force: true }) }
 })
 
-test("LazyCodex-only numbers cannot consume the next omo number", () => {
+test("LazyCodex-only numbers cannot consume the next omc number", () => {
   expect(resolveReleaseVersion("5.0.0-beta.62.lazycodex.1", true)).toEqual({ version: "5.0.0-beta.62.lazycodex.1", distTag: "beta" })
   expect(resolveReleaseVersion("5.0.0-beta.63", false)).toEqual({ version: "5.0.0-beta.63", distTag: "beta" })
   expect(() => resolveReleaseVersion("5.0.0-beta.63", true)).toThrow()
   expect(() => resolveReleaseVersion("5.0.0-beta.62.lazycodex.1", false)).toThrow()
 })
 
-test("stable-base LazyCodex releases never advance latest; omo channel mapping stays unchanged", () => {
+test("stable-base LazyCodex releases never advance latest; omc channel mapping stays unchanged", () => {
   expect(resolveReleaseVersion("5.0.0-lazycodex.1", true).distTag).toBe("lazycodex")
   expect(resolveReleaseVersion("5.0.0", false).distTag).toBe("")
   expect(resolveReleaseVersion("5.0.0-rc.2.lazycodex.3", true).distTag).toBe("rc")

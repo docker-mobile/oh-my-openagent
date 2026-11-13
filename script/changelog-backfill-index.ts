@@ -1,5 +1,5 @@
 /**
- * OmO Changelog Backfill
+ * OmC Changelog Backfill
  *
  * Pure, deterministic functions for transforming release bodies into changelog entries.
  * All inputs and outputs are immutable; stamping and extraction are idempotent.

@@ -3,7 +3,7 @@
 // workflow (a model-initiated SKILL.md read proves nothing), a plan artifact must have been
 // touched, and a session that already started executing (ulw-execute) must not be pulled back into
 // plan review. This module owns the classification data and the pure verdict logic; the
-// session-scoped skill-invocation state is supplied by the host adapter (omo-senpi) via
+// session-scoped skill-invocation state is supplied by the host adapter (omc-senpi) via
 // TaskToolDeps.resolveSkillInvocations, keeping senpi-task harness-neutral.
 
 export type AgentInvocationCondition = {
@@ -32,7 +32,7 @@ export type PlanArtifactReference = {
 // hasInvoked observes every invocation channel (SKILL.md read, slash command) and feeds the
 // forbids check. hasUserRequested is strictly the user-input channel - a model cannot manufacture
 // it - and is the only channel that satisfies requiresSkills. hasPlanArtifact reports whether a
-// .omo/plans/*.md file (at ANY root - worktrees and external checkouts included) was touched in
+// .omc/plans/*.md file (at ANY root - worktrees and external checkouts included) was touched in
 // this session. planArtifactReferences exposes the per-path counts behind it, sorted by count
 // desc then lastTouchedAt desc, so consumers can pick the session's most-referenced plan.
 export type SkillInvocationState = {
@@ -93,7 +93,7 @@ export function evaluateInvocationGuard(agentName: string, state: SkillInvocatio
     return {
       kind: "deny",
       message:
-        `Agent "${agentName}" is plan-gated: no plan artifact (.omo/plans/*.md) was touched in this session, so there is no ` +
+        `Agent "${agentName}" is plan-gated: no plan artifact (.omc/plans/*.md) was touched in this session, so there is no ` +
         `plan to review yet. Complete the ${condition.requiresSkills.join(", ")} workflow so it produces a plan file, then retry.`,
     }
   }

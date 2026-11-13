@@ -50,7 +50,7 @@ export async function settle<T>(
 	}
 }
 
-export const workDir = mkdtempSync(join(tmpdir(), "omo-qa-desktop-fixtures-"));
+export const workDir = mkdtempSync(join(tmpdir(), "omc-qa-desktop-fixtures-"));
 
 async function textEditDocuments(): Promise<readonly string[]> {
 	const names = await jxa(`const t = Application('TextEdit'); JSON.stringify(t.running() ? t.documents.name() : [])`);

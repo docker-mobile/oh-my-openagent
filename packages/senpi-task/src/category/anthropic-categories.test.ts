@@ -3,7 +3,7 @@
 import { describe, expect, it } from "bun:test"
 
 import { ANTHROPIC_CATEGORIES } from "./anthropic-categories"
-import { FABLE_55_RELEASED } from "@oh-my-opencode/model-core"
+import { FABLE_55_RELEASED } from "@oh-my-cybersecurity/model-core"
 
 const architect = ANTHROPIC_CATEGORIES.find((category) => category.name === "architect")
 

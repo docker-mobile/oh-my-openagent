@@ -4,7 +4,7 @@ import { join } from "node:path"
 const senpiRoot = join(import.meta.dir, "..", "node_modules", "@code-yeongyu", "senpi", "dist", "core", "extensions", "builtin", "anthropic-subscription")
 
 // This imports the installed Senpi runtime so the pinned release keeps surfacing a pre-replay SDK
-// result as the failure it reports (senpi 2026.9.3-2 ships this natively; omo used to patch it in).
+// result as the failure it reports (senpi 2026.9.3-2 ships this natively; omc used to patch it in).
 describe("anthropic-subscription result-before-replay", () => {
   test("surfaces the SDK result cause and classifies it as a query failure", async () => {
     const [{ AnthropicSubscriptionSessionRegistry, overrideSessionRegistryBoundary, resetSessionRegistryBoundary }, { submitSessionTurn }, { sanitizeTerminalFailure }] = await Promise.all([

@@ -28,7 +28,7 @@ describe("discoverInstalledPlugins", () => {
       log: () => {},
     }))
 
-    const pluginsHome = createTemporaryDirectory("omo-claude-plugins-")
+    const pluginsHome = createTemporaryDirectory("omc-claude-plugins-")
     process.env.CLAUDE_PLUGINS_HOME = pluginsHome
   })
 
@@ -52,7 +52,7 @@ describe("discoverInstalledPlugins", () => {
   it("preserves scoped package name from npm plugin keys", async () => {
     //#given
     const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-    const installPathBase = createTemporaryDirectory("omo-scoped-plugin-")
+    const installPathBase = createTemporaryDirectory("omc-scoped-plugin-")
     const installPath = join(installPathBase, "@myorg", "my-plugin")
     mkdirSync(installPath, { recursive: true })
 
@@ -92,7 +92,7 @@ describe("discoverInstalledPlugins", () => {
   it("derives package name from file URL plugin keys", async () => {
     //#given
     const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-    const installPath = createTemporaryDirectory("omo-fileurl-plugin-")
+    const installPath = createTemporaryDirectory("omc-fileurl-plugin-")
 
     const databasePath = join(pluginsHome, "installed_plugins.json")
     writeFileSync(
@@ -100,7 +100,7 @@ describe("discoverInstalledPlugins", () => {
       JSON.stringify({
         version: 2,
         plugins: {
-          "file:///D:/configs/user-configs/.config/opencode/node_modules/oh-my-opencode@latest": [
+          "file:///D:/configs/user-configs/.config/opencode/node_modules/oh-my-cybersecurity@latest": [
             {
               scope: "user",
               installPath,
@@ -124,13 +124,13 @@ describe("discoverInstalledPlugins", () => {
     //#then
     expect(discovered.errors).toHaveLength(0)
     expect(discovered.plugins).toHaveLength(1)
-    expect(discovered.plugins[0]?.name).toBe("oh-my-opencode")
+    expect(discovered.plugins[0]?.name).toBe("oh-my-cybersecurity")
   })
 
   it("derives canonical package name from npm plugin keys", async () => {
     //#given
     const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-    const installPath = createTemporaryDirectory("omo-npm-plugin-")
+    const installPath = createTemporaryDirectory("omc-npm-plugin-")
 
     const databasePath = join(pluginsHome, "installed_plugins.json")
     writeFileSync(
@@ -138,7 +138,7 @@ describe("discoverInstalledPlugins", () => {
       JSON.stringify({
         version: 2,
         plugins: {
-          "oh-my-openagent@3.13.1": [
+          "oh-my-cybersecurity@3.13.1": [
             {
               scope: "user",
               installPath,
@@ -162,15 +162,15 @@ describe("discoverInstalledPlugins", () => {
     //#then
     expect(discovered.errors).toHaveLength(0)
     expect(discovered.plugins).toHaveLength(1)
-    expect(discovered.plugins[0]?.name).toBe("oh-my-openagent")
+    expect(discovered.plugins[0]?.name).toBe("oh-my-cybersecurity")
   })
 
   describe("#given project-scoped entries in v1 format", () => {
     it("#when cwd matches projectPath #then the plugin loads", async () => {
       //#given
       const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-      const projectDirectory = createTemporaryDirectory("omo-v1-project-match-")
-      const installPath = createInstallPath("omo-v1-install-")
+      const projectDirectory = createTemporaryDirectory("omc-v1-project-match-")
+      const installPath = createInstallPath("omc-v1-install-")
       writeDatabase(pluginsHome, {
         version: 1,
         plugins: {
@@ -202,10 +202,10 @@ describe("discoverInstalledPlugins", () => {
     it("#when cwd is a subdirectory of projectPath #then the plugin loads", async () => {
       //#given
       const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-      const projectDirectory = createTemporaryDirectory("omo-v1-project-sub-")
+      const projectDirectory = createTemporaryDirectory("omc-v1-project-sub-")
       const subdirectory = join(projectDirectory, "packages", "app")
       mkdirSync(subdirectory, { recursive: true })
-      const installPath = createInstallPath("omo-v1-install-")
+      const installPath = createInstallPath("omc-v1-install-")
       writeDatabase(pluginsHome, {
         version: 1,
         plugins: {
@@ -237,9 +237,9 @@ describe("discoverInstalledPlugins", () => {
     it("#when cwd does not match projectPath #then the plugin is skipped", async () => {
       //#given
       const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-      const projectDirectory = createTemporaryDirectory("omo-v1-project-miss-")
-      const otherDirectory = createTemporaryDirectory("omo-v1-other-")
-      const installPath = createInstallPath("omo-v1-install-")
+      const projectDirectory = createTemporaryDirectory("omc-v1-project-miss-")
+      const otherDirectory = createTemporaryDirectory("omc-v1-other-")
+      const installPath = createInstallPath("omc-v1-install-")
       writeDatabase(pluginsHome, {
         version: 1,
         plugins: {
@@ -270,7 +270,7 @@ describe("discoverInstalledPlugins", () => {
     it("#when projectPath is missing #then the plugin is skipped", async () => {
       //#given
       const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-      const installPath = createInstallPath("omo-v1-install-")
+      const installPath = createInstallPath("omc-v1-install-")
       writeDatabase(pluginsHome, {
         version: 1,
         plugins: {
@@ -299,8 +299,8 @@ describe("discoverInstalledPlugins", () => {
     it("#when scope is user #then it always loads regardless of cwd", async () => {
       //#given
       const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-      const unrelatedDirectory = createTemporaryDirectory("omo-v1-unrelated-")
-      const installPath = createInstallPath("omo-v1-install-")
+      const unrelatedDirectory = createTemporaryDirectory("omc-v1-unrelated-")
+      const installPath = createInstallPath("omc-v1-install-")
       writeDatabase(pluginsHome, {
         version: 1,
         plugins: {
@@ -333,11 +333,11 @@ describe("discoverInstalledPlugins", () => {
     it("#when cwd matches project-scoped projectPath #then it loads while non-matching entries are dropped", async () => {
       //#given
       const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-      const projectDirectory = createTemporaryDirectory("omo-v2-project-")
-      const otherDirectory = createTemporaryDirectory("omo-v2-other-")
-      const matchingInstall = createInstallPath("omo-v2-match-install-")
-      const missingInstall = createInstallPath("omo-v2-miss-install-")
-      const userInstall = createInstallPath("omo-v2-user-install-")
+      const projectDirectory = createTemporaryDirectory("omc-v2-project-")
+      const otherDirectory = createTemporaryDirectory("omc-v2-other-")
+      const matchingInstall = createInstallPath("omc-v2-match-install-")
+      const missingInstall = createInstallPath("omc-v2-miss-install-")
+      const userInstall = createInstallPath("omc-v2-user-install-")
       writeDatabase(pluginsHome, {
         version: 2,
         plugins: {
@@ -390,8 +390,8 @@ describe("discoverInstalledPlugins", () => {
     it("#when scope is local and cwd matches projectPath #then it loads", async () => {
       //#given
       const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-      const projectDirectory = createTemporaryDirectory("omo-v2-local-match-")
-      const installPath = createInstallPath("omo-v2-local-install-")
+      const projectDirectory = createTemporaryDirectory("omc-v2-local-match-")
+      const installPath = createInstallPath("omc-v2-local-install-")
       writeDatabase(pluginsHome, {
         version: 2,
         plugins: {
@@ -425,9 +425,9 @@ describe("discoverInstalledPlugins", () => {
     it("#when scope is local and cwd does not match projectPath #then it is skipped", async () => {
       //#given
       const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-      const projectDirectory = createTemporaryDirectory("omo-v2-local-miss-")
-      const otherDirectory = createTemporaryDirectory("omo-v2-local-other-")
-      const installPath = createInstallPath("omo-v2-local-install-")
+      const projectDirectory = createTemporaryDirectory("omc-v2-local-miss-")
+      const otherDirectory = createTemporaryDirectory("omc-v2-local-other-")
+      const installPath = createInstallPath("omc-v2-local-install-")
       writeDatabase(pluginsHome, {
         version: 2,
         plugins: {
@@ -460,10 +460,10 @@ describe("discoverInstalledPlugins", () => {
     it("#when multiple installations are present #then only the first is considered and scope filtering still applies", async () => {
       //#given
       const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-      const projectDirectory = createTemporaryDirectory("omo-v2-multi-")
-      const otherDirectory = createTemporaryDirectory("omo-v2-multi-other-")
-      const primaryInstall = createInstallPath("omo-v2-multi-primary-")
-      const secondaryInstall = createInstallPath("omo-v2-multi-secondary-")
+      const projectDirectory = createTemporaryDirectory("omc-v2-multi-")
+      const otherDirectory = createTemporaryDirectory("omc-v2-multi-other-")
+      const primaryInstall = createInstallPath("omc-v2-multi-primary-")
+      const secondaryInstall = createInstallPath("omc-v2-multi-secondary-")
       writeDatabase(pluginsHome, {
         version: 2,
         plugins: {
@@ -507,8 +507,8 @@ describe("discoverInstalledPlugins", () => {
     it("#when cwd matches projectPath #then projectPath flows through and the plugin loads", async () => {
       //#given
       const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-      const projectDirectory = createTemporaryDirectory("omo-v3-match-")
-      const installPath = createInstallPath("omo-v3-install-")
+      const projectDirectory = createTemporaryDirectory("omc-v3-match-")
+      const installPath = createInstallPath("omc-v3-install-")
       writeDatabase(pluginsHome, [
         {
           name: "v3-project-plugin",
@@ -538,9 +538,9 @@ describe("discoverInstalledPlugins", () => {
     it("#when cwd does not match projectPath #then the plugin is skipped", async () => {
       //#given
       const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-      const projectDirectory = createTemporaryDirectory("omo-v3-miss-")
-      const otherDirectory = createTemporaryDirectory("omo-v3-miss-other-")
-      const installPath = createInstallPath("omo-v3-install-")
+      const projectDirectory = createTemporaryDirectory("omc-v3-miss-")
+      const otherDirectory = createTemporaryDirectory("omc-v3-miss-other-")
+      const installPath = createInstallPath("omc-v3-install-")
       writeDatabase(pluginsHome, [
         {
           name: "v3-skipped-plugin",
@@ -555,7 +555,7 @@ describe("discoverInstalledPlugins", () => {
           name: "v3-user-plugin",
           marketplace: "market",
           scope: "user",
-          installPath: createInstallPath("omo-v3-user-install-"),
+          installPath: createInstallPath("omc-v3-user-install-"),
           version: "2.0.0",
           lastUpdated: "2026-03-25T00:00:00Z",
         },
@@ -580,8 +580,8 @@ describe("discoverInstalledPlugins", () => {
     it("#when a project-scoped plugin is disabled via override #then it is still skipped even if cwd would match", async () => {
       //#given
       const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-      const projectDirectory = createTemporaryDirectory("omo-enabled-proj-")
-      const installPath = createInstallPath("omo-enabled-install-")
+      const projectDirectory = createTemporaryDirectory("omc-enabled-proj-")
+      const installPath = createInstallPath("omc-enabled-install-")
       writeDatabase(pluginsHome, {
         version: 2,
         plugins: {
@@ -615,8 +615,8 @@ describe("discoverInstalledPlugins", () => {
     it("#when a project-scoped plugin is enabled and cwd matches #then it loads", async () => {
       //#given
       const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-      const projectDirectory = createTemporaryDirectory("omo-enabled-match-")
-      const installPath = createInstallPath("omo-enabled-match-install-")
+      const projectDirectory = createTemporaryDirectory("omc-enabled-match-")
+      const installPath = createInstallPath("omc-enabled-match-install-")
       writeDatabase(pluginsHome, {
         version: 2,
         plugins: {
@@ -659,7 +659,7 @@ describe("discoverInstalledPlugins", () => {
     it("#when configured installPath ends in 'unknown' but a sibling version dir has a plugin manifest #then it is recovered without an error", async () => {
       //#given
       const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-      const cacheRoot = createTemporaryDirectory("omo-cc-plus-cache-")
+      const cacheRoot = createTemporaryDirectory("omc-cc-plus-cache-")
       const pluginRoot = join(cacheRoot, "cc-plus-marketplace", "cc-plus")
       const realInstallPath = join(pluginRoot, "0.1.0")
       const configuredInstallPath = join(pluginRoot, "unknown")
@@ -698,7 +698,7 @@ describe("discoverInstalledPlugins", () => {
     it("#when configured installPath is missing AND no sibling has a plugin manifest #then the original 'path does not exist' error is preserved", async () => {
       //#given
       const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-      const cacheRoot = createTemporaryDirectory("omo-no-manifest-cache-")
+      const cacheRoot = createTemporaryDirectory("omc-no-manifest-cache-")
       const pluginRoot = join(cacheRoot, "broken-plugin-marketplace", "broken-plugin")
       const siblingDir = join(pluginRoot, "0.1.0")
       const configuredInstallPath = join(pluginRoot, "unknown")
@@ -736,7 +736,7 @@ describe("discoverInstalledPlugins", () => {
     it("#when only an 'unknown' sibling exists with a manifest #then it is still picked rather than reporting an error", async () => {
       //#given
       const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-      const cacheRoot = createTemporaryDirectory("omo-only-unknown-cache-")
+      const cacheRoot = createTemporaryDirectory("omc-only-unknown-cache-")
       const pluginRoot = join(cacheRoot, "weird-plugin-marketplace", "weird-plugin")
       const onlySibling = join(pluginRoot, "unknown")
       const configuredInstallPath = join(pluginRoot, "ghost")
@@ -774,7 +774,7 @@ describe("discoverInstalledPlugins", () => {
     it("#when the recovered version dir uses the legacy root-level plugin.json layout #then it is recognized and the manifest is loaded", async () => {
       //#given
       const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-      const cacheRoot = createTemporaryDirectory("omo-legacy-manifest-cache-")
+      const cacheRoot = createTemporaryDirectory("omc-legacy-manifest-cache-")
       const pluginRoot = join(cacheRoot, "legacy-plugin-marketplace", "legacy-plugin")
       const realInstallPath = join(pluginRoot, "0.1.0")
       const configuredInstallPath = join(pluginRoot, "unknown")
@@ -818,7 +818,7 @@ describe("discoverInstalledPlugins", () => {
     it("#when the configured installPath exists #then it is used as-is without scanning siblings", async () => {
       //#given
       const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-      const cacheRoot = createTemporaryDirectory("omo-existing-path-cache-")
+      const cacheRoot = createTemporaryDirectory("omc-existing-path-cache-")
       const pluginRoot = join(cacheRoot, "ok-plugin-marketplace", "ok-plugin")
       const configuredInstallPath = join(pluginRoot, "1.2.3")
       const otherSibling = join(pluginRoot, "0.0.1")
@@ -858,7 +858,7 @@ describe("discoverInstalledPlugins", () => {
     it("#when multiple non-'unknown' semver siblings are present #then the highest version is picked deterministically", async () => {
       //#given
       const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-      const cacheRoot = createTemporaryDirectory("omo-multi-version-cache-")
+      const cacheRoot = createTemporaryDirectory("omc-multi-version-cache-")
       const pluginRoot = join(cacheRoot, "multi-ver-marketplace", "multi-ver")
       const oldInstallPath = join(pluginRoot, "0.1.0")
       const middleInstallPath = join(pluginRoot, "0.5.3")
@@ -905,7 +905,7 @@ describe("discoverInstalledPlugins", () => {
     it("#when a sibling directory exists with a manifest whose 'name' does NOT match the plugin key #then it is rejected and the error surfaces", async () => {
       //#given
       const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-      const cacheRoot = createTemporaryDirectory("omo-wrong-name-cache-")
+      const cacheRoot = createTemporaryDirectory("omc-wrong-name-cache-")
       const pluginRoot = join(cacheRoot, "target-plugin-marketplace", "target-plugin")
       const maliciousSibling = join(pluginRoot, "0.1.0")
       const configuredInstallPath = join(pluginRoot, "unknown")
@@ -947,7 +947,7 @@ describe("discoverInstalledPlugins", () => {
     it("#when two siblings share the same X.Y.Z prefix but one is a prerelease #then the plain version wins deterministically", async () => {
       //#given
       const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-      const cacheRoot = createTemporaryDirectory("omo-prerelease-cache-")
+      const cacheRoot = createTemporaryDirectory("omc-prerelease-cache-")
       const pluginRoot = join(cacheRoot, "tie-plugin-marketplace", "tie-plugin")
       const plainInstallPath = join(pluginRoot, "1.2.0")
       const prereleaseInstallPath = join(pluginRoot, "1.2.0-beta.1")
@@ -992,7 +992,7 @@ describe("discoverInstalledPlugins", () => {
     it("#when a sibling has a malformed manifest that cannot be parsed #then it is rejected under strict name-match", async () => {
       //#given
       const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-      const cacheRoot = createTemporaryDirectory("omo-malformed-cache-")
+      const cacheRoot = createTemporaryDirectory("omc-malformed-cache-")
       const pluginRoot = join(cacheRoot, "strict-plugin-marketplace", "strict-plugin")
       const malformedSibling = join(pluginRoot, "0.1.0")
       const configuredInstallPath = join(pluginRoot, "unknown")
@@ -1034,7 +1034,7 @@ describe("discoverInstalledPlugins", () => {
     it("#when a sibling's manifest lacks a 'name' field #then it is rejected under strict name-match", async () => {
       //#given
       const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-      const cacheRoot = createTemporaryDirectory("omo-noname-cache-")
+      const cacheRoot = createTemporaryDirectory("omc-noname-cache-")
       const pluginRoot = join(cacheRoot, "named-plugin-marketplace", "named-plugin")
       const nameMissingSibling = join(pluginRoot, "0.1.0")
       const configuredInstallPath = join(pluginRoot, "unknown")
@@ -1076,7 +1076,7 @@ describe("discoverInstalledPlugins", () => {
     it("#when installation.version is an empty string and manifest.version is also empty #then resolvedVersion falls back to 'unknown' not ''", async () => {
       //#given
       const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-      const cacheRoot = createTemporaryDirectory("omo-empty-version-cache-")
+      const cacheRoot = createTemporaryDirectory("omc-empty-version-cache-")
       const pluginRoot = join(cacheRoot, "empty-ver-marketplace", "empty-ver")
       const realInstallPath = join(pluginRoot, "0.1.0")
       const configuredInstallPath = join(pluginRoot, "unknown")

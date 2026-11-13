@@ -1,7 +1,7 @@
 /*
  * Runtime-contract fixture pin (recorded 2026-08-03): this environment successfully
  * provisioned and ran the OMO-pinned ast-grep 0.43.0 binary at
- * ~/.omo/runtime/ast-grep/<platform-arch>/sg. The matrix below pins all three probed
+ * ~/.omc/runtime/ast-grep/<platform-arch>/sg. The matrix below pins all three probed
  * facts: --update-all + --json=stream does not mutate, plain --update-all mutates,
  * and a no-match scan exits 0 with an empty stream. No 0.45.0 fallback was needed.
  */
@@ -24,7 +24,7 @@ import {
   type ScanSuccessPayload,
 } from "./scan";
 
-const PINNED_SG_PATH = join(astGrepRuntimeDir(join(homedir(), ".omo")), process.platform === "win32" ? "sg.exe" : "sg");
+const PINNED_SG_PATH = join(astGrepRuntimeDir(join(homedir(), ".omc")), process.platform === "win32" ? "sg.exe" : "sg");
 const LOCAL_SG_PATH = "/opt/homebrew/bin/sg";
 const SG_PATH = existsSync(PINNED_SG_PATH) ? PINNED_SG_PATH : LOCAL_SG_PATH;
 const SG_AVAILABLE = existsSync(SG_PATH);
@@ -47,7 +47,7 @@ fix: logger.info($MSG)
 `;
 
 function fixtureRepo(contents = 'console.log("hello");\nconst x = 1;\nconsole.log(x);\n'): string {
-  const dir = mkdtempSync(join(tmpdir(), "omo-scan-"));
+  const dir = mkdtempSync(join(tmpdir(), "omc-scan-"));
   directories.push(dir);
   mkdirSync(join(dir, "src"), { recursive: true });
   writeFileSync(join(dir, "src/a.ts"), contents);

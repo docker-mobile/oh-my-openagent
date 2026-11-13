@@ -36,9 +36,9 @@ describe("removeRunRootAside on win32 (#12209)", () => {
   })
 
   function runRootFixture(entries: number): { readonly tempDir: string; readonly root: string } {
-    const tempDir = mkdtempSync(join(tmpdir(), "omo-win-aside-"))
+    const tempDir = mkdtempSync(join(tmpdir(), "omc-win-aside-"))
     fixtures.push(tempDir)
-    const root = join(tempDir, "omo-test-run-big")
+    const root = join(tempDir, "omc-test-run-big")
     mkdirSync(root)
     for (let entry = 0; entry < entries; entry++) writeFileSync(join(root, `f${entry}`), "x")
     writeFileSync(join(root, ".owner-pid"), String(process.pid))
@@ -59,9 +59,9 @@ describe("removeRunRootAside on win32 (#12209)", () => {
   // A held handle refuses the rename (EPERM/EBUSY on win32); a missing root refuses it with ENOENT on every
   // platform. Both leave the tree where it is, which is the only thing the refused-rename branch decides.
   test("#given the win32 platform and a root a refused rename leaves in place #when removed #then the remover is handed that root instead of the caller deleting it", () => {
-    const tempDir = mkdtempSync(join(tmpdir(), "omo-win-refused-"))
+    const tempDir = mkdtempSync(join(tmpdir(), "omc-win-refused-"))
     fixtures.push(tempDir)
-    const root = join(tempDir, "omo-test-run-held")
+    const root = join(tempDir, "omc-test-run-held")
     const handed: string[] = []
 
     withPlatform("win32", () => removeRunRootAside(root, recordingRemover(handed)))

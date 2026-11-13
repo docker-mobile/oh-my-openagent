@@ -67,7 +67,7 @@ describe("agent dir registrant: service starts (#12379)", () => {
 
 
   test("a state dir that does not exist yet (relayd installed after the engine started) is watched from its nearest ancestor", async () => {
-    const stateDir = join(root(), "home", ".omo", "device-service")
+    const stateDir = join(root(), "home", ".omc", "device-service")
     const seen = recorder()
     const registered = seen.next(registeredFor(SELF), "the register once the service starts")
     start({ stateDir, onEvent: seen.onEvent })

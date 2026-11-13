@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # allow: SIZE_OK - Single end-to-end marketplace install/upgrade scenario; split future additions by phase before expanding.
-# Task 16 e2e marketplace QA against real codex (plan: .omo/plans/codex-marketplace-bootstrap.md).
-# Usage: bash script/qa/codex-marketplace-e2e.sh 2>&1 | tee .omo/evidence/task-16-e2e.log
+# Task 16 e2e marketplace QA against real codex (plan: .omc/plans/codex-marketplace-bootstrap.md).
+# Usage: bash script/qa/codex-marketplace-e2e.sh 2>&1 | tee .omc/evidence/task-16-e2e.log
 # Traps this script must dodge (facts that live outside this repo):
 # - the user's zsh AND fish shells wrap `codex` with `--profile quotio`, so the script
 #   body uses `command codex` and tmux launches the absolute resolved binary via `env`.
@@ -18,7 +18,7 @@ set -u -o pipefail
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 REPO_ROOT=$(cd -- "$SCRIPT_DIR/../.." && pwd)
 
-EVID="$REPO_ROOT/.omo/evidence"
+EVID="$REPO_ROOT/.omc/evidence"
 FINAL="$EVID/final-qa"
 NEG_LOG="$EVID/task-16-e2e-negative.log"
 
@@ -30,7 +30,7 @@ NEGWORK=/tmp/mkbs-e2e-ws-neg
 SHIMBIN=/tmp/mkbs-e2e-bin
 TMUX_SOCK=mkbs-qa
 MARKETPLACE_NAME=sisyphuslabs
-PLUGIN_NAME=omo
+PLUGIN_NAME=omc
 PDATA_REL="plugins/data/${PLUGIN_NAME}-${MARKETPLACE_NAME}"
 
 NODE_BIN=$(command -v node)
@@ -89,7 +89,7 @@ cap() { tm capture-pane -p -t "$1" 2>/dev/null || true; }
 launch_codex() {
   local ses=$1 home=$2 wd=$3 force=$4 prefix
   prefix="env PATH='$STRIPPED_PATH' CODEX_HOME='$home'"
-  if [ "$force" = 1 ]; then prefix="$prefix OMO_BOOTSTRAP_FORCE_PROVISION=1"; fi
+  if [ "$force" = 1 ]; then prefix="$prefix OMC_BOOTSTRAP_FORCE_PROVISION=1"; fi
   tm new-session -d -s "$ses" -x 220 -y 50 -c "$wd" "exec $prefix '$CODEX_BIN'"
 }
 
@@ -233,7 +233,7 @@ write_readme() {
     echo "# Task 16 — codex marketplace end-to-end QA evidence"
     echo
     echo "Run: $(date -u +%Y-%m-%dT%H:%M:%SZ) | codex: $("$CODEX_BIN" --version 2>/dev/null | head -1) | host: $(uname -sm)"
-    echo "Script: script/qa/codex-marketplace-e2e.sh | Main log: .omo/evidence/task-16-e2e.log | Negative log: .omo/evidence/task-16-e2e-negative.log"
+    echo "Script: script/qa/codex-marketplace-e2e.sh | Main log: .omc/evidence/task-16-e2e.log | Negative log: .omc/evidence/task-16-e2e-negative.log"
     echo
     echo "## Assert results"
     echo
@@ -280,7 +280,7 @@ write_readme() {
     echo "  mirroring the release pipeline (plugin/scripts/sync-hook-status-messages.mjs):"
     echo "  the hook trust hash covers statusMessage, which is exactly WHY a real upgrade"
     echo "  forces re-review."
-    echo "- forced provisioning (OMO_BOOTSTRAP_FORCE_PROVISION=1) on the first sessions"
+    echo "- forced provisioning (OMC_BOOTSTRAP_FORCE_PROVISION=1) on the first sessions"
     echo "  because this dev machine has a preexisting Homebrew sg that the no-force probe"
     echo "  finds via its hardcoded path list. The no-force contract is proven separately"
     echo "  (assert 5f): a no-force worker run records sg=preexisting:<path>."
@@ -333,7 +333,7 @@ main() {
     fail 0 "mtime stamp created for the ~/.codex untouched proof" "step10-home-diff.txt"
   fi
 
-  SRC_VERSION=$(jget "$REPO_ROOT/packages/omo-codex/plugin/.codex-plugin/plugin.json" version) ||
+  SRC_VERSION=$(jget "$REPO_ROOT/packages/omc-codex/plugin/.codex-plugin/plugin.json" version) ||
     fatal "cannot read source plugin version"
   UPG_VERSION=$("$NODE_BIN" -e '
     const [maj, min, pat] = process.argv[1].split(".");
@@ -348,9 +348,9 @@ main() {
       bun run build:git-bash-mcp &&
       bun run build:lsp-tools-mcp &&
       bun run build:lsp-daemon &&
-      bun build packages/omo-opencode/src/cli/index.ts --outdir dist/cli --target bun --format esm &&
+      bun build packages/omc-opencode/src/cli/index.ts --outdir dist/cli --target bun --format esm &&
       bun run build:cli-node &&
-      bun run --cwd packages/omo-codex/plugin build
+      bun run --cwd packages/omc-codex/plugin build
   ) >"$build_log" 2>&1; then
     tail -40 "$build_log"
     fatal "runtime/plugin build failed (see $build_log)"
@@ -360,11 +360,11 @@ main() {
     fatal "marketplace sync failed (see $build_log)"
   fi
   if [ -f "$MKT/.agents/plugins/marketplace.json" ] &&
-    [ -f "$MKT/plugins/omo/.codex-plugin/plugin.json" ] &&
-    [ -s "$MKT/plugins/omo/dist/cli/index.js" ] &&
-    [ -s "$MKT/plugins/omo/dist/cli-node/index.js" ] &&
-    [ -s "$MKT/plugins/omo/components/bootstrap/dist/cli.js" ] &&
-    [ -s "$MKT/plugins/omo/skills/ast-grep/SKILL.md" ]; then
+    [ -f "$MKT/plugins/omc/.codex-plugin/plugin.json" ] &&
+    [ -s "$MKT/plugins/omc/dist/cli/index.js" ] &&
+    [ -s "$MKT/plugins/omc/dist/cli-node/index.js" ] &&
+    [ -s "$MKT/plugins/omc/components/bootstrap/dist/cli.js" ] &&
+    [ -s "$MKT/plugins/omc/skills/ast-grep/SKILL.md" ]; then
     pass 1 "runtime/plugin build + fresh sync produced a validated marketplace tree with root CLI runtimes at $MKT" "step1-build-sync.log"
   else
     fail 1 "runtime/plugin build + fresh sync produced a validated marketplace tree with root CLI runtimes at $MKT" "step1-build-sync.log"
@@ -412,10 +412,10 @@ EOF
   PDATA="$QAHOME/$PDATA_REL"
   if [ "$add_rc" -eq 0 ] && [ "$add_version" = "$SRC_VERSION" ] && [ -f "$IROOT/.codex-plugin/plugin.json" ] &&
     [ -s "$IROOT/components/bootstrap/dist/cli.js" ]; then
-    pass 3b "plugin add installed omo@$MARKETPLACE_NAME v$add_version at $IROOT" "step3-plugin-add.json"
+    pass 3b "plugin add installed omc@$MARKETPLACE_NAME v$add_version at $IROOT" "step3-plugin-add.json"
   else
     cat "$add_json" "$FINAL/step3-plugin-add.stderr.txt" 2>/dev/null
-    fail 3b "plugin add installed omo@$MARKETPLACE_NAME (expected v$SRC_VERSION)" "step3-plugin-add.json"
+    fail 3b "plugin add installed omc@$MARKETPLACE_NAME (expected v$SRC_VERSION)" "step3-plugin-add.json"
   fi
   if [ -n "$IROOT" ] && [ -s "$IROOT/dist/cli/index.js" ] && [ -s "$IROOT/dist/cli-node/index.js" ]; then
     pass 3c "installed marketplace payload contains root dist/cli and dist/cli-node runtimes" "step3-plugin-add.json"
@@ -461,21 +461,21 @@ EOF
     fail 5b "bootstrap state.json appeared with lastStatus within 120s" "step5-state.json"
   fi
 
-  local omo_bin="$QAHOME/bin/omo-agent-toolkit"
-  local omo_version_log="$FINAL/step5-omo-version.txt"
-  if [ -x "$omo_bin" ]; then
-    pass 5g "bootstrap linked the top-level omo runtime wrapper at $omo_bin" "step5-omo-version.txt"
+  local omc_bin="$QAHOME/bin/omc-agent-toolkit"
+  local omc_version_log="$FINAL/step5-omc-version.txt"
+  if [ -x "$omc_bin" ]; then
+    pass 5g "bootstrap linked the top-level omc runtime wrapper at $omc_bin" "step5-omc-version.txt"
   else
-    fail 5g "bootstrap linked the top-level omo runtime wrapper at $omo_bin" "step5-omo-version.txt"
+    fail 5g "bootstrap linked the top-level omc runtime wrapper at $omc_bin" "step5-omc-version.txt"
   fi
-  if [ -x "$omo_bin" ] && env PATH="$STRIPPED_PATH" CODEX_HOME="$QAHOME" OMO_RUNTIME=node "$omo_bin" --version >"$omo_version_log" 2>&1; then
-    if [ -s "$omo_version_log" ]; then
-      pass 5h "top-level omo wrapper executes the bundled node fallback CLI under OMO_RUNTIME=node" "step5-omo-version.txt"
+  if [ -x "$omc_bin" ] && env PATH="$STRIPPED_PATH" CODEX_HOME="$QAHOME" OMC_RUNTIME=node "$omc_bin" --version >"$omc_version_log" 2>&1; then
+    if [ -s "$omc_version_log" ]; then
+      pass 5h "top-level omc wrapper executes the bundled node fallback CLI under OMC_RUNTIME=node" "step5-omc-version.txt"
     else
-      fail 5h "top-level omo wrapper produced non-empty --version output under OMO_RUNTIME=node" "step5-omo-version.txt"
+      fail 5h "top-level omc wrapper produced non-empty --version output under OMC_RUNTIME=node" "step5-omc-version.txt"
     fi
   else
-    fail 5h "top-level omo wrapper executes the bundled node fallback CLI under OMO_RUNTIME=node" "step5-omo-version.txt"
+    fail 5h "top-level omc wrapper executes the bundled node fallback CLI under OMC_RUNTIME=node" "step5-omc-version.txt"
   fi
 
   local sg_bin="$QAHOME/runtime/ast-grep/$("$NODE_BIN" -p process.platform)-$("$NODE_BIN" -p process.arch)/sg"
@@ -562,10 +562,10 @@ EOF
   if "$NODE_BIN" -e '
     const fs = require("node:fs");
     const text = fs.readFileSync(process.argv[1], "utf8");
-    const section = /\[plugins\."omo@sisyphuslabs"\]([\s\S]*?)(\n\[|$)/.exec(text);
+    const section = /\[plugins\."omc@sisyphuslabs"\]([\s\S]*?)(\n\[|$)/.exec(text);
     if (!section || !/enabled\s*=\s*true/.test(section[1])) process.exit(1);
   ' "$QAHOME/config.toml"; then
-    pass 7a "config.toml enables the plugin ([plugins.\"omo@sisyphuslabs\"] enabled = true)" "step7-config.toml"
+    pass 7a "config.toml enables the plugin ([plugins.\"omc@sisyphuslabs\"] enabled = true)" "step7-config.toml"
   else
     fail 7a "config.toml enables the plugin" "step7-config.toml"
   fi
@@ -588,7 +588,7 @@ EOF
     const fs = require("node:fs");
     const path = require("node:path");
     const [root, from, to] = process.argv.slice(1);
-    const manifest = path.join(root, "plugins", "omo", ".codex-plugin", "plugin.json");
+    const manifest = path.join(root, "plugins", "omc", ".codex-plugin", "plugin.json");
     const parsed = JSON.parse(fs.readFileSync(manifest, "utf8"));
     parsed.version = to;
     fs.writeFileSync(manifest, `${JSON.stringify(parsed, null, "\t")}\n`);
@@ -596,8 +596,8 @@ EOF
       if (!fs.existsSync(file)) return;
       fs.writeFileSync(file, fs.readFileSync(file, "utf8").split(`LazyCodex(${from})`).join(`LazyCodex(${to})`));
     };
-    stamp(path.join(root, "plugins", "omo", "hooks", "hooks.json"));
-    const components = path.join(root, "plugins", "omo", "components");
+    stamp(path.join(root, "plugins", "omc", "hooks", "hooks.json"));
+    const components = path.join(root, "plugins", "omc", "components");
     for (const entry of fs.readdirSync(components)) {
       stamp(path.join(components, entry, "hooks", "hooks.json"));
     }
@@ -639,15 +639,15 @@ EOF
     cp "$state_json" "$FINAL/step8-state.json" 2>/dev/null || true
     fail 8c "bootstrap re-ran after upgrade (completedForVersion did not reach $UPG_VERSION)" "step8-state.json"
   fi
-  local upgraded_omo_log="$FINAL/step8-omo-version.txt"
+  local upgraded_omo_log="$FINAL/step8-omc-version.txt"
   if [ -n "$IROOT2" ] &&
-    [ -f "$QAHOME/bin/omo-agent-toolkit" ] &&
-    grep -Fq "$IROOT2/dist/cli/index.js" "$QAHOME/bin/omo-agent-toolkit" &&
-    env PATH="$STRIPPED_PATH" CODEX_HOME="$QAHOME" OMO_RUNTIME=node "$QAHOME/bin/omo-agent-toolkit" --version >"$upgraded_omo_log" 2>&1 &&
+    [ -f "$QAHOME/bin/omc-agent-toolkit" ] &&
+    grep -Fq "$IROOT2/dist/cli/index.js" "$QAHOME/bin/omc-agent-toolkit" &&
+    env PATH="$STRIPPED_PATH" CODEX_HOME="$QAHOME" OMC_RUNTIME=node "$QAHOME/bin/omc-agent-toolkit" --version >"$upgraded_omo_log" 2>&1 &&
     [ -s "$upgraded_omo_log" ]; then
-    pass 8d "upgrade bootstrap relinked the top-level omo wrapper to the upgraded root runtime" "step8-omo-version.txt"
+    pass 8d "upgrade bootstrap relinked the top-level omc wrapper to the upgraded root runtime" "step8-omc-version.txt"
   else
-    fail 8d "upgrade bootstrap relinked the top-level omo wrapper to the upgraded root runtime" "step8-omo-version.txt"
+    fail 8d "upgrade bootstrap relinked the top-level omc wrapper to the upgraded root runtime" "step8-omc-version.txt"
   fi
   ls -la "$QAHOME/bin" >"$FINAL/step8-bin-links-after-upgrade.txt" 2>/dev/null || true
   kill_session mkbs-qa-upg

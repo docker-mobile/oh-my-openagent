@@ -1,6 +1,6 @@
 // script/omob-keychain-helper.ts
-// Builds the keychain helper a compiled darwin omob binary embeds. build-omo-binary.ts fails a
-// darwin target without packages/omo-native/bin/darwin/omo-keychain, which the release lane fills
+// Builds the keychain helper a compiled darwin omob binary embeds. build-omc-binary.ts fails a
+// darwin target without packages/omc-native/bin/darwin/omc-keychain, which the release lane fills
 // with the signed helper; a dev build compiles an unsigned one in the cache clone instead. That copy
 // fails the helper's requirement check, so the runtime never uses it.
 
@@ -8,8 +8,8 @@ import { spawnSync } from "node:child_process"
 import { existsSync } from "node:fs"
 import { join } from "node:path"
 
-const BUILD_SCRIPT = join("packages", "omo-native", "keychain-helper", "build.ts")
-const HELPER_SOURCE = join("packages", "omo-native", "bin", "darwin", "omo-keychain")
+const BUILD_SCRIPT = join("packages", "omc-native", "keychain-helper", "build.ts")
+const HELPER_SOURCE = join("packages", "omc-native", "bin", "darwin", "omc-keychain")
 
 export type KeychainHelperOutcome = "skipped" | "built"
 

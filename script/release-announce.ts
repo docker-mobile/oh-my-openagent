@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 import { z } from "zod"
 
-const repository = "code-yeongyu/oh-my-openagent"
+const repository = "code-yeongyu/oh-my-cybersecurity"
 const stableTag = /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
 const releaseSchema = z.object({
   tag_name: z.string(),
@@ -46,9 +46,9 @@ export function composeMessage(tag: string, body: string | null): string {
   const sentence = opening.match(/^.*?[.!?](?:\s|$)/)?.[0]?.trim() ?? opening
   const hook = sentence.length <= 300 ? sentence : "New fixes and improvements are ready to install."
   const blocks = [
-    `## OmO ${tag.slice(1)}`,
+    `## OmC ${tag.slice(1)}`,
     hook,
-    "```sh\ncurl -fsSL https://get.omo.dev/install.sh | bash\n```\n```powershell\nirm https://get.omo.dev/install.ps1 | iex\n```",
+    "```sh\ncurl -fsSL https://get.omc.nga.hm/install.sh | bash\n```\n```powershell\nirm https://get.omc.nga.hm/install.ps1 | iex\n```",
   ]
   const footer = `The full notes are at <https://github.com/${repository}/releases/tag/${tag}>`
   for (const paragraph of headlines.slice(0, 4)) {

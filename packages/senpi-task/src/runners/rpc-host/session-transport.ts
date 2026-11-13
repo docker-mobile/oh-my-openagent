@@ -8,7 +8,7 @@ import { HostUnavailableError, TASK_DAEMON_PROTOCOL_VERSION, TASK_DAEMON_REQUIRE
 import type { HostRunHoldClient } from "./task-parent-wire"
 
 /**
- * How a child session reaches the daemon: the engine-client port omo depends on, the senpi adapter
+ * How a child session reaches the daemon: the engine-client port omc depends on, the senpi adapter
  * behind it, the `open_session` payload, and whether the daemon that answered may host this child.
  */
 
@@ -19,7 +19,7 @@ export type HostQueuedInputDisposition = Awaited<ReturnType<RpcClient["steer"]>>
 /** What the host holds for each input id (`get_pending_inputs`, senpi#3549). */
 export type HostPendingInputs = Awaited<ReturnType<RpcClient["getPendingInputs"]>>
 
-/** omo's structural view of the engine's `RpcClient`; the pinned engine may predate its fields. */
+/** omc's structural view of the engine's `RpcClient`; the pinned engine may predate its fields. */
 export interface HostRpcClient extends HostRunHoldClient {
   start(): Promise<void>
   stop(): Promise<void>
@@ -63,7 +63,7 @@ export interface HostOpenSessionWire {
   readonly permissionPreset?: string
 }
 
-/** The immutable launch profile of one child session, in omo's names. */
+/** The immutable launch profile of one child session, in omc's names. */
 export interface HostSessionOpenInput {
   readonly spawnedBy?: NewSessionOptions["spawnedBy"]
   readonly sessionPath: string
@@ -119,7 +119,7 @@ export function toWireOpen(input: HostSessionOpenInput): HostOpenSessionWire {
 }
 
 /**
- * The daemon answering THIS child's probe must speak omo's protocol generation and carry the
+ * The daemon answering THIS child's probe must speak omc's protocol generation and carry the
  * session capabilities the child depends on. A narrower daemon is a LOUD per-child fallback to the
  * child-process runner (`capability`); anything else fails closed - a refused client never starts a
  * second host beside the daemon (invariant I1).

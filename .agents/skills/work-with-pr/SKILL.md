@@ -335,15 +335,15 @@ monitor({
 
 If the user opted out of merging, skip the merge but STILL run the cleanup below: the worktree is removed either way.
 
-### Sync .omo state back to main repo
+### Sync .omc state back to main repo
 
-Before removing the worktree, copy `.omo/` state back. When `.omo/` is gitignored, files written there during worktree execution are not committed or merged — they would be lost on worktree removal.
+Before removing the worktree, copy `.omc/` state back. When `.omc/` is gitignored, files written there during worktree execution are not committed or merged — they would be lost on worktree removal.
 
 ```bash
-# Sync .omo state from worktree to main repo (preserves task state, plans, notepads)
-if [ -d "$WORKTREE_PATH/.omo" ]; then
-  mkdir -p "$ORIGINAL_DIR/.omo"
-  cp -r "$WORKTREE_PATH/.omo/"* "$ORIGINAL_DIR/.omo/" 2>/dev/null || true
+# Sync .omc state from worktree to main repo (preserves task state, plans, notepads)
+if [ -d "$WORKTREE_PATH/.omc" ]; then
+  mkdir -p "$ORIGINAL_DIR/.omc"
+  cp -r "$WORKTREE_PATH/.omc/"* "$ORIGINAL_DIR/.omc/" 2>/dev/null || true
 fi
 ```
 

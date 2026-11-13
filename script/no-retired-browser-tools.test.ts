@@ -1,16 +1,16 @@
 import { expect, test } from "bun:test"
 import { existsSync, readFileSync } from "node:fs"
 import { join, relative, resolve, sep } from "node:path"
-import { getSkillOutputManifest as senpiSkillManifest } from "../packages/omo-senpi/plugin/scripts/sync-skills.mjs"
-import { getSkillOutputManifest as codexSkillManifest } from "../packages/omo-codex/plugin/scripts/sync-skills.mjs"
+import { getSkillOutputManifest as senpiSkillManifest } from "../packages/omc-senpi/plugin/scripts/sync-skills.mjs"
+import { getSkillOutputManifest as codexSkillManifest } from "../packages/omc-codex/plugin/scripts/sync-skills.mjs"
 
 const trackedRoots = [
   "packages/shared-skills/skills",
-  "packages/omo-senpi/skills",
-  "packages/omo-codex/plugin/components",
+  "packages/omc-senpi/skills",
+  "packages/omc-codex/plugin/components",
   "packages/prompts-core/prompts",
   "docs",
-  "packages/omo-opencode/src",
+  "packages/omc-opencode/src",
   "packages/skills-loader-core/src",
 ] as const
 
@@ -18,9 +18,9 @@ const trackedRoots = [
 // `browser_automation_engine` providers, so its sources are exempt from the omowright rule below.
 const omowrightGuidanceRoots = [
   "packages/shared-skills/skills",
-  "packages/omo-senpi/skills",
-  "packages/omo-senpi/src/components/ultrawork",
-  "packages/omo-codex/plugin/components",
+  "packages/omc-senpi/skills",
+  "packages/omc-senpi/src/components/ultrawork",
+  "packages/omc-codex/plugin/components",
   "packages/prompts-core/prompts/ultrawork",
 ] as const
 

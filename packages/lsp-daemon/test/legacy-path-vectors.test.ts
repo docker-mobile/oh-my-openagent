@@ -17,7 +17,7 @@ describe("immutable legacy daemon path vectors", () => {
 		expect(natural.expected.socket).toBe(posix.join(natural.expected.versionDir, "daemon.sock"));
 		expect(hashed.expected.versionDir.length).toBeGreaterThanOrEqual(100);
 		expect(hashed.expected.socket).toBe(
-			posix.join(hashed.inputs.tmpdir, `omo-lsp-${vectors.version}-${hashedDigest}.sock`),
+			posix.join(hashed.inputs.tmpdir, `omc-lsp-${vectors.version}-${hashedDigest}.sock`),
 		);
 	});
 
@@ -30,7 +30,7 @@ describe("immutable legacy daemon path vectors", () => {
 
 		// then
 		expect(windows.expected.versionDir).toBe(win32.join(windows.expected.baseDir, `v${vectors.version}`));
-		expect(windows.expected.socket).toBe(`\\\\.\\pipe\\omo-lsp-${vectors.version}-${digest}`);
+		expect(windows.expected.socket).toBe(`\\\\.\\pipe\\omc-lsp-${vectors.version}-${digest}`);
 	});
 
 	it("#given the characterization metadata #when Todo 8 consumes the fixture #then the source commit and hash stay pinned", () => {

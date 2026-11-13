@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 import type { AdmissionParticipant, ResumeCredential } from "./admission-barrier"
 import type { ObservedHold, RunPauseOwner, RunRef } from "./ports"
 import { PauseRegistry, type PauseParticipant } from "./registry"

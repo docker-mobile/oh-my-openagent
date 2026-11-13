@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { OhMyOpenCodeConfigSchema } from "../packages/omo-opencode/src/config/schema"
+import { OhMyOpenCodeConfigSchema } from "../packages/omc-opencode/src/config/schema"
 import { optionalizeDefaultedProperties } from "./json-schema-defaulted-optional"
 
 export function createOhMyOpenCodeJsonSchema(): Record<string, unknown> {
@@ -11,9 +11,9 @@ export function createOhMyOpenCodeJsonSchema(): Record<string, unknown> {
 
   return {
     $schema: "http://json-schema.org/draft-07/schema#",
-    $id: "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
+    $id: "https://raw.githubusercontent.com/code-yeongyu/oh-my-cybersecurity/dev/assets/oh-my-cybersecurity.schema.json",
     title: "Oh My OpenCode Configuration",
-    description: "Configuration schema for oh-my-opencode plugin",
+    description: "Configuration schema for oh-my-cybersecurity plugin",
     ...jsonSchema,
   }
 }

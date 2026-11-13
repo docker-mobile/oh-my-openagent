@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 
-import { OmoTaskSettingsSchema } from "@oh-my-opencode/omo-config-core"
+import { OmoTaskSettingsSchema } from "@oh-my-cybersecurity/omc-config-core"
 
 import { createTaskLifecycle, type ResidencyRegistry, type ResidentHandle, type TaskLifecycle } from "../lifecycle"
 import { createTaskRecord, type HostSessionIdentity, type TaskRecord } from "../state"

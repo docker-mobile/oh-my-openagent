@@ -16,7 +16,7 @@ import {
 import { HOST_CHILD_MODEL, type HostWorld } from "./rpc-host/__fixtures__/host-world"
 
 /**
- * omo#9403: a cancel that has to wait for a child's lost connection must always end the run. Whatever
+ * omc#9403: a cancel that has to wait for a child's lost connection must always end the run. Whatever
  * happens before the stop lands - a failed record write, a recovery that never gets the child back,
  * the parent session shutting down, a competing interrupt - the task ends cancelled, its lane frees,
  * and the child never runs again.

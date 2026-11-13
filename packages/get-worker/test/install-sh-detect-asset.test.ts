@@ -28,7 +28,7 @@ type Host = {
 }
 
 function detectAsset(host: Host): string {
-  const root = mkdtempSync(join(tmpdir(), "omo-install-detect-"))
+  const root = mkdtempSync(join(tmpdir(), "omc-install-detect-"))
   roots.push(root)
   const bin = join(root, "bin")
   mkdirSync(bin)
@@ -62,20 +62,20 @@ const muslLdd = { output: "musl libc (x86_64)\nVersion 1.2.4", status: 1 }
 
 describe("install.sh detect_asset libc flavor (#10562)", () => {
   test("#given a glibc host with the optional musl package's loader installed #then it picks the glibc build", () => {
-    expect(detectAsset({ ldd: glibcLdd, glibc: true, muslLoader: true })).toBe("omo-linux-x64")
+    expect(detectAsset({ ldd: glibcLdd, glibc: true, muslLoader: true })).toBe("omc-linux-x64")
   })
 
   test("#given a plain glibc host #then it picks the glibc build", () => {
-    expect(detectAsset({ ldd: glibcLdd, glibc: true, muslLoader: false })).toBe("omo-linux-x64")
+    expect(detectAsset({ ldd: glibcLdd, glibc: true, muslLoader: false })).toBe("omc-linux-x64")
   })
 
   test("#given a musl host whose ldd exits 1 after printing its version #then it picks the musl build", () => {
-    expect(detectAsset({ ldd: muslLdd, glibc: false, muslLoader: false })).toBe("omo-linux-x64-musl")
+    expect(detectAsset({ ldd: muslLdd, glibc: false, muslLoader: false })).toBe("omc-linux-x64-musl")
   })
 
   test("#given a non-glibc host without a recognizable ldd but with the musl loader #then it picks the musl build", () => {
     expect(detectAsset({ ldd: { output: "ldd: not found", status: 127 }, glibc: false, muslLoader: true })).toBe(
-      "omo-linux-x64-musl",
+      "omc-linux-x64-musl",
     )
   })
 })

@@ -4,11 +4,11 @@
  * `changes/unreleased/<pr>.md` starts with the CHANGELOG text (the preamble, assembled at release)
  * and may carry one block per log it would have prepended to (`changes.md` or a package's):
  *
- *   <!-- changes-log: packages/omo-senpi/changes.md -->
+ *   <!-- changes-log: packages/omc-senpi/changes.md -->
  *   ## 2026-10-20 - Title (#123)
  *   ...
  *
- * The marker and heading grammar is the omo-desktop-app one (#3072). At the release cut,
+ * The marker and heading grammar is the omc-desktop-app one (#3072). At the release cut,
  * `compileBlocks` writes every block into its log, newest PR on top, and leaves each fragment with
  * its preamble only.
  */

@@ -2,7 +2,7 @@
 // Bundles the omowright library (root devDependency) into the `browser` skill as one
 // self-contained ESM file plus the page bundle it reads at import time, so both editions ship the
 // attached/owned browser engines without a nested node_modules tree. Mirrors the runtime-staging
-// contract of packages/omo-senpi/plugin/scripts/stage-ast-grep-mcp-runtime.mjs (manifest, sha256,
+// contract of packages/omc-senpi/plugin/scripts/stage-ast-grep-mcp-runtime.mjs (manifest, sha256,
 // `--check` freshness gate).
 import { spawnSync } from "node:child_process"
 import { createHash } from "node:crypto"
@@ -13,8 +13,8 @@ import { fileURLToPath, pathToFileURL } from "node:url"
 
 const scriptDir = dirname(fileURLToPath(import.meta.url))
 const repoRoot = resolve(scriptDir, "..", "..")
-const defaultSourceRoot = process.env.OMO_OMOWRIGHT_SOURCE ?? join(repoRoot, "node_modules", "omowright")
-const defaultTargetDir = process.env.OMO_OMOWRIGHT_TARGET ?? join(scriptDir, "skills", "browser", "runtime", "omowright")
+const defaultSourceRoot = process.env.OMC_OMOWRIGHT_SOURCE ?? join(repoRoot, "node_modules", "omowright")
+const defaultTargetDir = process.env.OMC_OMOWRIGHT_TARGET ?? join(scriptDir, "skills", "browser", "runtime", "omowright")
 
 // LICENSE is omowright's own MIT text, copied verbatim so the notice ships beside the bundle (omowright#290).
 export const STAGED_FILES = Object.freeze(["index.js", "page-bundle.js", "LICENSE"])

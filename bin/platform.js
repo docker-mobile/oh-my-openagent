@@ -2,8 +2,8 @@
 // Shared platform detection module - used by wrapper and postinstall
 
 const PLATFORM_PACKAGE_BASE_BY_WRAPPER_NAME = {
-  lazycodex: "oh-my-openagent",
-  "lazycodex-ai": "oh-my-openagent",
+  lazycodex: "oh-my-cybersecurity",
+  "lazycodex-ai": "oh-my-cybersecurity",
 };
 
 export function getPackageBareName(packageName) {
@@ -24,10 +24,10 @@ export function resolvePlatformPackageBaseName(wrapperPackageName) {
 /**
  * Get the platform-specific package name
  * @param {{ platform: string, arch: string, libcFamily?: string | null, packageBaseName?: string }} options
- * @returns {string} Package name like "oh-my-opencode-darwin-arm64"
+ * @returns {string} Package name like "oh-my-cybersecurity-darwin-arm64"
  * @throws {Error} If libc cannot be detected on Linux
  */
-export function getPlatformPackage({ platform, arch, libcFamily, packageBaseName = "oh-my-opencode" }) {
+export function getPlatformPackage({ platform, arch, libcFamily, packageBaseName = "oh-my-cybersecurity" }) {
   let suffix = "";
   if (platform === "linux") {
     if (libcFamily === null || libcFamily === undefined) {
@@ -47,7 +47,7 @@ export function getPlatformPackage({ platform, arch, libcFamily, packageBaseName
 }
 
 /** @param {{ platform: string, arch: string, libcFamily?: string | null, preferBaseline?: boolean, packageBaseName?: string }} options */
-export function getPlatformPackageCandidates({ platform, arch, libcFamily, preferBaseline = false, packageBaseName = "oh-my-opencode" }) {
+export function getPlatformPackageCandidates({ platform, arch, libcFamily, preferBaseline = false, packageBaseName = "oh-my-cybersecurity" }) {
   const primaryPackage = getPlatformPackage({ platform, arch, libcFamily, packageBaseName });
 
   if (platform === "win32" && arch === "arm64") {
@@ -64,7 +64,7 @@ export function getPlatformPackageCandidates({ platform, arch, libcFamily, prefe
 }
 
 /** @param {{ platform: string, arch: string, libcFamily?: string | null, packageBaseName?: string }} options */
-function getBaselinePlatformPackage({ platform, arch, libcFamily, packageBaseName = "oh-my-opencode" }) {
+function getBaselinePlatformPackage({ platform, arch, libcFamily, packageBaseName = "oh-my-cybersecurity" }) {
   if (arch !== "x64") {
     return null;
   }
@@ -99,8 +99,8 @@ function getBaselinePlatformPackage({ platform, arch, libcFamily, packageBaseNam
  * Get the path to the launcher within a platform package
  * @param {string} pkg Package name
  * @param {string} platform Process platform
- * @returns {string} Relative path like "oh-my-opencode-darwin-arm64/bin/oh-my-opencode.js"
+ * @returns {string} Relative path like "oh-my-cybersecurity-darwin-arm64/bin/oh-my-cybersecurity.js"
  */
 export function getBinaryPath(pkg, platform) {
-  return `${pkg}/bin/oh-my-opencode.js`;
+  return `${pkg}/bin/oh-my-cybersecurity.js`;
 }

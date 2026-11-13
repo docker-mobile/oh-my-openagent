@@ -91,7 +91,7 @@ export type {
 export {
   buildChildArgs,
   buildRpcSpawn,
-  OMO_SENPI_TASK_RPC_CHILD,
+  OMC_SENPI_TASK_RPC_CHILD,
   detectBunBinary,
   detectCompiledEngine,
   resolveChildSessionDir,

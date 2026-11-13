@@ -9,20 +9,20 @@ import proxy from "../proxy"
 const proxySource = readFileSync(resolve(import.meta.dir, "../proxy.ts"), "utf8")
 
 const redirectOf = (path: string) => {
-  const response = proxy(new NextRequest(new URL(path, "https://omo.dev")))
+  const response = proxy(new NextRequest(new URL(path, "https://omc.nga.hm")))
   return { status: response.status, location: response.headers.get("location") }
 }
 
-// Shipped desktop builds open https://omo.dev/download (reinstall screen, deb update pill). While the
-// omo.dev page is off, that path must reach the public beta download page instead of a 404.
-describe("desktop download path while the omo.dev download page is off", () => {
-  const saved = process.env.OMO_WEB_DESKTOP_DOWNLOAD
+// Shipped desktop builds open https://omc.nga.hm/download (reinstall screen, deb update pill). While the
+// omc.nga.hm page is off, that path must reach the public beta download page instead of a 404.
+describe("desktop download path while the omc.nga.hm download page is off", () => {
+  const saved = process.env.OMC_WEB_DESKTOP_DOWNLOAD
   beforeEach(() => {
-    delete process.env.OMO_WEB_DESKTOP_DOWNLOAD
+    delete process.env.OMC_WEB_DESKTOP_DOWNLOAD
   })
   afterEach(() => {
-    if (saved === undefined) delete process.env.OMO_WEB_DESKTOP_DOWNLOAD
-    else process.env.OMO_WEB_DESKTOP_DOWNLOAD = saved
+    if (saved === undefined) delete process.env.OMC_WEB_DESKTOP_DOWNLOAD
+    else process.env.OMC_WEB_DESKTOP_DOWNLOAD = saved
   })
 
   test.each([
@@ -34,7 +34,7 @@ describe("desktop download path while the omo.dev download page is off", () => {
     (path) => {
       expect(redirectOf(path)).toEqual({
         status: 307,
-        location: "https://get.omo.dev/desktop/beta/",
+        location: "https://get.omc.nga.hm/desktop/beta/",
       })
     },
   )
@@ -57,15 +57,15 @@ describe("installation redirects in every locale", () => {
     (locale) => {
       expect(redirectOf(`/${locale}/installation.md`)).toEqual({
         status: 308,
-        location: `https://omo.dev/${locale}/docs#installation`,
+        location: `https://omc.nga.hm/${locale}/docs#installation`,
       })
       expect(redirectOf(`/${locale}/docs/installation.md`)).toEqual({
         status: 308,
-        location: `https://omo.dev/${locale}/docs#installation`,
+        location: `https://omc.nga.hm/${locale}/docs#installation`,
       })
       expect(redirectOf(`/${locale}/docs/guide/install.md`)).toEqual({
         status: 308,
-        location: `https://omo.dev/${locale}/docs/install`,
+        location: `https://omc.nga.hm/${locale}/docs/install`,
       })
     },
   )

@@ -43,7 +43,7 @@ export interface PathContainmentOptions {
  * resolved path must pass that same resolved path; raw-string openers must pass the raw path.
  * Windows compares normalized long names case-insensitively; POSIX compares native spelling
  * (so a case alias of the same directory on a case-insensitive volume is accepted).
- * Import from @oh-my-opencode/utils/path-containment.
+ * Import from @oh-my-cybersecurity/utils/path-containment.
  */
 export function isPathInside(child: string, parent: string, options: PathContainmentOptions = {}): boolean {
   return containedRelativePath(child, parent, options) !== undefined

@@ -39,7 +39,7 @@ export function unreadableFdDirMeansHeld(ownerUid: number, selfUid: number): boo
   return ownerUid === selfUid
 }
 
-// omo #10199 r5 LOW 4: a /proc directory that exists but lists nothing (present but unmounted in a
+// omc #10199 r5 LOW 4: a /proc directory that exists but lists nothing (present but unmounted in a
 // chroot or sandbox) or that does not list THIS process is not a process table, so it can never
 // prove "no holders".
 export async function listProcPids(view: ProcView): Promise<readonly number[] | null> {

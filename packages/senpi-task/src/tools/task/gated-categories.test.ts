@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test"
 
 import { categoryGateModels } from "../../category/builtins"
 import { listTaskCategories } from "./categories"
-import { FABLE_55_RELEASED } from "@oh-my-opencode/model-core"
+import { FABLE_55_RELEASED } from "@oh-my-cybersecurity/model-core"
 
 function requiredAnnotation(name: string): string {
   const gateModels = categoryGateModels(name)
@@ -46,7 +46,7 @@ describe("gated category listing", () => {
     })
   })
 
-  describe("#given a gated category configured in omo.json", () => {
+  describe("#given a gated category configured in omc.json", () => {
     test("#when the categories are listed #then the annotation is dropped because the gate is bypassed", () => {
       // given / when
       const entry = entryFor("architect", { categories: { architect: { model: "kimi-coding/k3" } } })
@@ -55,7 +55,7 @@ describe("gated category listing", () => {
       expect(entry?.description).not.toContain("requires")
     })
 
-    test("#when omo.json only overrides the description #then the user text is listed verbatim", () => {
+    test("#when omc.json only overrides the description #then the user text is listed verbatim", () => {
       // given / when
       const entry = entryFor("architect", { categories: { architect: { description: "House architect" } } })
 

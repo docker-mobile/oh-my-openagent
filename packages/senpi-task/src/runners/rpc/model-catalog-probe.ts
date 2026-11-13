@@ -93,7 +93,7 @@ export function probeModelCatalog(
       spawn(command, [...args], spawnOptions)
     ))
     const terminateChild = options.terminateChild ?? terminateRpcChild
-    const captureDir = mkdtempSync(join(tmpdir(), "omo-model-catalog-"))
+    const captureDir = mkdtempSync(join(tmpdir(), "omc-model-catalog-"))
     const capturePath = join(captureDir, "stdout")
     // Removal can fail while a child that outlived a failed terminate still holds the file (Windows);
     // the probe result must not depend on it, so a failure is reported in stderr instead of thrown.

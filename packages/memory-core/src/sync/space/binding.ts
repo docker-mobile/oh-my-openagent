@@ -1,7 +1,7 @@
 // Space binding keys (sync-design §3): what a project IS, computed identically on every
 // device, so two devices that enable sync while offline land in one space. `named:` for a
 // named agent profile, `repo:` + the canonical remote URL for a project with a git remote,
-// `local:` + 128 random bits (stored in `omo.sync.binding`) for a remote-less project. The
+// `local:` + 128 random bits (stored in `omc.sync.binding`) for a remote-less project. The
 // space id is the binding key's sha-256 truncated to 128 bits; it only ever travels inside
 // the encrypted payload.
 

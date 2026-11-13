@@ -50,11 +50,11 @@ describe("sweepStaleTeamSessionsWith", () => {
 	it("#given candidates with mix of active and stale #when sweep #then kills only sessions whose runId is not in active set", async () => {
 		// given
 		const fixture = createFixture([
-			"omo-team-11111111-1111-1111-1111-111111111111",
-			"omo-team-22222222-2222-2222-2222-222222222222",
-			"omo-team-33333333-3333-3333-3333-333333333333",
+			"omc-team-11111111-1111-1111-1111-111111111111",
+			"omc-team-22222222-2222-2222-2222-222222222222",
+			"omc-team-33333333-3333-3333-3333-333333333333",
 			"main",
-			"omo-agents-123",
+			"omc-agents-123",
 		])
 		const activeTeamRunIds = new Set(["11111111-1111-1111-1111-111111111111"])
 
@@ -64,20 +64,20 @@ describe("sweepStaleTeamSessionsWith", () => {
 		// then
 		expect(fixture.killSessionMock).toHaveBeenCalledTimes(2)
 		expect(fixture.killedSessionNames).toEqual([
-			"omo-team-22222222-2222-2222-2222-222222222222",
-			"omo-team-33333333-3333-3333-3333-333333333333",
+			"omc-team-22222222-2222-2222-2222-222222222222",
+			"omc-team-33333333-3333-3333-3333-333333333333",
 		])
 		expect(result).toEqual([
-			"omo-team-22222222-2222-2222-2222-222222222222",
-			"omo-team-33333333-3333-3333-3333-333333333333",
+			"omc-team-22222222-2222-2222-2222-222222222222",
+			"omc-team-33333333-3333-3333-3333-333333333333",
 		])
 	})
 
 	it("#given all candidates active #when sweep #then kills none", async () => {
 		// given
 		const fixture = createFixture([
-			"omo-team-11111111-1111-1111-1111-111111111111",
-			"omo-team-22222222-2222-2222-2222-222222222222",
+			"omc-team-11111111-1111-1111-1111-111111111111",
+			"omc-team-22222222-2222-2222-2222-222222222222",
 		])
 		const activeTeamRunIds = new Set([
 			"11111111-1111-1111-1111-111111111111",
@@ -112,13 +112,13 @@ describe("sweepStaleTeamSessionsWith", () => {
 	it("#given killSession throws for one #when sweep #then continues and returns only successful kills", async () => {
 		// given
 		const fixture = createFixture([
-			"omo-team-11111111-1111-1111-1111-111111111111",
-			"omo-team-22222222-2222-2222-2222-222222222222",
-			"omo-team-33333333-3333-3333-3333-333333333333",
+			"omc-team-11111111-1111-1111-1111-111111111111",
+			"omc-team-22222222-2222-2222-2222-222222222222",
+			"omc-team-33333333-3333-3333-3333-333333333333",
 		])
 		const activeTeamRunIds = new Set<string>()
 		fixture.killSessionMock.mockImplementation(async (sessionName: string): Promise<void> => {
-			if (sessionName === "omo-team-22222222-2222-2222-2222-222222222222") {
+			if (sessionName === "omc-team-22222222-2222-2222-2222-222222222222") {
 				throw new Error("kill failed")
 			}
 
@@ -131,30 +131,30 @@ describe("sweepStaleTeamSessionsWith", () => {
 		// then
 		expect(fixture.killSessionMock).toHaveBeenCalledTimes(3)
 		expect(fixture.killedSessionNames).toEqual([
-			"omo-team-11111111-1111-1111-1111-111111111111",
-			"omo-team-33333333-3333-3333-3333-333333333333",
+			"omc-team-11111111-1111-1111-1111-111111111111",
+			"omc-team-33333333-3333-3333-3333-333333333333",
 		])
 		expect(fixture.loggedMessages).toHaveLength(1)
 		expect(result).toEqual([
-			"omo-team-11111111-1111-1111-1111-111111111111",
-			"omo-team-33333333-3333-3333-3333-333333333333",
+			"omc-team-11111111-1111-1111-1111-111111111111",
+			"omc-team-33333333-3333-3333-3333-333333333333",
 		])
 	})
 
-	it("#given candidate name is 'omo-team-' with empty suffix #when sweep #then skipped", async () => {
+	it("#given candidate name is 'omc-team-' with empty suffix #when sweep #then skipped", async () => {
 		// given
-		const fixture = createFixture(["omo-team-", "omo-team-11111111-1111-1111-1111-111111111111"])
+		const fixture = createFixture(["omc-team-", "omc-team-11111111-1111-1111-1111-111111111111"])
 		const activeTeamRunIds = new Set<string>()
 
 		// when
 		const result = await sweepStaleTeamSessionsWith(activeTeamRunIds, fixture.deps)
 
 		// then
-		expect(fixture.killedSessionNames).toEqual(["omo-team-11111111-1111-1111-1111-111111111111"])
-		expect(result).toEqual(["omo-team-11111111-1111-1111-1111-111111111111"])
+		expect(fixture.killedSessionNames).toEqual(["omc-team-11111111-1111-1111-1111-111111111111"])
+		expect(result).toEqual(["omc-team-11111111-1111-1111-1111-111111111111"])
 	})
 
-	it("#given new caller-session topology rolled out with no omo-team-<uuid> candidates #when sweep runs #then the result is empty and killSession is never called", async () => {
+	it("#given new caller-session topology rolled out with no omc-team-<uuid> candidates #when sweep runs #then the result is empty and killSession is never called", async () => {
 		// given
 		const fixture = createFixture(["main", "dev-shell", "project-grid"])
 		const activeTeamRunIds = new Set<string>(["still-active-run"])
@@ -169,7 +169,7 @@ describe("sweepStaleTeamSessionsWith", () => {
 
 	it("#given a user tmux session named like a project hash #when sweep runs #then it is preserved because only UUID-backed team sessions are eligible", async () => {
 		// given
-		const fixture = createFixture(["main", "omo-team-de2e", "dev-shell"])
+		const fixture = createFixture(["main", "omc-team-de2e", "dev-shell"])
 		const activeTeamRunIds = new Set<string>()
 
 		// when

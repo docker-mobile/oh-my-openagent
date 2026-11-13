@@ -88,7 +88,7 @@ describe("buildTaskExecute spawn validation", () => {
     expect(started).toBe(false)
     expect(result.details.status).toBe("invalid_arguments")
     const text = result.content[0]?.type === "text" ? result.content[0].text : ""
-    expect(text).toContain("omo.json")
+    expect(text).toContain("omc.json")
   })
 
 })

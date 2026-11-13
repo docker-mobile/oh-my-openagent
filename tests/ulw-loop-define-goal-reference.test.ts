@@ -5,8 +5,8 @@ import { describe, expect, test } from "bun:test"
 const REPO_ROOT = join(import.meta.dir, "..")
 
 const ULW_LOOP_SKILL_ROOTS = [
-  join(REPO_ROOT, "packages", "omo-senpi", "skills", "ulw-loop"),
-  join(REPO_ROOT, "packages", "omo-codex", "plugin", "components", "ulw-loop", "skills", "ulw-loop"),
+  join(REPO_ROOT, "packages", "omc-senpi", "skills", "ulw-loop"),
+  join(REPO_ROOT, "packages", "omc-codex", "plugin", "components", "ulw-loop", "skills", "ulw-loop"),
 ] as const
 
 describe("ulw-loop define-goal reference", () => {

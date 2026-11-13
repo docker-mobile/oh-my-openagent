@@ -10,19 +10,19 @@ const HOME = "/home/tester"
 const nothingExists = () => false
 
 describe("resolveProjectStateDirectory", () => {
-  describe("#given a project with no omo state inside it", () => {
+  describe("#given a project with no omc state inside it", () => {
     test("#then task state lands in the default agent dir, outside the project", () => {
       const directory = resolveProjectStateDirectory("/work/app", "senpi-task", { env: { HOME }, exists: nothingExists })
 
-      expect(directory).toBe(join(HOME, ".omo", "agent", "projects", projectStateKey("/work/app"), "senpi-task"))
+      expect(directory).toBe(join(HOME, ".omc", "agent", "projects", projectStateKey("/work/app"), "senpi-task"))
       expect(relative(resolve("/work/app"), directory).startsWith("..")).toBe(true)
     })
 
     test("#then an explicit agent dir wins, so an isolated agent dir keeps its own task state", () => {
-      const env = { HOME, SENPI_CODING_AGENT_DIR: "/sandbox/senpi", OMO_CODING_AGENT_DIR: "/sandbox/omo" }
+      const env = { HOME, SENPI_CODING_AGENT_DIR: "/sandbox/senpi", OMC_CODING_AGENT_DIR: "/sandbox/omc" }
 
       expect(resolveProjectStateDirectory("/work/app", "senpi-task", { env, exists: nothingExists })).toBe(
-        join(resolve("/sandbox/omo"), "projects", projectStateKey("/work/app"), "senpi-task"),
+        join(resolve("/sandbox/omc"), "projects", projectStateKey("/work/app"), "senpi-task"),
       )
     })
 
@@ -37,14 +37,14 @@ describe("resolveProjectStateDirectory", () => {
 
   describe("#given a project that already holds a state directory from an earlier release", () => {
     test("#then that in-project directory keeps being used so recorded tasks stay reachable", () => {
-      const project = mkdtempSync(join(tmpdir(), "omo-project-state-"))
+      const project = mkdtempSync(join(tmpdir(), "omc-project-state-"))
       try {
-        mkdirSync(join(project, ".omo", "senpi-task", "tasks"), { recursive: true })
-        writeFileSync(join(project, ".omo", "senpi-task", "tasks", "st_x.json"), "{}")
+        mkdirSync(join(project, ".omc", "senpi-task", "tasks"), { recursive: true })
+        writeFileSync(join(project, ".omc", "senpi-task", "tasks", "st_x.json"), "{}")
 
-        expect(resolveProjectStateDirectory(project, "senpi-task", { env: { HOME } })).toBe(join(project, ".omo", "senpi-task"))
+        expect(resolveProjectStateDirectory(project, "senpi-task", { env: { HOME } })).toBe(join(project, ".omc", "senpi-task"))
         expect(resolveProjectStateDirectory(project, "thread-tools", { env: { HOME } })).toBe(
-          join(HOME, ".omo", "agent", "projects", projectStateKey(project), "thread-tools"),
+          join(HOME, ".omc", "agent", "projects", projectStateKey(project), "thread-tools"),
         )
       } finally {
         rmSync(project, { recursive: true, force: true })
@@ -54,16 +54,16 @@ describe("resolveProjectStateDirectory", () => {
 
   describe("#given a project holding only empty state directories created this session", () => {
     test("#then task state still lands in the agent dir instead of being pulled into the project", () => {
-      const project = mkdtempSync(join(tmpdir(), "omo-project-state-"))
+      const project = mkdtempSync(join(tmpdir(), "omc-project-state-"))
       try {
-        mkdirSync(join(project, ".omo", "senpi-task", "tasks"), { recursive: true })
-        mkdirSync(join(project, ".omo", "thread-tools"), { recursive: true })
+        mkdirSync(join(project, ".omc", "senpi-task", "tasks"), { recursive: true })
+        mkdirSync(join(project, ".omc", "thread-tools"), { recursive: true })
 
         expect(resolveProjectStateDirectory(project, "senpi-task", { env: { HOME } })).toBe(
-          join(HOME, ".omo", "agent", "projects", projectStateKey(project), "senpi-task"),
+          join(HOME, ".omc", "agent", "projects", projectStateKey(project), "senpi-task"),
         )
         expect(resolveProjectStateDirectory(project, "thread-tools", { env: { HOME } })).toBe(
-          join(HOME, ".omo", "agent", "projects", projectStateKey(project), "thread-tools"),
+          join(HOME, ".omc", "agent", "projects", projectStateKey(project), "thread-tools"),
         )
       } finally {
         rmSync(project, { recursive: true, force: true })
@@ -73,16 +73,16 @@ describe("resolveProjectStateDirectory", () => {
 
   describe("#given a legacy state directory whose records sit behind a symlink", () => {
     test("#then the legacy directory is kept instead of being treated as empty", () => {
-      const project = mkdtempSync(join(tmpdir(), "omo-project-state-"))
+      const project = mkdtempSync(join(tmpdir(), "omc-project-state-"))
       try {
         const elsewhere = join(project, "elsewhere")
         mkdirSync(elsewhere, { recursive: true })
         writeFileSync(join(elsewhere, "task.json"), "{}")
-        mkdirSync(join(project, ".omo", "senpi-task"), { recursive: true })
-        symlinkSync(elsewhere, join(project, ".omo", "senpi-task", "tasks"))
+        mkdirSync(join(project, ".omc", "senpi-task"), { recursive: true })
+        symlinkSync(elsewhere, join(project, ".omc", "senpi-task", "tasks"))
 
         expect(resolveProjectStateDirectory(project, "senpi-task", { env: { HOME } })).toBe(
-          join(resolve(project), ".omo", "senpi-task"),
+          join(resolve(project), ".omc", "senpi-task"),
         )
       } finally {
         rmSync(project, { recursive: true, force: true })
@@ -92,25 +92,25 @@ describe("resolveProjectStateDirectory", () => {
 
   describe("#given a legacy state root that is not a plain directory", () => {
     test("#then a root symlink to an empty directory is kept instead of being treated as scaffolding", () => {
-      const project = mkdtempSync(join(tmpdir(), "omo-project-state-"))
+      const project = mkdtempSync(join(tmpdir(), "omc-project-state-"))
       try {
         mkdirSync(join(project, "shared-state"))
-        mkdirSync(join(project, ".omo"))
-        symlinkSync(join(project, "shared-state"), join(project, ".omo", "senpi-task"))
+        mkdirSync(join(project, ".omc"))
+        symlinkSync(join(project, "shared-state"), join(project, ".omc", "senpi-task"))
 
-        expect(resolveProjectStateDirectory(project, "senpi-task", { env: { HOME } })).toBe(join(project, ".omo", "senpi-task"))
+        expect(resolveProjectStateDirectory(project, "senpi-task", { env: { HOME } })).toBe(join(project, ".omc", "senpi-task"))
       } finally {
         rmSync(project, { recursive: true, force: true })
       }
     })
 
     test("#then a file in place of the store is kept so its error is reported instead of hidden", () => {
-      const project = mkdtempSync(join(tmpdir(), "omo-project-state-"))
+      const project = mkdtempSync(join(tmpdir(), "omc-project-state-"))
       try {
-        mkdirSync(join(project, ".omo"))
-        writeFileSync(join(project, ".omo", "senpi-task"), "")
+        mkdirSync(join(project, ".omc"))
+        writeFileSync(join(project, ".omc", "senpi-task"), "")
 
-        expect(resolveProjectStateDirectory(project, "senpi-task", { env: { HOME } })).toBe(join(project, ".omo", "senpi-task"))
+        expect(resolveProjectStateDirectory(project, "senpi-task", { env: { HOME } })).toBe(join(project, ".omc", "senpi-task"))
       } finally {
         rmSync(project, { recursive: true, force: true })
       }
@@ -119,16 +119,16 @@ describe("resolveProjectStateDirectory", () => {
 
   describe("#given a legacy store whose records are expunged after it was adopted", () => {
     test("#then later probes keep selecting it so one project's records never split across two stores", () => {
-      const project = mkdtempSync(join(tmpdir(), "omo-project-state-"))
+      const project = mkdtempSync(join(tmpdir(), "omc-project-state-"))
       try {
-        const record = join(project, ".omo", "senpi-task", "tasks", "st_x.json")
-        mkdirSync(join(project, ".omo", "senpi-task", "tasks"), { recursive: true })
+        const record = join(project, ".omc", "senpi-task", "tasks", "st_x.json")
+        mkdirSync(join(project, ".omc", "senpi-task", "tasks"), { recursive: true })
         writeFileSync(record, "{}")
         const adopted = resolveProjectStateDirectory(project, "senpi-task", { env: { HOME } })
         rmSync(record)
 
         expect(resolveProjectStateDirectory(project, "senpi-task", { env: { HOME } })).toBe(adopted)
-        expect(adopted).toBe(join(project, ".omo", "senpi-task"))
+        expect(adopted).toBe(join(project, ".omc", "senpi-task"))
       } finally {
         rmSync(project, { recursive: true, force: true })
       }
@@ -136,10 +136,10 @@ describe("resolveProjectStateDirectory", () => {
   })
 
   test("#given a malformed legacy task artifact #when listing tasks #then its diagnostic remains visible", () => {
-    const project = mkdtempSync(join(tmpdir(), "omo-project-state-"))
+    const project = mkdtempSync(join(tmpdir(), "omc-project-state-"))
     try {
       // Given: an artifact filename is present, but a directory makes it unreadable.
-      mkdirSync(join(project, ".omo", "senpi-task", "tasks", "st_00000007.json"), { recursive: true })
+      mkdirSync(join(project, ".omc", "senpi-task", "tasks", "st_00000007.json"), { recursive: true })
       // When: the normal store resolves its location and lists persisted tasks.
       const result = createTaskRecordStore({ project_dir: project }).list()
       // Then: the bad record is diagnosed instead of disappearing during migration.
@@ -153,7 +153,7 @@ describe("resolveProjectStateDirectory", () => {
     test("#then the process environment decides, so the hermetic test HOME is honored", () => {
       const directory = resolveProjectStateDirectory("/work/app", "senpi-task", { exists: nothingExists })
 
-      expect(directory.startsWith(join(resolve(process.env.HOME ?? ""), ".omo", "agent", "projects"))).toBe(true)
+      expect(directory.startsWith(join(resolve(process.env.HOME ?? ""), ".omc", "agent", "projects"))).toBe(true)
     })
   })
 })
@@ -169,7 +169,7 @@ describe("projectStateKey", () => {
   })
 
   test("#given a project reached through a symlink #then it shares the key of its real path", () => {
-    const root = mkdtempSync(join(tmpdir(), "omo-project-key-"))
+    const root = mkdtempSync(join(tmpdir(), "omc-project-key-"))
     try {
       mkdirSync(join(root, "real", "app"), { recursive: true })
       symlinkSync(join(root, "real"), join(root, "link"))

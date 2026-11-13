@@ -15,7 +15,7 @@ afterEach(() => {
 function world() {
   const root = mkdtempSync(join(tmpdir(), "rw-"))
   dirs.push(root)
-  const stateDir = join(root, "home", ".omo", "device-service")
+  const stateDir = join(root, "home", ".omc", "device-service")
   const endpoint = join(stateDir, "service.sock")
   const armed: string[] = []
   const deafWatch = (target: string): FSWatcher => {

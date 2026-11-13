@@ -25,7 +25,7 @@ import {
   readOptionalStringArray,
   readString,
 } from "./scalar-read"
-import { IsolationBackendKindSchema } from "@oh-my-opencode/omo-config-core"
+import { IsolationBackendKindSchema } from "@oh-my-cybersecurity/omc-config-core"
 import type { IsolationMergeResult, IsolationRecord, TaskIsolationSpec } from "../state"
 export { parseOptionalHostSession, validateHostSessionConsistency } from "./host-session-parse"
 

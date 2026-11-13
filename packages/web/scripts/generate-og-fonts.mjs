@@ -8,7 +8,7 @@ import path from "node:path"
 const root = path.resolve(import.meta.dirname, "..")
 const revision = "aa24661a5ba24c8f8a550a16fb13198719fc2c23"
 const source = `https://raw.githubusercontent.com/google/fonts/${revision}/ofl/robotomono/RobotoMono%5Bwght%5D.ttf`
-const work = await mkdtemp(path.join(tmpdir(), "omo-og-fonts-"))
+const work = await mkdtemp(path.join(tmpdir(), "omc-og-fonts-"))
 try {
   const response = await fetch(source, { signal: AbortSignal.timeout(30_000) })
   if (!response.ok) throw new Error(`Font download failed: ${response.status}`)

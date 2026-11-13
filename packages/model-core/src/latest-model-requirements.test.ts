@@ -6,7 +6,7 @@ import {
 import { resolveModelWithFallback } from "./model-resolver"
 
 // Availability fixtures are independent of the shipped chains: verified catalog rows
-// from `omo --offline --list-models` on 2026-09-23 (see the evidence report).
+// from `omc --offline --list-models` on 2026-09-23 (see the evidence report).
 // Resolution must choose those models rather than silently reaching system/default.
 describe("current catalog requirement chains", () => {
   test("prefers Opus 5.5 when both generations are available", () => {

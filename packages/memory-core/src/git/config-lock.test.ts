@@ -67,14 +67,14 @@ describe("serialized git config", () => {
 
     // when
     await Promise.all([
-      repo.configSet("omo.testOne", "one"),
-      repo.configSet("omo.testTwo", "two"),
+      repo.configSet("omc.testOne", "one"),
+      repo.configSet("omc.testTwo", "two"),
     ])
 
     // then
     expect(exec.maxConfigWrites).toBe(1)
-    expect(await repo.configGet("omo.testOne")).toBe("one")
-    expect(await repo.configGet("omo.testTwo")).toBe("two")
+    expect(await repo.configGet("omc.testOne")).toBe("one")
+    expect(await repo.configGet("omc.testTwo")).toBe("two")
   })
 })
 

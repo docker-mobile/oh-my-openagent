@@ -2,7 +2,7 @@ import { createHash, randomUUID } from "node:crypto"
 import { mkdirSync } from "node:fs"
 import { join } from "node:path"
 
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import type { DagTaskOwner, DagTaskOwnerKey, OwnedStartResult } from "../dag/owner"
 import { endFallbackHandoff, forgetClosedChild, handOffToNextRung, isFallbackHandoff } from "../lifecycle/fallback-handoff"
@@ -570,7 +570,7 @@ class TaskManagerImpl implements TaskManager {
       return this.#failSpawn({
         claimed, registration, spec, executionMode, lease,
         failure_kind: "usage_limit",
-        error_message: `${avoided.spent}\nEvery model in this task's fallback chain is behind a usage limit an earlier task already hit, so it was not started. Retry once the limit resets, or point this category at another provider or model in omo.json.`,
+        error_message: `${avoided.spent}\nEvery model in this task's fallback chain is behind a usage limit an earlier task already hit, so it was not started. Retry once the limit resets, or point this category at another provider or model in omc.json.`,
       })
     }
     const effectivePlan = avoided.plan
@@ -1351,7 +1351,7 @@ class TaskManagerImpl implements TaskManager {
       void this.#launchRuntimeFallback(nextContext)
     })
     // The fallback model's lane is full: nothing runs until a slot frees. Say so on the record
-    // instead of leaving a bare `running` with no child behind it (omo#9069).
+    // instead of leaving a bare `running` with no child behind it (omc#9069).
     const queued = { model: nextModel.display, queued_at: nowIso(this.#now), queue_position: queuePosition }
     this.#options.store.mutate(record.task_id, (fresh) =>
       fresh.notification.run_epoch === nextEpoch ? { ...fresh, start_queued: queued } : fresh)
@@ -1390,7 +1390,7 @@ class TaskManagerImpl implements TaskManager {
 
   // Persist spawn-time facts onto the running record: OS pid (rpc children) and the child's own
   // session id (both modes) so task_output, session_start reconciliation, and external readers
-  // (omo-desktop) can join a grandchild session back to this task. Pure folds live in
+  // (omc-desktop) can join a grandchild session back to this task. Pure folds live in
   // recordSpawnedPid / recordSpawnedChildSession; already-terminal records are left untouched.
   // One exit for every pre-launch refusal: the lease, the reserved name, the background flag and the
   // record's start/fail transitions are released together, so a refusal can never strand capacity.
@@ -1561,7 +1561,7 @@ class TaskManagerImpl implements TaskManager {
 
     // Committed BEFORE the failed rung's teardown can yield: while the daemon closes that session, a
     // reconciler must already see a handoff owned by this live pid, never a vanished session it could
-    // reclaim as an orphan (the 2026-09-26 `omo -p` hang). Fenced on this outcome's epoch and owner.
+    // reclaim as an orphan (the 2026-09-26 `omc -p` hang). Fenced on this outcome's epoch and owner.
     const handoff: { record?: TaskRecord; closed?: ChildIdentity; stopped?: boolean } = {}
     const failureMessage = input.outcome.failure.message
     this.#options.store.mutate(input.taskId, (fresh) => {

@@ -240,7 +240,7 @@ describe("buildTaskExecute batch fanout", () => {
     expect(output.details.items?.[1]).toEqual({ task_id: "", status: "error", error_message: "depth limit" })
   })
 
-  test(" w2batch #given a model_unavailable start failure #when executed #then the error names valid category names with the omo.json config hint", async () => {
+  test(" w2batch #given a model_unavailable start failure #when executed #then the error names valid category names with the omc.json config hint", async () => {
     // given
     const manager = createFakeManager({
       start: async (): Promise<StartResult> => ({
@@ -265,7 +265,7 @@ describe("buildTaskExecute batch fanout", () => {
     // then
     const text = textOf(output)
     expect(text).toContain("Valid category names: deep, quick")
-    expect(text).toContain("omo.json")
+    expect(text).toContain("omc.json")
     expect(text).not.toContain('Pass model:')
     expect(text).not.toContain("Available categories:")
   })

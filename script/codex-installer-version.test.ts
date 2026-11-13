@@ -4,8 +4,8 @@ import { expect, test } from "bun:test"
 import { readFileSync } from "node:fs"
 
 const rootPackagePath = new URL("../package.json", import.meta.url)
-const codexPackagePath = new URL("../packages/omo-codex/package.json", import.meta.url)
-const installerPath = new URL("../packages/omo-codex/scripts/install-dist/install-local.mjs", import.meta.url)
+const codexPackagePath = new URL("../packages/omc-codex/package.json", import.meta.url)
+const installerPath = new URL("../packages/omc-codex/scripts/install-dist/install-local.mjs", import.meta.url)
 
 test("#given the generated Codex installer #when release versions are synchronized #then its embedded package version matches the root release version", () => {
   // given

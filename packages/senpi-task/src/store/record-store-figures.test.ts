@@ -33,7 +33,7 @@ function record(taskId: string) {
   }
 }
 
-// The memory report (oh-my-openagent#9442) reads what the store keeps resident: every record it has
+// The memory report (oh-my-cybersecurity#9442) reads what the store keeps resident: every record it has
 // parsed stays cached until the file disappears, so its count and on-disk size are the layer's figures.
 describe("createTaskRecordStore residentFigures", () => {
   test("#given two saved records #when the figures are read #then they count both cached records and their bytes", () => {

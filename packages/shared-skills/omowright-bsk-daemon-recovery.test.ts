@@ -1,6 +1,6 @@
 /// <reference types="bun-types" />
 
-// Guards the omowright version omo pins (root devDependency, staged into the browser skill): the
+// Guards the omowright version omc pins (root devDependency, staged into the browser skill): the
 // BrowserSkill IPC client must re-adopt a live daemon whose daemon.json vanished instead of
 // starting another one on the held port (#10216), and must cancel a call it gave up on so the
 // session stays usable (#10217). A pin bump that regresses either fails here.
@@ -23,7 +23,7 @@ afterEach(async () => {
 })
 
 async function fakeDaemonWithoutDaemonJson(handlers: Record<string, (frame: Frame) => Reply>) {
-  const home = await mkdtemp(join(tmpdir(), "omo-bsk-home-"))
+  const home = await mkdtemp(join(tmpdir(), "omc-bsk-home-"))
   await mkdir(join(home, "run"))
   const cancelled = Promise.withResolvers<Frame>()
   const sockets = new Set<Socket>()
@@ -46,7 +46,7 @@ async function fakeDaemonWithoutDaemonJson(handlers: Record<string, (frame: Fram
   })
   // The daemon's default IPC endpoint is a Unix socket at $BSK_HOME/run/daemon.sock. Windows has no such socket: there the
   // daemon is reached over a named pipe passed as `sockPath` (omowright skills/omowright/references/browserskill.md).
-  const sockPath = process.platform === "win32" ? `\\\\.\\pipe\\omo-bsk-test-${randomBytes(6).toString("hex")}` : join(home, "run", "daemon.sock")
+  const sockPath = process.platform === "win32" ? `\\\\.\\pipe\\omc-bsk-test-${randomBytes(6).toString("hex")}` : join(home, "run", "daemon.sock")
   await new Promise<void>((resolve) => server.listen(sockPath, resolve))
   cleanups.push(async () => {
     for (const socket of sockets) socket.destroy()

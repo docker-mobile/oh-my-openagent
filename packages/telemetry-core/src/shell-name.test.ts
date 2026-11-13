@@ -4,15 +4,15 @@ import { DEFAULT_POSTHOG_API_KEY, DEFAULT_POSTHOG_HOST, createTelemetryClient } 
 import type { TelemetryCaptureMessage, TelemetryOsProvider, TelemetryProductConfig } from "./index"
 
 const PRODUCT = {
-  cacheDirName: "omo-codex",
+  cacheDirName: "omc-codex",
   defaultApiKey: DEFAULT_POSTHOG_API_KEY,
   defaultHost: DEFAULT_POSTHOG_HOST,
-  eventName: "omo_codex_daily_active",
-  packageName: "@oh-my-opencode/omo-codex",
+  eventName: "omc_codex_daily_active",
+  packageName: "@oh-my-cybersecurity/omc-codex",
   packageVersion: "4.9.2",
-  platform: "omo-codex",
-  productName: "omo-codex",
-  productEnvPrefix: "OMO_CODEX",
+  platform: "omc-codex",
+  productName: "omc-codex",
+  productEnvPrefix: "OMC_CODEX",
 } satisfies TelemetryProductConfig
 
 const OS_PROVIDER = {
@@ -27,7 +27,7 @@ const OS_PROVIDER = {
 
 const USER = "alice-sentinel-7f3a"
 
-// Every shape a login shell path takes on the platforms OmO runs on. The user's name must never leave the
+// Every shape a login shell path takes on the platforms OmC runs on. The user's name must never leave the
 // machine through the shared daily-active properties; only the shell program's name is sent.
 const CASES: ReadonlyArray<{ readonly shell: string | undefined; readonly expected: string | undefined }> = [
   { shell: `/home/${USER}/.nix-profile/bin/zsh`, expected: "zsh" },

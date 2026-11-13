@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test"
 import { createTaskManager } from "../manager/manager"
 import { TaskConcurrency } from "../manager/concurrency"
-import { OmoTaskSettingsSchema } from "@oh-my-opencode/omo-config-core"
+import { OmoTaskSettingsSchema } from "@oh-my-cybersecurity/omc-config-core"
 import { createTaskLifecycle } from "../lifecycle"
 import type { ResidencyRegistry } from "../lifecycle/port"
 import { createTaskRecordStore } from "../store"

@@ -9,7 +9,7 @@
           "send": {
             "id": "1",
             "type": "endpoints.register",
-            "agent_dir": "/home/user/.omo/agent"
+            "agent_dir": "/home/user/.omc/agent"
           }
         },
         {
@@ -30,7 +30,7 @@
           "send": {
             "id": "1",
             "type": "endpoints.register",
-            "agent_dir": ".omo/agent"
+            "agent_dir": ".omc/agent"
           }
         },
         {

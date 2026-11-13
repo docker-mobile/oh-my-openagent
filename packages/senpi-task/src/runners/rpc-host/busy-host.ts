@@ -17,7 +17,7 @@ export type BusyHostWaitOptions = {
 }
 
 /**
- * A slow host is not a dead host (omo#9067). While the host's socket still accepts, a start that met
+ * A slow host is not a dead host (omc#9067). While the host's socket still accepts, a start that met
  * its blocked loop - the ensure refused `host_busy`, or an `open_session` the host never got to
  * acknowledge - is attempted again at the SAME session path until `waitMs` runs out. The host attaches
  * an open for a path it already hosts, so an earlier open it processes late is adopted, never

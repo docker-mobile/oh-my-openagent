@@ -1,4 +1,4 @@
-import type { EngineMethod } from "@oh-my-opencode/senpi-desktop-protocol";
+import type { EngineMethod } from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import { ComputerRunError, type FacadeMethod, facadeMethod, type MethodTiers, type RunScope } from "./context";
 import { type CaptureRegion, expectResult, isExecResult } from "./engine-results";
 import { callHold } from "./hold-call";

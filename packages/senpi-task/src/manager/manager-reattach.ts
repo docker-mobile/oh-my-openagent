@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import type { ReattachResult } from "../lifecycle/port"
 import { nextRunEpoch, type AwaitingInputReason, type TaskRecord } from "../state"

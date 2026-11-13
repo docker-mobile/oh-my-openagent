@@ -1,21 +1,21 @@
 import { detectInstall, type InstallClient } from "./install-targets"
 
-export const DOWNLOAD_HOST = "get.omo.dev"
+export const DOWNLOAD_HOST = "get.omc.nga.hm"
 export const DEFAULT_DOWNLOAD_BASE_URL = `https://${DOWNLOAD_HOST}`
 /** The public desktop beta page (no sign-in): where /download and the hero point while this site's own page is off. */
 export const PUBLIC_DESKTOP_BETA_URL = `https://${DOWNLOAD_HOST}/desktop/beta/`
-const DOCS_HOSTS: ReadonlySet<string> = new Set([DOWNLOAD_HOST, "omo.dev"])
+const DOCS_HOSTS: ReadonlySet<string> = new Set([DOWNLOAD_HOST, "omc.nga.hm"])
 const DEFAULT_LAUNCH_AT = "2026-11-10T00:00:00.000Z"
 const FETCH_TIMEOUT_MS = 5000
 
 /**
  * The download page, its hero button, its sitemap entry and the /desktop redirect exist only when
- * the site was BUILT with OMO_WEB_DESKTOP_DOWNLOAD=1: next.config.ts inlines the value into every
+ * the site was BUILT with OMC_WEB_DESKTOP_DOWNLOAD=1: next.config.ts inlines the value into every
  * bundle, so a Worker variable has no effect. Production deploys do not set it, so merging changes
- * nothing on omo.dev; launch = add it to the build step of web-deploy.yml and deploy.
+ * nothing on omc.nga.hm; launch = add it to the build step of web-deploy.yml and deploy.
  */
 export function desktopDownloadEnabled(): boolean {
-  return process.env.OMO_WEB_DESKTOP_DOWNLOAD === "1"
+  return process.env.OMC_WEB_DESKTOP_DOWNLOAD === "1"
 }
 
 export type DesktopChannel = "stable" | "beta"

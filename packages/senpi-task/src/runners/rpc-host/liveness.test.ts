@@ -13,7 +13,7 @@ afterEach(async () => {
 })
 
 function socketDir(): string {
-  const dir = mkdtempSync(join(tmpdir(), "omo-liveness-"))
+  const dir = mkdtempSync(join(tmpdir(), "omc-liveness-"))
   cleanups.push(() => rmSync(dir, { recursive: true, force: true }))
   return dir
 }
@@ -35,7 +35,7 @@ async function silentDaemon(socketPath: string): Promise<Server> {
   return server
 }
 
-describe.skipIf(process.platform === "win32")("daemonReachable (omo#9069)", () => {
+describe.skipIf(process.platform === "win32")("daemonReachable (omc#9069)", () => {
   test("#given a daemon that accepts connections but never answers its probe #when the lifecycle asks #then it is reachable (busy), not gone", async () => {
     // given
     const socketPath = join(socketDir(), "rpc.sock")

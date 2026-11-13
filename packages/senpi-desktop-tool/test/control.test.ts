@@ -1,4 +1,4 @@
-import type { ExecuteTool } from "@oh-my-opencode/senpi-desktop-service";
+import type { ExecuteTool } from "@oh-my-cybersecurity/senpi-desktop-service";
 import { afterEach, describe, expect, it } from "vitest";
 import { rejectionOf } from "../../senpi-desktop-service/test/harness";
 import { createComputerTool, type ControlConfirmRequest } from "../src/tool";

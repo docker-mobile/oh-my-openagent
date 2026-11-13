@@ -1,4 +1,4 @@
-import { userActionNotice } from "@oh-my-opencode/utils"
+import { userActionNotice } from "@oh-my-cybersecurity/utils"
 import type { TaskRecord } from "../state"
 
 const REASONS: Readonly<Record<string, string>> = {
@@ -17,7 +17,7 @@ const ACTIONS: Readonly<Record<string, string>> = {
   tools_unavailable: "Enable the required tools, then submit a new task with the remaining work.",
   spawn_spec_unavailable: "Submit a new task with the remaining work and its launch instructions.",
   transcript_unavailable: "Submit a new task with the remaining work and any saved findings you still have.",
-  host_incompatible: "Update OmO to a compatible version and restart it, then submit the remaining work.",
+  host_incompatible: "Update OmC to a compatible version and restart it, then submit the remaining work.",
   store_index_unavailable: "Restore access and permissions to the task data directory, then submit the remaining work.",
   isolated_not_revivable: "Inspect the retained checkout and its changes before submitting the remaining work in a new task.",
 }

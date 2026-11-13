@@ -45,7 +45,7 @@ describe("git_bash MCP protocol pins", () => {
 function windowsOptions() {
   return {
     platform: "win32",
-    env: { OMO_CODEX_GIT_BASH_PATH: "C:\\Program Files\\Git\\bin\\bash.exe" },
+    env: { OMC_CODEX_GIT_BASH_PATH: "C:\\Program Files\\Git\\bin\\bash.exe" },
     exists: (path: string) => path === "C:\\Program Files\\Git\\bin\\bash.exe",
     where: () => [],
   } as const;

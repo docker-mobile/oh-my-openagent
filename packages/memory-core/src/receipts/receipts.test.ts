@@ -167,15 +167,15 @@ describe("memory receipts", () => {
     // given
     const kills: Array<{ readonly pid: number; readonly signal: string | undefined }> = []
     const kill = (pid: number, signal?: NodeJS.Signals) => { kills.push({ pid, signal }) }
-    const previous = process.env.OMO_MEMORY_KILL_POINT
+    const previous = process.env.OMC_MEMORY_KILL_POINT
 
     // when
     try {
-      delete process.env.OMO_MEMORY_KILL_POINT
+      delete process.env.OMC_MEMORY_KILL_POINT
       const unset = maybeKillAt("after-merge", { kill })
-      process.env.OMO_MEMORY_KILL_POINT = "after-validate"
+      process.env.OMC_MEMORY_KILL_POINT = "after-validate"
       const other = maybeKillAt("after-merge", { kill })
-      process.env.OMO_MEMORY_KILL_POINT = "after-merge"
+      process.env.OMC_MEMORY_KILL_POINT = "after-merge"
       const hit = maybeKillAt("after-merge", { kill, platform: "linux" })
       const hitWindows = maybeKillAt("after-merge", { kill, platform: "win32" })
 
@@ -186,8 +186,8 @@ describe("memory receipts", () => {
       expect(kills).toEqual([{ pid: process.pid, signal: "SIGKILL" }, { pid: process.pid, signal: undefined }])
       expect(MEMORY_KILL_POINTS).toEqual(["after-reserve", "after-prelaunch", "after-worktree", "after-child-exit", "after-validate", "after-merge", "before-receipt"])
     } finally {
-      if (previous === undefined) delete process.env.OMO_MEMORY_KILL_POINT
-      else process.env.OMO_MEMORY_KILL_POINT = previous
+      if (previous === undefined) delete process.env.OMC_MEMORY_KILL_POINT
+      else process.env.OMC_MEMORY_KILL_POINT = previous
     }
   })
 

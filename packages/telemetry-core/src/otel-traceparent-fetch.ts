@@ -3,8 +3,8 @@ import { W3CTraceContextPropagator } from "@opentelemetry/core"
 
 import type { OtlpFetch } from "./otlp-http"
 
-/** Our own hosts: the collector and the omo-service API. Model-provider hosts are never listed. */
-export const OMO_TRACE_HOSTS: readonly string[] = ["t.omo.dev", "api.omo.dev"]
+/** Our own hosts: the collector and the omc-service API. Model-provider hosts are never listed. */
+export const OMC_TRACE_HOSTS: readonly string[] = ["t.omc.nga.hm", "api.omc.nga.hm"]
 
 const w3c = new W3CTraceContextPropagator()
 

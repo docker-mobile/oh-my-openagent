@@ -8,13 +8,13 @@ describe("engine formatStaticBlock", () => {
 		// given
 		const tailMarker = "PROJECT_HEPHAESTUS_TAIL_SENTINEL";
 		const alphaRule = loadedRule({
-			path: "/repo/.omo/rules/alpha.md",
-			relativePath: ".omo/rules/alpha.md",
+			path: "/repo/.omc/rules/alpha.md",
+			relativePath: ".omc/rules/alpha.md",
 			body: "Alpha guidance.",
 		});
 		const projectHephaestusRule = loadedRule({
-			path: "/repo/.omo/rules/hephaestus/large.md",
-			relativePath: ".omo/rules/hephaestus/large.md",
+			path: "/repo/.omc/rules/hephaestus/large.md",
+			relativePath: ".omc/rules/hephaestus/large.md",
 			body: `Project Hephaestus rule ${"H".repeat(600)} ${tailMarker}`,
 		});
 
@@ -29,7 +29,7 @@ describe("engine formatStaticBlock", () => {
 		expect(block).toContain("Project Hephaestus rule");
 		expect(block.indexOf("Alpha guidance.") < block.indexOf("Project Hephaestus rule")).toBe(true);
 		expect(block).not.toContain(tailMarker);
-		expect(block).toContain("[Truncated. Full: .omo/rules/hephaestus/large.md]");
+		expect(block).toContain("[Truncated. Full: .omc/rules/hephaestus/large.md]");
 	});
 });
 
@@ -43,7 +43,7 @@ function loadedRule(input: {
 	return {
 		path: input.path,
 		realPath: input.path,
-		source: input.source ?? ".omo/rules",
+		source: input.source ?? ".omc/rules",
 		distance: 0,
 		isGlobal: false,
 		isSingleFile: true,

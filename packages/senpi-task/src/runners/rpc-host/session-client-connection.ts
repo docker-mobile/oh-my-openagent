@@ -1,6 +1,6 @@
 import type { OpenedHostSession, HostSessionCommand, HostSessionParked, HostSessionClosed, HostSessionReplaced, HostSessionClientOptions } from "./session-client-contract"
 import type { RpcSessionState, RpcTransportGoneError } from "@code-yeongyu/senpi"
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import type { SenpiHostProtocolInfo } from "../../lazy/senpi-barrel"
 import type { AutoAnswerableUiRequest } from "../rpc/ui-auto-answer"
@@ -179,7 +179,7 @@ export class HostSessionClient {
       }
     } finally {
       if (this.client === client) this.client = undefined
-      // A stop failure after the host answered must not erase that answer (omo#11765).
+      // A stop failure after the host answered must not erase that answer (omc#11765).
       await client.stop().catch((error: unknown) => {
         if (!answered) throw error
         log("senpi-task host session client stop failed after an answered close", { socket: this.socketPath, error: String(error) })

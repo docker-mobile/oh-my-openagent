@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
-import { DESKTOP_METHODS, DISPLAY_METHODS, type DesktopCapabilities } from "@oh-my-opencode/senpi-desktop-protocol";
+import { DESKTOP_METHODS, DISPLAY_METHODS, type DesktopCapabilities } from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import { isDesktopCapabilities, isRecord } from "../service/parse";
-import type { Window as SdkWindow } from "@oh-my-opencode/senpi-desktop-sdk";
+import type { Window as SdkWindow } from "@oh-my-cybersecurity/senpi-desktop-sdk";
 import { ComputerRunError, facadeMethod, openSdk, type RunScope } from "./context";
 import {
 	type DesktopDisplay,

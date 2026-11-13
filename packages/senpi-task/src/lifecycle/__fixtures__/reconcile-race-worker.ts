@@ -1,6 +1,6 @@
 import { appendFileSync, readSync } from "node:fs"
 
-import { OmoTaskSettingsSchema } from "@oh-my-opencode/omo-config-core"
+import { OmoTaskSettingsSchema } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { ManagedChildHandle } from "../../manager/child-handle"
 import { createTaskRecordStore } from "../../store"

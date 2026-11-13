@@ -335,7 +335,7 @@ export async function executeScan(
     );
   }
 
-  const workdir = input.workdir ?? process.env.OMO_AST_GREP_PROJECT_CWD ?? process.cwd();
+  const workdir = input.workdir ?? process.env.OMC_AST_GREP_PROJECT_CWD ?? process.cwd();
   let preview: Awaited<ReturnType<typeof spawnSgRunner>>;
   try {
     preview = await spawnSgRunner({

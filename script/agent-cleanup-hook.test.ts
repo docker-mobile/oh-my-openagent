@@ -5,7 +5,7 @@ import { basename, dirname, join } from "node:path"
 
 const AGENT_DIR = join(import.meta.dir, "agent")
 // The hook reports the PHYSICAL fallback directory, which is /private/tmp on macOS.
-const FALLBACK_LOG_FILE = join(realpathSync("/tmp"), "oh-my-openagent-cleanup.log")
+const FALLBACK_LOG_FILE = join(realpathSync("/tmp"), "oh-my-cybersecurity-cleanup.log")
 const cleanup = join(AGENT_DIR, "cleanup.sh")
 const cleanupHook = join(AGENT_DIR, "cleanup-hook.sh")
 const posixBashTest = test.skipIf(process.platform === "win32")
@@ -15,9 +15,9 @@ function read(path: string): string {
 }
 
 function createFixture(workerBody: string): { readonly repo: string; readonly agentDir: string; readonly logDir: string } {
-  const repo = mkdtempSync(join(tmpdir(), "omo-cleanup-hook-test-"))
+  const repo = mkdtempSync(join(tmpdir(), "omc-cleanup-hook-test-"))
   const agentDir = join(repo, "script", "agent")
-  const logDir = mkdtempSync(join(tmpdir(), "omo-cleanup-hook-log-"))
+  const logDir = mkdtempSync(join(tmpdir(), "omc-cleanup-hook-log-"))
   mkdirSync(agentDir, { recursive: true })
   copyFileSync(cleanupHook, join(agentDir, "cleanup-hook.sh"))
   writeFileSync(join(agentDir, "cleanup.sh"), workerBody)
@@ -113,10 +113,10 @@ describe("agent cleanup and SessionEnd launcher", () => {
 printf 'worker-ran\\n' > "$CLAUDE_PROJECT_DIR/worker.marker"
 printf 'worker-log\\n'
 `)
-    const env = { ...process.env, CLAUDE_PROJECT_DIR: fixture.repo, OMO_AGENT_CLEANUP_SYNC: "1", TMPDIR: fixture.logDir } as HookEnv
+    const env = { ...process.env, CLAUDE_PROJECT_DIR: fixture.repo, OMC_AGENT_CLEANUP_SYNC: "1", TMPDIR: fixture.logDir } as HookEnv
     try {
       const logFile = resolveLogFile(fixture.agentDir, env)
-      expect(logFile).toBe(join(realpathSync(fixture.logDir), "oh-my-openagent-cleanup.log"))
+      expect(logFile).toBe(join(realpathSync(fixture.logDir), "oh-my-cybersecurity-cleanup.log"))
       const result = Bun.spawnSync({
         cmd: ["bash", "./cleanup-hook.sh"], cwd: fixture.agentDir, stdout: "pipe", stderr: "pipe",
         env,
@@ -187,10 +187,10 @@ printf 'finished\\n' >&3
     const fixture = createFixture("#!/usr/bin/env bash\nprintf 'safe-log\\n'\n")
     const hostileLog = join(fixture.repo, "host-config.toml")
     writeFileSync(hostileLog, "preserve-me\n")
-    const env = { ...process.env, CLAUDE_PROJECT_DIR: fixture.repo, OMO_AGENT_CLEANUP_LOG: hostileLog, OMO_AGENT_CLEANUP_SYNC: "1", TMPDIR: fixture.logDir } as HookEnv
+    const env = { ...process.env, CLAUDE_PROJECT_DIR: fixture.repo, OMC_AGENT_CLEANUP_LOG: hostileLog, OMC_AGENT_CLEANUP_SYNC: "1", TMPDIR: fixture.logDir } as HookEnv
     try {
       const logFile = resolveLogFile(fixture.agentDir, env)
-      expect(logFile).toBe(join(realpathSync(fixture.logDir), "oh-my-openagent-cleanup.log"))
+      expect(logFile).toBe(join(realpathSync(fixture.logDir), "oh-my-cybersecurity-cleanup.log"))
       const result = Bun.spawnSync({
         cmd: ["bash", "./cleanup-hook.sh"], cwd: fixture.agentDir, stdout: "pipe", stderr: "pipe",
         env,
@@ -362,7 +362,7 @@ printf 'finished\\n' >&3
       for (let run = 0; run < 3; run++) {
         const result = Bun.spawnSync({
           cmd: ["bash", "./cleanup-hook.sh"], cwd: fixture.agentDir, stdout: "pipe", stderr: "pipe", timeout: 30_000,
-          env: { ...process.env, PATH: `${binDir}:${process.env["PATH"] ?? ""}`, CLAUDE_PROJECT_DIR: fixture.repo, OMO_AGENT_CLEANUP_SYNC: "1", TMPDIR: insideProject } as HookEnv,
+          env: { ...process.env, PATH: `${binDir}:${process.env["PATH"] ?? ""}`, CLAUDE_PROJECT_DIR: fixture.repo, OMC_AGENT_CLEANUP_SYNC: "1", TMPDIR: insideProject } as HookEnv,
         })
         expect(result.exitCode).toBe(0)
       }
@@ -388,7 +388,7 @@ printf 'finished\\n' >&3
         env: { ...process.env, CLAUDE_PROJECT_DIR: fixture.repo, TMPDIR: sibling } as HookEnv,
       })
       expect(result.exitCode).toBe(0)
-      expect(result.stdout.toString().trim()).toBe(join(realpathSync(sibling), "oh-my-openagent-cleanup.log"))
+      expect(result.stdout.toString().trim()).toBe(join(realpathSync(sibling), "oh-my-cybersecurity-cleanup.log"))
       expect(result.stderr.toString()).toBe("")
     } finally {
       rmSync(sibling, { recursive: true, force: true })
@@ -398,21 +398,21 @@ printf 'finished\\n' >&3
 
   test("#given cleanup.sh #when inspected for safety #then it guards repo root and never nukes source or host", () => {
     const body = read(cleanup)
-    expect(body).toContain("oh-my-openagent")
+    expect(body).toContain("oh-my-cybersecurity")
     for (const pattern of ["rm -rf /", "rm -rf ~", "rm -rf $HOME", "rm -rf src", "rm -rf packages"]) {
       expect(body, `cleanup must never contain '${pattern}'`).not.toContain(pattern)
     }
   })
 
   posixBashTest("#given transient files in source and skipped trees #when cleanup runs #then it prunes skipped trees", () => {
-    const repo = mkdtempSync(join(tmpdir(), "omo-cleanup-test-"))
+    const repo = mkdtempSync(join(tmpdir(), "omc-cleanup-test-"))
     const agentDir = join(repo, "script", "agent")
     mkdirSync(join(repo, "src"), { recursive: true })
     mkdirSync(join(repo, "node_modules", "pkg"), { recursive: true })
     mkdirSync(join(repo, ".git", "objects"), { recursive: true })
     mkdirSync(agentDir, { recursive: true })
     copyFileSync(cleanup, join(agentDir, "cleanup.sh"))
-    writeFileSync(join(repo, "package.json"), '{ "name": "oh-my-openagent" }\n')
+    writeFileSync(join(repo, "package.json"), '{ "name": "oh-my-cybersecurity" }\n')
     for (const [path, content] of [
       [join(repo, "src", "app.tsbuildinfo"), "source transient"], [join(repo, "src", ".DS_Store"), "source os transient"],
       [join(repo, "node_modules", "pkg", "cache.tsbuildinfo"), "dependency cache"], [join(repo, ".git", "objects", "cache.tsbuildinfo"), "git cache"],

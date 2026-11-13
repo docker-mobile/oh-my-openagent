@@ -4,9 +4,11 @@ undefined/
 .omo/*
 !.omo/rules/
 !.omo/rules/**
-!.omo/evidence/
-!.omo/evidence/**
 packages/*/.omo/*
+.omc/*
+!.omc/rules/
+!.omc/rules/**
+packages/*/.omc/*
 .sisyphus/*
 !.sisyphus/rules/
 !.sisyphus/rules/**
@@ -18,8 +20,8 @@ dist/
 packages/omo-codex/plugin/skills/
 
 # Platform binaries (built, not committed)
-packages/*/bin/oh-my-opencode
-packages/*/bin/oh-my-opencode.exe
+packages/*/bin/oh-my-cybersecurity
+packages/*/bin/oh-my-cybersecurity.exe
 packages/*/bin/*.map
 # The keychain helper is built and signed by the release lane (#11262), never committed.
 packages/*/bin/omo-keychain
@@ -82,3 +84,10 @@ plans/
 
 # Rust workspace (crates/senpi-desktop-*)
 /target
+
+# Generated offensive corpora. Upstream data shipped by GTFOBins and LOLBAS is GPL-3.0 while this
+# repository is SUL-1.0, so the derived JSON is generated locally on demand and never redistributed
+# here. Build it with the package's own generator script against your own clone.
+packages/arsenal-core/data/
+packages/attack-playbook-core/data/
+packages/payload-forge-core/data/

@@ -19,18 +19,18 @@ describe("download stats automation", () => {
     // then
     expect(events).toContainEqual({
       api_key: "test-key",
-      event: "omo_download_stats",
+      event: "omc_download_stats",
       distinct_id: "download",
       properties: {
         $process_person_profile: false,
         count: 19,
-        package_name: "code-yeongyu/oh-my-openagent",
+        package_name: "code-yeongyu/oh-my-cybersecurity",
         source: "github_release",
       },
     })
     expect(
       events.filter((event) => event.properties.source === "npm").map((event) => event.properties.package_name),
-    ).toEqual(["oh-my-opencode", "oh-my-openagent", "omo-ai", "lazycodex-ai"])
+    ).toEqual(["oh-my-cybersecurity", "oh-my-openagent", "oh-my-opencode", "omc-ai", "lazycodex-ai"])
   })
 
   test("#given slurped GitHub release pages #when collected #then stats aggregate every page", async () => {
@@ -49,7 +49,7 @@ describe("download stats automation", () => {
     // then
     expect(githubStat).toEqual({
       count: 19,
-      packageName: "code-yeongyu/oh-my-openagent",
+      packageName: "code-yeongyu/oh-my-cybersecurity",
       source: "github_release",
     })
   })

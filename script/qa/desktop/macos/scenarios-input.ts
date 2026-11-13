@@ -26,7 +26,7 @@ function focusIdentity(snapshot: FocusSnapshot) {
 export async function backgroundClickKeepsFocus(options: RunOptions): Promise<ScenarioResult> {
   const doc = "qa-click.txt"
   const delivery = options.forceForeground ? "foreground" : "background"
-  return withDesk({ [doc]: "omo qa click target\nsecond line\n" }, (sink) =>
+  return withDesk({ [doc]: "omc qa click target\nsecond line\n" }, (sink) =>
     withSession(options, {}, async (session) => {
       const warm = await warmUp(session, doc)
       const before = await focusSnapshot()
@@ -110,7 +110,7 @@ export async function foregroundRestores(options: RunOptions): Promise<ScenarioR
     const { frontmostApp, focusedWindow, cursor, zOrder } = await focusSnapshot()
     return { frontmostApp, focusedWindow, cursor, frontWindow: zOrder[0] ?? null }
   }
-  return withDesk({ [doc]: "omo qa foreground target\nsecond line\n" }, (sink) =>
+  return withDesk({ [doc]: "omc qa foreground target\nsecond line\n" }, (sink) =>
     withSession(options, {}, async (session) => {
       const before = await restored()
       const selectionBefore = await textEditSelection(doc)

@@ -1,6 +1,6 @@
 # Contributing to Oh My OpenCode
 
-First off, thanks for taking the time to contribute! This document provides guidelines and instructions for contributing to oh-my-opencode.
+First off, thanks for taking the time to contribute! This document provides guidelines and instructions for contributing to oh-my-cybersecurity.
 
 ## Table of Contents
 
@@ -71,8 +71,8 @@ If English isn't your first language, don't worry! We value your contributions r
 
 ```bash
 # Clone the repository (with the frontend provenance submodules)
-git clone --recurse-submodules https://github.com/code-yeongyu/oh-my-openagent.git
-cd oh-my-openagent
+git clone --recurse-submodules https://github.com/code-yeongyu/oh-my-cybersecurity.git
+cd oh-my-cybersecurity
 
 # If you cloned without --recurse-submodules, initialize them now (non-fatal offline):
 git submodule update --init --recursive
@@ -102,7 +102,7 @@ After making changes, you can test your local build in OpenCode:
 
    ```json
    {
-     "plugin": ["file:///absolute/path/to/oh-my-openagent/dist/index.js"]
+     "plugin": ["file:///absolute/path/to/oh-my-cybersecurity/dist/index.js"]
    }
    ```
 
@@ -110,23 +110,23 @@ After making changes, you can test your local build in OpenCode:
 
    ```json
    {
-     "plugin": ["file:///absolute/path/to/oh-my-openagent/packages/omo-opencode/src/index.ts"]
+     "plugin": ["file:///absolute/path/to/oh-my-cybersecurity/packages/omc-opencode/src/index.ts"]
    }
    ```
 
    The path must be **absolute** and contain a recognizable project name plus `(src|dist)/index.(ts|js)`. A relative `file://./...` path will not be detected by the installer.
 
-   > **Note**: Remove `"oh-my-openagent"` or `"oh-my-opencode"` from the plugin array if they exist, to avoid conflicts with the npm version.
+   > **Note**: Remove `"oh-my-cybersecurity"` or `"oh-my-cybersecurity"` from the plugin array if they exist, to avoid conflicts with the npm version.
 
 3. **Restart OpenCode** to load the changes.
 
-4. **Verify** the plugin is loaded by checking for OmO agent availability or startup messages.
+4. **Verify** the plugin is loaded by checking for OmC agent availability or startup messages.
 
 ## Development Environment
 
 The cross-harness one-command bootstrap is the single source of truth for all development environments.
 
-- **`script/agent/setup.sh`** verifies Bun, Node, and git, warns if tmux is missing, runs `bun install`, initializes the frontend provenance submodules and materializes their references (both non-fatal so an offline checkout still builds), and builds when `dist/index.js` is missing or `OMO_AGENT_FORCE_BUILD=1` is set.
+- **`script/agent/setup.sh`** verifies Bun, Node, and git, warns if tmux is missing, runs `bun install`, initializes the frontend provenance submodules and materializes their references (both non-fatal so an offline checkout still builds), and builds when `dist/index.js` is missing or `OMC_AGENT_FORCE_BUILD=1` is set.
 - **`script/agent/cleanup.sh`** removes regenerable transients by default. Pass `--deep` to also drop `dist/` and `node_modules/`; it leaves the `packages/shared-skills/upstreams/` submodules in place.
 - **`script/agent/cleanup-hook.sh`** launches cleanup from Claude Code `SessionEnd` without blocking shutdown.
 
@@ -144,7 +144,7 @@ All harnesses delegate to these scripts:
 The single source of truth is the `script/agent/` dev-environment contract: `setup.sh`, `cleanup.sh`, and harness launchers such as `cleanup-hook.sh`. Maintenance means keeping those scripts, harness wiring files, and pinned Dockerfile versions in sync.
 
 For slow language servers, optionally export
-`OMO_LSP_DIAGNOSTICS_FRESHNESS_TIMEOUT_MS=6000` before launching the harness or
+`OMC_LSP_DIAGNOSTICS_FRESHNESS_TIMEOUT_MS=6000` before launching the harness or
 shared daemon. Unset or invalid values keep the 3,000 ms default; valid values
 are positive integer milliseconds up to 2,147,483,647. Restart an existing
 daemon after changing it. The separate total request limit still applies; see
@@ -181,9 +181,9 @@ For containerized environments (Codespaces, Dev Containers, Docker), see [`.devc
 The repository is a monorepo with layered packages under `packages/`.
 
 ```
-oh-my-opencode/
+oh-my-cybersecurity/
 ├── packages/
-│   ├── omo-opencode/          # OpenCode Ultimate edition adapter and build entry
+│   ├── omc-opencode/          # OpenCode Ultimate edition adapter and build entry
 │   │   └── src/
 │   │       ├── index.ts         # Thin wrapper default-exporting PluginModule via createPluginModule()
 │   │       ├── plugin-config.ts # JSONC multi-level config (Zod v4)
@@ -197,7 +197,7 @@ oh-my-opencode/
 │   │       ├── cli/             # CLI: install, run, doctor, mcp-oauth, boulder, ulw-loop (Commander.js)
 │   │       ├── plugin/          # OpenCode hook handlers + 5-tier hook composition
 │   │       └── plugin-handlers/ # 6-phase config loading pipeline
-│   ├── omo-codex/               # Codex Light edition / lazycodex
+│   ├── omc-codex/               # Codex Light edition / lazycodex
 │   ├── utils/                   # Core package
 │   ├── model-core/              # Core package
 │   ├── prompts-core/            # Core package
@@ -243,7 +243,7 @@ bun run clean
 # Rebuild from scratch
 bun run clean && bun run build
 
-# Build schema only (after modifying packages/omo-opencode/src/config/schema/)
+# Build schema only (after modifying packages/omc-opencode/src/config/schema/)
 bun run build:schema
 
 # Run the root Bun test suite
@@ -263,7 +263,7 @@ Tests are co-located as `*.test.ts` files and follow a given/when/then style.
 | Types            | Use `bun-types`, not `@types/node`                                        |
 | Directory Naming | kebab-case (`ast-grep/`, `claude-code-hooks/`)                            |
 | File Operations  | Never use bash commands (mkdir/touch/rm) for file creation in code        |
-| Tool Structure   | `index.ts` (barrel), `types.ts`, `constants.ts`, and concern-split implementation files named after what they do. Generic catch-all dump modules are banned (see `.omo/rules/file-size-architectural-smell.md`). |
+| Tool Structure   | `index.ts` (barrel), `types.ts`, `constants.ts`, and concern-split implementation files named after what they do. Generic catch-all dump modules are banned (see `.omc/rules/file-size-architectural-smell.md`). |
 | Hook Pattern     | `createXXXHook(deps)` function naming                                     |
 | Exports          | Barrel pattern (`export * from "./module"` in index.ts)                   |
 
@@ -280,16 +280,16 @@ Tests are co-located as `*.test.ts` files and follow a given/when/then style.
 
 ### Adding a New Agent
 
-1. Create a new `.ts` file in `packages/omo-opencode/src/agents/`
+1. Create a new `.ts` file in `packages/omc-opencode/src/agents/`
 2. Export a factory `createXyzAgent(model): AgentConfig` where `AgentConfig` is imported from `@opencode-ai/sdk`
 3. Set the static `.mode` property on the factory to `"primary"`, `"subagent"`, or `"all"`
-4. Add the factory to the `agentSources` record in `packages/omo-opencode/src/agents/builtin-agents.ts`
-5. Add the new name to the `BuiltinAgentName` union in `packages/omo-opencode/src/agents/types.ts` AND to `BuiltinAgentNameSchema` (plus `OverridableAgentNameSchema` if it should be user-overridable) in `packages/omo-opencode/src/config/schema/agent-names.ts`. The schema enum is what `build:schema` emits, so updating only `types.ts` will not change the published JSON schema.
+4. Add the factory to the `agentSources` record in `packages/omc-opencode/src/agents/builtin-agents.ts`
+5. Add the new name to the `BuiltinAgentName` union in `packages/omc-opencode/src/agents/types.ts` AND to `BuiltinAgentNameSchema` (plus `OverridableAgentNameSchema` if it should be user-overridable) in `packages/omc-opencode/src/config/schema/agent-names.ts`. The schema enum is what `build:schema` emits, so updating only `types.ts` will not change the published JSON schema.
 6. Run `bun run build:schema` to regenerate the JSON schema
-7. Special agents (Sisyphus, Hephaestus, Atlas, Prometheus) have dedicated wiring under `packages/omo-opencode/src/agents/builtin-agents/`; a plain subagent only needs the `agentSources` entry from step 4
+7. Special agents (Sisyphus, Hephaestus, Atlas, Prometheus) have dedicated wiring under `packages/omc-opencode/src/agents/builtin-agents/`; a plain subagent only needs the `agentSources` entry from step 4
 
 ```typescript
-// packages/omo-opencode/src/agents/my-agent.ts
+// packages/omc-opencode/src/agents/my-agent.ts
 import type { AgentConfig } from "@opencode-ai/sdk";
 
 export function createMyAgent(model: string): AgentConfig {
@@ -308,14 +308,14 @@ createMyAgent.mode = "subagent" as const;
 
 ### Adding a New Hook
 
-1. Create a new directory in `packages/omo-opencode/src/hooks/` (kebab-case)
+1. Create a new directory in `packages/omc-opencode/src/hooks/` (kebab-case)
 2. Implement `createXyzHook(deps)` returning an object keyed by OpenCode hook names (for example `"tool.execute.before"`, `"chat.message"`, `"event"`) whose values are `(input, output) => void` handlers
-3. Re-export from `packages/omo-opencode/src/hooks/index.ts`
-4. Wire the hook into the matching tier composer in `packages/omo-opencode/src/plugin/hooks/create-*-hooks.ts` (Session / ToolGuard / Transform / Continuation / Skill) via `safeHook()`
-5. Add the hook name to `HookNameSchema` in `packages/omo-opencode/src/config/schema/hooks.ts`
+3. Re-export from `packages/omc-opencode/src/hooks/index.ts`
+4. Wire the hook into the matching tier composer in `packages/omc-opencode/src/plugin/hooks/create-*-hooks.ts` (Session / ToolGuard / Transform / Continuation / Skill) via `safeHook()`
+5. Add the hook name to `HookNameSchema` in `packages/omc-opencode/src/config/schema/hooks.ts`
 
 ```typescript
-// packages/omo-opencode/src/hooks/my-hook/index.ts
+// packages/omc-opencode/src/hooks/my-hook/index.ts
 export function createMyHook(deps: { logger: Logger }) {
   return {
     "chat.message": async (input: ChatMessageInput, output: ChatMessageOutput) => {
@@ -327,17 +327,17 @@ export function createMyHook(deps: { logger: Logger }) {
 
 ### Adding a New Tool
 
-1. Create a new directory in `packages/omo-opencode/src/tools/<name>/`
+1. Create a new directory in `packages/omc-opencode/src/tools/<name>/`
 2. Export a factory `createXyzTool(ctx): ToolDefinition` built with `tool({...})` from `@opencode-ai/plugin`
-3. Register the factory in the `ToolRegistryFactories` type and `defaultToolRegistryFactories` record in `packages/omo-opencode/src/plugin/tool-registry-factories.ts`
-4. Wire it into `createCoreTools()` in `tool-registry-core-tools.ts` for always-on tools, or a gated record in `tool-registry-gated-tools.ts` spread in `packages/omo-opencode/src/plugin/tool-registry.ts`
-5. Export from `packages/omo-opencode/src/tools/index.ts`
+3. Register the factory in the `ToolRegistryFactories` type and `defaultToolRegistryFactories` record in `packages/omc-opencode/src/plugin/tool-registry-factories.ts`
+4. Wire it into `createCoreTools()` in `tool-registry-core-tools.ts` for always-on tools, or a gated record in `tool-registry-gated-tools.ts` spread in `packages/omc-opencode/src/plugin/tool-registry.ts`
+5. Export from `packages/omc-opencode/src/tools/index.ts`
 
 ### Adding a New MCP Server
 
-1. Create a config factory in `packages/omo-opencode/src/mcp/<name>.ts` returning a `RemoteMcpConfig` (type `"remote"`, url) or `LocalMcpConfig` (type `"local"`, command)
-2. Register it inside `createBuiltinMcps()` in `packages/omo-opencode/src/mcp/index.ts`
-3. Add the MCP name to `McpNameSchema` in `packages/omo-opencode/src/mcp/types.ts`
+1. Create a config factory in `packages/omc-opencode/src/mcp/<name>.ts` returning a `RemoteMcpConfig` (type `"remote"`, url) or `LocalMcpConfig` (type `"local"`, command)
+2. Register it inside `createBuiltinMcps()` in `packages/omc-opencode/src/mcp/index.ts`
+3. Add the MCP name to `McpNameSchema` in `packages/omc-opencode/src/mcp/types.ts`
 4. Document in README if it requires external setup
 
 ## Security
@@ -346,7 +346,7 @@ Report suspected vulnerabilities privately, as described in [`SECURITY.md`](SECU
 
 ## QA Discipline
 
-Any change to `packages/omo-opencode` (the OpenCode side) must be QA'd with the `opencode-qa` skill. Any change to `packages/omo-codex` (the Codex Light side) must be QA'd with the `codex-qa` skill. Any change to `packages/omo-senpi` or `packages/senpi-task` (the Senpi side) must be QA'd with the `senpi-qa` skill. Record QA evidence under `.omo/evidence/<date>-<slug>/`; live Senpi QA records it under `.omo/evidence/omo-senpi-adapter/<slug>/`, resolved by `.agents/skills/senpi-qa/scripts/resolve-evidence-dir.mjs`. Evidence stays local: `.omo/evidence/` is gitignored and `script/tracked-evidence-paths-audit.test.ts` fails when any evidence path is tracked, so summarize the captures in the PR's QA & Evidence section instead of committing them.
+Any change to `packages/omc-opencode` (the OpenCode side) must be QA'd with the `opencode-qa` skill. Any change to `packages/omc-codex` (the Codex Light side) must be QA'd with the `codex-qa` skill. Any change to `packages/omc-senpi` or `packages/senpi-task` (the Senpi side) must be QA'd with the `senpi-qa` skill. Record QA evidence under `.omc/evidence/<date>-<slug>/`; live Senpi QA records it under `.omc/evidence/omc-senpi-adapter/<slug>/`, resolved by `.agents/skills/senpi-qa/scripts/resolve-evidence-dir.mjs`. Evidence stays local: `.omc/evidence/` is gitignored and `script/tracked-evidence-paths-audit.test.ts` fails when any evidence path is tracked, so summarize the captures in the PR's QA & Evidence section instead of committing them.
 
 "It typechecks" or "`bun test` is green" is not QA. You must drive the real harness and record the observed behavior.
 
@@ -376,7 +376,7 @@ Any change to `packages/omo-opencode` (the OpenCode side) must be QA'd with the 
 - [ ] `bun test` passes
 - [ ] `bun run test:codex` passes (if Codex-side changed)
 - [ ] Tested locally with OpenCode
-- [ ] QA evidence recorded under `.omo/evidence/` and summarized in the PR body, not committed (if harness-connected changes)
+- [ ] QA evidence recorded under `.omc/evidence/` and summarized in the PR body, not committed (if harness-connected changes)
 - [ ] Updated documentation if needed (README, AGENTS.md)
 - [ ] No version changes in `package.json`
 - [ ] AI assistance disclosed in the PR template's `## AI Assistance` section (if any part of the change came from an agent)
@@ -435,7 +435,7 @@ lives.
 ## Getting Help
 
 - **Project Knowledge**: Check `AGENTS.md` for detailed project documentation
-- **Code Patterns**: Review existing implementations in `packages/omo-opencode/src/`
+- **Code Patterns**: Review existing implementations in `packages/omc-opencode/src/`
 - **Issues**: Open an issue for bugs or feature requests
 - **Discussions**: Start a discussion for questions or ideas
 

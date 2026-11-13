@@ -33,7 +33,7 @@ import { startFakeOwner, type FakeOwner } from "./conformance/fake-owner.ts";
 import { PeerClosed, rawPeer, type RawPeer } from "./conformance/raw-peer.ts";
 import { defaultWorld, type World } from "./conformance/world.ts";
 
-export const OMO: ClientInfo = { name: "omo", version: "2.0.0" };
+export const OMO: ClientInfo = { name: "omc", version: "2.0.0" };
 export const INSTALLER: ClientInfo = { name: "installer", version: "2.0.0" };
 export const desktop = (data_home: string): ClientInfo => ({
   name: "desktop",

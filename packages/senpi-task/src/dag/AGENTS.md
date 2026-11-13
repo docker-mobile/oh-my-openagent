@@ -1,6 +1,6 @@
 # dag - Dependency-Frontier Task DAG Engine
 
-Compile a node definition into an execution graph, admit each node the moment every node it dependsOn has completed (plus a free resident slot), journal every boundary transition to a filesystem WAL, and recover runs after crashes. Largest subsystem in senpi-task (35 files, ~13.9k LOC; added after the 2026-07 package snapshot). Public surface: `index.ts` barrel + package subpath `./dag`; consumer is the omo-senpi task component (`dag-runtime.ts`, `dag-tool.ts`, `dag-rpc-bridge.ts`).
+Compile a node definition into an execution graph, admit each node the moment every node it dependsOn has completed (plus a free resident slot), journal every boundary transition to a filesystem WAL, and recover runs after crashes. 71 files (42 non-test, ~7.4k LOC; added after the 2026-07 package snapshot); second-largest subsystem after `src/runners/`. Public surface: `index.ts` barrel + package subpath `./dag`; consumer is the omc-senpi task component (`dag-runtime.ts`, `dag-tool.ts`, `dag-rpc-bridge.ts`).
 
 ## Anatomy
 
@@ -42,7 +42,7 @@ Recovery resolves the newest owned task before consulting the checkpoint's `task
 
 - Policy is fixed inside the definition fingerprint: `dependency-frontier` wave admission (was `strict-barrier` before 2026-08-25), `continue-independent` failure handling, filesystem-only dependency data.
 - Run reuse keys on the SUBMITTED definition (canonicalized). Amendments preserve eligible node state and invalidate affected dependents.
-- Boundary events are sequenced by the journal writer; live telemetry rides the unsequenced `omo.dag.activity` channel as a separate union.
+- Boundary events are sequenced by the journal writer; live telemetry rides the unsequenced `omc.dag.activity` channel as a separate union.
 - Node target rules mirror the task tool: category XOR `subagent_type`, model only with an agent route, error codes `both_targets` / `no_target` / `category_with_model`.
 
 ## Anti-patterns
@@ -50,13 +50,13 @@ Recovery resolves the newest owned task before consulting the checkpoint's `task
 - NEVER fold skill content, skill digests, or effective prompts into definition fingerprints; reuse must survive skill materialization changes.
 - NEVER key recovery by display attempt; read the persisted `execAttempt` (reattach bumps the display attempt).
 - NEVER resume a prior scheduler instance; cancellation deferreds and admission latches are single-shot. Use re-entry / retry / send controls. A re-entry drops `preAttachedTasks`: those ids describe children that were live for the PREVIOUS instance, and re-attaching a settled task folds its outcome onto the node twice.
-- NEVER treat a `live_lease` skip as final for an own-session run. The predecessor host that paused the run for its shutdown is usually still draining when the successor resumes the session (omo-desktop RPC restart), so a one-shot claim at `session_start` leaves the run paused forever; watch the reported `holderPid` and claim again when it is gone.
+- NEVER treat a `live_lease` skip as final for an own-session run. The predecessor host that paused the run for its shutdown is usually still draining when the successor resumes the session (omc-desktop RPC restart), so a one-shot claim at `session_start` leaves the run paused forever; watch the reported `holderPid` and claim again when it is gone.
 - NEVER probe our own pid for lease liveness. A signal-0 check on `process.pid` is always true, so a saved session reopened in the same multi-session host (fresh runtime, same `parentSessionId`, same pid) would wait for its own host to exit (#8006). For `holderPid === hostPid` the only holder that can matter is a scheduler still registered in this process; ask `isRunHeldInProcess`, and never arm a lease watch on our own pid.
 - NEVER block recovery's reconcile loop on a live child. A restart must emit reuse events and `dag.run.resumed` immediately and let the still-running child fold through the normal settle loop, or the run sits in `paused` for as long as the slowest child runs and every operator lever (amend, retry) refuses on `run_still_active`.
 - NEVER put activity events or journal seq/lane metadata into boundary builders.
 - Missing skills never fail a run; they become `missing_skill` diagnostics. Resumed runs read creation-time materialization, never current `SKILL.md`.
 - Wait surfaces resolve (not reject) failed/cancelled runs; callers inspect `DagRunResult`.
-- A vanished `<stateDir>/dag/*` directory (worktree cleanup, `rm -rf .omo`) reads as empty through `readDagDirectory` and is recreated by the next checkpoint/event/lock write; it must never surface as an ENOENT from `list`, retention, or recovery. The omo-senpi rpc bridge additionally treats any store read fault on its timer paths as "nothing to publish" (one warning per distinct fault), because a throw there is an `uncaughtException` that ends the session.
+- A vanished `<stateDir>/dag/*` directory (worktree cleanup, `rm -rf .omc`) reads as empty through `readDagDirectory` and is recreated by the next checkpoint/event/lock write; it must never surface as an ENOENT from `list`, retention, or recovery. The omc-senpi rpc bridge additionally treats any store read fault on its timer paths as "nothing to publish" (one warning per distinct fault), because a throw there is an `uncaughtException` that ends the session.
 
 ## QA
 

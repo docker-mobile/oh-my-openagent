@@ -6,7 +6,7 @@ const packageRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const packagesRoot = dirname(packageRoot);
 
 ensureDirectoryLink({
-	linkPath: join(packagesRoot, "lsp-core", "node_modules", "@oh-my-opencode", "mcp-stdio-core"),
+	linkPath: join(packagesRoot, "lsp-core", "node_modules", "@oh-my-cybersecurity", "mcp-stdio-core"),
 	targetPath: join(packagesRoot, "mcp-stdio-core"),
 });
 

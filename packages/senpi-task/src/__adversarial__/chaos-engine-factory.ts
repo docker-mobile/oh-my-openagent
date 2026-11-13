@@ -1,4 +1,4 @@
-import type { OmoTaskSettings } from "@oh-my-opencode/omo-config-core"
+import type { OmoTaskSettings } from "@oh-my-cybersecurity/omc-config-core"
 
 import { createTaskLifecycle } from "../lifecycle"
 import type { ResidentHandle, ResidencyRegistry, TaskLifecycle } from "../lifecycle"

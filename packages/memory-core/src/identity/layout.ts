@@ -1,11 +1,11 @@
 // Storage layout constants and path builders for memory identities.
 // Layout decision (plan todo 3): <memory-root>/agents/<safe-id>/{repo,runtime/...}
-// where memory-root = OMO_MEMORY_HOME override else ~/.omo/memory.
+// where memory-root = OMC_MEMORY_HOME override else ~/.omc/memory.
 
 import { homedir } from "node:os"
 import { join, resolve } from "node:path"
 
-export const MEMORY_ROOT_ENV_VAR = "OMO_MEMORY_HOME"
+export const MEMORY_ROOT_ENV_VAR = "OMC_MEMORY_HOME"
 export const AGENTS_DIRNAME = "agents"
 export const REPO_DIRNAME = "repo"
 export const RUNTIME_DIRNAME = "runtime"
@@ -45,7 +45,7 @@ export interface MemoryIdentityPaths {
 }
 
 export function defaultMemoryRoot(): string {
-  return join(homedir(), ".omo", "memory")
+  return join(homedir(), ".omc", "memory")
 }
 
 export function resolveMemoryRoot(env: Record<string, string | undefined>, cwd: string): string {

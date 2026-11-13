@@ -1,7 +1,7 @@
 export const VERSION_PATTERN = /^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z]+(?:\.[0-9A-Za-z]+)*))?$/
 export const KEEP_BETAS = 20
-const MIRRORED_ASSET = /^(?:omo-(?:darwin|linux|windows)-[a-z0-9-]+(?:\.exe)?|SHA256SUMS|senpi-desktop-engine-[A-Za-z0-9._-]+)$/
-const BINARY = /^omo-(?:darwin|linux|windows)-/
+const MIRRORED_ASSET = /^(?:omc-(?:darwin|linux|windows)-[a-z0-9-]+(?:\.exe)?|SHA256SUMS|senpi-desktop-engine-[A-Za-z0-9._-]+)$/
+const BINARY = /^omc-(?:darwin|linux|windows)-/
 const HEX64 = /^[0-9a-f]{64}$/
 
 export class MirrorPlanError extends Error {
@@ -38,13 +38,13 @@ function githubSha256(asset: ReleaseAsset): string | null {
 }
 
 /**
- * Every mirrored asset must carry a GitHub sha256 digest; every omo binary must also appear in SHA256SUMS
+ * Every mirrored asset must carry a GitHub sha256 digest; every omc binary must also appear in SHA256SUMS
  * with the same hash, and SHA256SUMS may not list a binary the release does not have.
  */
 export function planMirrorAssets(assets: readonly ReleaseAsset[], sums: ReadonlyMap<string, string>): MirrorAsset[] {
   const mirrored = assets.filter((asset) => MIRRORED_ASSET.test(asset.name))
   const binaries = mirrored.filter((asset) => BINARY.test(asset.name))
-  if (binaries.length === 0) throw new MirrorPlanError("release has no omo binaries to mirror")
+  if (binaries.length === 0) throw new MirrorPlanError("release has no omc binaries to mirror")
   if (!mirrored.some((asset) => asset.name === "SHA256SUMS")) throw new MirrorPlanError("release has no SHA256SUMS")
   for (const name of sums.keys()) {
     if (BINARY.test(name) && !binaries.some((asset) => asset.name === name)) {

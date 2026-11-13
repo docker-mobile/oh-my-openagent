@@ -3,9 +3,9 @@ import { tmpdir } from "node:os"
 
 import { isLocalFilesystemType, isOnLocalFilesystem } from "./local-filesystem"
 
-// omo #10604 review M2: on NFS, CIFS/SMB and FUSE, flock is emulated with process-scoped locks that a
+// omc #10604 review M2: on NFS, CIFS/SMB and FUSE, flock is emulated with process-scoped locks that a
 // git child does not inherit, so an idle git-activity lock there proves nothing about an orphaned git.
-describe("only a local filesystem lets the git-activity lock vouch (omo #10604)", () => {
+describe("only a local filesystem lets the git-activity lock vouch (omc #10604)", () => {
   test.each([
     ["ext4", 0xef53, true],
     ["xfs", 0x58465342, true],

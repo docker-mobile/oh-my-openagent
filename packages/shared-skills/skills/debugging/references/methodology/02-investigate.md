@@ -66,7 +66,7 @@ Branch depending on what's available.
 
 When the `team_*` tools are present, create a **debug-squad** team and split investigation across members working on different evidence sources. This is the right default whenever you have ≥3 hypotheses and any of them would take >10 minutes to investigate single-threaded.
 
-**Team spec** — write to `.omo/teams/debug-squad/config.json` under the project root (the project-scoped spec location the team loader reads):
+**Team spec** — write to `.omc/teams/debug-squad/config.json` under the project root (the project-scoped spec location the team loader reads):
 
 ```json
 {

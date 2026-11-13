@@ -12,7 +12,7 @@ import { join } from "node:path"
  *
  * Regression pinned (2026-09-12, 5.0.0-beta.57, #8182): `npm publish` succeeded at 06:08:39Z, the
  * registry exposed the version at 06:12:54Z, and the smoke gave up at 06:12:23Z after 12 x 10 s -
- * a false failure of a successful publish, the same shape the omo-ai readiness loop was cured of
+ * a false failure of a successful publish, the same shape the omc-ai readiness loop was cured of
  * in `publish-readiness-budget.test.ts`.
  */
 
@@ -38,7 +38,7 @@ function runSmoke(readyAfterViews: number): Outcome {
     const preamble = [
       "npm() {",
       '  local n; n=$(cat "$COUNTER"); n=$((n+1)); printf "%s" "$n" > "$COUNTER"',
-      '  if [ "$n" -gt "$READY_AFTER" ]; then printf "%s\\n" "$OMO_VERSION"; return 0; fi',
+      '  if [ "$n" -gt "$READY_AFTER" ]; then printf "%s\\n" "$OMC_VERSION"; return 0; fi',
       "  return 1",
       "}",
       "npx() { return 1; }",
@@ -50,7 +50,7 @@ function runSmoke(readyAfterViews: number): Outcome {
     writeFileSync(script, preamble + smokeRunBlock())
     const result = spawnSync("bash", [script], {
       encoding: "utf8",
-      env: { ...process.env, COUNTER: counter, SLEEPS: sleeps, READY_AFTER: String(readyAfterViews), OMO_VERSION: "5.0.0-beta.57", DIST_TAG: "beta", GITHUB_WORKSPACE: root },
+      env: { ...process.env, COUNTER: counter, SLEEPS: sleeps, READY_AFTER: String(readyAfterViews), OMC_VERSION: "5.0.0-beta.57", DIST_TAG: "beta", GITHUB_WORKSPACE: root },
     })
     const sleptSeconds = readFileSync(sleeps, "utf8").split("\n").filter(Boolean).reduce((sum, line) => sum + Number(line), 0)
     return { status: result.status ?? -1, output: result.stdout + result.stderr, npmViews: Number(readFileSync(counter, "utf8").trim()), sleptSeconds }

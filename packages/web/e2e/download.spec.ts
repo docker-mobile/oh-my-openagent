@@ -60,7 +60,7 @@ test.describe("Download page", () => {
     await expect(primary).toHaveText(/Download for macOS/)
     await expect(primary).toHaveAttribute(
       "href",
-      "https://get.omo.dev/stable/0.1.0/OmO-0.1.0-arm64.dmg",
+      "https://get.omc.nga.hm/stable/0.1.0/OmC-0.1.0-arm64.dmg",
     )
     await expect(page.getByTestId("download-primary-meta")).toContainText("0.1.0")
     await expect(page.getByTestId("download-primary-meta")).toContainText("Apple silicon")
@@ -76,7 +76,7 @@ test.describe("Download page", () => {
     // then
     await expect(page.getByTestId("download-primary")).toHaveAttribute(
       "href",
-      "https://get.omo.dev/stable/0.1.0/OmO-0.1.0-x64.dmg",
+      "https://get.omc.nga.hm/stable/0.1.0/OmC-0.1.0-x64.dmg",
     )
     await expect(page.getByTestId("download-primary-meta")).toContainText("Intel")
   })
@@ -150,13 +150,13 @@ test.describe("Download page", () => {
     )
     await expect(page.getByRole("heading", { name: "Verify your download" })).toBeVisible()
     await expect(
-      page.locator("pre code", { hasText: "Get-FileHash OmO-0.1.0-x64.exe" }),
+      page.locator("pre code", { hasText: "Get-FileHash OmC-0.1.0-x64.exe" }),
     ).toBeVisible()
     await expect(
-      page.locator("pre code", { hasText: "shasum -a 256 OmO-0.1.0-arm64.dmg" }),
+      page.locator("pre code", { hasText: "shasum -a 256 OmC-0.1.0-arm64.dmg" }),
     ).toBeVisible()
     await expect(
-      page.locator("pre code", { hasText: "sha256sum OmO-0.1.0-amd64.deb" }),
+      page.locator("pre code", { hasText: "sha256sum OmC-0.1.0-amd64.deb" }),
     ).toBeVisible()
   })
 
@@ -173,7 +173,7 @@ test.describe("Download page", () => {
     // then
     await expect(page.getByRole("link", { name: "Release notes" })).toHaveAttribute(
       "href",
-      "https://get.omo.dev/stable/0.1.0/RELEASE-NOTES.md",
+      "https://get.omc.nga.hm/stable/0.1.0/RELEASE-NOTES.md",
     )
     const hrefs = await page
       .locator("main a[href]")
@@ -193,7 +193,7 @@ test.describe("Download page", () => {
     // then
     await expect(page.getByTestId("download-primary")).toHaveAttribute(
       "href",
-      "https://get.omo.dev/beta/0.2.0-beta.3/OmO-0.2.0-beta.3-arm64.dmg",
+      "https://get.omc.nga.hm/beta/0.2.0-beta.3/OmC-0.2.0-beta.3-arm64.dmg",
     )
     await expect(page.getByTestId("download-primary-meta")).toContainText("0.2.0-beta.3")
   })
@@ -230,7 +230,7 @@ test.describe("Download page", () => {
     await expect(page.getByTestId("installer-row")).toHaveCount(2)
     await expect(page.getByTestId("missing-os-row")).toHaveText([/Windows/, /Linux/])
     await expect(page.getByTestId("verify-command")).toHaveText([
-      /shasum -a 256 OmO-0\.1\.0-arm64\.dmg/,
+      /shasum -a 256 OmC-0\.1\.0-arm64\.dmg/,
     ])
   })
 
@@ -360,7 +360,7 @@ test.describe("Download page", () => {
     // then
     await expect(page.getByTestId("download-primary")).toHaveAttribute("href", /arm64\.dmg$/)
     await expect(page.getByTestId("download-primary")).toHaveText(/macOS/)
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("OmO 다운로드")
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("OmC 다운로드")
   })
 })
 
@@ -390,6 +390,6 @@ test.describe("Getting to the download page", () => {
 
     // then
     await expect(page).toHaveURL(/\/download$/)
-    await expect(page.getByRole("heading", { level: 1, name: /Download OmO/ })).toBeVisible()
+    await expect(page.getByRole("heading", { level: 1, name: /Download OmC/ })).toBeVisible()
   })
 })

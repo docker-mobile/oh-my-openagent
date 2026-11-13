@@ -17,7 +17,7 @@ export type ControlOwnerPort = Pick<TaskPauseMethods, "pauseTask" | "holdTaskInp
   cancelTask(taskId: string, reason?: string, options?: CancelOptions): Promise<CancelOutcome>
   readonly barrier?: AdmissionBarrier
   // The rest of the owner's own resume transaction for its Stop's root: the held admissions of
-  // that root and the controller's released bookkeeping. Absent outside the omo-senpi wiring.
+  // that root and the controller's released bookkeeping. Absent outside the omc-senpi wiring.
   releaseRemoteStop?(input: {
     readonly parentSessionId: string
     readonly pauseSeq: number

@@ -29,7 +29,7 @@ export function agentEndOutcome(
   const aborted = readBooleanField(event, "aborted")
   const abortSource = readAbortSource(event)
   const abortedBy = readAbortedBy(event)
-  // omo's own abort is a cancellation no matter how the run then reports its end.
+  // omc's own abort is a cancellation no matter how the run then reports its end.
   if (abortedByUser) return { status: "cancelled" }
   // A host that replaced the session stopped the turn; that cause outranks a generic user abort.
   const replaced = aborted ? replacementCause(event) : undefined

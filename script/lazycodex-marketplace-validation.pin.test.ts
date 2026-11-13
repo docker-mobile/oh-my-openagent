@@ -11,15 +11,15 @@ async function writePluginMcpManifest(pluginRoot: string, manifest: unknown): Pr
 
 async function writeRootCliRuntime(pluginRoot: string): Promise<void> {
   await mkdir(join(pluginRoot, "dist", "cli"), { recursive: true })
-  await writeFile(join(pluginRoot, "dist", "cli", "index.js"), "console.log('omo')\n")
+  await writeFile(join(pluginRoot, "dist", "cli", "index.js"), "console.log('omc')\n")
   await mkdir(join(pluginRoot, "dist", "cli-node"), { recursive: true })
-  await writeFile(join(pluginRoot, "dist", "cli-node", "index.js"), "console.log('omo node')\n")
+  await writeFile(join(pluginRoot, "dist", "cli-node", "index.js"), "console.log('omc node')\n")
 }
 
 describe("lazycodex marketplace validation guards", () => {
-  test("#given root runtime dists #when validating the plugin bundle #then root omo runtime targets are accepted", async () => {
+  test("#given root runtime dists #when validating the plugin bundle #then root omc runtime targets are accepted", async () => {
     // given
-    const pluginRoot = await mkdtemp(join(tmpdir(), "omo-marketplace-root-runtime-"))
+    const pluginRoot = await mkdtemp(join(tmpdir(), "omc-marketplace-root-runtime-"))
     await writeRootCliRuntime(pluginRoot)
 
     try {
@@ -33,11 +33,11 @@ describe("lazycodex marketplace validation guards", () => {
     }
   })
 
-  test("#given missing root runtime dist #when validating the plugin bundle #then the root omo runtime target is rejected", async () => {
+  test("#given missing root runtime dist #when validating the plugin bundle #then the root omc runtime target is rejected", async () => {
     // given
-    const pluginRoot = await mkdtemp(join(tmpdir(), "omo-marketplace-missing-root-runtime-"))
+    const pluginRoot = await mkdtemp(join(tmpdir(), "omc-marketplace-missing-root-runtime-"))
     await mkdir(join(pluginRoot, "dist", "cli-node"), { recursive: true })
-    await writeFile(join(pluginRoot, "dist", "cli-node", "index.js"), "console.log('omo node')\n")
+    await writeFile(join(pluginRoot, "dist", "cli-node", "index.js"), "console.log('omc node')\n")
 
     try {
       // when
@@ -52,7 +52,7 @@ describe("lazycodex marketplace validation guards", () => {
 
   test("#given previous payload reconstruction #when root runtime dists are optional #then the bundle can still be inspected", async () => {
     // given
-    const pluginRoot = await mkdtemp(join(tmpdir(), "omo-marketplace-previous-payload-"))
+    const pluginRoot = await mkdtemp(join(tmpdir(), "omc-marketplace-previous-payload-"))
 
     try {
       // when
@@ -65,11 +65,11 @@ describe("lazycodex marketplace validation guards", () => {
     }
   })
 
-  test("#given zero-byte root runtime dist #when validating the plugin bundle #then the root omo runtime target is rejected", async () => {
+  test("#given zero-byte root runtime dist #when validating the plugin bundle #then the root omc runtime target is rejected", async () => {
     // given
-    const pluginRoot = await mkdtemp(join(tmpdir(), "omo-marketplace-zero-root-runtime-"))
+    const pluginRoot = await mkdtemp(join(tmpdir(), "omc-marketplace-zero-root-runtime-"))
     await mkdir(join(pluginRoot, "dist", "cli"), { recursive: true })
-    await writeFile(join(pluginRoot, "dist", "cli", "index.js"), "console.log('omo')\n")
+    await writeFile(join(pluginRoot, "dist", "cli", "index.js"), "console.log('omc')\n")
     await mkdir(join(pluginRoot, "dist", "cli-node"), { recursive: true })
     await writeFile(join(pluginRoot, "dist", "cli-node", "index.js"), "")
 
@@ -84,15 +84,15 @@ describe("lazycodex marketplace validation guards", () => {
     }
   })
 
-  test("#given root runtime symlink escapes the plugin #when validating the plugin bundle #then the root omo runtime target is rejected", async () => {
+  test("#given root runtime symlink escapes the plugin #when validating the plugin bundle #then the root omc runtime target is rejected", async () => {
     // given
-    const pluginRoot = await mkdtemp(join(tmpdir(), "omo-marketplace-symlink-root-runtime-"))
-    const externalRoot = await mkdtemp(join(tmpdir(), "omo-marketplace-external-runtime-"))
+    const pluginRoot = await mkdtemp(join(tmpdir(), "omc-marketplace-symlink-root-runtime-"))
+    const externalRoot = await mkdtemp(join(tmpdir(), "omc-marketplace-external-runtime-"))
     await mkdir(join(pluginRoot, "dist", "cli"), { recursive: true })
     await writeFile(join(externalRoot, "index.js"), "console.log('outside')\n")
     await symlink(join(externalRoot, "index.js"), join(pluginRoot, "dist", "cli", "index.js"))
     await mkdir(join(pluginRoot, "dist", "cli-node"), { recursive: true })
-    await writeFile(join(pluginRoot, "dist", "cli-node", "index.js"), "console.log('omo node')\n")
+    await writeFile(join(pluginRoot, "dist", "cli-node", "index.js"), "console.log('omc node')\n")
 
     try {
       // when
@@ -108,7 +108,7 @@ describe("lazycodex marketplace validation guards", () => {
 
   test("#given a root per-hook manifest references a missing command #when validating the plugin bundle #then the target is rejected", async () => {
     // given
-    const pluginRoot = await mkdtemp(join(tmpdir(), "omo-marketplace-root-hook-manifest-"))
+    const pluginRoot = await mkdtemp(join(tmpdir(), "omc-marketplace-root-hook-manifest-"))
     await writeRootCliRuntime(pluginRoot)
     await mkdir(join(pluginRoot, "hooks"), { recursive: true })
     await writeFile(
@@ -146,7 +146,7 @@ describe("lazycodex marketplace validation guards", () => {
 
   test("#given a plugin-local MCP runtime path is missing #when validating the plugin bundle #then the target is rejected", async () => {
     // given
-    const pluginRoot = await mkdtemp(join(tmpdir(), "omo-marketplace-lsp-runtime-"))
+    const pluginRoot = await mkdtemp(join(tmpdir(), "omc-marketplace-lsp-runtime-"))
     await writeRootCliRuntime(pluginRoot)
     await writePluginMcpManifest(pluginRoot, {
       mcpServers: {
@@ -171,7 +171,7 @@ describe("lazycodex marketplace validation guards", () => {
 
   test("#given a managed bin target is missing #when validating the plugin bundle #then the bin target is rejected once", async () => {
     // given
-    const pluginRoot = await mkdtemp(join(tmpdir(), "omo-marketplace-missing-bin-"))
+    const pluginRoot = await mkdtemp(join(tmpdir(), "omc-marketplace-missing-bin-"))
     await writeRootCliRuntime(pluginRoot)
     await mkdir(join(pluginRoot, "components", "ulw-loop"), { recursive: true })
     await writeFile(
@@ -179,7 +179,7 @@ describe("lazycodex marketplace validation guards", () => {
       `${JSON.stringify(
         {
           name: "@code-yeongyu/codex-ulw-loop",
-          bin: { "omo-ulw-loop": "./dist/cli.js", ulw: "./dist/cli.js", "ulw-loop": "./dist/cli.js" },
+          bin: { "omc-ulw-loop": "./dist/cli.js", ulw: "./dist/cli.js", "ulw-loop": "./dist/cli.js" },
         },
         null,
         2,
@@ -199,7 +199,7 @@ describe("lazycodex marketplace validation guards", () => {
 
   test("#given managed bin targets exist #when validating the plugin bundle #then the bin targets are accepted", async () => {
     // given
-    const pluginRoot = await mkdtemp(join(tmpdir(), "omo-marketplace-bin-"))
+    const pluginRoot = await mkdtemp(join(tmpdir(), "omc-marketplace-bin-"))
     await writeRootCliRuntime(pluginRoot)
     await mkdir(join(pluginRoot, "components", "ulw-execute-continuation", "dist"), { recursive: true })
     await writeFile(
@@ -207,7 +207,7 @@ describe("lazycodex marketplace validation guards", () => {
       `${JSON.stringify(
         {
           name: "@code-yeongyu/codex-ulw-execute-continuation",
-          bin: { "omo-ulw-execute-continuation": "./dist/cli.js" },
+          bin: { "omc-ulw-execute-continuation": "./dist/cli.js" },
         },
         null,
         2,
@@ -228,7 +228,7 @@ describe("lazycodex marketplace validation guards", () => {
 
   test("#given an array mcpServers manifest #when validating the plugin bundle #then the manifest is rejected", async () => {
     // given
-    const pluginRoot = await mkdtemp(join(tmpdir(), "omo-marketplace-array-manifest-"))
+    const pluginRoot = await mkdtemp(join(tmpdir(), "omc-marketplace-array-manifest-"))
     await writeRootCliRuntime(pluginRoot)
     await writePluginMcpManifest(pluginRoot, { mcpServers: [] })
 
@@ -245,7 +245,7 @@ describe("lazycodex marketplace validation guards", () => {
 
   test("#given an array root mcp manifest #when validating the plugin bundle #then the manifest is rejected", async () => {
     // given
-    const pluginRoot = await mkdtemp(join(tmpdir(), "omo-marketplace-array-root-"))
+    const pluginRoot = await mkdtemp(join(tmpdir(), "omc-marketplace-array-root-"))
     await writeRootCliRuntime(pluginRoot)
     await writePluginMcpManifest(pluginRoot, [])
 

@@ -18,7 +18,7 @@ export const AGENT_INTERACTION_POLICIES = {
     sendDenialReminder: `<system-reminder>
 The plan reviewer is a one-shot plan-review specialist. The only verbs available are task (create), task_cancel (cancel), and task_output (read); task_send is refused in every state - while running, while pending, and after completion - because each plan-reviewer session runs a single review to completion without external steering.
 
-The harness already replaced the spawn prompt with the canonical plan-review contract: a single .omo/plans/*.md path, analyzed for contradictions and blocking issues only. Any other prompt content the caller supplied was discarded before launch.
+The harness already replaced the spawn prompt with the canonical plan-review contract: a single .omc/plans/*.md path, analyzed for contradictions and blocking issues only. Any other prompt content the caller supplied was discarded before launch.
 
 Appealing to, briefing, or explaining anything to the plan reviewer is strictly forbidden. The reviewer does not accept context, clarifications, or follow-up instructions; it works solely from the plan document.
 

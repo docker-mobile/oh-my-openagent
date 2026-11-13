@@ -1,4 +1,4 @@
-import type { OmoTaskTranscriptRetention } from "@oh-my-opencode/omo-config-core"
+import type { OmoTaskTranscriptRetention } from "@oh-my-cybersecurity/omc-config-core"
 
 import { isSpawnSpecV1, type TaskRecord } from "../state"
 import type { PersistedTaskEvent } from "../store"
@@ -8,15 +8,15 @@ import type { TranscriptRetentionSelection } from "./selection"
 // Machine-consumed marker of the metadata entry inside an archived session JSONL. The session
 // header/session_info lines make the archive discoverable by the existing Senpi session finder;
 // this entry carries the structured facts an auditor joins on.
-export const TASK_ARCHIVE_CUSTOM_TYPE = "omo-senpi.task-archive"
+export const TASK_ARCHIVE_CUSTOM_TYPE = "omc-senpi.task-archive"
 
 // Machine-consumed marker of the manifest's pointer entry naming the compressed content file.
-export const TASK_ARCHIVE_CONTENT_CUSTOM_TYPE = "omo-senpi.task-archive.content"
+export const TASK_ARCHIVE_CONTENT_CUSTOM_TYPE = "omc-senpi.task-archive.content"
 
-const TASK_TOOL_CUSTOM_TYPE = "omo-senpi.task-tool"
-const TASK_ERROR_CUSTOM_TYPE = "omo-senpi.task-error"
-const TASK_TEAM_MESSAGE_CUSTOM_TYPE = "omo-senpi.task-team-message"
-const TASK_FALLBACK_CUSTOM_TYPE = "omo-senpi.task-fallback"
+const TASK_TOOL_CUSTOM_TYPE = "omc-senpi.task-tool"
+const TASK_ERROR_CUSTOM_TYPE = "omc-senpi.task-error"
+const TASK_TEAM_MESSAGE_CUSTOM_TYPE = "omc-senpi.task-team-message"
+const TASK_FALLBACK_CUSTOM_TYPE = "omc-senpi.task-fallback"
 const TASK_ARCHIVE_SCHEMA_VERSION = 2
 
 export type ArchiveEntry = {
@@ -74,7 +74,7 @@ export function composeTaskArchiveManifestJsonl(input: ComposeTaskArchiveInput, 
     type: "session_info",
     id: "00000000",
     timestamp: terminalAt(record),
-    name: `omo task ${record.name ?? record.task_id} (${record.status})`,
+    name: `omc task ${record.name ?? record.task_id} (${record.status})`,
   }
   const metadata = metadataOf(input, {
     count: input.events.length,
@@ -123,7 +123,7 @@ export function composeTaskArchiveContentJsonl(input: ComposeTaskArchiveInput): 
     type: "session_info",
     id: "00000000",
     timestamp: terminalAt(record),
-    name: `omo task ${record.name ?? record.task_id} (${record.status})`,
+    name: `omc task ${record.name ?? record.task_id} (${record.status})`,
   }
   const bounded = boundToBudget(transcriptEntriesOf(input), input.settings.max_bytes)
   const lines = [

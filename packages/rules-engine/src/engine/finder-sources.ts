@@ -4,7 +4,7 @@ import type { RuleSource } from "./types.js";
 export function toProjectRuleSource(parentDirectory: string, subDirectory: string): RuleSource {
 	const source = `${parentDirectory}/${subDirectory}`;
 	switch (source) {
-		case ".omo/rules":
+		case ".omc/rules":
 		case ".claude/rules":
 		case ".cursor/rules":
 		case ".github/instructions":
@@ -27,7 +27,7 @@ export function toProjectSingleFileSource(ruleFile: string): RuleSource {
 export function toUserHomeRuleSource(ruleSubdir: string): RuleSource {
 	const source = `~/${ruleSubdir}`;
 	switch (source) {
-		case "~/.omo/rules":
+		case "~/.omc/rules":
 		case "~/.opencode/rules":
 		case "~/.claude/rules":
 			return source;

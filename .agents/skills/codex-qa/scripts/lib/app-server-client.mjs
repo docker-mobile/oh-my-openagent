@@ -1,6 +1,6 @@
 // app-server-client.mjs - drive a real `codex app-server` turn for QA.
 //
-// This is the FIRST-PARTY way to QA the omo Codex plugin: instead of scripting
+// This is the FIRST-PARTY way to QA the omc Codex plugin: instead of scripting
 // the TUI, we speak the app-server's own protocol (newline-delimited JSON over
 // stdio - NO "jsonrpc" field) and watch the structured notification stream.
 //

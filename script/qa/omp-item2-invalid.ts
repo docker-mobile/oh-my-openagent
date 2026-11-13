@@ -2,7 +2,7 @@ import assert from "node:assert/strict"
 import { mkdtempSync, rmSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
-import { OmoTaskSettingsSchema } from "@oh-my-opencode/omo-config-core"
+import { OmoTaskSettingsSchema } from "@oh-my-cybersecurity/omc-config-core"
 import { createTaskLifecycle, NO_HOST_ENDPOINT } from "../../packages/senpi-task/src/lifecycle"
 import type { ResidencyRegistry } from "../../packages/senpi-task/src/lifecycle/port"
 import { createTaskManager } from "../../packages/senpi-task/src/manager/manager"
@@ -22,7 +22,7 @@ function run(mode: MeasurementRun["mode"], extra: Partial<MeasurementRun> = {}):
 function pair(runs: MeasurementRun[], extra: Record<string, unknown> = {}) {
   return finalizeReport({
     schema_version: 1, plan_sha256: digest, design: "AB/BA", width: 2, batch_sha256: hash("b"),
-    source_sha256: hash("c"), item_count: 12, senpi_items: 6, omo_items: 6, token_coverage: true,
+    source_sha256: hash("c"), item_count: 12, senpi_items: 6, omc_items: 6, token_coverage: true,
     budget_exhausted: false, duplicate_dispatches: 0, uncertain_dispatches: 0, runs, ...extra,
   })
 }

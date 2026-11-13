@@ -51,14 +51,14 @@ describe("createTeam", () => {
       leadSessionId: "lead-session",
       spawnDepth: 1,
       memberExtension: {
-        entryPath: "/tmp/omo-member.js",
+        entryPath: "/tmp/omc-member.js",
         inheritedExtensions: ["/tmp/mock-provider.ts"],
       },
     })
 
     // then
     const started = manager.started[0]
-    expect(started?.extensions).toEqual(["/tmp/omo-member.js", "/tmp/mock-provider.ts"])
+    expect(started?.extensions).toEqual(["/tmp/omc-member.js", "/tmp/mock-provider.ts"])
     expect(started?.memberEnv?.["SENPI_TASK_MEMBER"]).toBe(`${created.runtimeState.teamRunId}::alpha`)
     const config = JSON.parse(started?.memberEnv?.["SENPI_TASK_TEAM_CONFIG"] ?? "null")
     expect(config).toMatchObject({

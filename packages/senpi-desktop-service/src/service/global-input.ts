@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { EngineMethod } from "@oh-my-opencode/senpi-desktop-protocol";
+import type { EngineMethod } from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import type { ControlGrants } from "./control-grants";
 import { type CallOptions, DesktopEngineRpcError, DesktopServiceError } from "./rpc-client";
 import type { Connection } from "./session-state";

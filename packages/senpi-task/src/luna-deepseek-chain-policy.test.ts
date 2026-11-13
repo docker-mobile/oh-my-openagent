@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test"
-import type { DelegateFallbackEntry } from "@oh-my-opencode/delegate-core"
+import type { DelegateFallbackEntry } from "@oh-my-cybersecurity/delegate-core"
 
 import { AGENT_FALLBACK_CHAINS } from "./agents/builtin/fallback-chains"
 import { CATEGORY_FALLBACK_CHAINS } from "./category/fallback-chains"

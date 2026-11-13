@@ -70,7 +70,7 @@ describe("extractReleaseNotes", () => {
 
 describe("composeReleaseBody", () => {
   test("#given notes, contributors and a footer #when composed #then order is notes, contributors, footer", () => {
-    const body = composeReleaseBody("### Added\n\n- thing", "**Thanks:**\n- @someone", "\`\`\`bash\nnpm i -g omo-ai@beta\n\`\`\`")
+    const body = composeReleaseBody("### Added\n\n- thing", "**Thanks:**\n- @someone", "\`\`\`bash\nnpm i -g omc-ai@beta\n\`\`\`")
     expect(body.indexOf("- thing")).toBeLessThan(body.indexOf("@someone"))
     expect(body.indexOf("@someone")).toBeLessThan(body.indexOf("npm i -g"))
     expect(body.endsWith("\n")).toBe(true)
@@ -84,12 +84,12 @@ describe("composeReleaseBody", () => {
 describe("installFooter", () => {
   test("#given a stable version #then the footer installs the bare package", async () => {
     const { installFooter } = await import("./print-release-notes")
-    expect(installFooter("5.0.0")).toContain("bun add -g omo-ai\n")
+    expect(installFooter("5.0.0")).toContain("bun add -g omc-ai\n")
     expect(installFooter("5.0.0")).not.toContain("@beta")
   })
 
   test("#given a prerelease version #then the footer installs the beta tag", async () => {
     const { installFooter } = await import("./print-release-notes")
-    expect(installFooter("5.0.0-beta.91")).toContain("bun add -g omo-ai@beta")
+    expect(installFooter("5.0.0-beta.91")).toContain("bun add -g omc-ai@beta")
   })
 })

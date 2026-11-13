@@ -14,7 +14,7 @@ import { nativeEd25519Verify } from "./native-control.ts"
 
 // The device service client verifies release signatures through a byte-identical copy of the repository's canonical
 // strict Ed25519 helper. The copy never changes on its own: it must keep PIN.json's sha256 values and stay equal to
-// the copy the sync client ships (packages/memory-core), and the shared corpus must pass on the runtime omo ships on.
+// the copy the sync client ships (packages/memory-core), and the shared corpus must pass on the runtime omc ships on.
 const VENDORED = join(import.meta.dir, "../../src/strict-ed25519")
 const CANONICAL = join(import.meta.dir, "../../../memory-core/src/sync/crypto/strict-ed25519")
 const FILES = { "strict-ed25519.ts": pin.module, "strict-ed25519-corpus.json": pin.corpus } as const

@@ -26,7 +26,7 @@ async function fixture(): Promise<{
   noticesDir: string
   locksDir: string
 }> {
-  const root = realpathSync.native(await mkdtemp(join(tmpdir(), "omo-soul-watermark-")))
+  const root = realpathSync.native(await mkdtemp(join(tmpdir(), "omc-soul-watermark-")))
   roots.push(root)
   const repo = new GitMemoryRepo({ dir: join(root, "repo"), agentId: AUTHOR.agentId })
   await repo.init({ authorName: AUTHOR.authorName })

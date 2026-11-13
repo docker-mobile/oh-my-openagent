@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import type { TaskRecord } from "../state"
 import { nowIso, TERMINAL_STATUSES, type LifecycleContext } from "./context"
@@ -108,7 +108,7 @@ export async function suspendHandle(
     await bestEffort(handle.task_id, "abort", () => withinTeardownBudget(context.teardownStepDeadline, target, "abort", () => handle.abort()))
   }
   // A finished child's session stays loaded on the daemon after the detach: its terminal status goes
-  // out first, over the attachment, so a successor host drops the park instead of reopening it (omo#10778).
+  // out first, over the attachment, so a successor host drops the park instead of reopening it (omc#10778).
   const status = owns() ? context.store.load(handle.task_id)?.status : undefined
   const publish = handle.publishTaskStatus?.bind(handle)
   if (status !== undefined && TERMINAL_STATUSES.has(status) && publish !== undefined) {

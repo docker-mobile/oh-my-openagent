@@ -341,13 +341,13 @@ describe("post-commit mirror push", () => {
     return join(repo, ".git", "memory-repository-push.log")
   }
 
-  const SYNC = { OMO_MEMORY_PUSH_SYNC: "1" }
+  const SYNC = { OMC_MEMORY_PUSH_SYNC: "1" }
 
   it("#given a configured mirror #when a commit lands on main #then it is pushed and logged", async () => {
     // given
     const dir = await createRepo()
     const mirror = await createMirror()
-    await run(["git", "config", "--local", "omo.memoryRepository.url", `file://${mirror}`], dir)
+    await run(["git", "config", "--local", "omc.memoryRepository.url", `file://${mirror}`], dir)
 
     // when
     const result = await commit(dir, { "system/persona.md": VALID }, "remember", SYNC)
@@ -377,7 +377,7 @@ describe("post-commit mirror push", () => {
     // given
     const dir = await createRepo()
     const mirror = await createMirror()
-    await run(["git", "config", "--local", "omo.memoryRepository.url", `file://${mirror}`], dir)
+    await run(["git", "config", "--local", "omc.memoryRepository.url", `file://${mirror}`], dir)
     await commit(dir, { "system/persona.md": VALID }, "seed", SYNC)
     await rm(logPath(dir))
 
@@ -396,7 +396,7 @@ describe("post-commit mirror push", () => {
     // given
     const dir = await createRepo()
     const missing = join(await tempDir("memory-missing-"), "gone.git")
-    await run(["git", "config", "--local", "omo.memoryRepository.url", `file://${missing}`], dir)
+    await run(["git", "config", "--local", "omc.memoryRepository.url", `file://${missing}`], dir)
 
     // when
     const result = await commit(dir, { "system/persona.md": VALID }, "remember", SYNC)
@@ -412,7 +412,7 @@ describe("post-commit mirror push", () => {
     // given
     const dir = await createRepo()
     const mirror = await createMirror()
-    await run(["git", "config", "--local", "omo.memoryRepository.url", `file://${mirror}`], dir)
+    await run(["git", "config", "--local", "omc.memoryRepository.url", `file://${mirror}`], dir)
 
     // when
     const result = await commit(dir, { "system/persona.md": VALID }, "background remember")

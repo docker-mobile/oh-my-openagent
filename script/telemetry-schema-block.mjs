@@ -1,16 +1,16 @@
 import { pathToFileURL } from "node:url"
 
 import {
-  OMO_NATIVE_COMMON_PROPERTY_SCHEMAS,
-  OMO_NATIVE_EVENT_SCHEMAS,
-} from "../packages/omo-senpi/src/components/telemetry/product-identity.ts"
+  OMC_NATIVE_COMMON_PROPERTY_SCHEMAS,
+  OMC_NATIVE_EVENT_SCHEMAS,
+} from "../packages/omc-senpi/src/components/telemetry/product-identity.ts"
 
 const BEGIN_SENTINEL = "<!-- BEGIN GENERATED SCHEMA -->"
 const END_SENTINEL = "<!-- END GENERATED SCHEMA -->"
 
 export function generateTelemetrySchemaBlock(
-  schemas = OMO_NATIVE_EVENT_SCHEMAS,
-  commonProperties = OMO_NATIVE_COMMON_PROPERTY_SCHEMAS,
+  schemas = OMC_NATIVE_EVENT_SCHEMAS,
+  commonProperties = OMC_NATIVE_COMMON_PROPERTY_SCHEMAS,
 ) {
   if (schemas === null || typeof schemas !== "object" || Array.isArray(schemas)) {
     throw new TypeError("Telemetry event schemas must be an object")

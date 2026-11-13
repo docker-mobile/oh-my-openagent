@@ -1,1 +1,1 @@
-export * from "@oh-my-opencode/lsp-core/lsp/process";
+export * from "@oh-my-cybersecurity/lsp-core/lsp/process";

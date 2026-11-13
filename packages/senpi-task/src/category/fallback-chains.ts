@@ -1,10 +1,10 @@
-import { FABLE_55_LAUNCH, launchRungs } from "@oh-my-opencode/model-core"
-import type { DelegateFallbackEntry } from "@oh-my-opencode/delegate-core"
-import { LATEST_MODEL_BY_FAMILY } from "@oh-my-opencode/model-core/latest-models"
+import { FABLE_55_LAUNCH, launchRungs } from "@oh-my-cybersecurity/model-core"
+import type { DelegateFallbackEntry } from "@oh-my-cybersecurity/delegate-core"
+import { LATEST_MODEL_BY_FAMILY } from "@oh-my-cybersecurity/model-core/latest-models"
 
 // Source of truth mirrored from packages/model-core/src/category-model-requirements.ts.
 // Model IDs share the launch block; chain rows remain independently mirrored for parity checks.
-// senpi-only differences (model-core/omo-opencode carry neither; the OpenCode and Codex editions have
+// senpi-only differences (model-core/omc-opencode carry neither; the OpenCode and Codex editions have
 // no such providers):
 //   - kimi rungs carry BOTH provider ids ("kimi-coding" senpi registry id and the "kimi-for-coding"
 //     models.dev/opencode id); model-core carries "kimi-for-coding" only.
@@ -13,7 +13,7 @@ import { LATEST_MODEL_BY_FAMILY } from "@oh-my-opencode/model-core/latest-models
 //     run at the model's default; unspecified-low's mimo-v2.6-pro, qwen3.8-max-preview and mimo-v2.5-pro
 //     stop at `high`. model-core keeps `max` on all five: OpenCode derives its own variants.
 //   - glm rungs use engine ids "zai" and "zai-coding-cn". model-core carries OpenCode's
-//     "zai-coding-plan"; `omo setup` imports that key as "zai" (#8799, #8824).
+//     "zai-coding-plan"; `omc setup` imports that key as "zai" (#8799, #8824).
 //   - every claude-* rung is headed by "anthropic-subscription", senpi's Claude subscription lane
 //     (Claude Pro/Max). It serves the same model ids as "anthropic", so a machine that is logged in
 //     there AND holds an OpenCode Zen key must not be routed to the metered `opencode/claude-*` lane

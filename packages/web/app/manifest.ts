@@ -3,10 +3,10 @@ import { ogPalette } from "@/lib/og/palette"
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "OmO",
+    name: "OmC",
     short_name: "OMO",
     description:
-      "The Best Agent Harness. Meet OmO: the batteries-included agent harness that codes like you.",
+      "The Best Agent Harness. Meet OmC: the batteries-included agent harness that codes like you.",
     start_url: "/",
     display: "standalone",
     background_color: ogPalette.ink0,

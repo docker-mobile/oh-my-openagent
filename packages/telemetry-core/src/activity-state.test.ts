@@ -30,14 +30,14 @@ describe("daily-active dedup state", () => {
     try {
       // when
       const stateDir = resolveTelemetryStateDir(
-        { cacheDirName: "omo-codex" },
+        { cacheDirName: "omc-codex" },
         { env: { XDG_DATA_HOME: xdgDataHome } },
       )
 
       // then
-      expect(stateDir).toBe(join(xdgDataHome, "omo-codex"))
+      expect(stateDir).toBe(join(xdgDataHome, "omc-codex"))
       expect(getTelemetryActivityStateFilePath(stateDir)).toBe(
-        join(xdgDataHome, "omo-codex", "posthog-activity.json"),
+        join(xdgDataHome, "omc-codex", "posthog-activity.json"),
       )
     } finally {
       rmSync(xdgDataHome, { recursive: true, force: true })

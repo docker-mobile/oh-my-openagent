@@ -8,7 +8,7 @@ if (dir === undefined || endpoint === undefined) throw new Error("usage: otlp-ti
 
 // Real fetch, real retry sleeps, no shutdown(): the process must still exit on its own.
 const transport = await createOtlpTelemetryTransport({
-  productEnvPrefix: "OMO_TEST",
+  productEnvPrefix: "OMC_TEST",
   ingestKey: "test-ingest-key",
   spoolDir: dir,
   spoolRoot: dirname(dir),

@@ -11,7 +11,7 @@ afterEach(async () => {
 })
 
 async function device(name: string) {
-  const base = await mkdtemp(join(tmpdir(), `omo-item-store-${name}-`))
+  const base = await mkdtemp(join(tmpdir(), `omc-item-store-${name}-`))
   dirs.push(base)
   const open = () =>
     createDeviceItemStore({ stateDir: join(base, "device"), memoryRoot: join(base, "memory"), syncDir: join(base, "memory", ".git", "omo-sync"), machineId: `machine-${name}` })

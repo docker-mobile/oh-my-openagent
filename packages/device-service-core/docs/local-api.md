@@ -1,7 +1,7 @@
 # Local API v1
 
-The local API is how every OmO process on a device reaches the one device service process that owns the device's
-connection: the desktop app, the `omo` CLI and the installer. It is versioned by `v` (this document is version 1) and
+The local API is how every OmC process on a device reaches the one device service process that owns the device's
+connection: the desktop app, the `omc` CLI and the installer. It is versioned by `v` (this document is version 1) and
 generic: nothing in it names the transport the service uses between devices. The TypeScript vocabulary is
 `packages/local-api/src/protocol.ts` (with `vocabulary.ts` and `protocol-events.ts`); the conformance fixtures in
 `packages/local-api/test/conformance/fixtures/` are the oracle any server or client implementation runs against.
@@ -21,7 +21,7 @@ connection state only, never a path or a route. A gate test (LA18) scans `protoc
 | macOS, Linux | Unix socket `<state dir>/service.sock`                                                    | state dir 0700, socket and every file 0600, all owned by the user      |
 | Windows      | loopback TCP `127.0.0.1:<port>`, the port in `<state dir>/endpoint.json` as `{"port": n}` | an exact protected DACL on the state dir and every secret-bearing file |
 
-The state dir is `~/.omo/device-service/` (`%LOCALAPPDATA%\OmO\device-service\` on Windows). It holds `token`,
+The state dir is `~/.omc/device-service/` (`%LOCALAPPDATA%\OmC\device-service\` on Windows). It holds `token`,
 `service.sock` or `endpoint.json`, and the service's own files.
 
 POSIX client check, before any connection is opened: the state dir, `service.sock` and `token` exist as themselves
@@ -89,7 +89,7 @@ cache: a restarted service has a new one. The service answers every request othe
 `unauthenticated` until the client proof verifies, and executes none of them; a wrong `client_proof` is answered
 `client_proof_invalid` and the connection is closed.
 
-`hello` is `{"type": "hello", "v": 1, "client": {"name": "desktop" | "omo" | "installer" | "sdk", "version": "<semver>",
+`hello` is `{"type": "hello", "v": 1, "client": {"name": "desktop" | "omc" | "installer" | "sdk", "version": "<semver>",
 "data_home": "<absolute path>"}, "client_nonce": "<nonce>"}`; `data_home` is the home the desktop app resolved and is
 present for `desktop` clients only. The service reads `v` before the shape. `refused` reasons: `version` (another
 `v`), `data_home_required` (a desktop client without it), `malformed` (anything else, including a first line that is

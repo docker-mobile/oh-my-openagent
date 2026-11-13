@@ -171,15 +171,15 @@ describe("OpenClaw Dispatcher", () => {
   })
 
   test("resolveCommandTimeoutMs reads OMO env fallback", () => {
-    const original = process.env.OMO_OPENCLAW_COMMAND_TIMEOUT_MS
-    process.env.OMO_OPENCLAW_COMMAND_TIMEOUT_MS = "4321"
+    const original = process.env.OMC_OPENCLAW_COMMAND_TIMEOUT_MS
+    process.env.OMC_OPENCLAW_COMMAND_TIMEOUT_MS = "4321"
 
     try {
       // Call without explicit envTimeoutRaw so the function reads from process.env itself
       expect(resolveCommandTimeoutMs(undefined)).toBe(4321)
     } finally {
-      if (original === undefined) delete process.env.OMO_OPENCLAW_COMMAND_TIMEOUT_MS
-      else process.env.OMO_OPENCLAW_COMMAND_TIMEOUT_MS = original
+      if (original === undefined) delete process.env.OMC_OPENCLAW_COMMAND_TIMEOUT_MS
+      else process.env.OMC_OPENCLAW_COMMAND_TIMEOUT_MS = original
     }
   })
 

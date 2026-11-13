@@ -19,7 +19,7 @@ const SG_AVAILABLE = existsSync(SG_PATH);
 const directories: string[] = [];
 
 function fixtureRepo(files?: Record<string, string>): string {
-  const dir = mkdtempSync(join(tmpdir(), "omo-rewrite-"));
+  const dir = mkdtempSync(join(tmpdir(), "omc-rewrite-"));
   directories.push(dir);
   mkdirSync(join(dir, "src"), { recursive: true });
   const contents = files ?? {

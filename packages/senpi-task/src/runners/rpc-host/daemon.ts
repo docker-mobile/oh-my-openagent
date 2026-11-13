@@ -31,9 +31,9 @@ import { classifyEnsureFailure } from "./ensure-failure"
 import { ensureHostClaimingOwner } from "./owner-claim"
 import { ensureRpcKeyDirectory } from "./rpc-key-dir"
 import { writeStartedShardSidecar } from "./shard-sidecar"
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
-// The daemon's launch surface is documented from this module: `omo daemon run` and a
+// The daemon's launch surface is documented from this module: `omc daemon run` and a
 // child-triggered ensure must reach the same producer.
 export { daemonLaunchOptions, daemonLaunchProfileId }
 export {
@@ -81,7 +81,7 @@ export function forgetTaskDaemon(socket: string, instanceId?: string): void {
 
 /**
  * Attach to the task host listening on `input.socket`, or create it from the launch spec. The engine owns every
- * protocol decision: omo probes, asks `decideHostAction`, and either calls `ensureHost` or fails
+ * protocol decision: omc probes, asks `decideHostAction`, and either calls `ensureHost` or fails
  * with a typed `HostUnavailableError`. It never signals, replaces or takes over a host (I1).
  */
 export async function ensureTaskDaemon(input: EnsureTaskDaemonInput): Promise<EnsuredTaskDaemon> {
@@ -170,7 +170,7 @@ async function ensureTaskDaemonOnce(
   // A host that was already up answered the probe above; one this call started is asked once, so
   // the caller learns what it can do without opening a second connection of its own. That probe is
   // this ensure's last use of the host, so the engine's attach hold (senpi #2242) ends with it: the
-  // daemon is transient, and a hold kept for the life of this omo process would stop its idle exit.
+  // daemon is transient, and a hold kept for the life of this omc process would stop its idle exit.
   // Children attach on their own connections. For an unowned host the idle window (minutes) covers
   // the gap; a caller-owned p-shard whose owner has already exited only gets the engine's short
   // quiescence grace (seconds), so a non-owner ensuring after that exit may find the host gone.
@@ -250,7 +250,7 @@ function loadDaemonLaunchSpec(
   }
 }
 
-/** omo-native `bun-runtime.js` semantics, POSIX half: this process is bun, or a bun is installed. */
+/** omc-native `bun-runtime.js` semantics, POSIX half: this process is bun, or a bun is installed. */
 function bunRuntimeAvailable(env: Readonly<Record<string, string | undefined>>): boolean {
   if (process.versions.bun !== undefined) return true
   const roots = [env["BUN_INSTALL"] ?? join(homedir(), ".bun"), join(homedir(), ".bun")]

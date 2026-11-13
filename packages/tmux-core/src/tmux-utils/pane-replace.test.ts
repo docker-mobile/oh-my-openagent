@@ -100,7 +100,7 @@ describe("replaceTmuxPane runner integration", () => {
 	it("#given existing pane #when replaceTmuxPane called #then delegates send-keys, respawn-pane, and select-pane to shared runner", async () => {
 		// given
 		const replaceTmuxPane = await loadReplaceTmuxPane()
-		const directory = "/tmp/omo-project/(replace)"
+		const directory = "/tmp/omc-project/(replace)"
 
 		// when
 		const result = await replaceTmuxPane("%42", "session-1", "worker", enabledTmuxConfig, "http://127.0.0.1:1234", directory, createDeps())
@@ -117,7 +117,7 @@ describe("replaceTmuxPane runner integration", () => {
 		}
 		expect(respawnCall[1].slice(0, 2)).toEqual(["respawn-pane", "-k"])
 		expect(respawnCall[1].slice(targetIndex, targetIndex + 2)).toEqual(["-t", "%42"])
-		expect(selectPaneCall[1]).toEqual(["select-pane", "-t", "%42", "-T", "omo-subagent-worker"])
+		expect(selectPaneCall[1]).toEqual(["select-pane", "-t", "%42", "-T", "omc-subagent-worker"])
 		expect(getRespawnCommand()).toContain("Focus this pane to attach.")
 		expect(getRespawnCommand()).toContain("while :; do sleep 86400; done")
 		expect(getRespawnCommand()).not.toContain("opencode attach")
@@ -126,7 +126,7 @@ describe("replaceTmuxPane runner integration", () => {
 	it("#given a description holding tmux format syntax #when the pane title is set #then # is doubled so tmux keeps it literal and runs nothing (#10228)", async () => {
 		// given
 		const replaceTmuxPane = await loadReplaceTmuxPane()
-		const directory = "/tmp/omo-project/(replace)"
+		const directory = "/tmp/omc-project/(replace)"
 
 		// when
 		const result = await replaceTmuxPane("%42", "session-1", "#(touch x)#{pane_id} and more", enabledTmuxConfig, "http://127.0.0.1:1234", directory, createDeps())
@@ -143,7 +143,7 @@ describe("replaceTmuxPane runner integration", () => {
 		}
 		expect(respawnCall[1].slice(0, 2)).toEqual(["respawn-pane", "-k"])
 		expect(respawnCall[1].slice(targetIndex, targetIndex + 2)).toEqual(["-t", "%42"])
-		expect(selectPaneCall[1]).toEqual(["select-pane", "-t", "%42", "-T", "omo-subagent-##(touch x)##{pane_id}"])
+		expect(selectPaneCall[1]).toEqual(["select-pane", "-t", "%42", "-T", "omc-subagent-##(touch x)##{pane_id}"])
 		expect(getRespawnCommand()).toContain("Focus this pane to attach.")
 		expect(getRespawnCommand()).toContain("while :; do sleep 86400; done")
 		expect(getRespawnCommand()).not.toContain("opencode attach")

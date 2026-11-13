@@ -10,8 +10,8 @@ const OLD_MODEL_ID = ["gpt-5.4", "mini"].join("-")
 const OLD_DISPLAY_NAME = ["GPT 5.4", "Mini"].join(" ")
 // Models LazyCodex once bundled, matched only to move pre-receipt installs off them (#5245); the bundle inlines it.
 const HISTORICAL_MODEL_RECORDS = new Set([
-  "packages/omo-codex/src/install/managed-agent-model-defaults.ts",
-  "packages/omo-codex/scripts/install-dist/install-local.mjs",
+  "packages/omc-codex/src/install/managed-agent-model-defaults.ts",
+  "packages/omc-codex/scripts/install-dist/install-local.mjs",
 ])
 
 describe("GPT Mini reference audit", () => {
@@ -63,7 +63,7 @@ async function trackedFiles(): Promise<string[]> {
   if (exitCode !== 0) {
     throw new Error(`git ls-files failed: ${stderr.trim()}`)
   }
-  return stdout.split("\0").filter((file) => file.length > 0 && !file.startsWith(".omo/evidence/"))
+  return stdout.split("\0").filter((file) => file.length > 0 && !file.startsWith(".omc/evidence/"))
 }
 
 function repositoryRootFromMetaUrl(metaUrl: string): string {

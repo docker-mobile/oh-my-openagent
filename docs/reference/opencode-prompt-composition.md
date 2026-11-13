@@ -9,7 +9,7 @@ by Native; uncatalogued IDs retain their provider and full remaining ID.
 For each supported agent/model pair, generation calls the Native
 `resolvePreset` with automatic selection. Models without a preset use
 `buildDynamicSystemPrompt`, the Native fallback. The builder receives the
-terminal surface, OmO application name and actual registered tool names and descriptions. Context is appended by the
+terminal surface, OmC application name and actual registered tool names and descriptions. Context is appended by the
 OpenCode host rather than discovered by the engine's resource loader.
 
 ## The one host transform
@@ -26,7 +26,7 @@ model-family text, whitespace, headings or calibration is normalized.
 
 The transformed core is followed by a JSON model identity containing the
 actual provider, full model ID and selected preset, then the existing OpenCode
-role append. The core and identity are enclosed in an `omo-model-core` frame
+role append. The core and identity are enclosed in an `omc-model-core` frame
 whose header carries only a short reference (`ref="<16 hex>"`). The frame's context (configured model,
 tool names and snippets, permission rules, task-system mode and optional Hephaestus restriction) stays in
 the plugin process, keyed by that reference, so none of it is sent to the model. The per-request system

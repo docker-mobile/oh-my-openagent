@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 import type { LifecycleContext } from "./context"
 import { endClosingFallbackChild } from "./fallback-closing-child"
 

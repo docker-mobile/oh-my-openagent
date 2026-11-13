@@ -6,7 +6,7 @@ import { dirname, join } from "node:path";
 import { acquireDesktopEngine } from "../src/acquire";
 
 test("retains the attempted cache path when reading its bytes throws EACCES", async () => {
-	const root = fs.mkdtempSync(join(tmpdir(), "omo-acquire-error-"));
+	const root = fs.mkdtempSync(join(tmpdir(), "omc-acquire-error-"));
 	const cached = join(root, "5.1.4", "win32-x64", `${"a".repeat(64)}-00000000-0000-4000-8000-000000000003`, "senpi-desktop-engine-win32-x64.exe");
 	fs.mkdirSync(dirname(cached), { recursive: true });
 	fs.writeFileSync(cached, "unreadable engine");

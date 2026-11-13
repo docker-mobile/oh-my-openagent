@@ -14,10 +14,10 @@ afterEach(async () => {
 describe("removeStaleSelfPackageTests", () => {
   test("#given package-local self-package tests #when cleanup runs #then only stale self copies are removed", async () => {
     // given
-    const root = await mkdtemp(join(tmpdir(), "omo-stale-self-package-"))
+    const root = await mkdtemp(join(tmpdir(), "omc-stale-self-package-"))
     tempDirs.push(root)
-    const staleOpenCode = join(root, "packages", "adapter-a", "node_modules", "oh-my-opencode")
-    const staleOpenAgent = join(root, "packages", "adapter-b", "node_modules", "oh-my-openagent")
+    const staleOpenCode = join(root, "packages", "adapter-a", "node_modules", "oh-my-cybersecurity")
+    const staleOpenAgent = join(root, "packages", "adapter-b", "node_modules", "oh-my-cybersecurity")
     const unrelated = join(root, "packages", "adapter-b", "node_modules", "unrelated-package")
     await Promise.all([
       writeFixture(staleOpenCode),
@@ -30,8 +30,8 @@ describe("removeStaleSelfPackageTests", () => {
 
     // then
     expect(removed).toEqual([
-      "packages/adapter-a/node_modules/oh-my-opencode",
-      "packages/adapter-b/node_modules/oh-my-openagent",
+      "packages/adapter-a/node_modules/oh-my-cybersecurity",
+      "packages/adapter-b/node_modules/oh-my-cybersecurity",
     ])
     await expectPathMissing(staleOpenCode)
     await expectPathMissing(staleOpenAgent)

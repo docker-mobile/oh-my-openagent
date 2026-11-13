@@ -14,7 +14,7 @@ const { default: lockfileModule } = await import(lockfilePath)
 // The legacy writer's remaining work (full snapshot, lock removal) runs inside the
 // reader's first refused lock attempt, so the truncate/write boundary is crossed at
 // the same instruction on every run instead of racing a second process's clock.
-const root = actualFs.mkdtempSync(join(tmpdir(), "omo-hooks-legacy-"))
+const root = actualFs.mkdtempSync(join(tmpdir(), "omc-hooks-legacy-"))
 const cwd = join(root, "project")
 const agentDir = join(root, "agent")
 const { CONFIG_DIR_NAME } = await import("../../node_modules/@code-yeongyu/senpi/dist/config.js")

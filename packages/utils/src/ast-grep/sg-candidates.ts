@@ -42,8 +42,8 @@ function omoRuntimeCandidates(options: {
   if (options.runtimeDir !== undefined) paths.push(join(options.runtimeDir, binaryName))
   const codexHome = nonEmptyValue(options.env["CODEX_HOME"])
   if (codexHome !== null) paths.push(join(codexHome, "runtime", "ast-grep", slug, binaryName))
-  paths.push(join(options.homeDir, ".omo", "runtime", "ast-grep", slug, binaryName))
-  return paths.map((path) => candidate("omo-runtime", path))
+  paths.push(join(options.homeDir, ".omc", "runtime", "ast-grep", slug, binaryName))
+  return paths.map((path) => candidate("omc-runtime", path))
 }
 
 function skillBinCandidates(options: {

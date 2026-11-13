@@ -4,7 +4,7 @@ import { hostname } from "node:os"
 import { basename, join } from "node:path"
 import { getProcessStartIdentity } from "./process-identity"
 
-export const OWNER_FILE = ".omo-isolation-owner.json"
+export const OWNER_FILE = ".omc-isolation-owner.json"
 export type OwnerStatus = "alive" | "dead" | "unknown"
 export type OwnerLiveness = "live" | "dead" | "reclaimable" | "foreign" | "retained" | "creating" | "unknown"
 export interface OwnerProbe {

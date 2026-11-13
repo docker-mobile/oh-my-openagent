@@ -50,13 +50,13 @@ async function serviceFor(world: World = defaultWorld()): Promise<{ owner: FakeO
 }
 
 describe("deviceServiceStateDir", () => {
-  test("uses ~/.omo/device-service on POSIX and LOCALAPPDATA on Windows", () => {
-    expect(deviceServiceStateDir("darwin", {}, "/Users/a")).toBe(join("/Users/a", ".omo", "device-service"))
-    expect(deviceServiceStateDir("linux", { LOCALAPPDATA: "/ignored" }, "/home/a")).toBe(join("/home/a", ".omo", "device-service"))
+  test("uses ~/.omc/device-service on POSIX and LOCALAPPDATA on Windows", () => {
+    expect(deviceServiceStateDir("darwin", {}, "/Users/a")).toBe(join("/Users/a", ".omc", "device-service"))
+    expect(deviceServiceStateDir("linux", { LOCALAPPDATA: "/ignored" }, "/home/a")).toBe(join("/home/a", ".omc", "device-service"))
     expect(deviceServiceStateDir("win32", { LOCALAPPDATA: "C:\\Users\\a\\AppData\\Local" }, "C:\\Users\\a")).toBe(
-      join("C:\\Users\\a\\AppData\\Local", "OmO", "device-service"),
+      join("C:\\Users\\a\\AppData\\Local", "OmC", "device-service"),
     )
-    expect(deviceServiceStateDir("win32", {}, "C:\\Users\\a")).toBe(join("C:\\Users\\a", "AppData", "Local", "OmO", "device-service"))
+    expect(deviceServiceStateDir("win32", {}, "C:\\Users\\a")).toBe(join("C:\\Users\\a", "AppData", "Local", "OmC", "device-service"))
   })
 })
 

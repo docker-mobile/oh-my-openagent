@@ -1,1 +1,1 @@
-export * from "@oh-my-opencode/utils/skill-path-resolver"
+export * from "@oh-my-cybersecurity/utils/skill-path-resolver"

@@ -163,7 +163,7 @@
   "commands": [
     {
       "command": [
-        "$SANDBOX/omo",
+        "$SANDBOX/omc",
         "--version"
       ],
       "exitCode": 0,
@@ -184,7 +184,7 @@
         "audit-ok"
       ],
       "exitCode": 0,
-      "stdout": "omo-senpi ulw-execute-continuation skipped {\n  reason: \"not-continuable\",\n}\nomo-senpi ulw-loop continuation skipped {\n  reason: \"inactive\",\n}\naudit-ok\n",
+      "stdout": "omc-senpi ulw-execute-continuation skipped {\n  reason: \"not-continuable\",\n}\nomo-senpi ulw-loop continuation skipped {\n  reason: \"inactive\",\n}\naudit-ok\n",
       "stderr": ""
     },
     {

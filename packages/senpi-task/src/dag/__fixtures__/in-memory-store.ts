@@ -59,7 +59,7 @@ function memoryPaths(stateDir: string): DagStorePaths {
   }
 }
 
-export function createInMemoryDagStore(stateDir = "/memory/.omo/senpi-task", now: () => number = Date.now): DagFileStore {
+export function createInMemoryDagStore(stateDir = "/memory/.omc/senpi-task", now: () => number = Date.now): DagFileStore {
   const paths = memoryPaths(stateDir)
   const eventsByRun = new Map<DagRunId, DagRunEvent[]>()
   const checkpoints = new Map<DagRunId, object>()

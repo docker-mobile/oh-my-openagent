@@ -28,7 +28,7 @@ function fakeSignaller(alive: Set<number>, calls: SignalCall[]): ProcessSignalle
 
 const now = () => 5_000_000
 
-// A multi-session host (e.g. the t3/omo desktop shared rpc process) runs one engine per session in
+// A multi-session host (e.g. the t3/omc desktop shared rpc process) runs one engine per session in
 // the SAME OS process, each with its own registry over a shared task store. When a sibling session
 // opens, its session_start reconcile must NOT treat a live resident owned by THIS process (another
 // session's child) as a crashed-process orphan: same host_pid + absent from this session's registry

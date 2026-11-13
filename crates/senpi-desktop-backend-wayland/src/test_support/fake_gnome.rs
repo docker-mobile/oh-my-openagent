@@ -18,7 +18,7 @@ struct WindowRects {
     calls: Arc<AtomicUsize>,
 }
 
-#[interface(name = "dev.omo.SenpiDesktop.WindowRects")]
+#[interface(name = "dev.omc.SenpiDesktop.WindowRects")]
 impl WindowRects {
     #[zbus(name = "List")]
     fn list(&self) -> String {

@@ -1,6 +1,6 @@
-import type { OmoTaskSettings } from "@oh-my-opencode/omo-config-core"
+import type { OmoTaskSettings } from "@oh-my-cybersecurity/omc-config-core"
 import type { IsolationRuntime, OwnerProbe } from "../isolation"
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import type { KernelToolBindingRegistry } from "../kernel-tools/bindings"
 import type { TaskRecordStore } from "../store"

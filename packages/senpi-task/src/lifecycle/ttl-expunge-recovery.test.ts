@@ -48,7 +48,7 @@ describe("cleanupExpiredRecords tombstone recovery", () => {
       execution_mode: "process",
       runner_kind: "host-session",
       host_session: {
-        socket: "/tmp/omo-8960.sock",
+        socket: "/tmp/omc-8960.sock",
         routing_id: "routing-27",
         session_path: sessionPath,
         instance_id: "instance-27",

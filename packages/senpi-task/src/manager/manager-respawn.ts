@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs"
 import { dirname, join } from "node:path"
 
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import { hostSessionResumePath, readHostDrainingHold } from "../lifecycle/host-session"
 import type { RespawnResult } from "../lifecycle/port"
@@ -261,7 +261,7 @@ async function continueInterruptedTurn(record: TaskRecord, sessionPath: string, 
 
 // The child finished its turn while no parent was attached (a handoff, a reload, a stalled host), so
 // no agent_end will ever arrive for it: settle the reopened handle with the transcript's final answer
-// and let the ordinary outcome tracking complete the record (omo#9069).
+// and let the ordinary outcome tracking complete the record (omc#9069).
 async function adoptFinishedTurn(record: TaskRecord, sessionPath: string, handle: RpcChildHandle): Promise<void> {
   if (isTerminalRecord(record) || handle.adoptFinishedTurn === undefined) return
   const finished = await sessionTailFinishedText(sessionPath)

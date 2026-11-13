@@ -38,7 +38,7 @@ function parseSnapshot(payload: unknown): CountSnapshot | null {
   return { count, timestamp }
 }
 
-const keyRequest = (key: string) => new Request(`https://omo.dev/__og-count/${key}`)
+const keyRequest = (key: string) => new Request(`https://omc.nga.hm/__og-count/${key}`)
 
 // Cloudflare's per-colo Cache API lets a freshly started isolate reuse the last good figure
 // another isolate fetched. Outside Workers (tests, local dev) there is no cache and it no-ops.

@@ -11,7 +11,7 @@ import {
 import { BUILTIN_AGENT_NAMES } from "./names"
 
 const CURATED_AGENT_NAMES = ["explore", "librarian", "plan-consultant", "plan-reviewer"] as const
-const REVIEWER_AGENT_NAMES = ["omo-native-code-reviewer", "omo-native-gate-reviewer", "omo-native-qa-executor"] as const
+const REVIEWER_AGENT_NAMES = ["omc-native-code-reviewer", "omc-native-gate-reviewer", "omc-native-qa-executor"] as const
 const ALL_BUILTIN_NAMES = [...CURATED_AGENT_NAMES, ...REVIEWER_AGENT_NAMES].sort()
 
 const EXPECTED_TOOL_ALLOWLIST = [
@@ -96,11 +96,11 @@ describe("builtin curated agents", () => {
     }
   })
 
-  test("#given the reviewer definitions #when reading their names #then they match the ulw-loop omo-senpi quality-gate identities", () => {
+  test("#given the reviewer definitions #when reading their names #then they match the ulw-loop omc-senpi quality-gate identities", () => {
     expect(ULW_REVIEWER_AGENT_DEFAULTS.map((definition) => definition.name)).toEqual([
-      "omo-native-code-reviewer",
-      "omo-native-qa-executor",
-      "omo-native-gate-reviewer",
+      "omc-native-code-reviewer",
+      "omc-native-qa-executor",
+      "omc-native-gate-reviewer",
     ])
   })
 

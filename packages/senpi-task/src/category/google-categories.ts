@@ -1,8 +1,8 @@
 import type { BuiltinCategoryDefinition } from "./types"
-import { LATEST_MODEL_BY_FAMILY } from "@oh-my-opencode/model-core/latest-models"
-import { launchDefaultModelId } from "@oh-my-opencode/model-core"
+import { LATEST_MODEL_BY_FAMILY } from "@oh-my-cybersecurity/model-core/latest-models"
+import { launchDefaultModelId } from "@oh-my-cybersecurity/model-core"
 
-// Ported from packages/omo-opencode/src/tools/delegate-task/google-categories.ts.
+// Ported from packages/omc-opencode/src/tools/delegate-task/google-categories.ts.
 const VISUAL_CATEGORY_PROMPT_APPEND = `<Category_Context>
 You are working on VISUAL/UI tasks.
 

@@ -3,16 +3,16 @@ import { homedir } from "node:os"
 import { basename, dirname, join, resolve } from "node:path"
 
 import type { loadSkillsFromDir as discoverSkillsFromDir } from "@code-yeongyu/senpi"
-import { detectWorktreePath } from "@oh-my-opencode/skills-loader-core/shared/project-discovery-dirs"
+import { detectWorktreePath } from "@oh-my-cybersecurity/skills-loader-core/shared/project-discovery-dirs"
 
 import { senpiBarrel } from "../../lazy/senpi-barrel"
 import type { LoadedSkill, SkillLoader, SkillResolution } from "./types"
 import { readProjectSkills, type CheckedProjectSkills } from "./checked-project-skills"
-import { readSkillFileChecked } from "@oh-my-opencode/skills-loader-core/opencode-skill-loader/checked-skill-read"
+import { readSkillFileChecked } from "@oh-my-cybersecurity/skills-loader-core/opencode-skill-loader/checked-skill-read"
 import {
   checkSkillPath, skillProvenance, reportSkillLoadError,
   type SkillProvenance,
-} from "@oh-my-opencode/skills-loader-core/opencode-skill-loader/skill-provenance"
+} from "@oh-my-cybersecurity/skills-loader-core/opencode-skill-loader/skill-provenance"
 
 export type FsSkillLoaderOptions = {
   readonly homeDir?: string
@@ -160,7 +160,7 @@ function readSkill(
 }
 
 // Filesystem-backed loader. Searches project `.senpi/skills`, `~/.senpi/agent/skills`, then any extra
-// dirs (the omo-senpi plugin skills path is injected by the component). Missing names never fail.
+// dirs (the omc-senpi plugin skills path is injected by the component). Missing names never fail.
 export function createFsSkillLoader(options: FsSkillLoaderOptions = {}): SkillLoader {
   const home = options.homeDir ?? homedir()
   const agentDir = options.agentDir ?? join(home, ".senpi", "agent")

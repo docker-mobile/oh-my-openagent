@@ -1,5 +1,5 @@
-import type { DelegateFallbackEntry } from "@oh-my-opencode/delegate-core"
-import { excludedModelPattern } from "@oh-my-opencode/omo-config-core"
+import type { DelegateFallbackEntry } from "@oh-my-cybersecurity/delegate-core"
+import { excludedModelPattern } from "@oh-my-cybersecurity/omc-config-core"
 
 import { availableChainCandidates } from "../model-chain"
 import type { ChainRung, ChainRungSource } from "./types"

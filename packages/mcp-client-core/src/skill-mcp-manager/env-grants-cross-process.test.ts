@@ -39,7 +39,7 @@ async function runWriter(root: string, operation: string): Promise<void> {
 
 test("separate atomic writers converge and revoke closes a live legacy transport and pending materialization", async () => {
   useTestTimeout(30_000)
-  const root = mkdtempSync(join(tmpdir(), "omo-cross-grants-"))
+  const root = mkdtempSync(join(tmpdir(), "omc-cross-grants-"))
   const source = join(root, "project", "SKILL.md")
   mkdirSync(join(root, "project"))
   writeFileSync(source, "Synthetic source\n")
@@ -49,12 +49,12 @@ test("separate atomic writers converge and revoke closes a live legacy transport
     sessionID: "cross-process", skillName: "fixture", serverName: "fixture", scope: "project",
     directory: join(root, "project"), sourcePath: source,
   }
-  const config = { command: "synthetic", env: { AUTH_HEADER: "${OMO_CROSS_TOKEN}" } }
+  const config = { command: "synthetic", env: { AUTH_HEADER: "${OMC_CROSS_TOKEN}" } }
   const identity = declarationDigest(info, config)
   const second = "b".repeat(64)
   const label = JSON.stringify({ project: root, skill: "fixture", server: "fixture" })
-  const oldToken = process.env.OMO_CROSS_TOKEN
-  process.env.OMO_CROSS_TOKEN = "synthetic-cross-value"
+  const oldToken = process.env.OMC_CROSS_TOKEN
+  process.env.OMC_CROSS_TOKEN = "synthetic-cross-value"
   const started = Promise.withResolvers<void>()
   const release = Promise.withResolvers<void>()
   const closed = Promise.withResolvers<void>()
@@ -81,9 +81,9 @@ test("separate atomic writers converge and revoke closes a live legacy transport
   const stop = store.watch((event) => { if ((event?.snapshot.generation ?? 0) >= 2) observed.resolve() })
   try {
     await manager.getOrCreateClient(info, config)
-    expect(environments.at(-1)?.AUTH_HEADER).toBe("${OMO_CROSS_TOKEN}")
+    expect(environments.at(-1)?.AUTH_HEADER).toBe("${OMC_CROSS_TOKEN}")
     await Promise.all([
-      runWriter(root, `await addGrant(${JSON.stringify(path)},${JSON.stringify(identity)},${label},["OMO_CROSS_TOKEN"]);`),
+      runWriter(root, `await addGrant(${JSON.stringify(path)},${JSON.stringify(identity)},${label},["OMC_CROSS_TOKEN"]);`),
       runWriter(root, `await addGrant(${JSON.stringify(path)},${JSON.stringify(second)},${label},["ODD_DSN"]);`),
     ])
     await bounded(observed.promise)
@@ -100,14 +100,14 @@ test("separate atomic writers converge and revoke closes a live legacy transport
     expect((await store.read()).grants[identity]).toBeUndefined()
     expect((await store.read()).grants[second]?.names).toEqual(["ODD_DSN"])
     await manager.getOrCreateClient(info, config)
-    expect(environments.at(-1)?.AUTH_HEADER).toBe("${OMO_CROSS_TOKEN}")
+    expect(environments.at(-1)?.AUTH_HEADER).toBe("${OMC_CROSS_TOKEN}")
   } finally {
     release.resolve()
     stop()
     await manager.disconnectAll()
     setStdioClientDependenciesForTesting()
-    if (oldToken === undefined) delete process.env.OMO_CROSS_TOKEN
-    else process.env.OMO_CROSS_TOKEN = oldToken
+    if (oldToken === undefined) delete process.env.OMC_CROSS_TOKEN
+    else process.env.OMC_CROSS_TOKEN = oldToken
     rmSync(root, { recursive: true, force: true })
   }
 }, 30_000)

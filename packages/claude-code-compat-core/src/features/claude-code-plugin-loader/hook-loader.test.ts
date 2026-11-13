@@ -12,7 +12,7 @@ describe("loadPluginHooksConfigs pluginRoot stamping (#4458)", () => {
   let tempDirectory = ""
 
   beforeEach(() => {
-    tempDirectory = mkdtempSync(join(tmpdir(), "omo-hook-loader-"))
+    tempDirectory = mkdtempSync(join(tmpdir(), "omc-hook-loader-"))
   })
 
   afterEach(() => {

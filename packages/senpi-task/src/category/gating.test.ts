@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test"
 
 import { resolveCategory } from "./index"
-import { FABLE_55_RELEASED } from "@oh-my-opencode/model-core"
+import { FABLE_55_RELEASED } from "@oh-my-cybersecurity/model-core"
 
 type FakeModel = {
   readonly provider: string
@@ -60,7 +60,7 @@ describe("category activation gating", () => {
     })
 
     test("#when only Copilot carries claude-fable-5.1 under its dotted engine id #then the gate is satisfied and architect resolves on the copilot rung", () => {
-      // given — the senpi github-copilot catalog spells Claude ids with a dot (claude-fable-5.1); omo chains use a hyphen
+      // given — the senpi github-copilot catalog spells Claude ids with a dot (claude-fable-5.1); omc chains use a hyphen
       const models = registry([model("github-copilot", "claude-fable-5.1")])
 
       // when
@@ -87,7 +87,7 @@ describe("category activation gating", () => {
       expect(result.availableCategories).not.toContain("deep-low")
     })
 
-    test("#when the gate model is absent but omo.json configures the category #then the explicit entry bypasses the gate", () => {
+    test("#when the gate model is absent but omc.json configures the category #then the explicit entry bypasses the gate", () => {
       // given
       const models = registry([model("kimi-coding", "k3")])
 
@@ -104,7 +104,7 @@ describe("category activation gating", () => {
       expect(result.spec.modelId).toBe("k3")
     })
 
-    test("#when the gate model is absent and omo.json only sets a description #then the gate is bypassed and the category stays listed", () => {
+    test("#when the gate model is absent and omc.json only sets a description #then the gate is bypassed and the category stays listed", () => {
       // given
       const models = registry([model("anthropic", "claude-opus-5-5")])
 
@@ -233,7 +233,7 @@ describe("category activation gating", () => {
       expect(resolveCategory("deep-high", {}, models).kind).toBe("model_unavailable")
     })
 
-    test("#when the gate model is absent but omo.json configures the category #then the explicit entry bypasses the gate", () => {
+    test("#when the gate model is absent but omc.json configures the category #then the explicit entry bypasses the gate", () => {
       // given
       const models = registry([model("anthropic", "claude-opus-5-5")])
 

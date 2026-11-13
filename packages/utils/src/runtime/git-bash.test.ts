@@ -22,7 +22,7 @@ describe("runtime git-bash resolver", () => {
 
     const result = resolveGitBash({
       platform: "win32",
-      env: { OMO_CODEX_GIT_BASH_PATH: overridePath },
+      env: { OMC_CODEX_GIT_BASH_PATH: overridePath },
       exists: (path: string) => path === overridePath || path === PROGRAM_FILES_GIT_BASH,
       where: () => [PROGRAM_FILES_GIT_BASH],
     })
@@ -35,7 +35,7 @@ describe("runtime git-bash resolver", () => {
 
     const result = resolveGitBash({
       platform: "win32",
-      env: { OMO_CODEX_GIT_BASH_PATH: overridePath },
+      env: { OMC_CODEX_GIT_BASH_PATH: overridePath },
       exists: (path: string) => path === PROGRAM_FILES_GIT_BASH,
       where: () => [PROGRAM_FILES_GIT_BASH],
     })
@@ -44,7 +44,7 @@ describe("runtime git-bash resolver", () => {
     if (result.found) return
     expect(result.checkedPaths).toEqual([overridePath])
     expect(result.installHint).toContain("winget install --id Git.Git -e --source winget")
-    expect(result.installHint).toContain("OMO_CODEX_GIT_BASH_PATH=C:\\path\\to\\bash.exe")
+    expect(result.installHint).toContain("OMC_CODEX_GIT_BASH_PATH=C:\\path\\to\\bash.exe")
   })
 
   test("#given both standard Windows installs exist #when resolving #then Program Files has priority", () => {

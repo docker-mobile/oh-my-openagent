@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // resolve-evidence-dir.mjs - pick the canonical evidence directory for a live Senpi QA run.
 //
-// Live Senpi QA artifacts belong under .omo/evidence/omo-senpi-adapter/<slug>/ and nowhere else.
+// Live Senpi QA artifacts belong under .omc/evidence/omc-senpi-adapter/<slug>/ and nowhere else.
 // That path is the repository-standard location every AGENTS.md rule points at, and it is gitignored,
 // so a hand-typed alternative (local-ignore/qa-evidence/..., .qa-evidence/ at the worktree root, a temp
 // dir, a traversal) either strands the evidence or lands it in a commit (#8703). Resolving through
@@ -17,7 +17,7 @@ import { existsSync, realpathSync } from "node:fs"
 import { join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 
-export const EVIDENCE_RELATIVE_ROOT = join(".omo", "evidence", "omo-senpi-adapter")
+export const EVIDENCE_RELATIVE_ROOT = join(".omc", "evidence", "omc-senpi-adapter")
 
 // One relative segment: lowercase alphanumerics joined by single hyphens. This is what makes the
 // path predictable - it also rejects every separator, traversal, and absolute form outright, since

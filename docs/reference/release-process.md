@@ -16,7 +16,7 @@ CI green is required for release readiness, but CI does not replace manual verif
 
 The `/publish` command accepts `patch`, `minor`, `major`, or an explicit semantic version such as `5.0.0-beta.9`. Bump selectors preserve the stable release flow. Explicit versions are passed to the workflow's `version` input unchanged, so prerelease channels do not fall back to the latest stable package. The command records the workflow URL returned by the dispatch and monitors that exact run ID; a latest-run lookup is not release ownership.
 
-For the `omo-ai` package (OmO Native), see the [omo-ai publishing runbook](./omo-ai-publishing.md): the version-derived channel (stable on `latest`, prereleases on `beta`), the Trusted Publisher merge gate, and the release checklist.
+For the `omc-ai` package (OmC Native), see the [omc-ai publishing runbook](./omc-ai-publishing.md): the version-derived channel (stable on `latest`, prereleases on `beta`), the Trusted Publisher merge gate, and the release checklist.
 
 ## Resuming a Failed Publish
 
@@ -43,18 +43,18 @@ A failure before release state exists may still be rerun when it is purely trans
 - `prepare-release-state` / `Prepare and merge release state before publishing` returns the SHA from an existing `refs/tags/v${VERSION}` tag, or reuses an existing `release: v${VERSION}` commit on the base branch, before attempting to stamp another release. The stamp step (`script/stamp-release-changelog.ts`) assembles every `changes/unreleased/<pr>.md` fragment into the released CHANGELOG section and deletes the consumed fragments in the same release commit (#9961).
 - `dispatch-provenance-safe-publish` / `Tag prepared source and dispatch provenance-safe publish` reuses an existing tag only when it resolves to the prepared release SHA. It fails closed when the tag points to any other SHA.
 - `publish-platform` delegates platform publication to `publish-platform.yml`, whose `Check if already published` steps probe both platform package families and skip versions already present in npm.
-- `publish-main` / `Check if already published`, `Check if oh-my-openagent already published`, and `Check if lazycodex-ai already published` probe npm and gate each corresponding publish step with the probe's `skip` output.
-- `release-metadata` / `Calculate omo-ai metadata` exposes `already_published`; `publish-main` gates the omo-ai build and `Publish omo-ai` step when that immutable version already exists.
+- `publish-main` / `Check if already published`, `Check if oh-my-cybersecurity already published`, and `Check if lazycodex-ai already published` probe npm and gate each corresponding publish step with the probe's `skip` output.
+- `release-metadata` / `Calculate omc-ai metadata` exposes `already_published`; `publish-main` gates the omc-ai build and `Publish omc-ai` step when that immutable version already exists.
 - `release` / `Sync LazyCodex Codex marketplace` checks the staged marketplace payload with `git diff --cached --quiet` and does not commit or push when it is unchanged. `Create LazyCodex GitHub release` and `Create GitHub release` likewise view an existing release before creating one.
 
 The workflow uses two dispatches. The first run has an empty `prepared_release_sha`; it runs the gates, prepares or reuses release state, creates or validates the tag, and dispatches a second run from that tag. The second run carries the exact prepared SHA in `prepared_release_sha`; only this run can execute `publish-platform`, `publish-main`, and `release`.
 
-The release-binary asset lane (compiled `omo` binaries attached to the GitHub release) is idempotent across reruns. Its build steps run unconditionally with respect to the npm already-published skips - they are gated only by a release-asset existence probe - so a rerun rebuilds the binaries even when npm publication is skipped. The release job uploads with `gh release upload --clobber`, then re-downloads every asset and re-verifies its SHA256 before declaring success, and it fails the release job unless exactly 13 assets (12 binaries plus `SHA256SUMS`) verify. Because that verification is unconditional, `skip_platform=true` is valid only for a rerun whose earlier attempt already uploaded the assets; a `skip_platform=true` run with no prior assets fails closed instead of shipping an assetless release.
+The release-binary asset lane (compiled `omc` binaries attached to the GitHub release) is idempotent across reruns. Its build steps run unconditionally with respect to the npm already-published skips - they are gated only by a release-asset existence probe - so a rerun rebuilds the binaries even when npm publication is skipped. The release job uploads with `gh release upload --clobber`, then re-downloads every asset and re-verifies its SHA256 before declaring success, and it fails the release job unless exactly 13 assets (12 binaries plus `SHA256SUMS`) verify. Because that verification is unconditional, `skip_platform=true` is valid only for a rerun whose earlier attempt already uploaded the assets; a `skip_platform=true` run with no prior assets fails closed instead of shipping an assetless release.
 
 Rerun the run that owns the failed work:
 
 - If preparation, tagging, or the provenance-safe follow-up dispatch failed, rerun the first run's ID.
-- If a platform package, wrapper package, omo-ai publication, marketplace sync, or GitHub release failed, rerun the second, prepared-SHA run's ID. Rerunning the first run would target the dispatcher, not the failed publishing jobs.
+- If a platform package, wrapper package, omc-ai publication, marketplace sync, or GitHub release failed, rerun the second, prepared-SHA run's ID. Rerunning the first run would target the dispatcher, not the failed publishing jobs.
 
 Never hand-publish an npm package or hand-create or move a release tag to work around a failed run. Never use `--admin`, disable required checks, or otherwise bypass a red check. Fix the failed gate, then use the appropriate rerun or fresh dispatch path above.
 

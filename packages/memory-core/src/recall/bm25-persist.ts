@@ -21,7 +21,7 @@ import { decodeRecallTermStore, encodeRecallTermStore } from "./bm25-store"
 import { seedRecallDocumentTerms, snapshotRecallDocumentTerms } from "./bm25-terms-transfer"
 import type { RecallDocument } from "./provider"
 
-export const RECALL_TERM_STORE_NAME = "omo-recall-bm25-terms.bin"
+export const RECALL_TERM_STORE_NAME = "omc-recall-bm25-terms.bin"
 
 /**
  * The live BM25 index this persistence reads and seeds. It is passed in rather than imported: the store loads

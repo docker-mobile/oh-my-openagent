@@ -1,13 +1,13 @@
 import { mkdirSync, mkdtempSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
-import { handleLspMcpRequest, type JsonRpcResponse } from "@oh-my-opencode/lsp-core/mcp";
+import { handleLspMcpRequest, type JsonRpcResponse } from "@oh-my-cybersecurity/lsp-core/mcp";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { authEnvelope } from "../src/ipc-protocol.js";
 import { extractRequestContext, handleDaemonMessage } from "../src/request-routing.js";
 
-vi.mock("@oh-my-opencode/lsp-core/mcp", () => ({
+vi.mock("@oh-my-cybersecurity/lsp-core/mcp", () => ({
 	handleLspMcpRequest: vi.fn(async () => ({
 		jsonrpc: "2.0",
 		id: 1,

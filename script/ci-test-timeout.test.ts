@@ -15,7 +15,7 @@ describe("per-file test timeout budget", () => {
     // Two files, each sleeping past Bun's 5000ms built-in but inside test-setup.ts's budget. Without
     // an explicit --timeout the second file must die at 5000ms; with it both must pass. This is the
     // whole reason ci.yml and the Windows wrapper pass the flag explicitly.
-    const root = mkdtempSync(join(tmpdir(), "omo-timeout-budget-"))
+    const root = mkdtempSync(join(tmpdir(), "omc-timeout-budget-"))
     try {
       const dir = join(root, "probe")
       mkdirSync(dir)

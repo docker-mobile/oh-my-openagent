@@ -4,7 +4,7 @@
 
 ## OVERVIEW
 
-`@oh-my-opencode/rules-engine` (renamed from `rules-core`). Harness-neutral TypeScript package that discovers markdown rule files and matches them against target paths. Consumed by the `rules-injector` hook in `omo-opencode`, the `rules` component in `omo-codex`, and `agents-md-core` for AGENTS.md walk-up discovery.
+`@oh-my-cybersecurity/rules-engine` (renamed from `rules-core`). Harness-neutral TypeScript package that discovers markdown rule files and matches them against target paths. Consumed by the `rules-injector` hook in `omc-opencode`, the `rules` component in `omc-codex`, and `agents-md-core` for AGENTS.md walk-up discovery.
 
 ## KEY FILES
 
@@ -28,9 +28,9 @@
 
 Discovery (`finder.ts` / `engine/finder.ts`)
   Walk UP from cwd toward project root
-    Scan `.omo/rules`, `.claude/rules`, `.cursor/rules`, `.github/instructions`
+    Scan `.omc/rules`, `.claude/rules`, `.cursor/rules`, `.github/instructions`
     Collect `.md` / `.mdc` files + single-file rules (`.github/copilot-instructions.md`, `CONTEXT.md`)
-  Walk user home: `~/.omo/rules`, `~/.opencode/rules`, `~/.claude/rules`
+  Walk user home: `~/.omc/rules`, `~/.opencode/rules`, `~/.claude/rules`
   `.sisyphus/rules` (project + user) still matched but emits a deprecation warning (hook: `setSisyphusRuleDeprecationLogger`); migrate to `.omo/rules`
   Plugin bundled: platform-gated rules under `bundled-rules/`
 
@@ -47,7 +47,10 @@ Ordering
 
 - Two APIs: root `src/` (simple functions) and `src/engine/` (stateful engine with truncation budgets). Both consumed in production.
 - ESM split: `src/engine/` uses explicit `.js` relative imports; root `src/` is extensionless. Do not normalize either tree.
-- Deps: `picomatch` + `@oh-my-opencode/utils` only.
+- Deps: `picomatch` + `@oh-my-cybersecurity/utils` only.
 - Default char budgets: static 12K rule / 40K total; dynamic 4K / 10K; post-compact 3.5K / 4K.
 - `AGENTS.md` discovery lives here but injection logic is in `agents-md-core`.
+- **File count:** 47 TS under `src/` (39 non-test); `src/engine/` is 31 TS of those.
+- **Harness-neutral guard:** zero adapter imports, enforced by `script/shared-core-extraction-guard.test.ts` (package list: `script/core-package-paths.ts`).
+- **QA:** `bun run typecheck` + `bun test` in-package.
 - Parent: [`packages/AGENTS.md`](../AGENTS.md)

@@ -1,6 +1,6 @@
 import { join } from "path"
-import { getHomeDirectory } from "@oh-my-opencode/utils"
-import { sharedSkillsRootPath } from "@oh-my-opencode/shared-skills"
+import { getHomeDirectory } from "@oh-my-cybersecurity/utils"
+import { sharedSkillsRootPath } from "@oh-my-cybersecurity/shared-skills"
 import {
   findProjectAgentsSkillDirs,
   findProjectClaudeSkillDirs,
@@ -10,7 +10,7 @@ import {
 } from "../../shared"
 import {
   type CommandDefinition,
-} from "@oh-my-opencode/claude-code-compat-core/claude-code-command-loader/types"
+} from "@oh-my-cybersecurity/claude-code-compat-core/claude-code-command-loader/types"
 import { matchSkillByName } from "../../tools/skill/skill-matcher"
 import type { LoadedSkill } from "./types"
 import { skillsToCommandDefinitionRecord } from "./skill-definition-record"

@@ -5,7 +5,7 @@
 # (use app-server-drive.sh for that). The captured pane is the artifact.
 #
 #   --self-test       boot bare TUI, assert it renders + survives, capture pane
-#   --plugin          install local omo first, then boot (proves the plugin
+#   --plugin          install local omc first, then boot (proves the plugin
 #                     loads in the real TUI without crashing it)
 #   --seconds <n>     dwell time before capture (default 5)
 
@@ -18,7 +18,7 @@ cqa_tui_smoke() {
   cqa_guard_real_home
   cqa_mk_isolated_home
   if [ "$plugin" = "1" ]; then
-    cqa_log "installing local omo into $CODEX_HOME ..."
+    cqa_log "installing local omc into $CODEX_HOME ..."
     cqa_install_local_omo || { tail -20 "$CQA_HOME_ROOT/install.log" >&2; return 1; }
   fi
   cqa_start_mock || return 1

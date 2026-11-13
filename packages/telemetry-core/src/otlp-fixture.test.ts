@@ -13,7 +13,7 @@ afterEach(() => {
   for (const cleanup of roots.splice(0)) cleanup()
 })
 
-// The collector's protobuf flattening (omo-telemetry apps/ingest/src/otlp.ts, logs path), so the
+// The collector's protobuf flattening (omc-telemetry apps/ingest/src/otlp.ts, logs path), so the
 // fixture rows recorded from that decoder can be compared here without a cross-repo dependency.
 function workerValue(value: AnyValue | undefined): unknown {
   const v = value?.value

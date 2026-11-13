@@ -1,4 +1,4 @@
-import type { AuditEvent, DesktopCapabilities, EpochChanged } from "@oh-my-opencode/senpi-desktop-protocol";
+import type { AuditEvent, DesktopCapabilities, EpochChanged } from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import { auditEvents } from "./audit";
 import { runBatch } from "./batch";
 import { type ConfirmControl, ForegroundControl } from "./control";

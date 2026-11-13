@@ -28,7 +28,7 @@
       "requestObserved": false,
       "stopReason": "error",
       "failureClass": "module-resolution",
-      "errorMessage": "Cannot find module './bedrock-converse-stream.js' imported from /$bunfs/root/omo-darwin-arm64"
+      "errorMessage": "Cannot find module './bedrock-converse-stream.js' imported from /$bunfs/root/omc-darwin-arm64"
     },
     {
       "mode": "classic",
@@ -36,7 +36,7 @@
       "requestObserved": false,
       "stopReason": "error",
       "failureClass": "module-resolution",
-      "errorMessage": "Cannot find module './cursor-agent.js' imported from /$bunfs/root/omo-darwin-arm64"
+      "errorMessage": "Cannot find module './cursor-agent.js' imported from /$bunfs/root/omc-darwin-arm64"
     },
     {
       "mode": "classic",
@@ -44,7 +44,7 @@
       "requestObserved": false,
       "stopReason": "error",
       "failureClass": "module-resolution",
-      "errorMessage": "Cannot find module './devin-agent.js' imported from /$bunfs/root/omo-darwin-arm64"
+      "errorMessage": "Cannot find module './devin-agent.js' imported from /$bunfs/root/omc-darwin-arm64"
     },
     {
       "mode": "multi",
@@ -76,7 +76,7 @@
   "commands": [
     {
       "command": [
-        "$SANDBOX/omo",
+        "$SANDBOX/omc",
         "--version"
       ],
       "exitCode": 0,

@@ -21,7 +21,7 @@ const crashCommitChildPath = fileURLToPath(new URL("./crash-commit-child.ts", im
 
 // The peer's follow-up commits prove the repository keeps working after the takeover; five do that
 // as well as twenty, and the extra fifteen only made each case's 30 s budget a function of host
-// load (omo #10199 r5 HIGH 2). Volume stress lives in loop-crash-consistency.mjs.
+// load (omc #10199 r5 HIGH 2). Volume stress lives in loop-crash-consistency.mjs.
 const PEER_COMMITS = 5
 // Same reasoning for the SIGKILL takeover case (#10959): three commits per writer still prove the takeover (the holder
 // dies on its second acquire, the survivor finishes the holder's remaining tasks and its own), and six linear commits
@@ -91,7 +91,7 @@ async function withTimelineOnFailure(body: () => Promise<void>): Promise<void> {
   }
 }
 
-describe("one memory identity across real Bun processes (omo #10177 crash consistency)", () => {
+describe("one memory identity across real Bun processes (omc #10177 crash consistency)", () => {
   test("#given a writer SIGKILLed while holding the shared lock #when its peer continues #then liveness takeover lands every remaining commit cleanly", async () => {
     await withTimelineOnFailure(async () => {
     // #given
@@ -172,7 +172,7 @@ describe("one memory identity across real Bun processes (omo #10177 crash consis
 
   // One row per point a killed `git commit` can strand its own lock file (git lockfile protocol:
   // the lock exists from create until rename, so a git process SIGKILLed while its lock exists can
-  // never remove it). omo #10177: after such a kill, the peer's takeover must still leave a repo
+  // never remove it). omc #10177: after such a kill, the peer's takeover must still leave a repo
   // whose every reachable object exists (fsck --strict clean) and whose history stays linear.
   const killTriggers = [
     { trigger: "index-lock", name: "index.lock" },
@@ -216,7 +216,7 @@ describe("one memory identity across real Bun processes (omo #10177 crash consis
         shared.identity.paths.locks,
         "peer",
         String(PEER_COMMITS),
-      ], trigger === "ref-lock" ? { OMO_TEST_GIT_LOCK_SETTLE_MS: "0" } : undefined)
+      ], trigger === "ref-lock" ? { OMC_TEST_GIT_LOCK_SETTLE_MS: "0" } : undefined)
       await peer.waitForPrefix("done:")
       await kit.expectSuccessful(peer)
 

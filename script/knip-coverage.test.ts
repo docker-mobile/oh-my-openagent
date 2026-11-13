@@ -15,13 +15,13 @@ import { copyRepo, isObject, knipConfig, REPO_ROOT, repoFiles, runKnip, unusedEx
 // config with `--reporter json`, and a file is checked when its probe is reported.
 //
 // Pre-existing unused exports are named per symbol in knip.jsonc `preprocessorOptions.preExistingExports` and dropped by
-// script/knip-preexisting-exports.ts, shared byte for byte with sisyphuslabs/omo-relay-daemon (scripts/ there; its header
+// script/knip-preexisting-exports.ts, shared byte for byte with sisyphuslabs/omc-relay-daemon (scripts/ there; its header
 // comment names that repo's test path). The sha256 pin below keeps the copies equal; update both repos together.
 
 const SOURCE = /\.[cm]?[jt]sx?$/;
 const DECLARATION = /\.d\.[cm]?ts$/;
 const KNIP_TIMEOUT_MS = 600_000;
-// sha256 of scripts/knip-preexisting-exports.ts at omo-relay-daemon main 398f750f73 (also omo-service's copy).
+// sha256 of scripts/knip-preexisting-exports.ts at omc-relay-daemon main 398f750f73 (also omc-service's copy).
 const SHARED_PREPROCESSOR_SHA256 = "a92ddf4eaa74dcb54aacc5a3eb975d6c5f7ffec3897cd9ee31857bbd0ca19d22";
 
 // A repo-sized copy is removed inside the test that made it, under that test's KNIP_TIMEOUT_MS bound: bun 1.4.4
@@ -60,7 +60,7 @@ describe("knip coverage never shrinks", () => {
     expect(fileWideExportIgnores(await knipConfig())).toEqual([]);
   });
 
-  test("the preprocessor is byte-identical to omo-relay-daemon's copy", async () => {
+  test("the preprocessor is byte-identical to omc-relay-daemon's copy", async () => {
     const bytes = await Bun.file(join(REPO_ROOT, "script/knip-preexisting-exports.ts")).bytes();
     expect(new Bun.CryptoHasher("sha256").update(bytes).digest("hex")).toBe(SHARED_PREPROCESSOR_SHA256);
   });

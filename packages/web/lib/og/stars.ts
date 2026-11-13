@@ -5,12 +5,12 @@ export type OgStars = OgCount
 async function loadStars(): Promise<number> {
   const headers: Record<string, string> = {
     Accept: "application/vnd.github+json",
-    "User-Agent": "omo-web-og",
+    "User-Agent": "omc-web-og",
   }
   if (process.env.GITHUB_TOKEN) {
     headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`
   }
-  const response = await fetch("https://api.github.com/repos/code-yeongyu/oh-my-openagent", {
+  const response = await fetch("https://api.github.com/repos/code-yeongyu/oh-my-cybersecurity", {
     headers,
     cache: "no-store",
     signal: AbortSignal.timeout(5_000),

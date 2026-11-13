@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next"
 import { getStats, FALLBACK_DESCRIPTION } from "@/lib/stats"
 
-const primarySiteUrl = "https://omo.dev"
+const primarySiteUrl = "https://omc.nga.hm"
 
 export async function generateSiteMetadata(): Promise<Metadata> {
   let description = FALLBACK_DESCRIPTION
@@ -14,15 +14,15 @@ export async function generateSiteMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL(primarySiteUrl),
     title: {
-      default: "OmO: Your tool for real work. But it's an agent.",
-      template: "%s | OmO",
+      default: "OmC: Your tool for real work. But it's an agent.",
+      template: "%s | OmC",
     },
     description,
     keywords: [
       "opencode",
-      "oh-my-opencode",
+      "oh-my-cybersecurity",
       "openagent",
-      "oh-my-openagent",
+      "oh-my-cybersecurity",
       "ai agent",
       "code agent",
       "multi-model",
@@ -57,14 +57,14 @@ export async function generateSiteMetadata(): Promise<Metadata> {
       locale: "en_US",
       alternateLocale: ["ko_KR", "ja_JP", "zh_CN", "es_ES", "fr_FR", "de_DE", "pt_BR", "it_IT"],
       url: primarySiteUrl,
-      siteName: "OmO",
-      title: "OmO: Your tool for real work. But it's an agent.",
+      siteName: "OmC",
+      title: "OmC: Your tool for real work. But it's an agent.",
       description,
       // Next.js supplies the dynamic image from app/opengraph-image.tsx.
     },
     twitter: {
       card: "summary_large_image",
-      title: "OmO: Your tool for real work. But it's an agent.",
+      title: "OmC: Your tool for real work. But it's an agent.",
       description,
       // app/twitter-image.tsx shares the Open Graph image generator.
     },
@@ -84,7 +84,7 @@ export async function generateSiteMetadata(): Promise<Metadata> {
 export const jsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  name: "OmO",
+  name: "OmC",
   applicationCategory: "DeveloperApplication",
   operatingSystem: "macOS, Linux, Windows",
   url: primarySiteUrl,
@@ -103,7 +103,7 @@ export const jsonLd = {
 }
 
 export const gaMeasurementId = "G-S0QJFKT46Q"
-export const gaTrackedDomain = "omo.dev"
+export const gaTrackedDomain = "omc.nga.hm"
 
 /** Every page follows the system theme (or the one pinned by the home page switch), so it declares both schemes. */
 export const siteViewport: Viewport = {

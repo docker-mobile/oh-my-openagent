@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import type { TaskRecord, TaskStatus } from "../state"
 import { buildCompletionDetails, buildCompletionMessage } from "./notification"
@@ -125,7 +125,7 @@ export function createCompletionNotifier(deps: CompletionNotifierDeps): Completi
     return deliverRecord(record, details, request.parentState)
   }
 
-  // The omo-senpi adapter enqueues into a shared idle-injection coordinator, so a returning enqueue
+  // The omc-senpi adapter enqueues into a shared idle-injection coordinator, so a returning enqueue
   // only means QUEUED: the batched flush can still fail, and a /reload retires the coordinator and
   // hands the whole window back as delivery failures. persistNotified already ran for those records,
   // and reconcileUnnotifiedNotifications skips anything with notified_epoch >= run_epoch - so unless
@@ -216,7 +216,7 @@ export function createCompletionNotifier(deps: CompletionNotifierDeps): Completi
   }
 }
 
-// Every delivered notification stamps triggerTurn:true; the omo-senpi adapter routes it through the
+// Every delivered notification stamps triggerTurn:true; the omc-senpi adapter routes it through the
 // idle-injection coordinator, which batches ALL ready notifications into ONE injection steered into
 // the running turn at the next tool-call boundary (unconditional-steer contract).
 function buildDeliveryMessage(

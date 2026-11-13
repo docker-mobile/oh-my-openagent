@@ -48,7 +48,7 @@ describe("OG GitHub retrieval", () => {
     await getOgStars()
     const result = await getOgStars()
     expect(result).toEqual({ count: 69_999, source: "live", expiresAt: now + 300_000 })
-    expect(requests).toEqual(["https://api.github.com/repos/code-yeongyu/oh-my-openagent"])
+    expect(requests).toEqual(["https://api.github.com/repos/code-yeongyu/oh-my-cybersecurity"])
   })
 
   test("refreshes at the five-minute boundary", async () => {

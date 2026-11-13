@@ -30,7 +30,7 @@ export function errorText(error: unknown): string {
 }
 export function taskBranch(id: string): string {
   if (!/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(id) || id.includes("..") || id.endsWith(".") || id.endsWith(".lock")) throw new Error("Invalid isolation task id")
-  return `omo/task/${id}`
+  return `omc/task/${id}`
 }
 export function nestedPath(root: string, relativePath: string): Promise<string> {
   return (async () => {
@@ -62,7 +62,7 @@ async function deepestExistingCanonical(path: string): Promise<string> {
 const queues = new Map<string, Promise<void>>()
 export async function withRepoLock<T>(repoRoot: string, fn: () => Promise<T>, hook?: LockHook): Promise<T> {
   const commonDir = (await runGit(["rev-parse", "--path-format=absolute", "--git-common-dir"], { cwd: repoRoot })).stdout.toString().trim()
-  const path = join(commonDir, "omo-isolation-merge.lock")
+  const path = join(commonDir, "omc-isolation-merge.lock")
   const previous = queues.get(path) ?? Promise.resolve()
   const turn = Promise.withResolvers<void>()
   const tail = previous.then(() => turn.promise)
@@ -70,7 +70,7 @@ export async function withRepoLock<T>(repoRoot: string, fn: () => Promise<T>, ho
   try {
     await hook?.("waiting", path)
     await previous
-    const record = await createLockRecord("omo-isolation-merge")
+    const record = await createLockRecord("omc-isolation-merge")
     await acquireLock(path, record, { waitTimeoutMs: 60_000 })
     try {
       await hook?.("acquired", path)
@@ -140,7 +140,7 @@ export async function stashPush(repoRoot: string): Promise<string | null> {
   if (!(await runGit(["status", "--porcelain", "--untracked-files=all"], { cwd: repoRoot })).stdout.length) return null
   const readTip = async () => (await runGit(["rev-parse", "--verify", "--quiet", "refs/stash"], { cwd: repoRoot, allowedExitCodes: [0, 1] })).stdout.toString().trim()
   const before = await readTip()
-  await runGit(["stash", "push", "--include-untracked", "-m", "omo-task-merge"], { cwd: repoRoot })
+  await runGit(["stash", "push", "--include-untracked", "-m", "omc-task-merge"], { cwd: repoRoot })
   const created = await readTip()
   // A no-op push (dirt only inside a submodule, for example) leaves the stack
   // unchanged; the caller must not restore and drop an unrelated user stash.

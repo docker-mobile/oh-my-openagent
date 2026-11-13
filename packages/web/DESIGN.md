@@ -1,4 +1,4 @@
-# OmO Web — Design System v3 ("Phosphor Ledger", spoken plainly)
+# OmC Web — Design System v3 ("Phosphor Ledger", spoken plainly)
 
 > **v3 delta (2026-09-13).** The v2 visual system below (ink + phosphor, cyan = live, hairlines, 0px panels, no motion library) stays in force. v3 changes the **voice** and the **reader**: the site now speaks to someone who is interested in tech, not fluent in it. Copy is benefit-first ("Your tool for real work. But it's an agent."), jargon lives behind a scroll-revealed "still curious?" fold, chapter numerals and host/edition tabs are gone, one install command ships everywhere, and Korean gets a proper gothic web font fallback plus line-break and rhythm rules from the design review. New §10 story primitives are the only additions to the component set.
 
@@ -8,12 +8,12 @@
 
 One line per lane. A lane with no line did not run.
 
-- **Reference site — omp.sh** (runtime `getComputedStyle`, 330 elements × 3 viewports, 17 hover targets driven): single-viewport poster console; substrate `#09090b`, hairlines `rgba(255,255,255,0.08)`, **0px radii everywhere**, Geist 500 display `clamp(2.4rem, 1.2rem + 3.8vw, 4.4rem)` / lh 0.98 / tracking -0.03em, uppercase Geist captions 10–12px tracking 2.2–2.6px, the install command bar IS the CTA (accent prompt cell + mono command + fixed-width COPY), nav underline `scaleX(0→1)` 320ms `cubic-bezier(0.2,0.8,0.2,1)`, color transitions 150ms `cubic-bezier(0.4,0,0.2,1)`, scrolled header `black/72% + blur(12px)`; focal object is a procedural Canvas2D grain horizon (not 3D). Report: `/tmp/omo-web-research/omp-sh/report.md`, tokens `tokens.json`, screenshots 375/768/1280 + hero.
-- **Reference site — factory.ai** (runtime extraction, 12→4 track grid measured): pale industrial paper inverted for us; 1440px frame, 24/16px gutters, 3px controls vs 6–12px panels, `box-shadow: none` everywhere, header diffusion `backdrop-filter: blur(64px) saturate(1.5)` without a hard glass card, primary CTA inverts over 150ms, section separation by generous margins (96–160px), one real product demonstration (video) instead of decorative WebGL, headline text-resolution reveal with immediately readable fallback. Report: `/tmp/omo-web-research/factory-ai/report.md`.
-- **Reference site — herdr.dev** (runtime extraction, 28 baseline colors): ink `#17171a`, 1440px frame with 1px side rules, gutters 16/20/34px, Archivo 900 display with heavy negative tracking, lavender single accent used sparingly, **stats strip** (large tabular numerals + 10px mono uppercase labels, 4 → 2×2 columns), feature rows as an **index / explanation / evidence ledger** (130 + 1fr + 1fr at 1280, evidence stacks below at ≤768), row hover tint accent/4%, 120ms feature hovers, 2200ms status-dot pulse, interactive HTML terminal as the product visual. Report: `/tmp/omo-web-research/herdr-dev/report.md`. (herdr shows a "backed by" investor line — explicitly NOT copied; see §12.)
+- **Reference site — omp.sh** (runtime `getComputedStyle`, 330 elements × 3 viewports, 17 hover targets driven): single-viewport poster console; substrate `#09090b`, hairlines `rgba(255,255,255,0.08)`, **0px radii everywhere**, Geist 500 display `clamp(2.4rem, 1.2rem + 3.8vw, 4.4rem)` / lh 0.98 / tracking -0.03em, uppercase Geist captions 10–12px tracking 2.2–2.6px, the install command bar IS the CTA (accent prompt cell + mono command + fixed-width COPY), nav underline `scaleX(0→1)` 320ms `cubic-bezier(0.2,0.8,0.2,1)`, color transitions 150ms `cubic-bezier(0.4,0,0.2,1)`, scrolled header `black/72% + blur(12px)`; focal object is a procedural Canvas2D grain horizon (not 3D). Report: `/tmp/omc-web-research/omp-sh/report.md`, tokens `tokens.json`, screenshots 375/768/1280 + hero.
+- **Reference site — factory.ai** (runtime extraction, 12→4 track grid measured): pale industrial paper inverted for us; 1440px frame, 24/16px gutters, 3px controls vs 6–12px panels, `box-shadow: none` everywhere, header diffusion `backdrop-filter: blur(64px) saturate(1.5)` without a hard glass card, primary CTA inverts over 150ms, section separation by generous margins (96–160px), one real product demonstration (video) instead of decorative WebGL, headline text-resolution reveal with immediately readable fallback. Report: `/tmp/omc-web-research/factory-ai/report.md`.
+- **Reference site — herdr.dev** (runtime extraction, 28 baseline colors): ink `#17171a`, 1440px frame with 1px side rules, gutters 16/20/34px, Archivo 900 display with heavy negative tracking, lavender single accent used sparingly, **stats strip** (large tabular numerals + 10px mono uppercase labels, 4 → 2×2 columns), feature rows as an **index / explanation / evidence ledger** (130 + 1fr + 1fr at 1280, evidence stacks below at ≤768), row hover tint accent/4%, 120ms feature hovers, 2200ms status-dot pulse, interactive HTML terminal as the product visual. Report: `/tmp/omc-web-research/herdr-dev/report.md`. (herdr shows a "backed by" investor line — explicitly NOT copied; see §12.)
 - **StyleGallery spatial patterns** (curl, raw.githubusercontent.com/changeroa/StyleGallery): adopted `sticky-header` (nav; no internal scroll), `cover` (hero: `grid-template-rows: auto 1fr auto; min-block-size: 100dvh`), `grid-wrapper` (page frame: `1fr minmax(0, 90rem) 1fr` with full-bleed breakout tracks), `sticky-aside` (mass-ulw section: sticky title column beside the terminal), `reel` (reviews: horizontal scroll container OWNS scroll), `content-limiter` (manifesto prose 68ch), `fixed-sidenav-shell` (docs: `16rem minmax(0,1fr)` grid, `min-block-size: 0`, **`<main>` owns the scroll**). Structural decisions restated in our words; upstream prose not copied.
 - **Embedded refs**: shortlisted `linear.app`, `warp`, `vercel`; picked **Layer A `gpt-tasteskill`** (AIDA chapters, 2-line hero rule, gapless bento, massive section spacing; GSAP replaced by CSS scroll-driven animation + IntersectionObserver per §6) + **Layer B `linear.app`** (luminance ladder, `rgba(255,255,255,0.05–0.08)` borders, single chromatic accent, weight ~500 UI text) with `warp` for the mono uppercase editorial labels. `redesign-skill` audit list applied to the existing UI (findings in §11).
-- **Imagen concept drafts** (gpt-image-2 via Quotio, 1536×1024): `/tmp/omo-web-research/concepts/a-centered-graph.png`, `b-editorial-split.png`, `c-canvas-bottom-left.png` → **picked B (editorial split)** as the hero reference-fidelity contract: left text column (eyebrow → 2-line display → tagline → command bar → primary + text link), right two-thirds a lit DAG of icosahedral nodes in three waves with a numbered wave rail. A contributes the glass command pill; C contributes pulses travelling along edges.
+- **Imagen concept drafts** (gpt-image-2 via Quotio, 1536×1024): `/tmp/omc-web-research/concepts/a-centered-graph.png`, `b-editorial-split.png`, `c-canvas-bottom-left.png` → **picked B (editorial split)** as the hero reference-fidelity contract: left text column (eyebrow → 2-line display → tagline → command bar → primary + text link), right two-thirds a lit DAG of icosahedral nodes in three waves with a numbered wave rail. A contributes the glass command pill; C contributes pulses travelling along edges.
 - **Prior art (own)**: `planet-simulator/src/components/asteroid/Asteroid3D.tsx` — R3F scene with IntersectionObserver defer, WebGL probe + static image fallback, `prefers-reduced-motion` gate, `dpr=[1,2]`, Suspense SVG fallback; LHCI 100/100/100/100 mobile asserts; size-limit budgets. Adopted and tightened in §9.
 - **Lazyweb**: skipped — the three user-supplied live references already cover real shipped agent-tool landing pages; recorded as intentional.
 
@@ -21,7 +21,7 @@ One line per lane. A lane with no line did not run.
 
 ## 1. Atmosphere & Identity
 
-An operations ledger read at night. The whole site is one framed sheet of ink ruled by hairlines; content lives in rows and cells, never in floating cards. Everything is still until it is _live_: the only light on the page comes from wires that carry work — the edges of the agent graph, the prompt glyph in the install bar, the active node, the cursor in the terminal — and that light is OmO cyan with a white-hot core.
+An operations ledger read at night. The whole site is one framed sheet of ink ruled by hairlines; content lives in rows and cells, never in floating cards. Everything is still until it is _live_: the only light on the page comes from wires that carry work — the edges of the agent graph, the prompt glyph in the install bar, the active node, the cursor in the terminal — and that light is OmC cyan with a white-hot core.
 
 **Signature material: ink + phosphor.** Flat ink surfaces step by luminance (`ink-0 → ink-3`), separated by 1px `line` hairlines with square corners. Cyan appears only where something is running, selectable, or verified. No gradients as decoration, no purple, no drop shadows.
 
@@ -146,7 +146,7 @@ All primitives live in `components/ui/*` (existing shadcn shells re-tokened) or 
 ### Nav (`components/nav-header.tsx`)
 
 - Sticky (`sticky-header`), height `--nav-h` (60px; the document `scroll-padding-top` keeps focused controls clear of it), `--ink-0/72%` + `backdrop-filter: blur(12px)` after `scrollY > 24px` (transparent before), bottom hairline `--line`.
-- Left: OmO mark (24px SVG from `.github/assets/omo-icon-light.svg` re-exported to `public/brand/omo-mark.svg`) + wordmark `OmO` (Geist 500 15px, -0.02em). The brand is `OmO` on every surface (nav, footer, titles, OG, JSON-LD); the old long-form name is never rendered.
+- Left: OmC mark (24px SVG from `.github/assets/omc-icon-light.svg` re-exported to `public/brand/omc-mark.svg`) + wordmark `OmC` (Geist 500 15px, -0.02em). The brand is `OmC` on every surface (nav, footer, titles, OG, JSON-LD); the old long-form name is never rendered.
 - Center/right: links `Features · Docs · Manifesto` in `--text-mid` mono 12px uppercase 0.12em; hover → `--text-hi` with a 1px underline growing `scaleX(0→1)` 320ms.
 - Right: GitHub chip (mono `★ 68.8k` live count, `--ink-1` fill, `--line` border) and primary button `Install` (sm size).
 - Mobile: hamburger 44×44; sheet `--ink-3` with `--line` top rule; items 44px tall.
@@ -165,7 +165,7 @@ All primitives live in `components/ui/*` (existing shadcn shells re-tokened) or 
 
 ### InstallTabs (`components/landing/install-tabs.tsx`)
 
-- Every install surface (hero, CTA, `/docs/install`) renders one CommandBar per shell under a tab row (2026-09-29, replaces v3's single `bun install -g omo-ai` bar): `macOS, Linux, WSL` → `curl -fsSL https://get.omo.dev/install.sh | bash`, `Windows PowerShell` → `irm … | iex`, `Windows CMD` → `powershell -ExecutionPolicy Bypass -c "irm … | iex"`. Commands live in `lib/install-targets.ts` (never in messages); below `sm` the labels drop the `Windows` prefix.
+- Every install surface (hero, CTA, `/docs/install`) renders one CommandBar per shell under a tab row (2026-09-29, replaces v3's single `bun install -g omc-ai` bar): `macOS, Linux, WSL` → `curl -fsSL https://get.omc.nga.hm/install.sh | bash`, `Windows PowerShell` → `irm … | iex`, `Windows CMD` → `powershell -ExecutionPolicy Bypass -c "irm … | iex"`. Commands live in `lib/install-targets.ts` (never in messages); below `sm` the labels drop the `Windows` prefix.
 - Tab row: eyebrow type, 44px tall, `--line` hairline under the row; the selected tab is `--text-hi` with a 1px `--accent` underline over that hairline, others `--text-lo` → `--text-hi` on hover (color only, `--dur-micro`). `role=tablist` with roving tabindex; arrow keys, Home and End select and focus (automatic activation).
 - Detection: `detectInstall()` reads `navigator.userAgentData.platform` first, then the UA string (plus `maxTouchPoints` for iPadOS asking for the desktop site). Windows → PowerShell; macOS, Linux, ChromeOS → sh; phones, tablets and unknown agents → sh plus the caption "run this on your computer".
 - No flash, no shift: a script in `<head>` (root layout) runs `detectInstall()` before the body is parsed and marks `<html>` with `data-install` (and `data-install-hint`); CSS picks the visible panel, the selected tab and the caption from it until the visitor picks a tab, which sets the widget's own `data-show`. Nothing inside the hero blocks the parser (an inline script there let Chrome paint a half-parsed hero, CLS 0.11). Panels are equal height, and both captions share one grid cell so the taller one reserves the space.
@@ -397,7 +397,7 @@ All five use CSS keyframes or IntersectionObserver. The landing `secret` paragra
 
 The supplied Figma OG composition supersedes the dark graph OG in §11, for
 social images only. Its API geometry supplies the original cat and designed-vector
-OmO wordmark. The wordmark is not typeset. The new headline uses the source's
+OmC wordmark. The wordmark is not typeset. The new headline uses the source's
 Roboto Mono family, Regular 400 followed by Bold 700.
 
 - Canvas: 1200 x 630 PNG. White `#ffffff` paper and `#0a0a0a` ink are explicit
@@ -410,8 +410,8 @@ Roboto Mono family, Regular 400 followed by Bold 700.
 - Proof: top-left (48, top 42), Roboto Mono 48 px, one row of two items 44 px
   apart, each a 52 px mark + 18 px gap + label. Stars: GitHub mark, whole-thousand
   floor, uppercase K and plus, e.g. 69,999 → `69K+ Stars`. Downloads: npm mark,
-  all-time npm total of `oh-my-opencode` + `oh-my-openagent` + `omo-ai` +
-  `lazycodex-ai` (`lib/npm-downloads.ts`) plus every `omo-*` compiled binary
+  all-time npm total of `oh-my-cybersecurity` + `oh-my-cybersecurity` + `omc-ai` +
+  `lazycodex-ai` (`lib/npm-downloads.ts`) plus every `omc-*` compiled binary
   downloaded from GitHub releases (`lib/native-downloads.ts`), the same figure
   as the site total, floored to
   0.1 M, e.g. 4,032,665 → `4M+ Downloads`, 3,894,680 → `3.8M+ Downloads`.

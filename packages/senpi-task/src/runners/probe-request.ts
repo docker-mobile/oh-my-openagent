@@ -2,7 +2,7 @@ import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 import type { RpcRunnerSpec } from "./types"
 
-export const PROBE_REQUEST_EVENT = "omo.task.provider_request_started"
+export const PROBE_REQUEST_EVENT = "omc.task.provider_request_started"
 
 /** Captures an early in-process request, even if the runner has not returned its handle yet. */
 export function createProbeRequestSignal(now: () => number) {
@@ -24,7 +24,7 @@ export function createProbeRequestSignal(now: () => number) {
 
 /**
  * A probe-only, parent-authored extension. Both RPC launch strategies load it, including DAG children
- * that intentionally omit omo's task component. It lives with the task and is removed by its normal TTL.
+ * that intentionally omit omc's task component. It lives with the task and is removed by its normal TTL.
  */
 export function withProbeRequestExtension(spec: RpcRunnerSpec): RpcRunnerSpec {
   if (spec.probeProviderRequest !== true) return spec

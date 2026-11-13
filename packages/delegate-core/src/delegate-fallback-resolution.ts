@@ -2,7 +2,7 @@ import {
   filterFallbackChainByDisabledProviders,
   fuzzyMatchModel,
   transformModelForProvider,
-} from "@oh-my-opencode/model-core"
+} from "@oh-my-cybersecurity/model-core"
 import type {
   DelegateFallbackEntry,
   DelegateModelResolutionResult,

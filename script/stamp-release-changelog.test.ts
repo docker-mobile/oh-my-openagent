@@ -14,7 +14,7 @@ const scriptFiles = [
   "changelog-gate-rules.ts", "check-pr-changelog.ts", "changelog-gate.config.ts", "release-pr-marker.ts",
   "package-log-blocks.ts", "package-log-gate.ts", "changelog-shipping-policy.mjs", "changelog-release-assembly.ts", "changelog-notes-markdown.ts",
 ]
-const PULL = "https://github.com/code-yeongyu/oh-my-openagent/pull"
+const PULL = "https://github.com/code-yeongyu/oh-my-cybersecurity/pull"
 
 afterEach(() => {
   for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true })

@@ -1,7 +1,7 @@
 name: Installer mirror (R2)
 run-name: "${{ (inputs.op == 'head' || inputs.op == 'recreate') && format('installer channel {0} {1}', inputs.op, inputs.channel) || format('installer mirror {0}{1}', inputs.tag, inputs.dry_run && ' (dry run)' || '') }}"
 
-# Mirrors one published release into the private omo-releases R2 bucket behind get.omo.dev and moves the
+# Mirrors one published release into the private omc-releases R2 bucket behind get.omc.nga.hm and moves the
 # installer channel. publish.yml calls it as the last release step; run it by hand to backfill or re-run a
 # failed mirror (idempotent), or with dry_run to prove the pipeline without touching any channel. A manual run with
 # op set skips the mirror and maintains one channel pointer instead (#11313): head prints what R2 holds for it,
@@ -60,13 +60,13 @@ env:
 
 jobs:
   mirror:
-    if: github.repository == 'code-yeongyu/oh-my-openagent' && inputs.op != 'head' && inputs.op != 'recreate'
+    if: github.repository == 'code-yeongyu/oh-my-cybersecurity' && inputs.op != 'head' && inputs.op != 'recreate'
     # Pin until this release/deploy path is proven on Ubuntu 26.04: #9942.
     runs-on: ubuntu-24.04
     timeout-minutes: 45
-    # omo-releases lives on the Sisyphus Labs account (moved 2026-10-09). The key pair in this environment is
+    # omc-releases lives on the Sisyphus Labs account (moved 2026-10-09). The key pair in this environment is
     # scoped to that one bucket (object read + write), nothing else.
-    environment: omo-releases-sl
+    environment: omc-releases-sl
     steps:
       - uses: actions/checkout@v7
 
@@ -90,7 +90,7 @@ jobs:
           if [ "$DRY_RUN" = "true" ]; then args+=(--dry-run); fi
           bun script/installer/mirror-release-to-r2.ts "${args[@]}"
 
-      - name: Check the channel get.omo.dev serves
+      - name: Check the channel get.omc.nga.hm serves
         if: inputs.dry_run != true && inputs.channel != 'none'
         env:
           CHANNEL: ${{ inputs.channel }}
@@ -102,10 +102,10 @@ jobs:
           test -n "${EXPECTED}" || { echo "the mirror reported no channel pointer"; exit 1; }
           deadline=$(( $(date +%s) + 180 )); wait=5
           while :; do
-            served="$(curl -fsSL "https://get.omo.dev/channels/${CHANNEL}?check=${GITHUB_RUN_ID}-$(date +%s)" | tr -d '[:space:]' || true)"
-            echo "get.omo.dev/channels/${CHANNEL} -> ${served:-?} (expected ${EXPECTED})"
+            served="$(curl -fsSL "https://get.omc.nga.hm/channels/${CHANNEL}?check=${GITHUB_RUN_ID}-$(date +%s)" | tr -d '[:space:]' || true)"
+            echo "get.omc.nga.hm/channels/${CHANNEL} -> ${served:-?} (expected ${EXPECTED})"
             [ "${served}" = "${EXPECTED}" ] && break
-            [ $(( $(date +%s) + wait )) -le "$deadline" ] || { echo "get.omo.dev still serves ${served:-nothing} after 180 s"; exit 1; }
+            [ $(( $(date +%s) + wait )) -le "$deadline" ] || { echo "get.omc.nga.hm still serves ${served:-nothing} after 180 s"; exit 1; }
             sleep "$wait"; wait=$(( wait < 30 ? wait * 2 : 30 ))
           done
 
@@ -123,10 +123,10 @@ jobs:
         run: GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" bash .github/scripts/write-job-summary.sh
 
   channel-maintenance:
-    if: github.repository == 'code-yeongyu/oh-my-openagent' && github.event_name == 'workflow_dispatch' && (inputs.op == 'head' || inputs.op == 'recreate')
+    if: github.repository == 'code-yeongyu/oh-my-cybersecurity' && github.event_name == 'workflow_dispatch' && (inputs.op == 'head' || inputs.op == 'recreate')
     runs-on: ubuntu-24.04
     timeout-minutes: 10
-    environment: omo-releases-sl
+    environment: omc-releases-sl
     steps:
       - uses: actions/checkout@v7
 
@@ -158,5 +158,5 @@ jobs:
             - head: prints the status, every response header and the body of a signed HEAD and GET of channels/<channel>, credentials redacted.
             - recreate: refuses a version that does not fit the channel or is not fully mirrored, then deletes channels/<channel>, writes the version as a new object and reads it back.
             - Each request runs once; nothing is retried or restored.
-          JOB_SUMMARY_NEXT: Read the step log. If a recreate failed after its delete, get.omo.dev falls back to the npm dist-tag until you rerun recreate or a mirror moves the channel.
+          JOB_SUMMARY_NEXT: Read the step log. If a recreate failed after its delete, get.omc.nga.hm falls back to the npm dist-tag until you rerun recreate or a mirror moves the channel.
         run: GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" bash .github/scripts/write-job-summary.sh

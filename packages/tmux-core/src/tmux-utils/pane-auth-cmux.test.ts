@@ -49,8 +49,8 @@ describe("cmux authenticated pane lifecycle", () => {
 		cleanupAuthDirectory = createPaneAuthDirectory()
 		delete process.env.TMUX
 		process.env.CMUX_SOCKET_PATH = "/tmp/cmux.sock"
-		process.env.OPENCODE_SERVER_USERNAME = "$(touch /tmp/omo-cmux-user-injected)"
-		process.env.OPENCODE_SERVER_PASSWORD = "$(touch /tmp/omo-cmux-password-injected)"
+		process.env.OPENCODE_SERVER_USERNAME = "$(touch /tmp/omc-cmux-user-injected)"
+		process.env.OPENCODE_SERVER_PASSWORD = "$(touch /tmp/omc-cmux-password-injected)"
 	})
 
 	afterEach(() => {

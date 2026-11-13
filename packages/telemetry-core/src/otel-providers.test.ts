@@ -36,9 +36,9 @@ describe("createTelemetryProviders", () => {
     const { root, created } = providers()
 
     // when
-    await created.tracer.startActiveSpan("omo.turn", async (span) => {
+    await created.tracer.startActiveSpan("omc.turn", async (span) => {
       await Bun.file(import.meta.path).text()
-      created.logger.emit({ eventName: "omo.turn_completed", attributes: { "log.record.uid": "a" } })
+      created.logger.emit({ eventName: "omc.turn_completed", attributes: { "log.record.uid": "a" } })
       expect(getActiveTraceContext()).toEqual({ traceId: span.spanContext().traceId, spanId: span.spanContext().spanId })
       span.end()
     })
@@ -46,8 +46,8 @@ describe("createTelemetryProviders", () => {
     // then
     const span = decodeTraces(sealAndRead(created, root.dir, "traces")).resourceSpans[0]?.scopeSpans[0]?.spans[0]
     const record = logRecordsOf(decodeLogs(sealAndRead(created, root.dir, "logs")))[0]
-    expect(span?.name).toBe("omo.turn")
-    expect(record?.eventName).toBe("omo.turn_completed")
+    expect(span?.name).toBe("omc.turn")
+    expect(record?.eventName).toBe("omc.turn_completed")
     expect(Buffer.from(record?.traceId ?? []).toString("hex")).toBe(Buffer.from(span?.traceId ?? []).toString("hex"))
     expect(Buffer.from(record?.spanId ?? []).toString("hex")).toBe(Buffer.from(span?.spanId ?? []).toString("hex"))
   })
@@ -59,7 +59,7 @@ describe("createTelemetryProviders", () => {
     const inbound = propagation.extract(ROOT_CONTEXT, { traceparent: `00-${parentTrace}-00f067aa0ba902b7-00` })
 
     // when
-    created.tracer.startSpan("omo.turn", {}, inbound).end()
+    created.tracer.startSpan("omc.turn", {}, inbound).end()
 
     // then
     const span = decodeTraces(sealAndRead(created, root.dir, "traces")).resourceSpans[0]?.scopeSpans[0]?.spans[0]
@@ -73,7 +73,7 @@ describe("createTelemetryProviders", () => {
     const { root, created } = providers()
 
     // when
-    const span = created.tracer.startSpan("omo.turn")
+    const span = created.tracer.startSpan("omc.turn")
     span.addEvent("private", { text: "x" })
     span.recordException(new Error("secret message"))
     span.setStatus({ code: SpanStatusCode.ERROR, message: "secret message" })
@@ -106,7 +106,7 @@ describe("createTelemetryProviders", () => {
   test("#given Node attribution #when the Resource is built #then it uses the D-P keys, OTLP value spellings and the in-house SDK name", () => {
     // when
     const resource = createTelemetryResource({
-      serviceName: "omo-senpi",
+      serviceName: "omc-senpi",
       serviceVersion: "1.2.3",
       instanceId: "0123456789abcdef0123456789abcdef",
       installHash: "cd".repeat(32),
@@ -120,33 +120,33 @@ describe("createTelemetryProviders", () => {
 
     // then
     expect(resource).toEqual({
-      "service.name": "omo-senpi",
+      "service.name": "omc-senpi",
       "service.version": "1.2.3",
       "service.instance.id": "0123456789abcdef0123456789abcdef",
-      "omo.install.hash": "cd".repeat(32),
+      "omc.install.hash": "cd".repeat(32),
       "os.type": "windows",
       "os.version": "10.0.22631",
       "host.arch": "amd64",
-      "telemetry.sdk.name": "omo-otel-minimal",
+      "telemetry.sdk.name": "omc-otel-minimal",
       "telemetry.sdk.language": "nodejs",
       "telemetry.sdk.version": "1.0.0",
-      "omo.schema.version": 3,
-      "omo.surface": "cli",
-      "omo.ci": false,
+      "omc.schema.version": 3,
+      "omc.surface": "cli",
+      "omc.ci": false,
     })
   })
 
   test("#given a sealed file #then its request carries the writer's Resource and scope from the header", () => {
     // given
     const { root, created } = providers()
-    created.logger.emit({ eventName: "omo.x", attributes: { "omo.a": 1 } })
+    created.logger.emit({ eventName: "omc.x", attributes: { "omc.a": 1 } })
 
     // when
     const request = decodeLogs(sealAndRead(created, root.dir, "logs"))
 
     // then
     expect(attributeMap(request.resourceLogs[0]?.resource?.attributes ?? [])["service.version"]).toBe("1.1.0")
-    expect(request.resourceLogs[0]?.scopeLogs[0]?.scope?.name).toBe("omo-senpi")
-    expect(attributeMap(logRecordsOf(request)[0]?.attributes ?? [])).toEqual({ "omo.a": 1 })
+    expect(request.resourceLogs[0]?.scopeLogs[0]?.scope?.name).toBe("omc-senpi")
+    expect(attributeMap(logRecordsOf(request)[0]?.attributes ?? [])).toEqual({ "omc.a": 1 })
   })
 })

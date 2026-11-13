@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url"
 // The import edges between the desktop packages, enforced in each package.json and every src/ file. A package may
 // import itself and the packages listed here; no other workspace package.
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..")
-const SCOPE = "@oh-my-opencode/"
+const SCOPE = "@oh-my-cybersecurity/"
 const DESKTOP = "senpi-desktop-"
 
 const ALLOWED_EDGES = {
@@ -113,20 +113,20 @@ test("#given the sdk edge row #when checked #then the sdk may import -protocol o
 
 test("#given import forms #when extracting specifiers #then static, re-export, type, dynamic and require forms are all seen", () => {
   const text = [
-    'import { a } from "@oh-my-opencode/senpi-desktop-service"',
-    'import type { B } from "@oh-my-opencode/senpi-desktop-tool/registration"',
+    'import { a } from "@oh-my-cybersecurity/senpi-desktop-service"',
+    'import type { B } from "@oh-my-cybersecurity/senpi-desktop-tool/registration"',
     'export * from "node:child_process"',
     'export { c } from "@earendil-works/pi-ai"',
     'const d = await import("node:net")',
     'const e = require("./local")',
     'import "./side-effect"',
-    '// import { f } from "@oh-my-opencode/omo-senpi"',
-    '/* import { g } from "@oh-my-opencode/omo-senpi" */',
+    '// import { f } from "@oh-my-cybersecurity/omc-senpi"',
+    '/* import { g } from "@oh-my-cybersecurity/omc-senpi" */',
   ].join("\n")
 
   assert.deepEqual(importSpecifiers(text), [
-    "@oh-my-opencode/senpi-desktop-service",
-    "@oh-my-opencode/senpi-desktop-tool/registration",
+    "@oh-my-cybersecurity/senpi-desktop-service",
+    "@oh-my-cybersecurity/senpi-desktop-tool/registration",
     "node:child_process",
     "@earendil-works/pi-ai",
     "node:net",

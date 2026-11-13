@@ -76,7 +76,7 @@ describe("resolveSpace (sync-design §3 binding keys)", () => {
     expect(store.get(SYNC_BINDING_CONFIG_KEY)).toBe(r.bindingKey)
   })
 
-  test("omo.sync.space is sticky when the remote URL changes", () => {
+  test("omc.sync.space is sticky when the remote URL changes", () => {
     const { store } = fakeStore()
     const first = resolveSpace(store, { remotes: [{ name: "origin", url: "git@github.com:a/b.git" }] })
     const second = resolveSpace(store, { remotes: [{ name: "origin", url: "https://github.com/a/renamed.git" }] })
@@ -173,18 +173,18 @@ describe("resolveSpaceInRepo / git-backed config", () => {
   })
 
   function tmpRepo(): string {
-    const dir = mkdtempSync(join(tmpdir(), "omo-space-test-"))
+    const dir = mkdtempSync(join(tmpdir(), "omc-space-test-"))
     dirs.push(dir)
     git(dir, ["init", "-q"])
     return dir
   }
 
-  test("binds to the origin remote and persists omo.sync.space in local config", () => {
+  test("binds to the origin remote and persists omc.sync.space in local config", () => {
     const dir = tmpRepo()
     git(dir, ["remote", "add", "origin", "git@github.com:a/b.git"])
     const first = resolveSpaceInRepo(dir, {})
     expect(first.bindingKey).toBe("repo:github.com/a/b")
-    expect(git(dir, ["config", "--local", "--get", "omo.sync.space"]).trim()).toBe(first.spaceId)
+    expect(git(dir, ["config", "--local", "--get", "omc.sync.space"]).trim()).toBe(first.spaceId)
     git(dir, ["remote", "set-url", "origin", "ssh://git@github.com/a/renamed.git"])
     const second = resolveSpaceInRepo(dir, {})
     expect(second.spaceId).toBe(first.spaceId)
@@ -196,7 +196,7 @@ describe("resolveSpaceInRepo / git-backed config", () => {
     const dir = tmpRepo()
     const first = resolveSpaceInRepo(dir, {})
     expect(first.bindingKey).toMatch(/^local:[0-9a-f]{32}$/)
-    expect(git(dir, ["config", "--local", "--get", "omo.sync.binding"]).trim()).toBe(first.bindingKey)
+    expect(git(dir, ["config", "--local", "--get", "omc.sync.binding"]).trim()).toBe(first.bindingKey)
     expect(resolveSpaceInRepo(dir, {}).bindingKey).toBe(first.bindingKey)
   })
 
@@ -213,7 +213,7 @@ describe("resolveSpaceInRepo / git-backed config", () => {
   test("an inherited GIT_DIR / GIT_WORK_TREE pair cannot point the space read, write or remote list at another repository (#12354)", () => {
     const foreign = tmpRepo()
     git(foreign, ["remote", "add", "origin", "git@github.com:foreign/elsewhere.git"])
-    git(foreign, ["config", "--local", "omo.sync.space", "f".repeat(64)])
+    git(foreign, ["config", "--local", "omc.sync.space", "f".repeat(64)])
     const dir = tmpRepo()
     git(dir, ["remote", "add", "origin", "git@github.com:a/b.git"])
     // The pair must be in the environment the process started with: that is what a host exports, and
@@ -225,8 +225,8 @@ describe("resolveSpaceInRepo / git-backed config", () => {
     expect(child.stderr.toString()).toBe("")
     const resolved: unknown = JSON.parse(child.stdout.toString())
     expect(resolved).toMatchObject({ bindingKey: "repo:github.com/a/b", wrote: { space: expect.any(String) } })
-    const stored = git(dir, ["config", "--local", "--get", "omo.sync.space"]).trim()
+    const stored = git(dir, ["config", "--local", "--get", "omc.sync.space"]).trim()
     expect(resolved).toMatchObject({ spaceId: stored })
-    expect(git(foreign, ["config", "--local", "--get", "omo.sync.space"]).trim()).toBe("f".repeat(64))
+    expect(git(foreign, ["config", "--local", "--get", "omc.sync.space"]).trim()).toBe("f".repeat(64))
   })
 })

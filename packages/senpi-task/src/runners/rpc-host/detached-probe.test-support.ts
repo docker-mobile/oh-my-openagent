@@ -11,7 +11,7 @@ export async function runDetachedProbe(scenario: string): Promise<{
   readonly stderr: string
   readonly sandboxRemoved: boolean
 }> {
-  const sandbox = mkdtempSync(join(tmpdir(), "omo-detached-probe-"))
+  const sandbox = mkdtempSync(join(tmpdir(), "omc-detached-probe-"))
   const env: NodeJS.ProcessEnv = {
     ...process.env, HOME: sandbox, USERPROFILE: sandbox, TMPDIR: sandbox, TMP: sandbox, TEMP: sandbox,
     // The sandboxed profile is a cold transpiler-cache location; writing it blocks a Windows child for
@@ -24,8 +24,8 @@ export async function runDetachedProbe(scenario: string): Promise<{
     env[`${prefix}_CODING_AGENT_DIR`] = dir
   }
   for (const key of [
-    "SENPI_PACKAGE_DIR", "OMO_PACKAGE_DIR", "PI_PACKAGE_DIR", "OMO_BIN", "SENPI_BIN",
-    "PI_SESSION_FILE", "OMO_RPC_SOCKET_PATH",
+    "SENPI_PACKAGE_DIR", "OMC_PACKAGE_DIR", "PI_PACKAGE_DIR", "OMC_BIN", "SENPI_BIN",
+    "PI_SESSION_FILE", "OMC_RPC_SOCKET_PATH",
   ]) delete env[key]
   const probePath = fileURLToPath(new URL("./detached-process.test-support.ts", import.meta.url))
   const child = spawn(process.execPath, [probePath, scenario], {

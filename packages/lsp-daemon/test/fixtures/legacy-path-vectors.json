@@ -27,7 +27,7 @@
 		"expected": {
 			"baseDir": "/Users/legacy/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/home/.codex/codex-lsp/daemon",
 			"versionDir": "/Users/legacy/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/home/.codex/codex-lsp/daemon/v0.1.0",
-			"socket": "/tmp/omo-lsp-0.1.0-8131658693c4df96.sock",
+			"socket": "/tmp/omc-lsp-0.1.0-8131658693c4df96.sock",
 			"lock": "/Users/legacy/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/home/.codex/codex-lsp/daemon/v0.1.0/daemon.lock",
 			"pid": "/Users/legacy/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/home/.codex/codex-lsp/daemon/v0.1.0/daemon.pid",
 			"log": "/Users/legacy/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/deep-segment/home/.codex/codex-lsp/daemon/v0.1.0/daemon.log"
@@ -41,7 +41,7 @@
 		"expected": {
 			"baseDir": "C:\\Users\\legacy\\.codex\\codex-lsp\\daemon",
 			"versionDir": "C:\\Users\\legacy\\.codex\\codex-lsp\\daemon\\v0.1.0",
-			"socket": "\\\\.\\pipe\\omo-lsp-0.1.0-9d4def6f95ee8a34",
+			"socket": "\\\\.\\pipe\\omc-lsp-0.1.0-9d4def6f95ee8a34",
 			"lock": "C:\\Users\\legacy\\.codex\\codex-lsp\\daemon\\v0.1.0\\daemon.lock",
 			"pid": "C:\\Users\\legacy\\.codex\\codex-lsp\\daemon\\v0.1.0\\daemon.pid",
 			"log": "C:\\Users\\legacy\\.codex\\codex-lsp\\daemon\\v0.1.0\\daemon.log"

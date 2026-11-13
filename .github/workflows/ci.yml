@@ -287,7 +287,7 @@ jobs:
         working-directory: packages/lsp-daemon
 
       # Every OS splits the root suite into two parallel jobs (the Windows
-      # shape): shard 1 runs omo-opencode + memory-core in one serial process,
+      # shape): shard 1 runs omc-opencode + memory-core in one serial process,
       # shard 2 runs the shared serial quarantine first and then the remainder.
       # `bun test --parallel` is not used on POSIX: --isolate re-runs the heavy
       # preload per file and OOM-kills the 7 GB runners, and --no-isolate leaks
@@ -295,29 +295,29 @@ jobs:
       # Linux: memory-core's stranded-git-lock tests read the host process table. On hosted runners
       # same-uid processes of other sessions cannot be inspected, so on Linux memory-core runs in an
       # unprivileged PID namespace, and the step fails loudly when no namespace can be made instead
-      # of falling back to the host table (omo #10199). Even inside it, the user's own LIVE git
+      # of falling back to the host table (omc #10199). Even inside it, the user's own LIVE git
       # processes return EACCES on /proc/<pid>/fd (this runner's azure 7.0 kernel, and Boat alike),
       # so the scans stay unanswerable here; the dead-writer reclaim rows pass through the kernel
-      # git-activity lock instead (omo #10322), which is what this blind host exercises.
+      # git-activity lock instead (omc #10322), which is what this blind host exercises.
       - name: Run tests
         id: root-tests-posix-1
         if: needs.ci-mode.outputs.run_heavy == 'true' && runner.os != 'Windows' && matrix.shard == '1/2' && (matrix.os == 'ubuntu-latest' || needs.ci-mode.outputs.full_matrix == 'true')
         run: |
           set -euo pipefail
           if [ "$RUNNER_OS" != "Linux" ]; then
-            bun test --timeout 20000 packages/omo-opencode packages/memory-core
+            bun test --timeout 20000 packages/omc-opencode packages/memory-core
             exit 0
           fi
-          bun test --timeout 20000 packages/omo-opencode
+          bun test --timeout 20000 packages/omc-opencode
           if [ -e /proc/sys/kernel/apparmor_restrict_unprivileged_userns ]; then
             sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
           fi
           if ! procs="$(unshare -Upf --mount-proc --map-current-user -- sh -c 'ls /proc | grep -c "^[0-9]"')"; then
-            echo "::error::cannot create an unprivileged PID namespace; memory-core's lock tests must not fall back to the host process table (omo #10199)"
+            echo "::error::cannot create an unprivileged PID namespace; memory-core's lock tests must not fall back to the host process table (omc #10199)"
             exit 1
           fi
           if [ "$procs" -gt 8 ]; then
-            echo "::error::the PID namespace sees $procs processes, so it is not isolated from the host (omo #10199)"
+            echo "::error::the PID namespace sees $procs processes, so it is not isolated from the host (omc #10199)"
             exit 1
           fi
           echo "PID namespace ready ($procs processes visible)"
@@ -331,7 +331,7 @@ jobs:
           WINDOWS_TEST_SHARD: ${{ matrix.shard }}
           # #10821: a git that outlives its timeout records the live process table here, and every
           # git writes a trace2 perf log, so the next stalled `git add` carries its own evidence.
-          OMO_GIT_TIMEOUT_DIAGNOSTICS_DIR: ${{ runner.temp }}/git-timeout-diagnostics
+          OMC_GIT_TIMEOUT_DIAGNOSTICS_DIR: ${{ runner.temp }}/git-timeout-diagnostics
           GIT_TRACE2_PERF: ${{ runner.temp }}/git-trace2
         run: |
           New-Item -ItemType Directory -Force -Path $env:GIT_TRACE2_PERF | Out-Null
@@ -339,7 +339,7 @@ jobs:
           & .github/scripts/windows-ci-telemetry.ps1 `
             -ArtifactDirectory $telemetryDirectory `
             -Invocation "shard-1" `
-            -TestArguments @("test", "packages/omo-opencode", "packages/memory-core")
+            -TestArguments @("test", "packages/omc-opencode", "packages/memory-core")
 
       - name: Run tests
         id: root-tests-posix-2
@@ -373,7 +373,7 @@ jobs:
           & .github/scripts/windows-ci-telemetry.ps1 `
             -ArtifactDirectory $telemetryDirectory `
             -Invocation "shard-2-quarantine" `
-            -TestArguments @("test", "packages/senpi-task/src/runners/rpc-process.windows.test.ts", "packages/senpi-task/src/__adversarial__/chaos-bench.test.ts", "packages/omo-codex/src/install/install-codex-legacy-agent-purge.test.ts", "script/codex-installer-version.test.ts", "packages/shared-skills/provenance-gate.test.ts", "packages/omo-codex/src/install/install-codex-mcp-manifest.test.ts", "packages/senpi-task/src/dag/scheduler.test.ts", "packages/omo-native/test/payload.test.ts", "script/build-omo-binary.test.ts", "packages/senpi-task/src/team/member-extension/residency.test.ts", "script/omob-refresh.test.ts", "script/release-version.test.ts", "packages/senpi-task/src/store/record-lock.test.ts", "packages/senpi-task/src/store/record-lock-reap-window.test.ts", "packages/senpi-task/src/runners/rpc-host/durable-json.test.ts")
+            -TestArguments @("test", "packages/senpi-task/src/runners/rpc-process.windows.test.ts", "packages/senpi-task/src/__adversarial__/chaos-bench.test.ts", "packages/omc-codex/src/install/install-codex-legacy-agent-purge.test.ts", "script/codex-installer-version.test.ts", "packages/shared-skills/provenance-gate.test.ts", "packages/omc-codex/src/install/install-codex-mcp-manifest.test.ts", "packages/senpi-task/src/dag/scheduler.test.ts", "packages/omc-native/test/payload.test.ts", "script/build-omc-binary.test.ts", "packages/senpi-task/src/team/member-extension/residency.test.ts", "script/omob-refresh.test.ts", "script/release-version.test.ts", "packages/senpi-task/src/store/record-lock.test.ts", "packages/senpi-task/src/store/record-lock-reap-window.test.ts", "packages/senpi-task/src/runners/rpc-host/durable-json.test.ts")
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           # Bun 1.4.2 and 1.4.3-canary.1 intermittently segfault a test worker in the rpc-host suite
           # (oven-sh/bun#44390, #9219). It runs in its own required invocation, which
@@ -457,7 +457,7 @@ jobs:
           JOB_SUMMARY_DETAILS: |
             - Builds vendored LSP packages before tests.
             - Runs `npm test` for `packages/lsp-daemon`.
-            - Runs all non-Senpi root tests sharded two ways per OS: shard 1 covers omo-opencode + memory-core, shard 2 runs the shared serial quarantine first and then the remainder (serial on POSIX, `--parallel` on Windows).
+            - Runs all non-Senpi root tests sharded two ways per OS: shard 1 covers omc-opencode + memory-core, shard 2 runs the shared serial quarantine first and then the remainder (serial on POSIX, `--parallel` on Windows).
             - Splits every OS by the same package groups so global zauc mock bootstraps stay with their consumers.
           JOB_SUMMARY_NEXT: Open the first failing test or package-build step; matrix failures are usually OS-specific.
         run: GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" bash .github/scripts/write-job-summary.sh
@@ -505,7 +505,7 @@ jobs:
         id: root-tests-posix-1
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         timeout-minutes: 20
-        run: bun test --timeout 20000 packages/omo-opencode packages/memory-core
+        run: bun test --timeout 20000 packages/omc-opencode packages/memory-core
       - name: Run root test shard 2
         id: root-tests-posix-2
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
@@ -518,7 +518,7 @@ jobs:
         run: |
           bash .github/scripts/ci-codex-platform-build.sh
           bash .github/scripts/ci-codex-platform-node.sh
-          bun test packages/omo-opencode/src/cli/cli-installer.platform.test.ts
+          bun test packages/omc-opencode/src/cli/cli-installer.platform.test.ts
       - name: Run Senpi compatibility tests
         id: senpi-tests-posix
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
@@ -666,16 +666,16 @@ jobs:
         run: bun install --frozen-lockfile --ignore-scripts
 
       # A Bun 1.4.3 frozen install once left @types/node out of the tree; tsgo then fell back to
-      # bun-types' ForkOptions and reported a false 'windowsHide' error in omo-senpi. Fail here,
-      # with the cause, if the declared @types/node does not resolve from omo-senpi.
-      - name: Verify @types/node resolves from omo-senpi
+      # bun-types' ForkOptions and reported a false 'windowsHide' error in omc-senpi. Fail here,
+      # with the cause, if the declared @types/node does not resolve from omc-senpi.
+      - name: Verify @types/node resolves from omc-senpi
         if: needs.ci-mode.outputs.run_heavy == 'true'
         shell: bash
         run: |
           node -e '
             const { createRequire } = require("node:module");
             const path = require("node:path");
-            const pkg = path.resolve("packages/omo-senpi/package.json");
+            const pkg = path.resolve("packages/omc-senpi/package.json");
             const declared = require(pkg).devDependencies["@types/node"];
             const found = createRequire(pkg)("@types/node/package.json").version;
             console.log(`@types/node declared ${declared}, resolved ${found}`);
@@ -710,7 +710,7 @@ jobs:
           JOB_SUMMARY_STATUS: ${{ job.status }}
           JOB_SUMMARY_DETAILS: |
             - Builds vendored LSP packages required by the workspace.
-            - Checks that `@types/node` resolves from `packages/omo-senpi` after the frozen install.
+            - Checks that `@types/node` resolves from `packages/omc-senpi` after the frozen install.
             - Runs root `bun run typecheck`, including script and package checks.
           JOB_SUMMARY_NEXT: Start with the first TypeScript diagnostic; shared package failures can cascade into adapters.
         run: GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" bash .github/scripts/write-job-summary.sh
@@ -759,14 +759,14 @@ jobs:
         run: bun run test:codex
 
 
-      - name: Run omo-codex component checks and tests
+      - name: Run omc-codex component checks and tests
         id: codex-component-tests
         if: needs.ci-mode.outputs.run_heavy == 'true' && matrix.suite == 'full' && (matrix.os == 'ubuntu-latest' || needs.ci-mode.outputs.full_matrix == 'true')
         shell: bash
         run: |
           set -uo pipefail
           status=0
-          for component in packages/omo-codex/plugin/components/*/; do
+          for component in packages/omc-codex/plugin/components/*/; do
             if jq -e '.scripts.check' "${component}package.json" > /dev/null 2>&1; then
               echo "::group::Component check: ${component}"
               npm --prefix "$component" run check || status=1
@@ -792,7 +792,7 @@ jobs:
       - name: Run Codex platform smoke tests (.ts via bun test)
         id: codex-smoke-bun-tests
         if: needs.ci-mode.outputs.run_heavy == 'true' && matrix.suite == 'platform' && (matrix.os == 'ubuntu-latest' || needs.ci-mode.outputs.full_matrix == 'true')
-        run: bun test packages/omo-opencode/src/cli/cli-installer.platform.test.ts
+        run: bun test packages/omc-opencode/src/cli/cli-installer.platform.test.ts
 
       # A leg whose test steps were all skipped must never look like a pass.
       - name: Check that this leg ran its tests
@@ -814,7 +814,7 @@ jobs:
           JOB_SUMMARY_STATUS: ${{ job.status }}
           JOB_SUMMARY_DETAILS: |
             - Builds the MCP runtimes needed by the Codex adapter.
-            - Runs the full hermetic Codex gate plus every omo-codex component check script on Linux, and platform-specific installer/path/shell smoke tests on macOS and Windows.
+            - Runs the full hermetic Codex gate plus every omc-codex component check script on Linux, and platform-specific installer/path/shell smoke tests on macOS and Windows.
             - Preserves Linux, macOS, and Windows platform compatibility coverage without duplicating platform-neutral tests.
           JOB_SUMMARY_NEXT: Inspect the failing component build or the first Codex compatibility test failure for this OS.
         run: GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" bash .github/scripts/write-job-summary.sh
@@ -859,10 +859,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node packages/omo-senpi/plugin/scripts/build-extension.mjs --check
+          node packages/omc-senpi/plugin/scripts/build-extension.mjs --check
           # The installer embeds the required-artifact list, so a stale copy demands files the
           # plugin no longer ships and refuses to install. Nothing else in CI reads it.
-          node packages/omo-senpi/plugin/scripts/build-install.mjs --check
+          node packages/omc-senpi/plugin/scripts/build-install.mjs --check
 
 
   senpi-compatibility:
@@ -911,9 +911,9 @@ jobs:
         shell: bash
         run: bash .github/scripts/ci-senpi-posix.sh
 
-      # EQ.omo (brain/hand plan P0-06f): E21-E24 through the real senpi CLI with the built plugin, against the
+      # EQ.omc (brain/hand plan P0-06f): E21-E24 through the real senpi CLI with the built plugin, against the
       # linux-x64 B0 goldens. The collectors, normalizer and fake model server are the senpi EQ harness at a pinned commit.
-      - name: Run omo fused-path equivalence (EQ.omo E21-E24)
+      - name: Run omc fused-path equivalence (EQ.omc E21-E24)
         if: needs.ci-mode.outputs.run_heavy == 'true' && matrix.os == 'ubuntu-latest'
         shell: bash
         timeout-minutes: 45
@@ -929,9 +929,9 @@ jobs:
           npm install --prefix "$RUNNER_TEMP/eq-lsp" --no-save --no-audit --no-fund typescript-language-server@5.3.0 typescript@5.9.3
           # E24 runs the pinned comment-checker binary from the Codex plugin workspace (the root install does not carry it);
           # the binaries ship inside the npm tarball, so --ignore-scripts still installs them and nothing is downloaded mid-case.
-          npm --prefix packages/omo-codex/plugin ci --ignore-scripts --no-audit --no-fund
-          node packages/omo-senpi/scripts/qa/fused-equivalence-e2e.mjs --compare --placement fused --senpi-repo "$RUNNER_TEMP/senpi-eq" \
-            --lsp-dir "$RUNNER_TEMP/eq-lsp/node_modules/.bin" --evidence-dir "$RUNNER_TEMP/eq-omo"
+          npm --prefix packages/omc-codex/plugin ci --ignore-scripts --no-audit --no-fund
+          node packages/omc-senpi/scripts/qa/fused-equivalence-e2e.mjs --compare --placement fused --senpi-repo "$RUNNER_TEMP/senpi-eq" \
+            --lsp-dir "$RUNNER_TEMP/eq-lsp/node_modules/.bin" --evidence-dir "$RUNNER_TEMP/eq-omc"
 
       - name: Run Senpi compatibility tests with Windows telemetry
         id: senpi-tests-windows
@@ -946,13 +946,13 @@ jobs:
         run: |
           bun run build:senpi-plugin
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          $packDirectory = Join-Path $env:RUNNER_TEMP "omo-senpi-pack"
+          $packDirectory = Join-Path $env:RUNNER_TEMP "omc-senpi-pack"
           New-Item -ItemType Directory -Path $packDirectory -Force | Out-Null
-          npm pack --pack-destination $packDirectory packages/omo-senpi/plugin
+          npm pack --pack-destination $packDirectory packages/omc-senpi/plugin
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           npm --prefix packages/lsp-daemon test -- test/daemon-roundtrip.test.ts
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          bun check --no-script --all -p packages/omo-senpi/tsconfig.json
+          bun check --no-script --all -p packages/omc-senpi/tsconfig.json
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           bun test ./.agents/skills/senpi-qa/scripts/resolve-evidence-dir.test.mjs
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
@@ -960,7 +960,7 @@ jobs:
           & .github/scripts/windows-ci-telemetry.ps1 `
             -ArtifactDirectory $telemetryDirectory `
             -Invocation "senpi-compatibility" `
-            -TestArguments @("test", "packages/omo-senpi")
+            -TestArguments @("test", "packages/omc-senpi")
           exit $LASTEXITCODE
 
       - name: Upload Windows Senpi telemetry
@@ -996,7 +996,7 @@ jobs:
             - Builds the shared LSP daemon once before staging Senpi artifacts.
             - Packs the generated Pi package and runs hermetic Senpi and QA-contract tests.
             - Covers Linux/macOS socket and Windows named-pipe daemon smoke.
-          JOB_SUMMARY_NEXT: Inspect the first omo-senpi build, sync, directive, or package test failure for this OS.
+          JOB_SUMMARY_NEXT: Inspect the first omc-senpi build, sync, directive, or package test failure for this OS.
         run: GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" bash .github/scripts/write-job-summary.sh
 
   lazycodex-published-smoke:
@@ -1029,7 +1029,7 @@ jobs:
 
           npx_install_output=$(npx -y lazycodex-ai@latest --dry-run install --no-tui --codex-autonomous)
           echo "$npx_install_output"
-          if [ "$npx_install_output" != "npx --yes oh-my-openagent@latest install --platform=codex --no-tui --codex-autonomous" ]; then
+          if [ "$npx_install_output" != "npx --yes oh-my-cybersecurity@latest install --platform=codex --no-tui --codex-autonomous" ]; then
             echo "::warning::lazycodex-ai install dry-run output changed: $npx_install_output"
           fi
 
@@ -1037,7 +1037,7 @@ jobs:
           echo "$npx_doctor_output"
           if [[ "$npx_doctor_output" != codex\ exec\ * ]] ||
              [[ "$npx_doctor_output" != *"--sandbox danger-full-access"* ]] ||
-             [[ "$npx_doctor_output" != *'Use $omo:lcx-doctor'* ]] ||
+             [[ "$npx_doctor_output" != *'Use $omc:lcx-doctor'* ]] ||
              [[ "$npx_doctor_output" == *"--model"* ]] ||
              [[ "$npx_doctor_output" == *"gpt-5.5-codex-mini"* ]]; then
             echo "::warning::lazycodex-ai doctor dry-run output changed: $npx_doctor_output"
@@ -1051,7 +1051,7 @@ jobs:
         run: |
           set -uo pipefail
           status=0
-          for spec in lazycodex-ai@latest lazycodex-ai@beta oh-my-openagent@latest oh-my-openagent@beta; do
+          for spec in lazycodex-ai@latest lazycodex-ai@beta oh-my-cybersecurity@latest oh-my-cybersecurity@beta; do
             echo "::group::published install smoke: $spec"
             if node script/published-install-smoke.mjs --package="$spec"; then
               echo "published install smoke passed for $spec"
@@ -1128,20 +1128,20 @@ jobs:
           test -f dist/index.d.ts || (echo "ERROR: dist/index.d.ts not found!" && exit 1)
 
       # `bun run build` regenerates both JSON Schema artifacts, and every job
-      # builds before it tests, so tests/omo-schema-freshness.test.ts compares
+      # builds before it tests, so tests/omc-schema-freshness.test.ts compares
       # the regenerated file with itself in CI. Diffing against the commit is
       # what actually catches a stale committed schema.
       - name: Verify generated schema artifacts are committed
         if: needs.ci-mode.outputs.run_heavy == 'true'
         run: |
-          if ! git diff --exit-code -- assets/oh-my-opencode.schema.json assets/omo.schema.json; then
-            echo "::error::Committed JSON Schema artifacts are stale. Run 'bun run build:schema && bun run build:omo-schema' and commit assets/*.schema.json."
+          if ! git diff --exit-code -- assets/oh-my-cybersecurity.schema.json assets/omc.schema.json; then
+            echo "::error::Committed JSON Schema artifacts are stale. Run 'bun run build:schema && bun run build:omc-schema' and commit assets/*.schema.json."
             exit 1
           fi
 
       - name: Verify dist bundle tests
         if: needs.ci-mode.outputs.run_heavy == 'true'
-        run: bun test --timeout 20000 packages/omo-opencode/src/shared/dist-bundle-bun-globals.test.ts packages/omo-opencode/src/shared/dist-bundle-prompt-content.test.ts
+        run: bun test --timeout 20000 packages/omc-opencode/src/shared/dist-bundle-bun-globals.test.ts packages/omc-opencode/src/shared/dist-bundle-prompt-content.test.ts
 
       - name: Write job summary
         if: always()
@@ -1153,12 +1153,12 @@ jobs:
             - Builds the distributable OpenCode/Codex packages.
             - Rejects version-scoped patches whose hunks no longer apply to the pinned published package.
             - Confirms `dist/index.js` and `dist/index.d.ts` exist.
-            - Fails when the build regenerates `assets/oh-my-opencode.schema.json` or `assets/omo.schema.json` differently from the committed copy.
+            - Fails when the build regenerates `assets/oh-my-cybersecurity.schema.json` or `assets/omc.schema.json` differently from the committed copy.
             - Runs dist bundle regression tests.
-          JOB_SUMMARY_NEXT: Fix the first failing build prerequisite before debugging downstream dist checks; a stale schema artifact is fixed by `bun run build:schema && bun run build:omo-schema` plus committing the result.
+          JOB_SUMMARY_NEXT: Fix the first failing build prerequisite before debugging downstream dist checks; a stale schema artifact is fixed by `bun run build:schema && bun run build:omc-schema` plus committing the result.
         run: GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" bash .github/scripts/write-job-summary.sh
 
-  omo-ai-payload-check:
+  omc-ai-payload-check:
     needs: [ci-mode]
     runs-on: ubuntu-26.04
     steps:
@@ -1184,17 +1184,17 @@ jobs:
         if: needs.ci-mode.outputs.run_heavy == 'true'
         run: bun install --frozen-lockfile
 
-      - name: Build omo-native
+      - name: Build omc-native
         if: needs.ci-mode.outputs.run_heavy == 'true'
-        run: bun run build:omo-native
+        run: bun run build:omc-native
 
-      - name: Verify omo-ai payload
+      - name: Verify omc-ai payload
         if: needs.ci-mode.outputs.run_heavy == 'true'
-        run: node script/verify-omo-ai-payload.mjs
+        run: node script/verify-omc-ai-payload.mjs
 
-      - name: Verify packed omo-ai consumer
+      - name: Verify packed omc-ai consumer
         if: needs.ci-mode.outputs.run_heavy == 'true'
-        run: node packages/omo-native/test/packed-consumer.mjs
+        run: node packages/omc-native/test/packed-consumer.mjs
 
       - name: Dry-run publish
         if: needs.ci-mode.outputs.run_heavy == 'true'
@@ -1203,23 +1203,23 @@ jobs:
         run: |
           npm pkg set version="0.0.0-ci.${{ github.run_id }}.${{ github.run_attempt }}"
           npm publish --dry-run --ignore-scripts --tag ci
-        working-directory: packages/omo-native
+        working-directory: packages/omc-native
 
       - name: Write job summary
         if: always()
         shell: bash
         env:
-          JOB_SUMMARY_TITLE: omo-ai payload check
+          JOB_SUMMARY_TITLE: omc-ai payload check
           JOB_SUMMARY_STATUS: ${{ job.status }}
           JOB_SUMMARY_DETAILS: |
-            - Builds the omo-native package.
-            - Verifies the omo-ai tarball payload whitelist.
+            - Builds the omc-native package.
+            - Verifies the omc-ai tarball payload whitelist.
             - Runs `npm publish --dry-run` to confirm publishability without publishing.
           JOB_SUMMARY_NEXT: Inspect the failing build, payload verifier, or dry-run publish step.
         run: GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" bash .github/scripts/write-job-summary.sh
 
-  # The standalone binary and the npm launcher must behave the same: every tool step, omo doctor and
-  # omo setup. Packaging checks compare the payload with its own source list and cannot see a runtime
+  # The standalone binary and the npm launcher must behave the same: every tool step, omc doctor and
+  # omc setup. Packaging checks compare the payload with its own source list and cannot see a runtime
   # dependency that list never named (#9248), so this job drives both through one scripted session.
   # Both legs start the binary copied alone into an empty download folder (#7485). macOS compares it
   # with the npm launcher; Windows has no npm leg here and runs the binary twice (first run provisions,
@@ -1236,12 +1236,12 @@ jobs:
           - os: macos-15
             target: darwin-arm64
             rust-target: aarch64-apple-darwin
-            binary: omo-darwin-arm64
+            binary: omc-darwin-arm64
             compare-npm: true
           - os: windows-latest
             target: windows-x64
             rust-target: x86_64-pc-windows-msvc
-            binary: omo-windows-x64.exe
+            binary: omc-windows-x64.exe
             compare-npm: false
     defaults:
       run:
@@ -1279,47 +1279,47 @@ jobs:
           rustup default "$toolchain"
           rustup target add ${{ matrix.rust-target }}
           cargo build --release -p senpi-desktop-engine --locked --target ${{ matrix.rust-target }}
-          # build-omo-binary.ts stages the engine trust helper on Darwin and Windows (omo#10762); its own call, as release builds it.
-          cargo build --release -p omo-engine-trust-helper --locked --target ${{ matrix.rust-target }}
-          # It stages the git job helper on Windows only (omo#10391); its own call, static CRT as released.
+          # build-omc-binary.ts stages the engine trust helper on Darwin and Windows (omc#10762); its own call, as release builds it.
+          cargo build --release -p omc-engine-trust-helper --locked --target ${{ matrix.rust-target }}
+          # It stages the git job helper on Windows only (omc#10391); its own call, static CRT as released.
           if [[ "${{ matrix.target }}" == windows-* ]]; then
-            RUSTFLAGS="-C target-feature=+crt-static" cargo build --release -p omo-git-job-helper --locked --target ${{ matrix.rust-target }}
+            RUSTFLAGS="-C target-feature=+crt-static" cargo build --release -p omc-git-job-helper --locked --target ${{ matrix.rust-target }}
           fi
 
-      # build-omo-binary embeds the keychain helper into darwin binaries (#11262); the release lane
+      # build-omc-binary embeds the keychain helper into darwin binaries (#11262); the release lane
       # signs it, this parity leg embeds an unsigned build.
       - name: Build the keychain helper the binary embeds
         if: needs.ci-mode.outputs.run_heavy == 'true' && startsWith(matrix.target, 'darwin-')
-        run: bun packages/omo-native/keychain-helper/build.ts --out packages/omo-native/bin/darwin/omo-keychain
+        run: bun packages/omc-native/keychain-helper/build.ts --out packages/omc-native/bin/darwin/omc-keychain
 
       - name: Build the standalone binary and the npm launcher payload
         if: needs.ci-mode.outputs.run_heavy == 'true'
         run: |
-          version=$(jq -r .version packages/omo-native/package.json)
-          bun script/build-omo-binary.ts --target ${{ matrix.target }} --omo-version "$version" --omo-ai-version "$version" --out-dir .omo/parity-binary
-          if [ "${{ matrix.compare-npm }}" = "true" ]; then bun run build:omo-native; fi
+          version=$(jq -r .version packages/omc-native/package.json)
+          bun script/build-omc-binary.ts --target ${{ matrix.target }} --omc-version "$version" --omc-ai-version "$version" --out-dir .omc/parity-binary
+          if [ "${{ matrix.compare-npm }}" = "true" ]; then bun run build:omc-native; fi
 
       - name: Compare the binary with the npm launcher
         if: needs.ci-mode.outputs.run_heavy == 'true' && matrix.compare-npm
         run: |
-          bun script/qa/omo-native-parity-smoke.mjs \
-            --binary .omo/parity-binary/${{ matrix.binary }} \
-            --npm-omo "bun $PWD/packages/omo-native/bin/omo.js" \
-            --evidence-dir .omo/parity-evidence
+          bun script/qa/omc-native-parity-smoke.mjs \
+            --binary .omc/parity-binary/${{ matrix.binary }} \
+            --npm-omc "bun $PWD/packages/omc-native/bin/omc.js" \
+            --evidence-dir .omc/parity-evidence
 
       - name: Run the binary from an empty download folder twice
         if: needs.ci-mode.outputs.run_heavy == 'true' && !matrix.compare-npm
         run: |
-          bun script/qa/omo-native-parity-smoke.mjs \
-            --binary .omo/parity-binary/${{ matrix.binary }} \
-            --evidence-dir .omo/parity-evidence
+          bun script/qa/omc-native-parity-smoke.mjs \
+            --binary .omc/parity-binary/${{ matrix.binary }} \
+            --evidence-dir .omc/parity-evidence
 
       - name: Upload parity runs
         if: failure() && needs.ci-mode.outputs.run_heavy == 'true'
         uses: actions/upload-artifact@v7
         with:
           name: native-binary-parity-runs-${{ matrix.target }}
-          path: .omo/parity-evidence
+          path: .omc/parity-evidence
           retention-days: 7
           if-no-files-found: ignore
 
@@ -1331,7 +1331,7 @@ jobs:
           JOB_SUMMARY_STATUS: ${{ job.status }}
           JOB_SUMMARY_DETAILS: |
             - Builds the ${{ matrix.target }} standalone binary from this commit and starts it copied alone into an empty download folder.
-            - macOS: drives it and the omo-ai launcher through the same scripted session (eval JS/Python, grep, pty, tool search, webfetch, read, LSP, apply_patch, memory, task), omo doctor and omo setup --dry-run, and fails on any difference that is not a documented distribution line.
+            - macOS: drives it and the omc-ai launcher through the same scripted session (eval JS/Python, grep, pty, tool search, webfetch, read, LSP, apply_patch, memory, task), omc doctor and omc setup --dry-run, and fails on any difference that is not a documented distribution line.
             - Windows: runs that session twice (the first run provisions the runtime, the second reuses it) and fails unless the eval and pty steps succeed with no extension load failure.
           JOB_SUMMARY_NEXT: Read the listed differences or failures; the uploaded parity-runs.json or binary-runs.json holds the runs.
         run: GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" bash .github/scripts/write-job-summary.sh
@@ -1339,7 +1339,11 @@ jobs:
   auto-commit-schema:
     # Pin until this release/deploy path is proven on Ubuntu 26.04: #9947.
     runs-on: ubuntu-24.04
-    needs: [ci-mode, lint-ratchet, test, macos-test-1-status, macos-test-2-status, typecheck, codex-compatibility, macos-codex-status, senpi-compatibility, macos-senpi-status, bundle-currency, build, omo-ai-payload-check]
+    needs: [ci-mode, lint-ratchet, test, macos-test-1-status, macos-test-2-status, typecheck, codex-compatibility, macos-codex-status, senpi-compatibility, macos-senpi-status, bundle-currency, build, omc-ai-payload-check]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    permissions:
+      contents: write
+    steps:
       # The merge gate reads this map at the base tip to tell whether a PR can change a committed
       # bundle; it is traced from the three generators above, so a stale map is a red build.
       - name: Verify committed Senpi bundle inputs map is current
@@ -1349,10 +1353,7 @@ jobs:
       - name: Verify generated brand-logo module matches the icon asset
         if: needs.ci-mode.outputs.run_heavy == 'true'
         run: bun run brand-logo:check
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-    permissions:
-      contents: write
-    steps:
+
       - uses: actions/checkout@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -1374,12 +1375,12 @@ jobs:
 
       - name: Auto-commit schema changes
         run: |
-          if git diff --quiet assets/oh-my-opencode.schema.json assets/omo.schema.json; then
+          if git diff --quiet assets/oh-my-cybersecurity.schema.json assets/omc.schema.json; then
             echo "No schema changes to commit"
           else
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add assets/oh-my-opencode.schema.json assets/omo.schema.json
+            git add assets/oh-my-cybersecurity.schema.json assets/omc.schema.json
             git commit -m "chore: auto-update schema.json"
             git push
           fi
@@ -1392,14 +1393,14 @@ jobs:
           JOB_SUMMARY_STATUS: ${{ job.status }}
           JOB_SUMMARY_DETAILS: |
             - Rebuilds the schema artifacts on `master` pushes.
-            - Commits `assets/oh-my-opencode.schema.json` and `assets/omo.schema.json` only when generation changes them.
+            - Commits `assets/oh-my-cybersecurity.schema.json` and `assets/omc.schema.json` only when generation changes them.
           JOB_SUMMARY_NEXT: If this fails, inspect schema generation first, then check bot write permissions.
         run: GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" bash .github/scripts/write-job-summary.sh
 
   draft-release:
     # Pin until this release/deploy path is proven on Ubuntu 26.04: #9948.
     runs-on: ubuntu-24.04
-    needs: [ci-mode, lint-ratchet, test, macos-test-1-status, macos-test-2-status, typecheck, codex-compatibility, macos-codex-status, senpi-compatibility, macos-senpi-status, build, omo-ai-payload-check, bundle-currency]
+    needs: [ci-mode, lint-ratchet, test, macos-test-1-status, macos-test-2-status, typecheck, codex-compatibility, macos-codex-status, senpi-compatibility, macos-senpi-status, build, omc-ai-payload-check, bundle-currency]
     if: >-
       github.event_name == 'push' &&
       github.ref == 'refs/heads/dev' &&

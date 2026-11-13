@@ -1,4 +1,4 @@
-// Summarizes the OMO_TAKEOVER_TRACE timelines written by the memory-takeover-trace workflow (#10959) into one
+// Summarizes the OMC_TAKEOVER_TRACE timelines written by the memory-takeover-trace workflow (#10959) into one
 // markdown table of phase durations per run, so the Windows-vs-baseline difference can be read from the job summary.
 // Usage: bun script/takeover-trace-summary.ts <dir with run-*.jsonl> [os label]
 

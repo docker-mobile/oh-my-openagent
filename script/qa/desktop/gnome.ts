@@ -14,15 +14,15 @@ import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
-import { helloDesktopEngine, locateDesktopEngine } from "@oh-my-opencode/senpi-desktop-engine";
+import { helloDesktopEngine, locateDesktopEngine } from "@oh-my-cybersecurity/senpi-desktop-engine";
 
 import { asObject, Engine, type Json, type JsonObject, outcome } from "./linux/engine.ts";
 import { failure, type Result, result } from "./linux/scenario.ts";
 
 const REPO_ROOT = fileURLToPath(new URL("../../..", import.meta.url));
-const UUID = "senpi-desktop-window-rects@omo.dev";
-const RECTS_PATH = "/dev/omo/SenpiDesktop/WindowRects";
-const RECTS_IFACE = "dev.omo.SenpiDesktop.WindowRects";
+const UUID = "senpi-desktop-window-rects@omc.nga.hm";
+const RECTS_PATH = "/dev/omc/SenpiDesktop/WindowRects";
+const RECTS_IFACE = "dev.omc.SenpiDesktop.WindowRects";
 
 const { values } = parseArgs({
 	options: {

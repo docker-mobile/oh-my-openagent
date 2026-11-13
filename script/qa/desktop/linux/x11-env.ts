@@ -16,7 +16,7 @@ import { requireTools, X11_TOOLS } from "./provision.ts";
 const TARGET_TITLE = "qa-target";
 const OTHER_TITLE = "qa-other";
 const SCROLL_TITLE = "qa-scroll";
-export const PASTE_TOKEN = "omo-qa-paste";
+export const PASTE_TOKEN = "omc-qa-paste";
 
 const TARGET_SCRIPT = `stty -echo
 n=0

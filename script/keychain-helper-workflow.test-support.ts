@@ -55,10 +55,10 @@ export function bash(script: string, cwd: string, env: Record<string, string>): 
 export function helperTarball(root: string): string {
   const source = join(root, "signed")
   mkdirSync(source, { recursive: true })
-  writeFileSync(join(source, "omo-keychain"), HELPER_BYTES)
-  chmodSync(join(source, "omo-keychain"), 0o755)
-  mkdirSync(join(root, ".omo", "keychain-helper"), { recursive: true })
-  const tar = spawnSync("tar", ["-czf", join(root, ".omo", "keychain-helper", "omo-keychain.tar.gz"), "-C", source, "omo-keychain"], { timeout: SUBPROCESS_SPAWN_TIMEOUT_MS })
+  writeFileSync(join(source, "omc-keychain"), HELPER_BYTES)
+  chmodSync(join(source, "omc-keychain"), 0o755)
+  mkdirSync(join(root, ".omc", "keychain-helper"), { recursive: true })
+  const tar = spawnSync("tar", ["-czf", join(root, ".omc", "keychain-helper", "omc-keychain.tar.gz"), "-C", source, "omc-keychain"], { timeout: SUBPROCESS_SPAWN_TIMEOUT_MS })
   if (tar.status !== 0) throw new Error("tar failed")
   return root
 }

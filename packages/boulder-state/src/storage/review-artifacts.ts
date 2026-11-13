@@ -103,7 +103,7 @@ interface ContainedPlan {
 }
 
 function resolveContainedPlan(directory: string, planPath: string): ContainedPlan | null {
-  const plansRoot = resolve(directory, ".omo", "plans")
+  const plansRoot = resolve(directory, ".omc", "plans")
   const planFilePath = resolvePlanFilePath(directory, planPath)
   if (!isInsideDirectory(plansRoot, planFilePath)) {
     return null

@@ -17,7 +17,7 @@ export type StatusTargetInput = {
   readonly agentType?: string
   readonly resolvedModel?: ResolvedModelRecord
   // The live route from the child's model events (F12): wins over resolvedModel/model and adds
-  // the operator mark when someone other than omo switched it.
+  // the operator mark when someone other than omc switched it.
   readonly effectiveModel?: EffectiveModelRecord
   // Raw model string used when no resolved model metadata exists (live/legacy tasks).
   readonly model?: string

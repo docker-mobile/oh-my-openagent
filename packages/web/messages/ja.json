@@ -1,10 +1,10 @@
 {
   "metadata": {
-    "title": "OmO",
+    "title": "OmC",
     "description": "Your tool for real work. But it's an agent. OmOはあなたのトークンを、現実に価値のある成果へ変えます。"
   },
   "nav": {
-    "brand": "OmO",
+    "brand": "OmC",
     "features": "機能",
     "docs": "ドキュメント",
     "manifesto": "マニフェスト",
@@ -16,7 +16,7 @@
     "skipToContent": "本文へスキップ"
   },
   "footer": {
-    "brand": "OmO",
+    "brand": "OmC",
     "copyright": "© {year} Sisyphus Labs · SUL-1.0 ソースアベイラブル",
     "product": "プロダクト",
     "community": "コミュニティ",
@@ -56,7 +56,7 @@
         "powershell": "PowerShell",
         "cmd": "CMD"
       },
-      "next": "新しいターミナルを開いて omo を実行します。",
+      "next": "新しいターミナルを開いて omc を実行します。",
       "onComputer": "Mac、Linux、Windows のコンピューターで実行してください。"
     },
     "proof": {
@@ -167,7 +167,7 @@
         "author": "Arthur Guiot"
       },
       "review2": {
-        "text": "If Claude Code does in 7 days what a human does in 3 months, OmO does it in 1 hour.",
+        "text": "If Claude Code does in 7 days what a human does in 3 months, OmC does it in 1 hour.",
         "author": "B, Quant Researcher"
       },
       "review3": {
@@ -183,8 +183,8 @@
       "readTheDocs": "ドキュメントを読む"
     },
     "dag": {
-      "region": "ワークフローグラフを開いた OmO デスクトップ",
-      "windowTitle": "OmO — 市場調査 12k ソース",
+      "region": "ワークフローグラフを開いた OmC デスクトップ",
+      "windowTitle": "OmC — 市場調査 12k ソース",
       "threads": "スレッド",
       "thread1": "市場調査 12k ソース",
       "thread2": "ランキングモデルの学習",
@@ -206,13 +206,13 @@
     }
   },
   "docs": {
-    "mobileHeader": "OmO ドキュメント",
+    "mobileHeader": "OmC ドキュメント",
     "searchPlaceholder": "ドキュメントを検索...",
     "searchLabel": "ドキュメントのセクションを絞り込む",
     "sectionsLabel": "ドキュメントのセクション",
     "install": {
-      "title": "OmO のインストール",
-      "description": "macOS、Linux、WSL、Windows でコマンドひとつで OmO をインストールします。"
+      "title": "OmC のインストール",
+      "description": "macOS、Linux、WSL、Windows でコマンドひとつで OmC をインストールします。"
     }
   },
   "manifesto": {
@@ -285,7 +285,7 @@
     },
     "notCollaboration": "それは「人間-AIコラボレーション」ではありません。それはAIが仕事を果たせていないということです。",
     "premise": "{linkText}は、人間がスペルチェッカーではなくアーキテクトであるべきという前提に基づいて構築されています。",
-    "premiseLinkText": "OmO",
+    "premiseLinkText": "OmC",
     "indistinguishable": {
       "title": "区別できないコード",
       "subtitle": "エージェントが書いたコードは、シニアエンジニアが書いたコードと区別がつかないべきです。",
@@ -412,12 +412,12 @@
   },
   "download": {
     "metadata": {
-      "title": "OmO デスクトップアプリをダウンロード",
-      "description": "macOS・Windows・Linux 向けの OmO デスクトップアプリをダウンロードできます。すべてのインストーラーにサイズと SHA-256 チェックサムを表示しています。"
+      "title": "OmC デスクトップアプリをダウンロード",
+      "description": "macOS・Windows・Linux 向けの OmC デスクトップアプリをダウンロードできます。すべてのインストーラーにサイズと SHA-256 チェックサムを表示しています。"
     },
     "eyebrow": "デスクトップアプリ",
-    "title": "OmO をダウンロード",
-    "lead": "Mac、Windows PC、Linux で使える OmO のデスクトップアプリです。お使いのコンピューターに合うインストーラーを選び、全一覧をチェックサム付きで下に載せています。",
+    "title": "OmC をダウンロード",
+    "lead": "Mac、Windows PC、Linux で使える OmC のデスクトップアプリです。お使いのコンピューターに合うインストーラーを選び、全一覧をチェックサム付きで下に載せています。",
     "channel": {
       "label": "リリースチャンネル",
       "stable": "安定版",
@@ -440,8 +440,8 @@
     },
     "primary": {
       "button": "{os} 版をダウンロード",
-      "meta": "OmO {version} · {arch} · {size}",
-      "metaNoSize": "OmO {version} · {arch}",
+      "meta": "OmC {version} · {arch} · {size}",
+      "metaNoSize": "OmC {version} · {arch}",
       "intelPrompt": "Apple シリコンの Mac ではありませんか?",
       "intelLink": "Intel Mac 版をダウンロード",
       "released": "{date} 公開",
@@ -457,7 +457,7 @@
     },
     "coming": {
       "title": "{date} 公開予定",
-      "body": "デスクトップアプリはまだ公開前です。それまでは、コマンドラインから OmO をインストールできます。",
+      "body": "デスクトップアプリはまだ公開前です。それまでは、コマンドラインから OmC をインストールできます。",
       "cli": "コマンドラインでインストール"
     },
     "unavailable": {
@@ -494,13 +494,13 @@
   },
   "support": {
     "metadata": {
-      "title": "OmO のサポート",
-      "description": "OmO の問題を報告するか、コミュニティに相談してください。"
+      "title": "OmC のサポート",
+      "description": "OmC の問題を報告するか、コミュニティに相談してください。"
     },
     "eyebrow": "サポート",
-    "title": "OmO のサポート",
+    "title": "OmC のサポート",
     "lead": "問題を見つけた、または質問がありますか？ GitHub で issue を作成するか、コミュニティの Discord で質問してください。",
-    "leadWithReport": "OmO アプリで作成したレポートが下にあります。GitHub の issue として送るか、コミュニティの Discord で共有してください。",
+    "leadWithReport": "OmC アプリで作成したレポートが下にあります。GitHub の issue として送るか、コミュニティの Discord で共有してください。",
     "report": {
       "heading": "あなたのレポート",
       "titleLabel": "タイトル",
@@ -513,7 +513,7 @@
       "openIssueNote": "レポートが入力された状態で GitHub の issue が開きます。GitHub の issue は公開されるので、送信前に内容を確認してください。診断用の zip がある場合はそこに添付してください。",
       "discord": "Discord で質問"
     },
-    "privacy": "このページはレポートを保存しませんが、アプリが開いたリンクに含まれて omo.dev に送られています。GitHub には、ご自身で issue を送信したときにだけ届きます。"
+    "privacy": "このページはレポートを保存しませんが、アプリが開いたリンクに含まれて omc.nga.hm に送られています。GitHub には、ご自身で issue を送信したときにだけ届きます。"
   },
   "notFound": {
     "title": "ページが見つかりません。",
@@ -521,7 +521,7 @@
     "home": "ホームに戻る"
   },
   "home": {
-    "metaTitle": "OmO: Your tool for real work. But it's an agent.",
+    "metaTitle": "OmC: Your tool for real work. But it's an agent.",
     "nav": {
       "primary": "メインメニュー",
       "skip": "本文へスキップ",
@@ -574,7 +574,7 @@
       "step1": "1行を触る前にコードベース全体を読む",
       "step2": "計画を立て、各ステップを証明してから進む",
       "step3": "実際の画面で結果を検証してから止まる",
-      "frame": "omo · ~/reports"
+      "frame": "omc · ~/reports"
     },
     "massUlw": {
       "eyebrow": "Mass ulw",
@@ -646,10 +646,10 @@
       "title": "今日はターミナルで。",
       "soft": "次はチャットアプリで。",
       "terminalTitle": "ターミナルで",
-      "terminalBody": "コマンドひとつで OmO をインストール。あとはどのプロジェクトでも omo を実行するだけ。",
+      "terminalBody": "コマンドひとつで OmC をインストール。あとはどのプロジェクトでも omc を実行するだけ。",
       "terminalMeta": "macOS、Linux、WSL、Windows",
       "desktopTitle": "デスクトップアプリで",
-      "desktopBody": "Mac、Windows PC、Linux で使える OmO のデスクトップアプリです。",
+      "desktopBody": "Mac、Windows PC、Linux で使える OmC のデスクトップアプリです。",
       "desktopMeta": "ベータ",
       "chatTitle": "チャットアプリから",
       "chatBody": "いつもいる場所でエージェントと話してください。ボットではなくあなたとして、使っているすべてのプラットフォームでメッセージを送ります。",
@@ -660,7 +660,7 @@
       "title": "ユーザーの声。",
       "q1": "It made me cancel my Cursor subscription. Unbelievable things are happening in the open source community.",
       "a1": "Arthur Guiot",
-      "q2": "If Claude Code does in 7 days what a human does in 3 months, OmO does it in 1 hour.",
+      "q2": "If Claude Code does in 7 days what a human does in 3 months, OmC does it in 1 hour.",
       "a2": "B, Quant Researcher",
       "q3": "You guys should pull this into core and recruit him. Seriously. It's really, really, really good.",
       "a3": "Henning Kilset"
@@ -669,7 +669,7 @@
       "title": "つくったのは Sisyphus Labs。",
       "soft": "Dori と doriterm をつくったチームです。",
       "dori": "チャットに住むエンジニア。Slack、Discord、Telegram でやることを伝えると、仕事ごとに専用のコーディングエージェントセッションを立ち上げ、マージされたら報告します。",
-      "doriterm": "あなたのすべてのマシンを、エンドツーエンド暗号化されたメッシュでつなぎ、ひとつのターミナルに。自宅の mac mini で OmO を起動し、スマートフォンから応答できます。"
+      "doriterm": "あなたのすべてのマシンを、エンドツーエンド暗号化されたメッシュでつなぎ、ひとつのターミナルに。自宅の mac mini で OmC を起動し、スマートフォンから応答できます。"
     },
     "closing": {
       "title": "コマンドひとつ。",
@@ -683,7 +683,7 @@
       "unix": "macOS, Linux, WSL",
       "powershell": "PowerShell",
       "cmd": "CMD",
-      "next": "新しいターミナルを開いて omo を実行します。",
+      "next": "新しいターミナルを開いて omc を実行します。",
       "copy": "コピー",
       "copied": "コピーしました",
       "copyAria": "インストールコマンドをコピー",

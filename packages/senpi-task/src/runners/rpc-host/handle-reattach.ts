@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import type { HostSessionFacts, HostSessionPort } from "./handle-port"
 import type { HostTurnReconciliation } from "./reconcile-turn"
@@ -104,7 +104,7 @@ export async function recoverLostTransport(subject: ReattachSubject, reattach: H
   }
   if (reconciled !== "continued") return report(rejoined, next.session.instanceId)
   // A reopened session is not a resumed turn until the continuation actually lands. Reporting
-  // before this await counted refused/timed-out deliveries as successful recoveries (omo#9403).
+  // before this await counted refused/timed-out deliveries as successful recoveries (omc#9403).
   try {
     await subject.continueTurn(reattachContinuationPrompt())
   } catch (error) {

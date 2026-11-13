@@ -139,7 +139,7 @@ export async function git(repoPath: string, args: readonly string[]): Promise<st
   return stdout
 }
 
-// `git fsck --full --strict` is the integrity oracle for omo #10177: any error/fatal line, any
+// `git fsck --full --strict` is the integrity oracle for omc #10177: any error/fatal line, any
 // missing or corrupt object, or a non-zero exit fails. A commit interrupted by SIGKILL can leave
 // the objects it wrote unreachable (dangling); those are the normal debris of a killed write, not
 // corruption, so they are reported but never fail the check. `allowedDebris` names fsck complaints

@@ -121,9 +121,9 @@ function shortTempRoot() {
 function daemonEnv(fixtureRoot, daemonDir) {
   return {
     ...process.env,
-    OMO_LSP_DAEMON_DIR: daemonDir,
-    OMO_LSP_DAEMON_CLI: daemonCli,
-    OMO_LSP_DAEMON_VERSION: "qa-format",
+    OMC_LSP_DAEMON_DIR: daemonDir,
+    OMC_LSP_DAEMON_CLI: daemonCli,
+    OMC_LSP_DAEMON_VERSION: "qa-format",
     HOME: join(fixtureRoot, "home"),
   }
 }
@@ -237,7 +237,7 @@ async function main() {
     daemon.stdout.on("data", (chunk) => daemonLog.push(chunk.toString("utf8")))
     daemon.stderr.on("data", (chunk) => daemonLog.push(chunk.toString("utf8")))
 
-    // Layout mirrors daemonPaths(): <OMO_LSP_DAEMON_DIR>/v<version>/daemon.{auth,sock}.
+    // Layout mirrors daemonPaths(): <OMC_LSP_DAEMON_DIR>/v<version>/daemon.{auth,sock}.
     const versionDir = join(daemonDir, "vqa-format")
     const authPath = join(versionDir, "daemon.auth")
     const socketPath = join(versionDir, "daemon.sock")

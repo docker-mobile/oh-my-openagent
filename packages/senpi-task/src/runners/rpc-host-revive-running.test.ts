@@ -6,7 +6,7 @@ import { bounded, concurrencyOf, hostHolds, recordAt, startCancelLane, type Canc
 import { HOST_CHILD_MODEL, type HostWorld } from "./rpc-host/__fixtures__/host-world"
 
 /**
- * omo#9403: task_send to a parked child that is still RUNNING reopens its session and delivers the
+ * omc#9403: task_send to a parked child that is still RUNNING reopens its session and delivers the
  * message. Delivery is fenced like every other revival: a refused delivery hands the child back
  * parked instead of leaving a half-revived run, and a cancel that wins the record first is never
  * followed by a message to the cancelled child.

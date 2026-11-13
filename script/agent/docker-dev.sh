@@ -8,8 +8,8 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$REPO_ROOT"
 
-IMAGE="${OMO_DEV_IMAGE:-omo-dev}"
-WORKDIR="/workspaces/oh-my-openagent"
+IMAGE="${OMC_DEV_IMAGE:-omc-dev}"
+WORKDIR="/workspaces/oh-my-cybersecurity"
 
 echo "[docker-dev] building $IMAGE from .devcontainer/Dockerfile"
 docker build -t "$IMAGE" -f .devcontainer/Dockerfile .

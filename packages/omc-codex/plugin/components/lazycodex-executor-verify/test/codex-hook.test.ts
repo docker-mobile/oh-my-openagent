@@ -1,0 +1,649 @@
+import {
+	existsSync,
+	lstatSync,
+	mkdirSync,
+	mkdtempSync,
+	readFileSync,
+	realpathSync,
+	renameSync,
+	rmSync,
+	statSync,
+	symlinkSync,
+	writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
+import { platform } from "node:process";
+import { afterEach, describe, expect, it } from "vitest";
+
+import { runSubagentStopHook } from "../src/codex-hook.js";
+import type { FileStat, HookFileSystem, SubagentStopInput } from "../src/types.js";
+
+const cleanupRoots: string[] = [];
+
+afterEach(() => {
+	for (const root of cleanupRoots.splice(0)) rmSync(root, { recursive: true, force: true });
+});
+
+describe("lazycodex executor SubagentStop verifier", () => {
+	it("#given no evidence receipt #when lazycodex executor stops #then blocks with a strong directive", () => {
+		// given
+		const cwd = createWorkspace();
+
+		// when
+		const output = runSubagentStopHook(createInput(cwd), nodeFileSystem);
+
+		// then
+		const parsed = parseBlockOutput(output);
+		expect(parsed.decision).toBe("block");
+		expect(parsed.reason).toContain(".omc/evidence/");
+		expect(parsed.reason).toContain("EVIDENCE_RECORDED: <path>");
+	});
+
+	it("#given a prior blocked stop #when lazycodex executor stops again #then escalates the attempt count", () => {
+		// given
+		const cwd = createWorkspace();
+		runSubagentStopHook(createInput(cwd), nodeFileSystem);
+
+		// when
+		const output = runSubagentStopHook(createInput(cwd), nodeFileSystem);
+
+		// then
+		expect(parseBlockOutput(output).decision).toBe("block");
+		const statePath = join(cwd, ".omc", "lazycodex-executor-verify", "sess.1-agent_1.json");
+		expect(JSON.parse(readFileSync(statePath, "utf8"))).toEqual({ attempts: 2 });
+	});
+
+	it("#given turn_id is omitted #when lazycodex executor stops #then the hook still parses the payload", () => {
+		// given
+		const cwd = createWorkspace();
+
+		// when
+		const output = runSubagentStopHook(createInput(cwd), nodeFileSystem);
+
+		// then
+		expect(parseBlockOutput(output).decision).toBe("block");
+	});
+
+	it("#given an existing non-empty evidence receipt #when lazycodex executor stops #then exits and clears state", () => {
+		// given
+		const cwd = createWorkspace();
+		runSubagentStopHook(createInput(cwd), nodeFileSystem);
+		const artifactPath = join(cwd, ".omc", "evidence", "receipt.txt");
+		mkdirSync(join(cwd, ".omc", "evidence"), { recursive: true });
+		writeFileSync(artifactPath, "Command: verify\nExit code: 0\nOutput: all checks passed.\n");
+
+		// when
+		const output = runSubagentStopHook(
+			createInput(cwd, { last_assistant_message: "done\nEVIDENCE_RECORDED: .omc/evidence/receipt.txt" }),
+			nodeFileSystem,
+		);
+
+		// then
+		expect(output).toBe("");
+		expect(existsSync(join(cwd, ".omc", "lazycodex-executor-verify", "sess.1-agent_1.json"))).toBe(false);
+	});
+
+	it("#given a zero-byte evidence receipt #when lazycodex executor stops #then blocks", () => {
+		// given
+		const cwd = createWorkspace();
+		const artifactPath = join(cwd, ".omc", "evidence", "empty.txt");
+		mkdirSync(join(cwd, ".omc", "evidence"), { recursive: true });
+		writeFileSync(artifactPath, "");
+
+		// when
+		const output = runSubagentStopHook(
+			createInput(cwd, { last_assistant_message: "done\nEVIDENCE_RECORDED: .omc/evidence/empty.txt" }),
+			nodeFileSystem,
+		);
+
+		// then
+		expect(parseBlockOutput(output).decision).toBe("block");
+	});
+
+	it("#given an evidence receipt directory inside evidence root #when lazycodex executor stops #then blocks", () => {
+		// given
+		const cwd = createWorkspace();
+		mkdirSync(join(cwd, ".omc", "evidence", "receipt-dir"), { recursive: true });
+
+		// when
+		const output = runSubagentStopHook(
+			createInput(cwd, { last_assistant_message: "done\nEVIDENCE_RECORDED: .omc/evidence/receipt-dir" }),
+			nodeFileSystem,
+		);
+
+		// then
+		expect(parseBlockOutput(output).decision).toBe("block");
+	});
+
+	it("#given an evidence receipt symlink targets outside evidence root #when lazycodex executor stops #then blocks", () => {
+		// given
+		const cwd = createWorkspace();
+		const artifactPath = join(cwd, ".omc", "evidence", "passwd-link");
+		mkdirSync(join(cwd, ".omc", "evidence"), { recursive: true });
+		symlinkSync(existingReceiptTargetOutsideEvidenceRoot(), artifactPath);
+
+		// when
+		const output = runSubagentStopHook(
+			createInput(cwd, { last_assistant_message: "done\nEVIDENCE_RECORDED: .omc/evidence/passwd-link" }),
+			nodeFileSystem,
+		);
+
+		// then
+		expect(parseBlockOutput(output).decision).toBe("block");
+	});
+
+	it("#given an evidence receipt traverses a symlinked evidence subdirectory #when lazycodex executor stops #then blocks", () => {
+		// given
+		const cwd = createWorkspace();
+		const outsideRoot = createWorkspace();
+		const outsideReceipt = join(outsideRoot, "receipt.txt");
+		const linkPath = join(cwd, ".omc", "evidence", "outside-dir");
+		mkdirSync(join(cwd, ".omc", "evidence"), { recursive: true });
+		writeFileSync(outsideReceipt, "outside evidence root\n".repeat(3));
+		symlinkSync(outsideRoot, linkPath, platform === "win32" ? "junction" : "dir");
+
+		// when
+		const output = runSubagentStopHook(
+			createInput(cwd, { last_assistant_message: "done\nEVIDENCE_RECORDED: .omc/evidence/outside-dir/receipt.txt" }),
+			nodeFileSystem,
+		);
+
+		// then
+		expect(parseBlockOutput(output).decision).toBe("block");
+	});
+
+	it("#given an existing absolute receipt outside evidence root #when lazycodex executor stops #then blocks", () => {
+		// given
+		const cwd = createWorkspace();
+		const receiptPath = existingAbsoluteReceiptOutsideEvidenceRoot();
+
+		// when
+		const output = runSubagentStopHook(
+			createInput(cwd, { last_assistant_message: `done\nEVIDENCE_RECORDED: ${receiptPath}` }),
+			nodeFileSystem,
+		);
+
+		// then
+		expect(parseBlockOutput(output).decision).toBe("block");
+	});
+
+	it("#given a parent traversal receipt outside cwd #when lazycodex executor stops #then blocks", () => {
+		// given
+		const { cwd } = createWorkspaceWithParentOutsideReceipt();
+
+		// when
+		const output = runSubagentStopHook(
+			createInput(cwd, { last_assistant_message: "done\nEVIDENCE_RECORDED: ../outside.txt" }),
+			nodeFileSystem,
+		);
+
+		// then
+		expect(parseBlockOutput(output).decision).toBe("block");
+	});
+
+	it("#given a traversal receipt escaping evidence root #when lazycodex executor stops #then blocks", () => {
+		// given
+		const cwd = createWorkspace();
+		mkdirSync(join(cwd, ".omc"), { recursive: true });
+		writeFileSync(join(cwd, ".omc", "outside.txt"), "outside evidence root\n".repeat(3));
+
+		// when
+		const output = runSubagentStopHook(
+			createInput(cwd, { last_assistant_message: "done\nEVIDENCE_RECORDED: .omc/evidence/../outside.txt" }),
+			nodeFileSystem,
+		);
+
+		// then
+		expect(parseBlockOutput(output).decision).toBe("block");
+	});
+
+	it("#given three prior attempts #when lazycodex executor stops #then exits and clears stale state", () => {
+		// given
+		const cwd = createWorkspace();
+		const stateDir = join(cwd, ".omc", "lazycodex-executor-verify");
+		mkdirSync(stateDir, { recursive: true });
+		writeFileSync(join(stateDir, "sess.1-agent_1.json"), JSON.stringify({ attempts: 3 }));
+
+		// when
+		const output = runSubagentStopHook(createInput(cwd), nodeFileSystem);
+
+		// then
+		expect(output).toBe("");
+		expect(existsSync(join(stateDir, "sess.1-agent_1.json"))).toBe(false);
+	});
+
+	it("#given an unrelated agent #when SubagentStop fires #then exits without output", () => {
+		// given
+		const cwd = createWorkspace();
+
+		// when
+		const output = runSubagentStopHook(createInput(cwd, { agent_type: "worker" }), nodeFileSystem);
+
+		// then
+		expect(output).toBe("");
+	});
+
+	it("#given malformed input and unknown event #when hook runs #then exits without output", () => {
+		// given
+		const cwd = createWorkspace();
+
+		// when
+		const malformedOutput = runSubagentStopHook({ hook_event_name: "SubagentStop", session_id: 123 }, nodeFileSystem);
+		const unknownEventOutput = runSubagentStopHook(createUnknownEventInput(cwd), nodeFileSystem);
+
+		// then
+		expect(malformedOutput).toBe("");
+		expect(unknownEventOutput).toBe("");
+	});
+
+	it("#given context pressure appears in transcript #when hook runs #then exits without output", () => {
+		// given
+		const cwd = createWorkspace();
+		const transcriptPath = join(cwd, "transcript.jsonl");
+		writeFileSync(transcriptPath, "context_length_exceeded\n");
+
+		// when
+		const output = runSubagentStopHook(createInput(cwd, { transcript_path: transcriptPath }), nodeFileSystem);
+
+		// then
+		expect(output).toBe("");
+	});
+});
+
+describe("receipt content and freshness", () => {
+	it.each(["placeholder evidence\n", "x".repeat(39), `  ${"x".repeat(39)}\n`])(
+		"#given a short trimmed receipt %j #when the worker stops #then blocks as placeholder",
+		(content) => {
+			// given
+			const { input, fs } = createMemoryReceipt(content, { mtimeMs: 2_000 }, { birthtimeMs: 1_000 });
+
+			// when
+			const output = runSubagentStopHook(input, fs);
+
+			// then
+			expect(parseBlockOutput(output).reason).toContain("placeholder");
+		},
+	);
+
+	it("#given a 200-character receipt older than transcript birth #when the worker stops #then blocks as stale", () => {
+		// given
+		const { input, fs } = createMemoryReceipt("x".repeat(200), { mtimeMs: 999 }, { birthtimeMs: 1_000 });
+
+		// when
+		const output = runSubagentStopHook(input, fs);
+
+		// then
+		expect(parseBlockOutput(output).reason).toContain("stale");
+	});
+
+	it("#given a fresh 200-character receipt #when transcript birth precedes ctime #then passes using birthtime", () => {
+		// given
+		const { input, fs } = createMemoryReceipt(
+			"x".repeat(200),
+			{ mtimeMs: 1_001 },
+			{ birthtimeMs: 1_000, ctimeMs: 3_000 },
+		);
+
+		// when
+		const output = runSubagentStopHook(input, fs);
+
+		// then
+		expect(output).toBe("");
+	});
+
+	it("#given a 200-character receipt and unstatable transcript #when the worker stops #then skips freshness", () => {
+		// given
+		const { input, fs } = createMemoryReceipt("x".repeat(200), { mtimeMs: 0 });
+
+		// when
+		const output = runSubagentStopHook({ ...input, transcript_path: "/nonexistent" }, fs);
+
+		// then
+		expect(output).toBe("");
+	});
+
+	it("#given 40 trimmed characters with mtime equal to transcript birth #when the worker stops #then passes", () => {
+		// given
+		const { input, fs } = createMemoryReceipt(`  ${"x".repeat(40)}\n`, { mtimeMs: 1_000 }, { birthtimeMs: 1_000 });
+
+		// when
+		const output = runSubagentStopHook(input, fs);
+
+		// then
+		expect(output).toBe("");
+	});
+
+	it.each([999, 1_000])(
+		"#given no transcript birthtime and receipt mtime %i #when the worker stops #then uses ctime",
+		(mtimeMs) => {
+			// given
+			const { input, fs } = createMemoryReceipt("x".repeat(200), { mtimeMs }, { ctimeMs: 1_000 });
+
+			// when
+			const output = runSubagentStopHook(input, fs);
+
+			// then
+			if (mtimeMs < 1_000) expect(parseBlockOutput(output).reason).toContain("stale");
+			else expect(output).toBe("");
+		},
+	);
+});
+
+function createMemoryReceipt(
+	content: string,
+	receiptStat: Partial<FileStat>,
+	transcriptStat?: Partial<FileStat>,
+): { readonly input: SubagentStopInput; readonly fs: HookFileSystem } {
+	const cwd = resolve("receipt-workspace");
+	const transcriptPath = join(cwd, "transcript.jsonl");
+	const files = new Map<string, { readonly content: string; readonly stat: Partial<FileStat> }>([
+		[join(cwd, ".omc", "evidence", "receipt.txt"), { content, stat: receiptStat }],
+	]);
+	if (transcriptStat !== undefined) files.set(transcriptPath, { content: "", stat: transcriptStat });
+	const fileAt = (path: string) => {
+		const file = files.get(path);
+		if (file === undefined) throw new Error(`ENOENT: ${path}`);
+		return file;
+	};
+	const statAt = (path: string): FileStat => {
+		const file = fileAt(path);
+		return { size: file.content.length, isFile: () => true, isSymbolicLink: () => false, ...file.stat };
+	};
+	const fs: HookFileSystem = {
+		existsSync: (path) => files.has(path),
+		lstatSync: statAt,
+		mkdirSync: () => undefined,
+		readFileSync: (path) => fileAt(path).content,
+		realpathSync: (path) => resolve(path),
+		renameSync: (oldPath, newPath) => {
+			files.set(newPath, fileAt(oldPath));
+			files.delete(oldPath);
+		},
+		rmSync: (path) => {
+			files.delete(path);
+		},
+		statSync: statAt,
+		writeFileSync: (path, data) => {
+			files.set(path, { content: data, stat: {} });
+		},
+	};
+	return {
+		input: createInput(cwd, {
+			transcript_path: transcriptPath,
+			last_assistant_message: "done\nEVIDENCE_RECORDED: .omc/evidence/receipt.txt",
+		}),
+		fs,
+	};
+}
+
+type BlockOutput = {
+	readonly decision: "block";
+	readonly reason: string;
+};
+
+const nodeFileSystem = {
+	existsSync,
+	lstatSync,
+	mkdirSync,
+	readFileSync,
+	realpathSync,
+	renameSync,
+	rmSync,
+	statSync,
+	writeFileSync,
+};
+
+function createWorkspace(): string {
+	const root = mkdtempSync(join(tmpdir(), "lazycodex-executor-verify-"));
+	cleanupRoots.push(root);
+	return root;
+}
+
+function createWorkspaceWithParentOutsideReceipt(): { readonly cwd: string } {
+	const root = createWorkspace();
+	const cwd = join(root, "project");
+	mkdirSync(cwd, { recursive: true });
+	writeFileSync(join(root, "outside.txt"), "outside evidence root\n".repeat(3));
+	return { cwd };
+}
+
+function existingAbsoluteReceiptOutsideEvidenceRoot(): string {
+	if (existsSync("/etc/passwd") && statSync("/etc/passwd").size > 0) return "/etc/passwd";
+	return existingReceiptTargetOutsideEvidenceRoot();
+}
+
+function existingReceiptTargetOutsideEvidenceRoot(): string {
+	if (existsSync("/etc/passwd") && statSync("/etc/passwd").size > 0) return "/etc/passwd";
+	const root = createWorkspace();
+	const receiptPath = join(root, "outside.txt");
+	writeFileSync(receiptPath, "outside evidence root\n".repeat(3));
+	return receiptPath;
+}
+
+function createInput(cwd: string, overrides: Partial<SubagentStopInput> = {}): SubagentStopInput {
+	return {
+		hook_event_name: "SubagentStop",
+		agent_type: "lazycodex-worker-medium",
+		agent_id: "agent_1",
+		session_id: "sess.1",
+		cwd,
+		transcript_path: "/dev/null",
+		model: "gpt-5.5",
+		permission_mode: "default",
+		stop_hook_active: true,
+		last_assistant_message: "done!",
+		...overrides,
+	};
+}
+
+function createUnknownEventInput(cwd: string): Record<string, string | boolean> {
+	return {
+		hook_event_name: "Stop",
+		agent_type: "lazycodex-worker-medium",
+		agent_id: "agent_1",
+		session_id: "sess.1",
+		cwd,
+		transcript_path: "/dev/null",
+		model: "gpt-5.5",
+		permission_mode: "default",
+		stop_hook_active: true,
+		last_assistant_message: "done!",
+	};
+}
+
+function parseBlockOutput(output: string): BlockOutput {
+	const parsed: unknown = JSON.parse(output);
+	if (!isBlockOutput(parsed)) throw new Error("expected block output");
+	return parsed;
+}
+
+function isBlockOutput(value: unknown): value is BlockOutput {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		!Array.isArray(value) &&
+		"decision" in value &&
+		"reason" in value &&
+		value.decision === "block" &&
+		typeof value.reason === "string"
+	);
+}
+
+describe("parent-attached operation receipts", () => {
+	function attachedReceipt(cwd = realpathSync(createWorkspace())) {
+		const bindings = join(cwd, "bindings");
+		const operation = join(cwd, ".omc", "operations", "bounded-task");
+		mkdirSync(bindings);
+		mkdirSync(operation, { recursive: true });
+		const receiptPath = ".omc/operations/bounded-task/raw.txt";
+		const file = join(cwd, receiptPath);
+		writeFileSync(file, "Command: verify\nExit code: 0\nOutput: all 106 source hashes match.\n");
+		const task = {
+			id: "verify",
+			role: "lazycodex-worker-medium",
+			status: "running",
+			agentId: "agent_1",
+			spawnCallId: "native-spawn",
+			sourceFingerprint: "source-hash",
+			receiptPath,
+		};
+		const run = {
+			schemaVersion: 1,
+			runId: "bounded-task",
+			workspace: cwd,
+			tasks: [task],
+			hookReceipts: [{ event: "PostToolUse", agentId: "agent_1" }],
+		};
+		const binding = {
+			file: join(operation, "run.json"),
+			taskId: task.id,
+			receiptGrant: {
+				receiptPath,
+				role: task.role,
+				sourceFingerprint: task.sourceFingerprint,
+				spawnCallId: task.spawnCallId,
+			},
+		};
+		const save = () => {
+			writeFileSync(binding.file, JSON.stringify(run));
+			writeFileSync(join(bindings, "agent_1.json"), JSON.stringify(binding));
+		};
+		save();
+		const input = createInput(cwd, { last_assistant_message: `EVIDENCE_RECORDED: ${receiptPath}` });
+		return { cwd, bindings, file, task, run, binding, save, input };
+	}
+
+	it("#given a workspace beneath a symlinked ancestor #when its exact scoped receipt is supplied #then accepts", () => {
+		const parent = realpathSync(createWorkspace());
+		const target = join(parent, "real");
+		const alias = join(parent, "alias");
+		mkdirSync(target);
+		symlinkSync(target, alias, platform === "win32" ? "junction" : "dir");
+		const cwd = join(alias, "workspace");
+		mkdirSync(cwd);
+		const f = attachedReceipt(cwd);
+		expect(runSubagentStopHook(f.input, nodeFileSystem, f.bindings)).toBe("");
+	});
+
+	it("#given a symlinked operation directory #when its granted receipt is supplied #then rejects it", () => {
+		const f = attachedReceipt();
+		const operation = join(f.cwd, ".omc", "operations", "bounded-task");
+		renameSync(operation, `${operation}-real`);
+		symlinkSync(`${operation}-real`, operation, platform === "win32" ? "junction" : "dir");
+		expect(parseBlockOutput(runSubagentStopHook(f.input, nodeFileSystem, f.bindings)).decision).toBe("block");
+	});
+
+	it("#given a native parent attachment #when its exact scoped receipt is supplied #then accepts without an evidence-root write", () => {
+		const { cwd, bindings, input } = attachedReceipt();
+		expect(runSubagentStopHook(input, nodeFileSystem, bindings)).toBe("");
+		expect(existsSync(join(cwd, ".omc", "evidence"))).toBe(false);
+	});
+
+	it.each([
+		"sibling",
+		"grant drift",
+		"child",
+		"role",
+		"attachment",
+		"traversal",
+		"malformed binding",
+		"placeholder",
+		"stale",
+	])("#given %s #when the scoped worker stops #then rejects the receipt", (failure) => {
+		const f = attachedReceipt();
+		const input = { ...f.input };
+		switch (failure) {
+			case "sibling":
+				writeFileSync(`${f.file}.other`, "Unassigned raw output with more than forty characters.");
+				input.last_assistant_message = `EVIDENCE_RECORDED: ${f.file}.other`;
+				break;
+			case "grant drift":
+				f.task.spawnCallId = "later-spawn";
+				break;
+			case "child":
+				f.task.agentId = "another-child";
+				break;
+			case "role":
+				f.task.role = "lazycodex-worker-high";
+				break;
+			case "attachment":
+				f.run.hookReceipts = [];
+				break;
+			case "traversal":
+				f.task.receiptPath = f.binding.receiptGrant.receiptPath = ".omc/operations/bounded-task/../raw.txt";
+				break;
+			case "placeholder":
+				writeFileSync(f.file, "short");
+				break;
+			case "stale": {
+				const transcript = join(f.cwd, "transcript.jsonl");
+				writeFileSync(transcript, "{}");
+				input.transcript_path = transcript;
+				break;
+			}
+		}
+		f.save();
+		if (failure === "malformed binding") writeFileSync(join(f.bindings, "agent_1.json"), "{");
+		const fileSystem =
+			failure === "stale"
+				? {
+						...nodeFileSystem,
+						statSync: (path: string) =>
+							path === input.transcript_path
+								? { ...statSync(path), birthtimeMs: statSync(f.file).mtimeMs + 1000 }
+								: statSync(path),
+					}
+				: nodeFileSystem;
+		expect(parseBlockOutput(runSubagentStopHook(input, fileSystem, f.bindings)).decision).toBe("block");
+	});
+});
+
+describe("tier worker receipt enforcement", () => {
+	// given the matcher set now covers the difficulty-tier workers
+	const workerTypes = ["lazycodex-worker-low", "lazycodex-worker-medium", "lazycodex-worker-high"] as const;
+
+	for (const agentType of workerTypes) {
+		it(`#given no evidence receipt #when a ${agentType} child stops #then blocks`, () => {
+			// given
+			const cwd = createWorkspace();
+
+			// when
+			const output = runSubagentStopHook(createInput(cwd, { agent_type: agentType }), nodeFileSystem);
+
+			// then
+			expect(parseBlockOutput(output).decision).toBe("block");
+		});
+	}
+
+	it("#given no evidence receipt #when an explorer child stops #then no-ops", () => {
+		// given
+		const cwd = createWorkspace();
+
+		// when
+		const output = runSubagentStopHook(createInput(cwd, { agent_type: "explorer" }), nodeFileSystem);
+
+		// then
+		expect(output).toBe("");
+	});
+
+	it("#given both hook manifests #when their matchers are applied #then enforced agents match and read-only roles do not", () => {
+		// given
+		const componentManifest = JSON.parse(readFileSync(new URL("../hooks/hooks.json", import.meta.url), "utf8"));
+		const rootManifest = JSON.parse(
+			readFileSync(
+				new URL("../../../hooks/subagent-stop-verifying-lazycodex-executor-evidence.json", import.meta.url),
+				"utf8",
+			),
+		);
+		for (const manifest of [componentManifest, rootManifest]) {
+			const matcher = new RegExp(manifest.hooks.SubagentStop[0].matcher);
+
+			// then
+			for (const name of workerTypes) expect(matcher.test(name)).toBe(true);
+			expect(matcher.test("lazycodex-executor")).toBe(false);
+			expect(matcher.test("explorer")).toBe(false);
+			expect(matcher.test("lazycodex-gate-reviewer")).toBe(false);
+		}
+	});
+});

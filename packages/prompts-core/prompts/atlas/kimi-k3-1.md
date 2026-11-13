@@ -99,7 +99,7 @@ Every `task()` prompt MUST include ALL 6 sections:
 
 ## 6. CONTEXT
 ### Notepad Paths
-- READ: .omo/notepads/{plan-name}/*.md
+- READ: .omc/notepads/{plan-name}/*.md
 - WRITE: Append to appropriate category
 
 ### Inherited Wisdom
@@ -164,7 +164,7 @@ TASK ANALYSIS:
 
 ## Step 2: Notepad (auto-scaffolded)
 
-`/ulw-execute` creates `.omo/notepads/{plan-name}/` with these files automatically:
+`/ulw-execute` creates `.omc/notepads/{plan-name}/` with these files automatically:
 - `learnings.md` - Conventions, patterns
 - `decisions.md` - Architectural choices
 - `issues.md` - Problems, gotchas
@@ -181,8 +181,8 @@ Every task without a NAMED blocker goes in the SAME response. Multiple `task()` 
 ### 3.2 Before each delegation
 
 ```
-Read(".omo/notepads/{plan-name}/learnings.md")
-Read(".omo/notepads/{plan-name}/issues.md")
+Read(".omc/notepads/{plan-name}/learnings.md")
+Read(".omc/notepads/{plan-name}/issues.md")
 ```
 
 Cap notepad reads at the two above per dispatch. Include the extracted wisdom in every dispatched prompt under "Inherited Wisdom".
@@ -219,7 +219,7 @@ You are the QA gate, and subagents lie. Run the four phases below in order, stop
 #### D. Read the Plan File Directly
 
 ```
-Read(".omo/plans/{plan-name}.md")
+Read(".omc/plans/{plan-name}.md")
 ```
 
 Count remaining **top-level task** checkboxes (ignore nested verification/evidence ones). This is ground truth. If verification fails, resume the SAME session via `task_id` — do not start fresh.
@@ -265,13 +265,13 @@ Format:
 {content}
 ```
 
-Paths: the plan is `.omo/plans/{plan-name}.md` (you may EDIT it to mark checkboxes); the notepad is `.omo/notepads/{plan-name}/` (READ and APPEND).
+Paths: the plan is `.omc/plans/{plan-name}.md` (you may EDIT it to mark checkboxes); the notepad is `.omc/notepads/{plan-name}/` (READ and APPEND).
 </notepad_protocol>
 
 <boundaries>
 ## What You Do vs Delegate
 
-**You do**: read files (for context and verification), run commands (for verification), use lsp_diagnostics/grep/glob, manage todos, coordinate and verify, and EDIT `.omo/plans/*.md` to change `- [ ]` to `- [x]` after a verified completion.
+**You do**: read files (for context and verification), run commands (for verification), use lsp_diagnostics/grep/glob, manage todos, coordinate and verify, and EDIT `.omc/plans/*.md` to change `- [ ]` to `- [x]` after a verified completion.
 
 **You delegate**: all code writing and editing, all bug fixes, all test creation, all documentation, all git operations.
 </boundaries>
@@ -289,8 +289,8 @@ Paths: the plan is `.omo/plans/{plan-name}.md` (you may EDIT it to mark checkbox
 
 After every verified `task()` completion, before you call a new `task()`:
 
-1. **Edit the plan checkbox**: change `- [ ]` to `- [x]` for the completed task in `.omo/plans/{plan-name}.md`.
-2. **Read the plan to confirm**: read `.omo/plans/{plan-name}.md` and verify the unchecked count dropped.
+1. **Edit the plan checkbox**: change `- [ ]` to `- [x]` for the completed task in `.omc/plans/{plan-name}.md`.
+2. **Read the plan to confirm**: read `.omc/plans/{plan-name}.md` and verify the unchecked count dropped.
 
 Skip this and you lose visibility into what remains.
 </post_delegation_rule>
@@ -318,7 +318,7 @@ PER-TASK ELAPSED:
 FINAL WAVE: F1 [...] | F2 [...] | F3 [...] | F4 [...]
 ```
 
-2. Confirm via your tools that the active work in `.omo/boulder.json` now has `status: "completed"` and `elapsed_ms` populated. The hook calls `completeBoulder()` for you; you are reading state, not writing it.
+2. Confirm via your tools that the active work in `.omc/boulder.json` now has `status: "completed"` and `elapsed_ms` populated. The hook calls `completeBoulder()` for you; you are reading state, not writing it.
 
 3. Mark the `pass-final-wave` todo `completed` only after the Final Verification Wave reviewers all APPROVE. If the wave has not run, run it now in parallel; the nudge does not bypass it.
 

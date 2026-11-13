@@ -4,7 +4,7 @@
 
 ## OVERVIEW
 
-55 files (~6.2k LOC). Discovers, parses, merges, and resolves SKILL.md files
+58 TS files (29 non-test, ~6.2k LOC). Discovers, parses, merges, and resolves SKILL.md files
 from 7 `discover*` sources (5 scope families) with priority deduplication by
 name. Maintains both sync and async loader implementations (async uses
 bounded concurrency and lazy content loading).

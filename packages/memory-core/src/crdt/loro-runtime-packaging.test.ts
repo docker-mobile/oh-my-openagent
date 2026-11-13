@@ -20,12 +20,12 @@ const SOURCE_EXTENSION = /\.(?:ts|tsx|js|mjs|cts|mts)$/
 // Committed build outputs. Each is bundled from package source this scan already covers, so a
 // stray import can only reach one through its source.
 const GENERATED_PATHSPECS = [
-  ":(exclude)packages/omo-senpi/plugin/extensions", // plugin/scripts/build-extension.mjs
-  ":(exclude)packages/omo-senpi/plugin/runtime/thread-sdk/sdk.js",
-  ":(exclude)packages/omo-senpi/plugin/runtime/agent-toolkit-sdk/sdk.js",
-  ":(exclude)packages/omo-senpi/plugin/runtime/bunshin-ts/sdk.js",
-  ":(exclude)packages/omo-senpi/plugin/runtime/rollback-migrate.js",
-  ":(exclude)packages/omo-codex/scripts/install-dist", // build:codex-install
+  ":(exclude)packages/omc-senpi/plugin/extensions", // plugin/scripts/build-extension.mjs
+  ":(exclude)packages/omc-senpi/plugin/runtime/thread-sdk/sdk.js",
+  ":(exclude)packages/omc-senpi/plugin/runtime/agent-toolkit-sdk/sdk.js",
+  ":(exclude)packages/omc-senpi/plugin/runtime/bunshin-ts/sdk.js",
+  ":(exclude)packages/omc-senpi/plugin/runtime/rollback-migrate.js",
+  ":(exclude)packages/omc-codex/scripts/install-dist", // build:codex-install
   ":(exclude,glob)packages/**/*.generated.*",
 ]
 

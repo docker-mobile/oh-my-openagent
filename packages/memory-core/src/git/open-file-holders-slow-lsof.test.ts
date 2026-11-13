@@ -8,7 +8,7 @@ import { pidAlive, probeUntil } from "../locks/process-liveness.test-support"
 import { findOpenFileHolderPids, hasOpenFileHolder } from "./open-file-holders"
 import { findProcessesWorkingIn } from "./repo-in-use"
 
-// omo #10199 r5 HIGH 2 (macOS source contract): lsof's answer is awaited, never raced. Latency is
+// omc #10199 r5 HIGH 2 (macOS source contract): lsof's answer is awaited, never raced. Latency is
 // the behavior under test here, so the stand-in lsof deliberately answers late or never:
 // - a slow but correct answer (6 s, past the 5 s deadline that used to race it) is an answer;
 // - a wedged lsof (a stuck NFS mount) is cut off at the hang bound, the answer is UNKNOWN - which

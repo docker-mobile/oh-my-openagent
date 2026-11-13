@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test"
 import { readFile } from "node:fs/promises"
 import { fileURLToPath } from "node:url"
 
-import { LATEST_MODEL_BY_FAMILY } from "@oh-my-opencode/model-core/latest-models"
+import { LATEST_MODEL_BY_FAMILY } from "@oh-my-cybersecurity/model-core/latest-models"
 
 // Architecture contract (#10141): the newest model of each family is named once, in
 // packages/model-core/src/latest-models.ts. A default, fallback rung, alias, gate or migration
@@ -16,17 +16,17 @@ const MODEL_IDENTITY_FILES = new Map<string, string>([
   ["packages/model-core/src/latest-models.ts", "the table itself"],
   ["packages/model-core/src/model-capability-heuristics.ts", "per-model capability family names"],
   ["packages/model-core/src/provider-model-id-transform.ts", "per-model provider spellings"],
-  ["packages/omo-senpi/src/components/telemetry/model-vocabulary.ts", "every known id, old and new"],
-  ["packages/omo-senpi/src/components/telemetry/pinned-model-ids.ts", "a frozen copy of the collector pin's model enum"],
-  ["packages/omo-codex/src/install/managed-agent-model-defaults.ts", "models LazyCodex once bundled"],
+  ["packages/omc-senpi/src/components/telemetry/model-vocabulary.ts", "every known id, old and new"],
+  ["packages/omc-senpi/src/components/telemetry/pinned-model-ids.ts", "a frozen copy of the collector pin's model enum"],
+  ["packages/omc-codex/src/install/managed-agent-model-defaults.ts", "models LazyCodex once bundled"],
   ["packages/utils/src/migration/agent-category.ts", "each known id's migration category"],
   ["packages/prompts-core/src/atlas-prompts.ts", "prompts written for one model"],
   ["packages/prompts-core/src/variant-resolver.ts", "prompts written for one model"],
-  ["packages/omo-opencode/src/agents/gpt-prompt-identity.ts", "prompts written for one model"],
-  ["packages/omo-opencode/src/agents/atlas/agent.ts", "prompts written for one model"],
-  ["packages/omo-opencode/src/agents/sisyphus-agent-factory.ts", "prompts written for one model"],
-  ["packages/omo-opencode/src/agents/sisyphus-junior/agent.ts", "prompts written for one model"],
-  ["packages/omo-opencode/src/agents/sisyphus/claude-opus-5.ts", "prompts written for one model"],
+  ["packages/omc-opencode/src/agents/gpt-prompt-identity.ts", "prompts written for one model"],
+  ["packages/omc-opencode/src/agents/atlas/agent.ts", "prompts written for one model"],
+  ["packages/omc-opencode/src/agents/sisyphus-agent-factory.ts", "prompts written for one model"],
+  ["packages/omc-opencode/src/agents/sisyphus-junior/agent.ts", "prompts written for one model"],
+  ["packages/omc-opencode/src/agents/sisyphus/claude-opus-5.ts", "prompts written for one model"],
 ])
 const MODEL_IDENTITY_DIRECTORIES = ["packages/model-core/src/model-capabilities/"]
 

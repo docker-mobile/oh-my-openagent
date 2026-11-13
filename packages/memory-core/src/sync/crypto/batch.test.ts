@@ -45,7 +45,7 @@ const rebuild = (entry: ManifestObject, account = objects.account) =>
   })
 
 describe("buildBatch: the client encoder", () => {
-  // The golden objects carry hand-built stored deflate blocks (omo-service fixtures regenerate
+  // The golden objects carry hand-built stored deflate blocks (omc-service fixtures regenerate
   // byte-identically on any runtime), while the client compresses with the runtime's deflate-raw,
   // so whole-object bytes are not a format property. What is: the canonical header, a valid
   // object signature by the author's DeviceKeyring, and a payload that opens to the same records.

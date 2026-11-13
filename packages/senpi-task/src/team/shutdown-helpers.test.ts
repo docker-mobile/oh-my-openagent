@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 
-import type { RuntimeStateMember } from "@oh-my-opencode/team-core/types"
+import type { RuntimeStateMember } from "@oh-my-cybersecurity/team-core/types"
 
 import { DELETABLE_MEMBER_STATUSES, isMemberDeletable } from "./shutdown-helpers"
 
@@ -14,7 +14,7 @@ const MEMBER_STATUSES: readonly RuntimeStateMember["status"][] = [
 ]
 
 describe("shutdown helpers", () => {
-  test("#given the omo shutdown-helpers parity set #when DELETABLE_MEMBER_STATUSES is read #then it is exactly completed/shutdown_approved/errored", () => {
+  test("#given the omc shutdown-helpers parity set #when DELETABLE_MEMBER_STATUSES is read #then it is exactly completed/shutdown_approved/errored", () => {
     // given / when
     const deletable = [...DELETABLE_MEMBER_STATUSES].sort()
 

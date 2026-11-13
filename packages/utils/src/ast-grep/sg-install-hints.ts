@@ -1,6 +1,6 @@
 import { SG_PATH_ENV_KEY } from "./types"
 
-const OMO_PROVISION_HINT = "Start an OMO session so the bundled ast-grep skill provisions the pinned runtime automatically"
+const OMC_PROVISION_HINT = "Start an OMO session so the bundled ast-grep skill provisions the pinned runtime automatically"
 const ENV_OVERRIDE_HINT = `Or point ${SG_PATH_ENV_KEY} at an existing ast-grep binary`
 
 const DARWIN_HINTS = [
@@ -29,7 +29,7 @@ function platformHints(platform: NodeJS.Platform): readonly string[] {
 }
 
 export function sgInstallHints(platform: NodeJS.Platform = process.platform): readonly string[] {
-  return [...platformHints(platform), OMO_PROVISION_HINT, ENV_OVERRIDE_HINT]
+  return [...platformHints(platform), OMC_PROVISION_HINT, ENV_OVERRIDE_HINT]
 }
 
 export function sgBinaryNotFoundMessage(platform: NodeJS.Platform = process.platform): string {

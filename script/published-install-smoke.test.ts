@@ -9,7 +9,7 @@ import { findMissingInstalledArtifacts, isSupportedPackageSpec, parseSmokeArgs }
 const createdPluginPaths: string[] = []
 
 async function createInstalledPlugin(options: { readonly withUltraworkSkill: boolean }): Promise<string> {
-  const pluginPath = await mkdtemp(join(tmpdir(), "omo-smoke-plugin-"))
+  const pluginPath = await mkdtemp(join(tmpdir(), "omc-smoke-plugin-"))
   createdPluginPaths.push(pluginPath)
   await mkdir(join(pluginPath, ".codex-plugin"), { recursive: true })
   await writeFile(join(pluginPath, ".codex-plugin", "plugin.json"), "{}")
@@ -52,23 +52,23 @@ describe("published install smoke", () => {
 
   test("#given both payload sources #when smoke args are parsed #then the package spec and tarball path are separated", () => {
     // given
-    const argv = ["--package=lazycodex-ai@latest", "--tarball=/tmp/omo.tgz", "--keep"]
+    const argv = ["--package=lazycodex-ai@latest", "--tarball=/tmp/omc.tgz", "--keep"]
 
     // when
     const args = parseSmokeArgs(argv)
 
     // then
-    expect(args).toEqual({ packageSpec: "lazycodex-ai@latest", tarballPath: "/tmp/omo.tgz", keep: true })
+    expect(args).toEqual({ packageSpec: "lazycodex-ai@latest", tarballPath: "/tmp/omc.tgz", keep: true })
   })
 
   test("#given specs carrying shell metacharacters #when they are checked #then none is accepted for packing", () => {
     // given
     const hostile = [
       "lazycodex-ai@latest|calc",
-      "oh-my-openagent@5.0.0-beta.43>out.txt",
-      "oh-my-openagent@5.0.0<in.txt",
-      "oh-my-openagent@latest&whoami",
-      "oh-my-openagent@^5.0.0",
+      "oh-my-cybersecurity@5.0.0-beta.43>out.txt",
+      "oh-my-cybersecurity@5.0.0<in.txt",
+      "oh-my-cybersecurity@latest&whoami",
+      "oh-my-cybersecurity@^5.0.0",
     ]
 
     // when / then
@@ -80,7 +80,7 @@ describe("published install smoke", () => {
   test("#given plain dist-tag and exact-version specs #when they are checked #then both are accepted", () => {
     // given / when / then
     expect(isSupportedPackageSpec("lazycodex-ai@latest")).toBe(true)
-    expect(isSupportedPackageSpec("oh-my-openagent@5.0.0-beta.43")).toBe(true)
+    expect(isSupportedPackageSpec("oh-my-cybersecurity@5.0.0-beta.43")).toBe(true)
     expect(isSupportedPackageSpec("@scope/pkg@beta")).toBe(true)
   })
 })

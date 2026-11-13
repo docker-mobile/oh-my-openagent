@@ -1,5 +1,5 @@
-import type { DelegateFallbackEntry } from "@oh-my-opencode/delegate-core"
-import type { OmoCategoryConfig } from "@oh-my-opencode/omo-config-core"
+import type { DelegateFallbackEntry } from "@oh-my-cybersecurity/delegate-core"
+import type { OmoCategoryConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { ResolvedModelRecord } from "../state"
 
@@ -43,10 +43,10 @@ export type ResolvedChildSpec<TModel extends SenpiModelPort> = {
 }
 
 export type ResolveCategoryOptions = {
-  readonly distributeModels?: import("@oh-my-opencode/omo-config-core").ModelDistributor
+  readonly distributeModels?: import("@oh-my-cybersecurity/omc-config-core").ModelDistributor
 }
 
-/** Who chose the selected model: the user's omo.json (`model`/`models`/`fallback_models`) or omo's builtin default/chain. */
+/** Who chose the selected model: the user's omc.json (`model`/`models`/`fallback_models`) or omc's builtin default/chain. */
 export type ModelSelectionSource = "user" | "builtin"
 
 export type CategoryModelSelection = {

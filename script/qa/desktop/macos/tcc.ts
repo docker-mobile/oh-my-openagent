@@ -1,6 +1,6 @@
 import { chmodSync, realpathSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
-import { locateDesktopEngine } from "@oh-my-opencode/senpi-desktop-engine"
+import { locateDesktopEngine } from "@oh-my-cybersecurity/senpi-desktop-engine"
 import { workDir } from "./fixtures"
 import { type RunOptions, type ScenarioResult, toolError, withSession } from "./scenario"
 

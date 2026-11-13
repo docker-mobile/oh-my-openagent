@@ -1,0 +1,59 @@
+{
+  "name": "@code-yeongyu/omc-senpi",
+  "version": "5.1.65",
+  "private": true,
+  "description": "OMO Senpi adapter packaged as one local-path Pi package.",
+  "type": "module",
+  "imports": {
+    "#omc-desktop-toolkit-runtime": "./extensions/omc-desktop-toolkit.js",
+    "#omc-telemetry-posthog-runtime": "./extensions/omc-telemetry-posthog.js",
+    "#omc-telemetry-otlp-runtime": "./extensions/omc-telemetry-otlp.js",
+    "#omc-task-runtime": "./extensions/omc-task.js",
+    "#omc-computer-use-runtime": "./extensions/omc-computer-use.js",
+    "#omc-memory-doctor-runtime": "./extensions/omc-memory-doctor.js",
+    "#omc-thread-client-runtime": "./extensions/omc-thread-client.js",
+    "#omc-memory-memfs-runtime": "./extensions/omc-memory-memfs.js",
+    "#omc-telemetry-recovery-runtime": "./extensions/omc-telemetry-recovery.js",
+    "#telemetry-immediate-send": "./extensions/omc-telemetry-recovery.js",
+    "#omc-memory-palace-runtime": "./extensions/omc-memory-palace.js",
+    "#omc-device-account-runtime": "./extensions/omc-device-account.js",
+    "#omc-memory-commands-runtime": "./extensions/omc-memory-commands.js",
+    "#memory-completion-links": "./extensions/omc-memory-commands.js",
+    "#omc-session-history-runtime": "./extensions/omc-session-history.js",
+    "#omc-recall-store-runtime": "./extensions/omc-recall-store.js",
+    "#memory-external-projection": "./extensions/omc-recall-store.js",
+    "#omc-device-service-runtime": "./extensions/omc-device-service.js",
+    "#omc-memory-sync-runtime": "./extensions/omc-memory-sync.js",
+    "#omc-feedback-runtime": "./extensions/omc-feedback.js",
+    "#omc-claim-receipt-runtime": "./extensions/omc-claim-receipt.js",
+    "#omc-agent-toolkit-sdk": "./runtime/agent-toolkit-sdk/sdk.js",
+    "#bunshin-ts": "./runtime/bunshin-ts/sdk.js"
+  },
+  "keywords": [
+    "pi-package",
+    "senpi",
+    "omc",
+    "oh-my-cybersecurity",
+    "pi"
+  ],
+  "pi": {
+    "system": true,
+    "extensions": [
+      "./extensions/omc.js"
+    ]
+  },
+  "files": [
+    "extensions",
+    "skills",
+    "skills-conditional",
+    "runtime",
+    "scripts/install.mjs",
+    "CHANGELOG.md",
+    "README.md",
+    "NOTICE",
+    "LICENSE",
+    "daemon-launch-spec.json",
+    "telemetry-schema.json",
+    "telemetry-schema.omc-cloud.json"
+  ]
+}

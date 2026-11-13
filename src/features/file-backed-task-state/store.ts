@@ -2,11 +2,11 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs"
 import { join } from "path"
 import type { FileTaskState, FileTaskStateStore } from "./types"
 
-const TASK_FILE = ".omo/tasks.json"
+const TASK_FILE = ".omc/tasks.json"
 
 export function createFileTaskStateStore(projectDir: string): FileTaskStateStore {
   const filePath = join(projectDir, TASK_FILE)
-  const dir = join(projectDir, ".omo")
+  const dir = join(projectDir, ".omc")
 
   return {
     load(): FileTaskState[] {

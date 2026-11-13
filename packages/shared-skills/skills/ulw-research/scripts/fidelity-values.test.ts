@@ -212,7 +212,7 @@ describe("verification claims are structural (data-claim-kind)", () => {
 	})
 })
 
-describe("foreignObject (omo #11570)", () => {
+describe("foreignObject (omc #11570)", () => {
 	const chartFO = (inner: string) =>
 		`<figure data-chart-source="assets/share.csv"><svg viewBox="0 0 200 100"><foreignObject><div xmlns="http://www.w3.org/1999/xhtml">${inner}</div></foreignObject></svg><figcaption>Share by segment [S4].</figcaption></figure>`
 	const valueFact = (id: string, text: string, value: string) => `<data class="fact" data-fact="${id}" value="${value}">${text}</data>`

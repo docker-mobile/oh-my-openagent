@@ -4,7 +4,7 @@ import { memory, repoWith } from "./compile.test-support"
 import * as realRenderer from "./external-projection"
 import { createExternalProjectionRendererLoader, EXTERNAL_PROJECTION_RENDERER_FIX } from "./external-projection-loader"
 
-const STALE_MANIFEST = "Cannot find package '#memory-external-projection' imported from /plugin/extensions/omo.js"
+const STALE_MANIFEST = "Cannot find package '#memory-external-projection' imported from /plugin/extensions/omc.js"
 
 function failingThenWorkingImport(failures: number) {
   let calls = 0
@@ -66,7 +66,7 @@ describe("external projection renderer loader", () => {
 
   it("#given two bundle copies of the loader with the default warning #when both fail #then the process is warned once", async () => {
     // given
-    const warned = Symbol.for("omo.memory.external-projection-renderer-warned")
+    const warned = Symbol.for("omc.memory.external-projection-renderer-warned")
     Reflect.deleteProperty(globalThis, warned)
     const emitWarning = spyOn(process, "emitWarning").mockImplementation(() => undefined)
     onTestFinished(() => {
@@ -83,6 +83,6 @@ describe("external projection renderer loader", () => {
 
     // then
     expect(emitWarning).toHaveBeenCalledTimes(1)
-    expect(emitWarning.mock.calls[0]?.[1]).toEqual({ code: "OMO_MEMORY_PROJECTION_RENDERER_UNAVAILABLE" })
+    expect(emitWarning.mock.calls[0]?.[1]).toEqual({ code: "OMC_MEMORY_PROJECTION_RENDERER_UNAVAILABLE" })
   })
 })

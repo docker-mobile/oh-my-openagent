@@ -20,7 +20,7 @@ permissions:
 
 jobs:
   retag:
-    if: github.repository == 'code-yeongyu/oh-my-openagent'
+    if: github.repository == 'code-yeongyu/oh-my-cybersecurity'
     # Pin until this release/deploy path is proven on Ubuntu 26.04: #9949.
     runs-on: ubuntu-24.04
     steps:
@@ -46,7 +46,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
         run: |
           set -euo pipefail
-          OMO_AI_VERSION="${VERSION/-/-0.}"
+          OMC_AI_VERSION="${VERSION/-/-0.}"
           PLATFORMS=(darwin-arm64 darwin-x64 darwin-x64-baseline linux-x64 linux-x64-baseline linux-arm64 linux-x64-musl linux-x64-musl-baseline linux-arm64-musl windows-x64 windows-x64-baseline windows-arm64)
           retag() {
             local pkg="$1" ver="$2"
@@ -56,13 +56,13 @@ jobs:
             npm dist-tag add "$pkg@$ver" "$DIST_TAG"
             echo "$pkg $DIST_TAG -> $(npm view "$pkg" "dist-tags.$DIST_TAG")"
           }
-          retag oh-my-opencode "$VERSION"
-          retag oh-my-openagent "$VERSION"
+          retag oh-my-cybersecurity "$VERSION"
+          retag oh-my-cybersecurity "$VERSION"
           retag lazycodex-ai "$VERSION"
-          retag omo-ai "$OMO_AI_VERSION"
+          retag omc-ai "$OMC_AI_VERSION"
           for plat in "${PLATFORMS[@]}"; do
-            retag "oh-my-opencode-$plat" "$VERSION"
-            retag "oh-my-openagent-$plat" "$VERSION"
+            retag "oh-my-cybersecurity-$plat" "$VERSION"
+            retag "oh-my-cybersecurity-$plat" "$VERSION"
           done
 
       - name: Write job summary

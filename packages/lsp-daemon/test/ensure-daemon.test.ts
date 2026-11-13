@@ -48,7 +48,7 @@ function makeHarness(config: { probeQueue: boolean[]; onSpawnPush?: boolean[] })
 }
 
 describe("spawnDaemonProcess", () => {
-	it("#given the packaged omo binary #when spawning the daemon #then the env forces Bun runtime mode", () => {
+	it("#given the packaged omc binary #when spawning the daemon #then the env forces Bun runtime mode", () => {
 		const dir = mkdtempSync(join(tmpdir(), "lsp-daemon-spawn-env-"));
 		tempDirectories.push(dir);
 		const paths = daemonTestPaths(dir, "9.9.9");
@@ -69,13 +69,13 @@ describe("spawnDaemonProcess", () => {
 				return stubChild;
 			},
 			// Compiled-binary style path: under the packaged runtime execPath IS the
-			// omo binary, not a node interpreter, so without BUN_BE_BUN the CLI argv
+			// omc binary, not a node interpreter, so without BUN_BE_BUN the CLI argv
 			// boots a billable agent session instead of the daemon.
-			resolveExecutable: () => "/opt/omo/payload/omo",
+			resolveExecutable: () => "/opt/omc/payload/omc",
 		});
 
 		expect(observed).toHaveLength(1);
-		expect(observed[0]?.executable).toBe("/opt/omo/payload/omo");
+		expect(observed[0]?.executable).toBe("/opt/omc/payload/omc");
 		expect(observed[0]?.args).toEqual([paths.cliPath, "daemon"]);
 		expect(observed[0]?.options.env).toEqual({ ...process.env, BUN_BE_BUN: "1" });
 	});

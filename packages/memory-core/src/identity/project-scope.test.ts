@@ -155,7 +155,7 @@ describe("createProjectIdentityResolver", () => {
   })
 
   it("#given a workspace that links a project in by symlink #when a file is touched through the link or by its real path #then the project's identity is returned", async () => {
-    // given - Q's layout: a non-git workspace with `projects/omo -> /Volumes/.../omo`.
+    // given - Q's layout: a non-git workspace with `projects/omc -> /Volumes/.../omc`.
     const { workspace, sibling, env } = fixture(({ sibling }) => [sibling])
     mkdirSync(join(workspace, "projects"), { recursive: true })
     symlinkSync(sibling, join(workspace, "projects", "linked"))
@@ -213,7 +213,7 @@ describe("createProjectIdentityResolver", () => {
     expect(await resolver.forPath(join(sibling, "notes.md"))).toBeUndefined()
   })
 
-  it("#given a relative OMO_MEMORY_HOME #when a child project is resolved #then its memory is looked up under the session's memory root, not per candidate directory", async () => {
+  it("#given a relative OMC_MEMORY_HOME #when a child project is resolved #then its memory is looked up under the session's memory root, not per candidate directory", async () => {
     // given
     const { workspace, child } = fixture(() => [])
     const env = { [MEMORY_ROOT_ENV_VAR]: "mem" }

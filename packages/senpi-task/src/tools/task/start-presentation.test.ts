@@ -56,7 +56,7 @@ describe("task tool start text for retired curated ids", () => {
       hasInvoked: (skill: string) => skill === "ulw-plan",
       hasUserRequested: (skill: string) => skill === "ulw-plan",
       hasPlanArtifact: () => true,
-      planArtifactReferences: () => [{ path: ".omo/plans/gate-plan.md", count: 1, lastTouchedAt: 1 }],
+      planArtifactReferences: () => [{ path: ".omc/plans/gate-plan.md", count: 1, lastTouchedAt: 1 }],
     })
   }
 
@@ -79,7 +79,7 @@ describe("task tool start text for retired curated ids", () => {
     // when
     const output = await execute(
       "retired-single",
-      { prompt: "Review the work plan at .omo/plans/gate-plan.md", subagent_type: "momus", run_in_background: true },
+      { prompt: "Review the work plan at .omc/plans/gate-plan.md", subagent_type: "momus", run_in_background: true },
       undefined,
       undefined,
       CTX,
@@ -112,9 +112,9 @@ describe("task tool start text for retired curated ids", () => {
       {
         run_in_background: true,
         tasks: [
-          { prompt: "Review the work plan at .omo/plans/gate-plan.md", subagent_type: "momus" },
-          { prompt: "Consult on the work plan at .omo/plans/gate-plan.md", subagent_type: "metis" },
-          { prompt: "Review the work plan at .omo/plans/gate-plan.md", subagent_type: "plan-reviewer" },
+          { prompt: "Review the work plan at .omc/plans/gate-plan.md", subagent_type: "momus" },
+          { prompt: "Consult on the work plan at .omc/plans/gate-plan.md", subagent_type: "metis" },
+          { prompt: "Review the work plan at .omc/plans/gate-plan.md", subagent_type: "plan-reviewer" },
         ],
       },
       undefined,
@@ -142,7 +142,7 @@ describe("task tool start text for retired curated ids", () => {
     // when
     const output = await execute(
       "canonical-single",
-      { prompt: "Review the work plan at .omo/plans/gate-plan.md", subagent_type: "plan-reviewer", run_in_background: true },
+      { prompt: "Review the work plan at .omc/plans/gate-plan.md", subagent_type: "plan-reviewer", run_in_background: true },
       undefined,
       undefined,
       CTX,

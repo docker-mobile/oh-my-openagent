@@ -44,6 +44,6 @@ export const installDeviceService = async (options: AcquireOptions & { readonly 
   return {
     ok: false,
     state: "service_degraded",
-    action: `The OmO device service could not be installed (${firstLine(result.output) || `exit ${result.exitCode}`}). Try again; if it keeps failing, report it with /bug.`,
+    action: `The OmC device service could not be installed (${firstLine(result.output) || `exit ${result.exitCode}`}). Try again; if it keeps failing, report it with /bug.`,
   }
 }

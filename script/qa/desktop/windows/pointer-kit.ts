@@ -58,10 +58,10 @@ export async function pointerHost(
   tag: string,
   rect: ScreenRect,
 ): Promise<PointerHost> {
-  const eventLog = join(context.workspace.dir, `omo-qa-pointer-${tag}.log`)
+  const eventLog = join(context.workspace.dir, `omc-qa-pointer-${tag}.log`)
   writeFileSync(eventLog, "")
   const args = ["-NoProfile", "-NonInteractive", "-STA", "-ExecutionPolicy", "Bypass", "-File", HOST_SCRIPT]
-  args.push("-Title", `omo-qa-pointer-${tag}`, "-EventLog", eventLog)
+  args.push("-Title", `omc-qa-pointer-${tag}`, "-EventLog", eventLog)
   args.push("-Left", String(rect.left), "-Top", String(rect.top))
   args.push("-Width", String(rect.right - rect.left), "-Height", String(rect.bottom - rect.top))
   args.push("-FirstVisibleLine", String(HOST_FIRST_VISIBLE_LINE))
@@ -175,7 +175,7 @@ export interface MouseTrace {
 
 /** Starts mouse-trace.ps1 (a WH_MOUSE_LL hook in its own process) and waits until the hook is installed. */
 export async function mouseTrace(context: { readonly workspace: QaWorkspace }, tag: string): Promise<MouseTrace> {
-  const log = join(context.workspace.dir, `omo-qa-mouse-trace-${tag}.log`)
+  const log = join(context.workspace.dir, `omc-qa-mouse-trace-${tag}.log`)
   writeFileSync(log, "")
   const args = ["-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", TRACE_SCRIPT, "-Log", log]
   const child = spawn("powershell.exe", args, { stdio: ["ignore", "pipe", "inherit"] })

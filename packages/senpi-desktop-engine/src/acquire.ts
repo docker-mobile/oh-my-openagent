@@ -13,7 +13,7 @@ import { parseDesktopEngineChecksums } from "./checksums";
 import { DESKTOP_ENGINE_CHECKSUMS_ASSET, desktopEngineReleaseAssetName } from "./release-assets";
 import { isDesktopEngineRelease } from "./release-signature";
 
-const RELEASE_BASE = "https://github.com/code-yeongyu/oh-my-openagent/releases/download";
+const RELEASE_BASE = "https://github.com/code-yeongyu/oh-my-cybersecurity/releases/download";
 const MUSL_SUFFIX = "-musl";
 
 export interface AcquireDesktopEngineOptions {
@@ -45,7 +45,7 @@ export function findCachedDesktopEngine(
 	let attemptedPaths: readonly string[] = [];
 	if (asset === null) return { path: null, attemptedPaths };
 	const platform = host.slice(0, host.indexOf("-"));
-	const cacheRoot = options.cacheDir ?? join(homedir(), ".omo", "cache", "senpi-desktop-engine");
+	const cacheRoot = options.cacheDir ?? join(homedir(), ".omc", "cache", "senpi-desktop-engine");
 	const hostDir = join(cacheRoot, version, host);
 	if (existsSync(hostDir)) {
 		for (const entry of readdirSync(hostDir)) {
@@ -95,16 +95,16 @@ export async function acquireDesktopEngine(options: AcquireDesktopEngineOptions)
 		const located = locateDesktopEngine({ ...options.locatorOptions, platform, arch, libc });
 		attemptedPaths = located.diagnostic?.attemptedPaths ?? [];
 		if (located.path !== null) {
-			const runtimeDir = options.locatorOptions?.runtimeDir ?? process.env.OMO_PACKAGE_DIR;
+			const runtimeDir = options.locatorOptions?.runtimeDir ?? process.env.OMC_PACKAGE_DIR;
 			const payload = runtimeDir && join(runtimeDir, "native", "prebuilds", host, getDesktopEngineFileName(platform));
 			if (platform === "darwin" && located.path === payload && runtimeDir
 				&& (options.isReleaseEngine ?? isDesktopEngineRelease)(located.path)) {
 				const manifest: unknown = JSON.parse(readFileSync(join(runtimeDir, "package.json"), "utf8"));
 				if (typeof manifest === "object" && manifest !== null
-					&& Reflect.get(manifest, "name") === "omo" && Reflect.get(manifest, "version") === version) {
+					&& Reflect.get(manifest, "name") === "omc" && Reflect.get(manifest, "version") === version) {
 					return { path: located.path, sha256: createHash("sha256").update(readFileSync(located.path)).digest("hex") };
 				}
-				return unavailable("Extracted desktop engine does not belong to the requested omo release");
+				return unavailable("Extracted desktop engine does not belong to the requested omc release");
 			}
 			return { path: located.path };
 		}
@@ -117,9 +117,9 @@ export async function acquireDesktopEngine(options: AcquireDesktopEngineOptions)
 			message: `No senpi-desktop-engine is built for ${host}; computer use is unavailable on this host.`,
 		} };
 		if (!/^[0-9]+\.[0-9]+\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$/.test(version)) {
-			return unavailable(`Invalid omo release version: ${version}`);
+			return unavailable(`Invalid omc release version: ${version}`);
 		}
-		const cacheRoot = options.cacheDir ?? join(homedir(), ".omo", "cache", "senpi-desktop-engine");
+		const cacheRoot = options.cacheDir ?? join(homedir(), ".omc", "cache", "senpi-desktop-engine");
 		const hostDir = join(cacheRoot, version, host);
 		const cached = findCachedDesktopEngine(options, (path) => {
 			attemptedPaths = [...attemptedPaths, path];
@@ -179,7 +179,7 @@ export async function launchDesktopEngine<T>(
 		path: source.path,
 		sha256: source.sha256,
 		version: options.version,
-		directory: join(options.installDir ?? join(homedir(), ".omo", "engines", "senpi-desktop-engine"), options.host),
+		directory: join(options.installDir ?? join(homedir(), ".omc", "engines", "senpi-desktop-engine"), options.host),
 	}, (path) => {
 		if (isQuarantinedFile(path)) {
 			return {

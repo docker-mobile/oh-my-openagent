@@ -5,7 +5,7 @@ import { resolve } from "node:path"
 
 export const AGENT_COMMAND_RE = /\bomo (ulw-loop|boulder)\b/g
 export const HUMAN_COMMAND_RE = /\bomo (install|uninstall|cleanup|doctor|run|get-local-version|version|mcp)\b/g
-export const BARE_BIN_RE = /(command -v omo|\/bin\/omo|=omo|\$\(which omo\))(?![\w-])/g
+export const BARE_BIN_RE = /(command -v omc|\/bin\/omc|=omc|\$\(which omc\))(?![\w-])/g
 
 export const ALLOWLIST_RELATIVE_PATH = "script/agent-command-string-audit.allowlist.json"
 export const AUDIT_TEST_RELATIVE_PATH = "script/agent-command-string-audit.test.ts"
@@ -22,8 +22,8 @@ export function isExcluded(filePath: string): boolean {
     || filePath === "changes.md"
     || filePath.endsWith("/changes.md")
     || filePath.startsWith("changes/unreleased/")
-    || filePath === ".omo"
-    || filePath.startsWith(".omo/")
+    || filePath === ".omc"
+    || filePath.startsWith(".omc/")
     || filePath.split("/").some((part) => part === "node_modules" || part === "install-dist" || part === "dist")
 }
 

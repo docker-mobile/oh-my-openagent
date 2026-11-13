@@ -1,12 +1,12 @@
 ---
 name: ulw-execute
-description: "Executes a written ulw-plan work plan with Boulder state, evidence ledger, worktree discipline, and parallel subagents. Use when the user says ulw-execute or asks to run a .omo/plans plan."
+description: "Executes a written ulw-plan work plan with Boulder state, evidence ledger, worktree discipline, and parallel subagents. Use when the user says ulw-execute or asks to run a .omc/plans plan."
 argument-hint: "[plan-name] [--worktree <absolute-path>] [--make-pr] [--ship]"
 ---
 
 ## ABSOLUTE RULE: YOU ARE AN ORCHESTRATOR — NEVER THE IMPLEMENTER
 
-**YOU DO NOT WRITE CODE. YOU DO NOT EDIT PRODUCT FILES. YOU DO NOT RUN QA YOURSELF. EVERY unit of implementation, test, QA, and review work MUST be delegated to a spawned subagent. NO EXCEPTIONS.** Your hands touch only plan selection, `.omo/` state (Boulder, ledger, plan checkboxes), decomposition, dispatch, verdicts, and evidence records. About to edit a product file or run an implementation command yourself? **STOP. SPAWN A WORKER INSTEAD.** Orchestrate at **MAXIMUM PARALLELISM**: every independent unit runs concurrently; only named dependencies serialize.
+**YOU DO NOT WRITE CODE. YOU DO NOT EDIT PRODUCT FILES. YOU DO NOT RUN QA YOURSELF. EVERY unit of implementation, test, QA, and review work MUST be delegated to a spawned subagent. NO EXCEPTIONS.** Your hands touch only plan selection, `.omc/` state (Boulder, ledger, plan checkboxes), decomposition, dispatch, verdicts, and evidence records. About to edit a product file or run an implementation command yourself? **STOP. SPAWN A WORKER INSTEAD.** Orchestrate at **MAXIMUM PARALLELISM**: every independent unit runs concurrently; only named dependencies serialize.
 
 This rule binds the root of a ulw-execute run, including its Final Verification Wave and any `review-work` pass run inside it: a worker runs every QA scenario, and you judge the artifacts it captured. Outside a ulw-execute run (a bare ultrawork run, a ulw-loop final gate, a standalone `review-work`), the session that owns the run runs the final real-surface QA itself.
 
@@ -36,7 +36,7 @@ Plan and reviewer agents may run for a long time: spawn them in the background a
 
 # ulw-execute
 
-Execute a work plan until every top-level checkbox is `[x]` or `[~]`. This skill pairs with the harness's ulw-execute continuation hook, which re-injects the next turn while `.omo/boulder.json` says this `codex:<session_id>` still has unchecked plan work.
+Execute a work plan until every top-level checkbox is `[x]` or `[~]`. This skill pairs with the harness's ulw-execute continuation hook, which re-injects the next turn while `.omc/boulder.json` says this `codex:<session_id>` still has unchecked plan work.
 
 ## Usage
 
@@ -44,10 +44,10 @@ Execute a work plan until every top-level checkbox is `[x]` or `[~]`. This skill
 $ulw-execute [plan-name] [--worktree <absolute-path>] [--make-pr] [--ship]
 ```
 
-- `plan-name` (optional): a full or partial file stem under `.omo/plans/`.
+- `plan-name` (optional): a full or partial file stem under `.omc/plans/`.
 - `--worktree` (optional): reuse an existing task-owned worktree for the first phase instead of creating one; every phase runs in a task-owned worktree regardless.
 - `--make-pr` (optional): deliver each phase's worktree as a pull request — push the branch, open a reviewer-readable PR, hand off with the URL, and merge only if the user asks.
-- `--ship` (optional): full delivery lifecycle; implies `--make-pr`. After the PR opens, stay on the job until it is MERGED: watch CI and review gates, fix failures and address feedback from the worktree (fresh QA evidence for behavior changes), merge per the repository's merge policy, then remove the worktree and sync `.omo/` state back.
+- `--ship` (optional): full delivery lifecycle; implies `--make-pr`. After the PR opens, stay on the job until it is MERGED: watch CI and review gates, fix failures and address feedback from the worktree (fresh QA evidence for behavior changes), merge per the repository's merge policy, then remove the worktree and sync `.omc/` state back.
 
 ## Goal and todo discipline (MANDATORY)
 
@@ -59,8 +59,8 @@ Do ALL of this immediately after the plan is selected, BEFORE the first implemen
 
 ## Phase 1: Select the plan
 
-1. Read `.omo/boulder.json` if it exists.
-2. List work plan files under `.omo/plans/`.
+1. Read `.omc/boulder.json` if it exists.
+2. List work plan files under `.omc/plans/`.
 3. If `plan-name` was provided, select the matching plan.
 4. If exactly one active or paused Boulder work exists for this session, resume it.
 5. If no active work exists and exactly one plan exists, select it.
@@ -72,14 +72,14 @@ Do ALL of this immediately after the plan is selected, BEFORE the first implemen
 When the user explicitly said `start work` / `$ulw-execute` and no selectable plan exists, treat that phrase as approval: bootstrap `ulw-plan` to create the approved plan before execution and implementation, instead of stalling or asking for generic approval again. A brief or notes file without waves, checkboxes, and acceptance criteria is NOT decision-complete — enter this bootstrap too.
 
 1. Invoke the `ulw-plan` skill from the current request and require its dynamic adversarial workflow: collect, verify, design, adversarial plan-review, synthesize.
-2. The generated work plan must be saved under `.omo/plans/<slug>.md` before implementation or Boulder state writes that point at plan work.
+2. The generated work plan must be saved under `.omc/plans/<slug>.md` before implementation or Boulder state writes that point at plan work.
 3. Use maximum safe parallelism in the generated plan: independent files/tasks fan out; same-file writes, shared state, and named dependencies serialize.
 4. Preserve safety boundaries. Ask one focused question only when the objective is missing, destructive, or has a safety/product ambiguity that repository exploration cannot resolve.
 5. After the plan exists, continue directly to Phase 2.
 
 ## Phase 2: Create or update Boulder state
 
-Write `.omo/boulder.json` before implementation starts. Prefix session ids with `codex:` so the continuation hook can identify its own session.
+Write `.omc/boulder.json` before implementation starts. Prefix session ids with `codex:` so the continuation hook can identify its own session.
 
 ```json
 {
@@ -88,7 +88,7 @@ Write `.omo/boulder.json` before implementation starts. Prefix session ids with 
   "works": {
     "<work-id>": {
       "work_id": "<work-id>",
-      "active_plan": ".omo/plans/<plan-name>.md",
+      "active_plan": ".omc/plans/<plan-name>.md",
       "plan_name": "<plan-name>",
       "session_ids": ["codex:<session_id>"],
       "status": "active",
@@ -136,7 +136,7 @@ A spawned worker is not fire-and-forget. For EACH subagent in the burst, name th
 
 ### Delegation router — recommended task executor category
 
-When the plan annotates a todo with `Recommended task executor category:`, follow that annotation; deviate only for a reason recorded in the ledger entry. Otherwise route by shape, in the omo category vocabulary (category-capable harnesses pass it directly on the worker-spawn tool, e.g. `task(category="quick", ...)`; others map the parenthesized difficulty):
+When the plan annotates a todo with `Recommended task executor category:`, follow that annotation; deviate only for a reason recorded in the ledger entry. Otherwise route by shape, in the omc category vocabulary (category-capable harnesses pass it directly on the worker-spawn tool, e.g. `task(category="quick", ...)`; others map the parenthesized difficulty):
 
 | Category | Route here |
 | --- | --- |
@@ -154,7 +154,7 @@ Sizing is a two-branch decision made per checkbox, before dispatch:
 - **Splittable work splits.** When the checkbox decomposes into independent pieces, dispatch them as a swarm of `quick`/`unspecified-low` workers in ONE parallel burst — many small cheap workers in parallel beat one large delegation.
 - **Cohesive hard work stays whole.** When splitting would sever shared reasoning (one algorithm, one migration, one subtle bug), send the WHOLE problem to `deep-low`, `deep-high` or `ultrabrain` as ONE delegation. Never force-split work whose parts share one insight.
 
-Git operations have no built-in category: route them to a `quick` worker and name the `git-master` skill in its brief (`load_skills` where the spawn tool takes it). Only when this session's omo config defines a `git` category can they go there instead; an unconfigured category name is refused.
+Git operations have no built-in category: route them to a `quick` worker and name the `git-master` skill in its brief (`load_skills` where the spawn tool takes it). Only when this session's omc config defines a `git` category can they go there instead; an unconfigured category name is refused.
 
 Each sub-task message must include:
 
@@ -184,7 +184,7 @@ For each checkbox, complete all five gates before marking it done:
 4. Adversarial QA: exercise every class the Phase 3 trigger map marks applicable and capture the observable result for each.
 5. Cleanup: register every QA resource teardown as its own todo when spawned (QA scripts, tmux assets, browser sessions, PIDs, ports, containers, temp dirs), execute each, and capture the receipt. No QA asset is left running.
 
-Append evidence to `.omo/ulw-execute/ledger.jsonl`, one JSON object per line. Include at least `event`, `plan`, `task`, `session_id`, `commands`, `artifact`, `adversarial_classes`, and `cleanup` fields, plus `attempt` and `checkpoint_opened_at` on every entry tied to a checkbox. `adversarial_classes` lists each probed class with its observable result and each ruled-out class with a one-line reason.
+Append evidence to `.omc/ulw-execute/ledger.jsonl`, one JSON object per line. Include at least `event`, `plan`, `task`, `session_id`, `commands`, `artifact`, `adversarial_classes`, and `cleanup` fields, plus `attempt` and `checkpoint_opened_at` on every entry tied to a checkbox. `adversarial_classes` lists each probed class with its observable result and each ruled-out class with a one-line reason.
 
 ### Completion contract
 
@@ -233,7 +233,7 @@ Only after verification passes:
 When all top-level checkboxes in `## TODOs` and `## Final Verification Wave` are complete:
 
 1. Run the plan's final verification commands.
-2. Under `--make-pr` or `--ship`, finish the lifecycle from the last phase's worktree: sync `.omo/` state back to the main repo, create or update the PR, and wait for review/verification gates. Then follow the delivery mode: `--ship` merges per the repository's merge policy; `--make-pr` hands off with the PR URL and merges only if the user asks. Remove the worktree only after a successful merge or that explicit handoff. Finish directory teardown per Task resources and record its receipts.
+2. Under `--make-pr` or `--ship`, finish the lifecycle from the last phase's worktree: sync `.omc/` state back to the main repo, create or update the PR, and wait for review/verification gates. Then follow the delivery mode: `--ship` merges per the repository's merge policy; `--make-pr` hands off with the PR URL and merges only if the user asks. Remove the worktree only after a successful merge or that explicit handoff. Finish directory teardown per Task resources and record its receipts.
 3. Remove or mark the Boulder work as completed.
 4. Print an `ORCHESTRATION COMPLETE` block with the plan path, verification commands, artifacts, and cleanup receipts.
 

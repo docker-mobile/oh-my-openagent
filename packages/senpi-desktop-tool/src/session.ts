@@ -1,7 +1,7 @@
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { ComputerSessionSnapshot } from "@oh-my-opencode/senpi-desktop-protocol";
-import type { DesktopSessionOpenParams } from "@oh-my-opencode/senpi-desktop-service";
+import type { ComputerSessionSnapshot } from "@oh-my-cybersecurity/senpi-desktop-protocol";
+import type { DesktopSessionOpenParams } from "@oh-my-cybersecurity/senpi-desktop-service";
 import type { ComputerSettings } from "./settings";
 
 /** The fields of the host's active model (`@earendil-works/pi-ai` `Model`) the capture policy reads. */

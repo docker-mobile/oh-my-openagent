@@ -6,12 +6,12 @@ import { resetOgDownloadsCacheForTests } from "./downloads"
 import { resetOgStarsCacheForTests } from "./stars"
 
 function upstream(url: string, stars: number, downloadsPerPackage: number): Response {
-  if (url === "https://get.omo.dev/stats/downloads") {
+  if (url === "https://get.omc.nga.hm/stats/downloads") {
     return Response.json({ uncountedByGitHub: downloadsPerPackage })
   }
   if (url.includes("/releases?")) {
     return Response.json([
-      { assets: [{ name: "omo-linux-x64", download_count: downloadsPerPackage }] },
+      { assets: [{ name: "omc-linux-x64", download_count: downloadsPerPackage }] },
     ])
   }
   if (url.startsWith("https://api.github.com/repos/")) {
@@ -42,7 +42,7 @@ test("GitHub star updates change the rendered PNG even when npm is unavailable",
       async (input: RequestInfo | URL) => {
         const url = String(input)
         return url.startsWith("https://api.github.com/repos/")
-          ? Response.json({ stargazers_count: count, description: "OmO" })
+          ? Response.json({ stargazers_count: count, description: "OmC" })
           : new Response("Unavailable", { status: 503 })
       },
       { preconnect: fetch.preconnect },

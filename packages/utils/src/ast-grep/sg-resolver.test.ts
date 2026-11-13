@@ -7,7 +7,7 @@ import { findSgBinarySync } from "./sg-resolver"
 import { SG_PATH_ENV_KEY } from "./types"
 
 function tempDir(name: string): string {
-  return join(tmpdir(), `omo-${name}-${crypto.randomUUID()}`)
+  return join(tmpdir(), `omc-${name}-${crypto.randomUUID()}`)
 }
 
 /**
@@ -20,10 +20,10 @@ function writeExecutable(filePath: string): void {
 }
 
 /** Home directory with no OMO runtime, so tier-2 candidates cannot shadow the tier under test. */
-const NO_RUNTIME_HOME = join(tmpdir(), "omo-sg-resolver-no-runtime-home")
+const NO_RUNTIME_HOME = join(tmpdir(), "omc-sg-resolver-no-runtime-home")
 
 describe("findSgBinarySync", () => {
-  it("prefers the OMO_AST_GREP_SG_PATH override", () => {
+  it("prefers the OMC_AST_GREP_SG_PATH override", () => {
     // given
     const root = tempDir("sg-env")
     mkdirSync(root, { recursive: true })

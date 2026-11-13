@@ -1,5 +1,5 @@
 import { randomBytes } from "node:crypto"
-import type { ClaudeCodeMcpServer } from "@oh-my-opencode/claude-code-compat-core/claude-code-mcp-loader/types"
+import type { ClaudeCodeMcpServer } from "@oh-my-cybersecurity/claude-code-compat-core/claude-code-mcp-loader/types"
 import { declarationDigest, policyHash, resolveProjectEnvironment, usesProjectEnvironment } from "./project-env-policy"
 import { createFileGrantStore, type EnvGrantSnapshot, type GrantStore } from "./env-grant-store"
 import type { SkillMcpClientInfo } from "./types"
@@ -105,7 +105,7 @@ export class EnvironmentGrantPolicy {
         this.notices.set(identity, digest)
         const id = randomBytes(6).toString("hex")
         this.pending.set(id, { digest: identity, names: policy.withheld, info, raw })
-        const message = `Project MCP server ${info.serverName} (skill ${info.skillName}) withheld ${policy.withheld.length} environment names: ${policy.withheld.join(", ")}. Grant and save permanently: /omo-mcp-env-grant ${id} (all displayed names), or /omo-mcp-env-grant ${id} NAME [NAME...].`
+        const message = `Project MCP server ${info.serverName} (skill ${info.skillName}) withheld ${policy.withheld.length} environment names: ${policy.withheld.join(", ")}. Grant and save permanently: /omc-mcp-env-grant ${id} (all displayed names), or /omc-mcp-env-grant ${id} NAME [NAME...].`
         this.noticeMessages.set(identity, message)
         log("[skill-mcp-env] " + message)
         this.notify?.(message, info)

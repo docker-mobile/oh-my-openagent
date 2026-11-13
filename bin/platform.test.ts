@@ -22,7 +22,7 @@ describe("getPackageBareName", () => {
 });
 
 describe("resolvePlatformPackageBaseName", () => {
-  test("maps lazycodex wrapper to oh-my-openagent platform package family", () => {
+  test("maps lazycodex wrapper to oh-my-cybersecurity platform package family", () => {
     // #given
     const wrapperPackageName = "lazycodex";
 
@@ -30,10 +30,10 @@ describe("resolvePlatformPackageBaseName", () => {
     const resolvedPlatformBase = resolvePlatformPackageBaseName(wrapperPackageName);
 
     // #then
-    expect(resolvedPlatformBase).toBe("oh-my-openagent");
+    expect(resolvedPlatformBase).toBe("oh-my-cybersecurity");
   });
 
-  test("maps scoped lazycodex wrapper to oh-my-openagent platform package family", () => {
+  test("maps scoped lazycodex wrapper to oh-my-cybersecurity platform package family", () => {
     // #given
     const wrapperPackageName = "@code-yeongyu/lazycodex";
 
@@ -41,10 +41,10 @@ describe("resolvePlatformPackageBaseName", () => {
     const resolvedPlatformBase = resolvePlatformPackageBaseName(wrapperPackageName);
 
     // #then
-    expect(resolvedPlatformBase).toBe("oh-my-openagent");
+    expect(resolvedPlatformBase).toBe("oh-my-cybersecurity");
   });
 
-  test("maps lazycodex-ai wrapper to oh-my-openagent platform package family", () => {
+  test("maps lazycodex-ai wrapper to oh-my-cybersecurity platform package family", () => {
     // #given
     const wrapperPackageName = "lazycodex-ai";
 
@@ -52,10 +52,10 @@ describe("resolvePlatformPackageBaseName", () => {
     const resolvedPlatformBase = resolvePlatformPackageBaseName(wrapperPackageName);
 
     // #then
-    expect(resolvedPlatformBase).toBe("oh-my-openagent");
+    expect(resolvedPlatformBase).toBe("oh-my-cybersecurity");
   });
 
-  test("maps scoped lazycodex-ai wrapper to oh-my-openagent platform package family", () => {
+  test("maps scoped lazycodex-ai wrapper to oh-my-cybersecurity platform package family", () => {
     // #given
     const wrapperPackageName = "@code-yeongyu/lazycodex-ai";
 
@@ -63,29 +63,29 @@ describe("resolvePlatformPackageBaseName", () => {
     const resolvedPlatformBase = resolvePlatformPackageBaseName(wrapperPackageName);
 
     // #then
-    expect(resolvedPlatformBase).toBe("oh-my-openagent");
+    expect(resolvedPlatformBase).toBe("oh-my-cybersecurity");
   });
 
-  test("keeps oh-my-opencode wrapper mapped to oh-my-opencode platform package family", () => {
+  test("keeps oh-my-cybersecurity wrapper mapped to oh-my-cybersecurity platform package family", () => {
     // #given
-    const wrapperPackageName = "oh-my-opencode";
+    const wrapperPackageName = "oh-my-cybersecurity";
 
     // #when
     const resolvedPlatformBase = resolvePlatformPackageBaseName(wrapperPackageName);
 
     // #then
-    expect(resolvedPlatformBase).toBe("oh-my-opencode");
+    expect(resolvedPlatformBase).toBe("oh-my-cybersecurity");
   });
 
-  test("keeps oh-my-openagent wrapper mapped to oh-my-openagent platform package family", () => {
+  test("keeps oh-my-cybersecurity wrapper mapped to oh-my-cybersecurity platform package family", () => {
     // #given
-    const wrapperPackageName = "oh-my-openagent";
+    const wrapperPackageName = "oh-my-cybersecurity";
 
     // #when
     const resolvedPlatformBase = resolvePlatformPackageBaseName(wrapperPackageName);
 
     // #then
-    expect(resolvedPlatformBase).toBe("oh-my-openagent");
+    expect(resolvedPlatformBase).toBe("oh-my-cybersecurity");
   });
 });
 
@@ -99,7 +99,7 @@ describe("getPlatformPackage", () => {
     const result = getPlatformPackage(input);
 
     // #then returns correct package name
-    expect(result).toBe("oh-my-opencode-darwin-arm64");
+    expect(result).toBe("oh-my-cybersecurity-darwin-arm64");
   });
 
   test("returns darwin-x64 for macOS Intel", () => {
@@ -110,7 +110,7 @@ describe("getPlatformPackage", () => {
     const result = getPlatformPackage(input);
 
     // #then returns correct package name
-    expect(result).toBe("oh-my-opencode-darwin-x64");
+    expect(result).toBe("oh-my-cybersecurity-darwin-x64");
   });
   // #endregion
 
@@ -123,7 +123,7 @@ describe("getPlatformPackage", () => {
     const result = getPlatformPackage(input);
 
     // #then returns correct package name
-    expect(result).toBe("oh-my-opencode-linux-x64");
+    expect(result).toBe("oh-my-cybersecurity-linux-x64");
   });
 
   test("returns linux-arm64 for Linux ARM64 with glibc", () => {
@@ -134,7 +134,7 @@ describe("getPlatformPackage", () => {
     const result = getPlatformPackage(input);
 
     // #then returns correct package name
-    expect(result).toBe("oh-my-opencode-linux-arm64");
+    expect(result).toBe("oh-my-cybersecurity-linux-arm64");
   });
   // #endregion
 
@@ -147,7 +147,7 @@ describe("getPlatformPackage", () => {
     const result = getPlatformPackage(input);
 
     // #then returns correct package name with musl suffix
-    expect(result).toBe("oh-my-opencode-linux-x64-musl");
+    expect(result).toBe("oh-my-cybersecurity-linux-x64-musl");
   });
 
   test("returns linux-arm64-musl for Alpine ARM64", () => {
@@ -158,7 +158,7 @@ describe("getPlatformPackage", () => {
     const result = getPlatformPackage(input);
 
     // #then returns correct package name with musl suffix
-    expect(result).toBe("oh-my-opencode-linux-arm64-musl");
+    expect(result).toBe("oh-my-cybersecurity-linux-arm64-musl");
   });
   // #endregion
 
@@ -171,7 +171,7 @@ describe("getPlatformPackage", () => {
     const result = getPlatformPackage(input);
 
     // #then returns correct package name with 'windows' not 'win32'
-    expect(result).toBe("oh-my-opencode-windows-x64");
+    expect(result).toBe("oh-my-cybersecurity-windows-x64");
   });
   // #endregion
 
@@ -199,38 +199,38 @@ describe("getPlatformPackage", () => {
 describe("getBinaryPath", () => {
   test("returns JavaScript launcher path for Unix platforms", () => {
     // #given Unix platform package
-    const pkg = "oh-my-opencode-darwin-arm64";
+    const pkg = "oh-my-cybersecurity-darwin-arm64";
     const platform = "darwin";
 
     // #when getting binary path
     const result = getBinaryPath(pkg, platform);
 
     // #then returns the platform launcher script
-    expect(result).toBe("oh-my-opencode-darwin-arm64/bin/oh-my-opencode.js");
+    expect(result).toBe("oh-my-cybersecurity-darwin-arm64/bin/oh-my-cybersecurity.js");
   });
 
   test("returns JavaScript launcher path for Windows", () => {
     // #given Windows platform package
-    const pkg = "oh-my-opencode-windows-x64";
+    const pkg = "oh-my-cybersecurity-windows-x64";
     const platform = "win32";
 
     // #when getting binary path
     const result = getBinaryPath(pkg, platform);
 
     // #then returns the platform launcher script
-    expect(result).toBe("oh-my-opencode-windows-x64/bin/oh-my-opencode.js");
+    expect(result).toBe("oh-my-cybersecurity-windows-x64/bin/oh-my-cybersecurity.js");
   });
 
   test("returns JavaScript launcher path for Linux", () => {
     // #given Linux platform package
-    const pkg = "oh-my-opencode-linux-x64";
+    const pkg = "oh-my-cybersecurity-linux-x64";
     const platform = "linux";
 
     // #when getting binary path
     const result = getBinaryPath(pkg, platform);
 
     // #then returns the platform launcher script
-    expect(result).toBe("oh-my-opencode-linux-x64/bin/oh-my-opencode.js");
+    expect(result).toBe("oh-my-cybersecurity-linux-x64/bin/oh-my-cybersecurity.js");
   });
 });
 
@@ -244,8 +244,8 @@ describe("getPlatformPackageCandidates", () => {
 
     // #then returns modern first then baseline fallback
     expect(result).toEqual([
-      "oh-my-opencode-linux-x64",
-      "oh-my-opencode-linux-x64-baseline",
+      "oh-my-cybersecurity-linux-x64",
+      "oh-my-cybersecurity-linux-x64-baseline",
     ]);
   });
 
@@ -258,8 +258,8 @@ describe("getPlatformPackageCandidates", () => {
 
     // #then returns musl modern first then musl baseline fallback
     expect(result).toEqual([
-      "oh-my-opencode-linux-x64-musl",
-      "oh-my-opencode-linux-x64-musl-baseline",
+      "oh-my-cybersecurity-linux-x64-musl",
+      "oh-my-cybersecurity-linux-x64-musl-baseline",
     ]);
   });
 
@@ -272,8 +272,8 @@ describe("getPlatformPackageCandidates", () => {
 
     // #then baseline package is preferred first
     expect(result).toEqual([
-      "oh-my-opencode-windows-x64-baseline",
-      "oh-my-opencode-windows-x64",
+      "oh-my-cybersecurity-windows-x64-baseline",
+      "oh-my-cybersecurity-windows-x64",
     ]);
   });
 
@@ -281,15 +281,15 @@ describe("getPlatformPackageCandidates", () => {
 
   test("supports renamed package family via packageBaseName override", () => {
     // #given Linux x64 with glibc and renamed package base
-    const input = { platform: "linux", arch: "x64", libcFamily: "glibc", packageBaseName: "oh-my-openagent" };
+    const input = { platform: "linux", arch: "x64", libcFamily: "glibc", packageBaseName: "oh-my-cybersecurity" };
 
     // #when getting package candidates
     const result = getPlatformPackageCandidates(input);
 
     // #then returns renamed package family candidates
     expect(result).toEqual([
-      "oh-my-openagent-linux-x64",
-      "oh-my-openagent-linux-x64-baseline",
+      "oh-my-cybersecurity-linux-x64",
+      "oh-my-cybersecurity-linux-x64-baseline",
     ]);
   });
   test("returns only one candidate for ARM64", () => {
@@ -300,7 +300,7 @@ describe("getPlatformPackageCandidates", () => {
     const result = getPlatformPackageCandidates(input);
 
     // #then baseline fallback is not included
-    expect(result).toEqual(["oh-my-opencode-linux-arm64"]);
+    expect(result).toEqual(["oh-my-cybersecurity-linux-arm64"]);
   });
 
   test("returns arm64 and x64-baseline candidates for Windows ARM64", () => {
@@ -312,22 +312,22 @@ describe("getPlatformPackageCandidates", () => {
 
     // #then arm64 package first then the x64 baseline fallback
     expect(result).toEqual([
-      "oh-my-opencode-windows-arm64",
-      "oh-my-opencode-windows-x64-baseline",
+      "oh-my-cybersecurity-windows-arm64",
+      "oh-my-cybersecurity-windows-x64-baseline",
     ]);
   });
 
   test("supports renamed package family for Windows ARM64 via packageBaseName override", () => {
     // #given Windows arm64 with renamed package base
-    const input = { platform: "win32", arch: "arm64", packageBaseName: "oh-my-openagent" };
+    const input = { platform: "win32", arch: "arm64", packageBaseName: "oh-my-cybersecurity" };
 
     // #when getting package candidates
     const result = getPlatformPackageCandidates(input);
 
     // #then returns renamed arm64 and x64 baseline candidates
     expect(result).toEqual([
-      "oh-my-openagent-windows-arm64",
-      "oh-my-openagent-windows-x64-baseline",
+      "oh-my-cybersecurity-windows-arm64",
+      "oh-my-cybersecurity-windows-x64-baseline",
     ]);
   });
 
@@ -340,8 +340,8 @@ describe("getPlatformPackageCandidates", () => {
 
     // #then modern x64 first then x64 baseline
     expect(result).toEqual([
-      "oh-my-opencode-windows-x64",
-      "oh-my-opencode-windows-x64-baseline",
+      "oh-my-cybersecurity-windows-x64",
+      "oh-my-cybersecurity-windows-x64-baseline",
     ]);
   });
 
@@ -354,8 +354,8 @@ describe("getPlatformPackageCandidates", () => {
 
     // #then baseline package is preferred first
     expect(result).toEqual([
-      "oh-my-opencode-windows-x64-baseline",
-      "oh-my-opencode-windows-x64",
+      "oh-my-cybersecurity-windows-x64-baseline",
+      "oh-my-cybersecurity-windows-x64",
     ]);
   });
 });

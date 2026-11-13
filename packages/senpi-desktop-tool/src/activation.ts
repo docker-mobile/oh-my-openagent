@@ -1,5 +1,5 @@
-import type { DesktopCapabilities, StopPathStatus } from "@oh-my-opencode/senpi-desktop-protocol";
-import type { DesktopService } from "@oh-my-opencode/senpi-desktop-service";
+import type { DesktopCapabilities, StopPathStatus } from "@oh-my-cybersecurity/senpi-desktop-protocol";
+import type { DesktopService } from "@oh-my-cybersecurity/senpi-desktop-service";
 import { type ComputerHostContext, sessionOpenParams } from "./session";
 import type { ComputerSettings } from "./settings";
 

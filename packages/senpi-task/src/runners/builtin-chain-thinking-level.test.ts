@@ -4,7 +4,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 
-import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
+import type { OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import { resolveCategory } from "../category"
 import { loadSenpiBarrel } from "../lazy/senpi-barrel"
@@ -166,7 +166,7 @@ describe("builtin category chains run at a thinking level the model accepts (#93
     const session = await startCategoryChild(machine, "user-lane", config)
     await session.prompt("finish through the user's fallback")
 
-    // then: one warning naming the level and the model; omo keeps the user's entry and the engine runs it at a level it accepts
+    // then: one warning naming the level and the model; omc keeps the user's entry and the engine runs it at a level it accepts
     expect(validationWarnings(machine)).toEqual([
       'Fallback chain entry "runtime-fallback-test/no-max-reasoner:max" uses thinking level "max", which is unsupported by runtime-fallback-test/no-max-reasoner.',
     ])

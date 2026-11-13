@@ -5,7 +5,7 @@ describe("recovery failure corrective actions", () => {
   for (const [reason, action] of [
     ["model_unavailable", /(?:choose|select).*(?:model|category)/i],
     ["tools_unavailable", /(?:enable|restore).*tools/i],
-    ["host_incompatible", /(?:update|restart).*omo/i],
+    ["host_incompatible", /(?:update|restart).*omc/i],
     ["spawn_spec_unavailable", /(?:new task|launch instructions)/i],
     ["transcript_unavailable", /(?:new task|saved conversation)/i],
     ["store_index_unavailable", /(?:access|permissions).*(?:data|directory)/i],

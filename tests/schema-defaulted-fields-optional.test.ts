@@ -29,7 +29,7 @@ function requiredWithDefault(node: unknown, path: string, found: string[]): stri
 }
 
 describe("committed config schemas leave defaulted fields optional (#6445)", () => {
-  for (const file of ["omo.schema.json", "oh-my-opencode.schema.json"]) {
+  for (const file of ["omc.schema.json", "oh-my-cybersecurity.schema.json"]) {
     test(`#given assets/${file} #when every required name is checked #then none of them has a schema default`, () => {
       // given
       const schema: unknown = JSON.parse(readFileSync(join(ASSETS, file), "utf-8"))

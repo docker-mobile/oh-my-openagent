@@ -67,12 +67,12 @@ describe("recorded best-effort root removal", () => {
         const { join } = await import("node:path")
         const { runTestTempRootTeardown } = await import(${JSON.stringify(teardownUrl)})
         const { removeTestRootBestEffort } = await import(${JSON.stringify(cleanupUrl)})
-        const held = mkdtempSync(join(tmpdir(), "omo-held-cleanup-"))
+        const held = mkdtempSync(join(tmpdir(), "omc-held-cleanup-"))
         removeTestRootBestEffort(held, {
           remove() { throw Object.assign(new Error("held"), { code: "EBUSY" }) },
           diagnose() { return { holders: [], diagnosticErrors: [] } },
         })
-        if (${unrelatedLeak}) mkdtempSync(join(tmpdir(), "omo-unexpected-cleanup-"))
+        if (${unrelatedLeak}) mkdtempSync(join(tmpdir(), "omc-unexpected-cleanup-"))
         runTestTempRootTeardown()
       `], { encoding: "utf8" })
       expect(result.error).toBeUndefined()

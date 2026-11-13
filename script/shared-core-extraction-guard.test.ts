@@ -13,8 +13,8 @@ type ForbiddenSourcePattern = {
 const forbiddenSourcePatterns: readonly ForbiddenSourcePattern[] = [
   { pattern: /@opencode-ai\// },
   { pattern: /@code-yeongyu\/senpi/ },
-  { pattern: /packages\/omo-codex\/plugin/ },
-  { pattern: /packages\/omo-senpi\/plugin/ },
+  { pattern: /packages\/omc-codex\/plugin/ },
+  { pattern: /packages\/omc-senpi\/plugin/ },
   { pattern: /@earendil-works\/pi-/ },
   { pattern: /@mariozechner\/pi-/ },
   { pattern: /plugin\/components/ },
@@ -87,7 +87,7 @@ describe("shared core extraction guardrails", () => {
     const offenders: string[] = []
     for (const file of packageJsonFiles) {
       const manifest = await readFile(file, "utf8")
-      if (manifest.includes("@opencode-ai/") || manifest.includes("@oh-my-opencode/omo-codex")) {
+      if (manifest.includes("@opencode-ai/") || manifest.includes("@oh-my-cybersecurity/omc-codex")) {
         offenders.push(toPosixPath(relative(process.cwd(), file)))
       }
     }

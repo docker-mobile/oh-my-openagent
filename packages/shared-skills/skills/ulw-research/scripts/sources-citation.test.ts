@@ -110,7 +110,7 @@ const MUST_FLAG = [
 const NAMES = [
 	"<li>letta-code @ a75f4d93ef / @ 701f2a53678, https://example.com/letta</li>",
 	"<li>\uACE0\uC815 \uCEE4\uBC0B 22c5684b983e, 424B4, https://example.com/repo</li>",
-	"<li>oh-my-openagent PR #6674\u2013#7906, https://example.com/prs</li>",
+	"<li>oh-my-cybersecurity PR #6674\u2013#7906, https://example.com/prs</li>",
 	"<li>\uC774\uC288 #11302 \uB17C\uC758, https://example.com/issue</li>",
 	"<li>GPT-4 system card v2.3.1 (abc123), https://example.com/gpt</li>",
 	"<li>GPT-4 \uC2DC\uC2A4\uD15C \uCE74\uB4DC v2.3.1 (abc123), https://example.com/gpt</li>",

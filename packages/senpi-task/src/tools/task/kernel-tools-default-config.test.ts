@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 
-import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
+import type { OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import { BUILTIN_AGENTS, CURATED_READONLY_AGENT_NAMES, ULW_REVIEWER_AGENT_NAMES } from "../../agents/builtin"
 import { DEFAULT_CATEGORIES } from "../../category"
@@ -9,7 +9,7 @@ import { buildTaskExecute } from "./execute"
 import { CTX, createFakeManager, makeDeps, makeRecord } from "./__fixtures__/task-tool-fakes"
 import type { TaskToolContext, TaskToolDetails } from "./types"
 
-// The tool surface a real omo parent shares with an in-process child (UI-only names and the
+// The tool surface a real omc parent shares with an in-process child (UI-only names and the
 // task/team family are already filtered out by the engine's childToolNames resolver).
 const CHILD_TOOLS = ["read", "grep", "find", "ls", "write", "edit", "bash", "web_search", "lsp_symbols"]
 const DEFAULT_OMO_CONFIG: OmoConfig = { categories: {}, agents: {} }
@@ -47,7 +47,7 @@ function harness() {
  * category child still receive parent kernel tools under the real definitions. Only the agents
  * whose OWN definition narrows their write surface are refused.
  */
-describe("kernel-tool grants under the real default omo config", () => {
+describe("kernel-tool grants under the real default omc config", () => {
   test("#given the shipped default agent() child (a category target with no agent persona) #when it requests a parent tool #then the grant reaches the manager", async () => {
     const { spawn, specs } = harness()
 

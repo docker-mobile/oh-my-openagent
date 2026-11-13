@@ -6,7 +6,7 @@ import { blocksFinishedTeardown } from "./residency"
 import { suspendHandle } from "./shutdown"
 
 /**
- * Releases a finished child that still holds a resident slot in THIS process (omo#9785): its process or
+ * Releases a finished child that still holds a resident slot in THIS process (omc#9785): its process or
  * session is torn down through the bounded suspend path and the record parks (persisted_only /
  * rpc_detached), so it stays readable and revivable. Returns false, changing nothing, when there is no
  * such resident here: not a finished result (cancelled, lost and killed records belong to destruction), not
@@ -42,7 +42,7 @@ export async function parkTerminalResident(context: LifecycleContext, taskId: st
 /**
  * A finished child that never got (or already lost) its live handle in this process - a child whose
  * session the host refused to open, or one whose teardown already ran - still occupies a resident slot
- * until a session restart reconciles it (omo#9785 measured errored children resident for 17 h). When
+ * until a session restart reconciles it (omc#9785 measured errored children resident for 17 h). When
  * nothing can still be running for it (this session's own record, no daemon session, no live child pid), only the
  * record is parked. A sibling session's child in the same process is never touched: it has this host_pid but not
  * this engine's ownership.

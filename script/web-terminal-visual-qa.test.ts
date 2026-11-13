@@ -11,7 +11,7 @@ const helperFilePath = fileURLToPath(new URL("./qa/web-terminal-visual-qa.mjs", 
 const tempDirs: string[] = []
 
 function makeTempDir(): string {
-  const path = mkdtempSync(join(tmpdir(), "omo-web-terminal-visual-qa-"))
+  const path = mkdtempSync(join(tmpdir(), "omc-web-terminal-visual-qa-"))
   tempDirs.push(path)
   return path
 }

@@ -2,7 +2,7 @@ import { $ } from "bun"
 import { z } from "zod"
 import { NPM_PACKAGES } from "../packages/web/lib/npm-downloads"
 const POSTHOG_CAPTURE_URL = "https://us.i.posthog.com/capture/"
-const GITHUB_REPOSITORY = "code-yeongyu/oh-my-openagent"
+const GITHUB_REPOSITORY = "code-yeongyu/oh-my-cybersecurity"
 
 const NpmDownloadsSchema = z.object({
   downloads: z.number().int().nonnegative(),
@@ -31,7 +31,7 @@ export type DownloadStat = {
 
 type PostHogDownloadEvent = {
   readonly api_key: string
-  readonly event: "omo_download_stats"
+  readonly event: "omc_download_stats"
   readonly distinct_id: "download"
   readonly properties: {
     readonly $process_person_profile: false
@@ -101,7 +101,7 @@ export function createPostHogDownloadEvents(
 ): readonly PostHogDownloadEvent[] {
   return stats.map((stat) => ({
     api_key: apiKey,
-    event: "omo_download_stats",
+    event: "omc_download_stats",
     distinct_id: "download",
     properties: {
       $process_person_profile: false,

@@ -8,7 +8,7 @@ if (pidPath === undefined || releasePath === undefined) {
 
 writeFileSync(pidPath, `${process.pid}\n`)
 console.log("Provider Model")
-console.log("omo-mock mock-1")
+console.log("omc-mock mock-1")
 
 if (!existsSync(releasePath)) {
   await new Promise((resolve) => {

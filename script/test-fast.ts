@@ -11,7 +11,7 @@ export type SpawnTestGroup = (group: TestFastGroup) => Promise<number>
 export type LogLine = (line: string) => void
 
 /** Marker exported to every spawned group so a nested run refuses to recurse. */
-export const REENTRY_ENV_VAR = "OMO_TEST_FAST_ACTIVE"
+export const REENTRY_ENV_VAR = "OMC_TEST_FAST_ACTIVE"
 
 export function isReentry(env: Readonly<Record<string, string | undefined>>): boolean {
   return (env[REENTRY_ENV_VAR] ?? "") !== ""
@@ -27,10 +27,10 @@ export function testFastGroups(): TestFastGroup[] {
   return [
     {
       name: "opencode-memory",
-      args: ["test", "packages/omo-opencode", "packages/memory-core"],
+      args: ["test", "packages/omc-opencode", "packages/memory-core"],
     },
     { name: "root-rest", args: ["--config=bunfig.win2.toml", "test"] },
-    { name: "senpi", args: ["test", "packages/omo-senpi"] },
+    { name: "senpi", args: ["test", "packages/omc-senpi"] },
   ]
 }
 

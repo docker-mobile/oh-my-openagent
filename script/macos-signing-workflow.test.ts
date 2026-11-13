@@ -13,7 +13,7 @@ import { runBlock } from "./release-workflow-test-steps"
 
 const workflowPath = new URL("../.github/workflows/publish-platform.yml", import.meta.url)
 const signingScript = new URL("../.github/scripts/macos-sign-and-notarize.sh", import.meta.url)
-const entitlements = new URL("../.github/scripts/omo-bun-executable.entitlements", import.meta.url)
+const entitlements = new URL("../.github/scripts/omc-bun-executable.entitlements", import.meta.url)
 const signingMaterial = ["CSC_LINK", "CSC_KEY_PASSWORD", "APPLE_API_KEY", "APPLE_API_KEY_ID", "APPLE_API_ISSUER"]
 // Two gates, each with its reason. Tests that run the signing script against a stubbed macOS toolchain need POSIX bash:
 // the script only ever runs on macOS runners, and under Windows bash the PATH stubs cannot shadow the real tools.
@@ -36,10 +36,10 @@ function stepIndex(steps: z.infer<typeof stepsSchema>, name: string): number {
 
 /** A repo-shaped sandbox whose `codesign` appends bytes, like a real signature, and logs each call. */
 function sandbox(): { root: string; calls: string; env: NodeJS.ProcessEnv } {
-  const root = mkdtempSync(join(tmpdir(), "omo-macos-signing-"))
+  const root = mkdtempSync(join(tmpdir(), "omc-macos-signing-"))
   mkdirSync(join(root, ".github", "scripts"), { recursive: true })
   copyFileSync(signingScript, join(root, ".github", "scripts", "macos-sign-and-notarize.sh"))
-  copyFileSync(entitlements, join(root, ".github", "scripts", "omo-bun-executable.entitlements"))
+  copyFileSync(entitlements, join(root, ".github", "scripts", "omc-bun-executable.entitlements"))
   const bin = join(root, "bin")
   mkdirSync(bin)
   const calls = join(root, "codesign-calls")
@@ -84,20 +84,20 @@ describe("macOS signing in the platform publish workflow", () => {
   posixBashTest("the release digest describes the signed bytes, not the unsigned build output", () => {
     const { root, env } = sandbox()
     try {
-      const binaries = join(root, ".omo", "release-binaries")
+      const binaries = join(root, ".omc", "release-binaries")
       mkdirSync(binaries, { recursive: true })
-      writeFileSync(join(binaries, "omo-darwin-arm64"), "unsigned build output")
-      writeFileSync(join(binaries, "SHA256SUMS"), "stale  omo-darwin-arm64\n")
+      writeFileSync(join(binaries, "omc-darwin-arm64"), "unsigned build output")
+      writeFileSync(join(binaries, "SHA256SUMS"), "stale  omc-darwin-arm64\n")
       const workflow = readFileSync(workflowPath, "utf8")
       const step = runBlock(workflow, "      - name: Sign and notarize Darwin release binary\n", "      - name: Smoke test release binary\n")
 
-      const result = spawnSync("bash", ["-e", "-c", step], { cwd: root, env: { ...env, BINARY: "omo-darwin-arm64" }, encoding: "utf8" })
+      const result = spawnSync("bash", ["-e", "-c", step], { cwd: root, env: { ...env, BINARY: "omc-darwin-arm64" }, encoding: "utf8" })
 
       expect(result.status, result.stderr).toBe(0)
-      const signed = readFileSync(join(binaries, "omo-darwin-arm64"))
+      const signed = readFileSync(join(binaries, "omc-darwin-arm64"))
       expect(signed.toString()).toBe("unsigned build outputsignature")
       const digest = createHash("sha256").update(signed).digest("hex")
-      expect(readFileSync(join(binaries, "SHA256SUMS"), "utf8")).toBe(`${digest}  omo-darwin-arm64\n`)
+      expect(readFileSync(join(binaries, "SHA256SUMS"), "utf8")).toBe(`${digest}  omc-darwin-arm64\n`)
     } finally {
       rmSync(root, { recursive: true, force: true })
     }
@@ -106,7 +106,7 @@ describe("macOS signing in the platform publish workflow", () => {
   posixBashTest("refuses to ship an unsigned binary when signing is required and material is missing", () => {
     const { root, calls, env } = sandbox()
     try {
-      const binary = join(root, "omo-darwin-arm64")
+      const binary = join(root, "omc-darwin-arm64")
       writeFileSync(binary, "unsigned build output")
 
       const result = spawnSync("bash", [join(root, ".github", "scripts", "macos-sign-and-notarize.sh"), "--identifier", "ai.sisyphuslabs.omo", binary], {

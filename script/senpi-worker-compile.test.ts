@@ -8,7 +8,7 @@ import { senpiWorkerCompileArgs } from "./senpi-worker-compile"
 import { removeTreeSync } from "../test-support/remove-tree"
 
 test.each(["directory", "bun-link", "external-link"])("#given a %s worker engine #when compiled and relocated #then two workers start and the kill-guard judge imports without source files", (layout) => {
-  const scratch = mkdtempSync(join(tmpdir(), "omo-worker-compile-"))
+  const scratch = mkdtempSync(join(tmpdir(), "omc-worker-compile-"))
   try {
     // given: mirror the published engine layout and compile-time worker contract.
     const buildRoot = join(scratch, "build")
@@ -44,14 +44,14 @@ await Promise.all([1, 2].map(() => new Promise((resolve, reject) => {
   worker.once("exit", (code) => code === 0 && message !== undefined ? resolve(message) : reject(new Error(\`worker exited \${code} before ready\`)));
 })));
 console.log("two-workers-ready " + judge.KILL_GUARD_TAG);`)
-    const binary = join(scratch, process.platform === "win32" ? "omo.exe" : "omo")
+    const binary = join(scratch, process.platform === "win32" ? "omc.exe" : "omc")
     // when: use the same args as the release builder, then remove the entire source.
     const built = spawnSync(process.execPath, ["build", "--compile", entry, ...senpiWorkerCompileArgs(root), "--outfile", binary], { cwd: root, encoding: "utf8", timeout: 30_000 })
     expect(built.status, built.stderr).toBe(0)
     console.log(JSON.stringify({ layout, bun: Bun.version, revision: Bun.revision, platform: process.platform, arch: process.arch, binarySha256: createHash("sha256").update(readFileSync(binary)).digest("hex") }))
     const relocated = join(scratch, "relocated")
     mkdirSync(relocated)
-    const moved = join(relocated, process.platform === "win32" ? "omo.exe" : "omo")
+    const moved = join(relocated, process.platform === "win32" ? "omc.exe" : "omc")
     renameSync(binary, moved)
     removeTreeSync(buildRoot, { maxRetries: 10, retryDelay: 100 })
     const result = spawnSync(moved, [], { cwd: relocated, encoding: "utf8", timeout: 10_000 })
@@ -66,7 +66,7 @@ console.log("two-workers-ready " + judge.KILL_GUARD_TAG);`)
 }, 45_000)
 
 test("#given a pre-worker engine #when resolving compile args #then the legacy graph stays unchanged", () => {
-  const root = mkdtempSync(join(tmpdir(), "omo-worker-legacy-"))
+  const root = mkdtempSync(join(tmpdir(), "omc-worker-legacy-"))
   try {
     expect(senpiWorkerCompileArgs(root)).toEqual([])
   } finally {

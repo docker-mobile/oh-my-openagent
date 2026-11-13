@@ -1,6 +1,6 @@
 # ATTRIBUTION / NOTICE
 
-This skill (`browser`, part of `@oh-my-opencode/shared-skills`) is project-original documentation
+This skill (`browser`, part of `@oh-my-cybersecurity/shared-skills`) is project-original documentation
 plus a staged copy of one library it drives.
 
 ## omowright — bundled

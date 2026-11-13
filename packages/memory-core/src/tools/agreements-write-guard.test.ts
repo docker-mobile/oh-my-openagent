@@ -22,7 +22,7 @@ afterEach(async () => {
 })
 
 async function fixture() {
-  const root = realpathSync.native(await mkdtemp(join(tmpdir(), "omo-agreements-guard-")))
+  const root = realpathSync.native(await mkdtemp(join(tmpdir(), "omc-agreements-guard-")))
   roots.push(root)
   const repo = new GitMemoryRepo({ dir: join(root, "repo"), agentId: AUTHOR.agentId })
   await repo.init({ authorName: AUTHOR.authorName })
@@ -106,7 +106,7 @@ describe("memory tools cannot change agreements the person wrote (security contr
 
   it("#given a ledger holding only a flagged agent agreement #when apply_patch deletes the whole file #then the delete is refused and HEAD is unchanged", async () => {
     // given
-    const root = realpathSync.native(await mkdtemp(join(tmpdir(), "omo-agreements-wipe-")))
+    const root = realpathSync.native(await mkdtemp(join(tmpdir(), "omc-agreements-wipe-")))
     roots.push(root)
     const repo = new GitMemoryRepo({ dir: join(root, "repo"), agentId: AUTHOR.agentId })
     await repo.init({ authorName: AUTHOR.authorName })

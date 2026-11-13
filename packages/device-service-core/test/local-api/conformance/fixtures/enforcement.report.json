@@ -7,7 +7,7 @@
       "client": {
         "name": "desktop",
         "version": "2.0.0",
-        "data_home": "/home/user/.config/omo"
+        "data_home": "/home/user/.config/omc"
       },
       "steps": [
         {
@@ -15,7 +15,7 @@
             "id": "1",
             "type": "enforcement.report",
             "generation": 3,
-            "data_home": "/home/user/.config/omo",
+            "data_home": "/home/user/.config/omc",
             "environments": [
               {
                 "environment_id": "env-1",
@@ -42,7 +42,7 @@
       "client": {
         "name": "desktop",
         "version": "2.0.0",
-        "data_home": "/home/user/.config/omo"
+        "data_home": "/home/user/.config/omc"
       },
       "steps": [
         {
@@ -50,7 +50,7 @@
             "id": "1",
             "type": "enforcement.report",
             "generation": 3,
-            "data_home": "/home/user/.config/omo",
+            "data_home": "/home/user/.config/omc",
             "environments": [],
             "complete": true
           }
@@ -74,7 +74,7 @@
             "id": "1",
             "type": "enforcement.report",
             "generation": 3,
-            "data_home": "/home/user/.config/omo",
+            "data_home": "/home/user/.config/omc",
             "environments": [],
             "complete": true
           }
@@ -97,7 +97,7 @@
       "client": {
         "name": "desktop",
         "version": "2.0.0",
-        "data_home": "/home/user/.config/omo"
+        "data_home": "/home/user/.config/omc"
       },
       "steps": [
         {
@@ -105,7 +105,7 @@
             "id": "1",
             "type": "enforcement.report",
             "generation": 3,
-            "data_home": "/home/user/.config/omo-qa",
+            "data_home": "/home/user/.config/omc-qa",
             "environments": [],
             "complete": true
           }
@@ -128,7 +128,7 @@
       "client": {
         "name": "desktop",
         "version": "2.0.0",
-        "data_home": "/home/user/.config/omo"
+        "data_home": "/home/user/.config/omc"
       },
       "steps": [
         {
@@ -136,7 +136,7 @@
             "id": "1",
             "type": "enforcement.report",
             "generation": 3,
-            "data_home": "/home/user/.config/omo",
+            "data_home": "/home/user/.config/omc",
             "environments": [
               {
                 "environment_id": "env-1",

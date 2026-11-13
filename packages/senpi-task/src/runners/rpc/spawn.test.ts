@@ -21,7 +21,7 @@ const SESSION_DIR_ENV = "SENPI_CODING_AGENT_SESSION_DIR"
 const baseSpec = {
   task_id: "st_1a2b3c4d",
   cwd: "/tmp/project",
-  state_dir: "/tmp/project/.omo/senpi-task",
+  state_dir: "/tmp/project/.omc/senpi-task",
   prompt: "do the work",
 } as const
 
@@ -149,9 +149,9 @@ describe("resolveSenpiExecutable", () => {
   })
 
   test("#given a compiled engine with a senpi on PATH #when resolving #then the running executable wins over PATH", () => {
-    // given: the omo binary embeds the engine; a different senpi install sits on PATH
+    // given: the omc binary embeds the engine; a different senpi install sits on PATH
     const root = mkdtempSync(join(tmpdir(), "senpi-compiled-engine-"))
-    const execPath = join(root, "omo")
+    const execPath = join(root, "omc")
     const foreign = join(root, "path", "senpi")
     mkdirSync(dirname(foreign), { recursive: true })
     writeFileSync(execPath, "")
@@ -326,11 +326,11 @@ describe("readRunningEngineVersion", () => {
 describe("buildChildArgs", () => {
   test("#given a spec with model and extensions #when building child args #then no-extensions then no-ask-user lead, each -e follows, then --model", () => {
     // when
-    const spec = { ...baseSpec, model: "omo-mock/mock-1", extensions: ["/tmp/a.ts", "/tmp/b.ts"] }
+    const spec = { ...baseSpec, model: "omc-mock/mock-1", extensions: ["/tmp/a.ts", "/tmp/b.ts"] }
     const args = buildChildArgs(spec)
     const catalogArgs = buildModelCatalogArgs(spec)
     // then
-    expect(args).toEqual(["--no-extensions", "--no-ask-user", "--extension", "/tmp/a.ts", "--extension", "/tmp/b.ts", "--model", "omo-mock/mock-1"])
+    expect(args).toEqual(["--no-extensions", "--no-ask-user", "--extension", "/tmp/a.ts", "--extension", "/tmp/b.ts", "--model", "omc-mock/mock-1"])
     expect(extensionArgs(catalogArgs)).toEqual(extensionArgs(args))
   })
 
@@ -343,19 +343,19 @@ describe("buildChildArgs", () => {
 
   test("#given a spec with a valid variant #when building child args #then --thinking follows --model", () => {
     // when
-    const args = buildChildArgs({ ...baseSpec, model: "omo-mock/mock-1", variant: "xhigh" })
+    const args = buildChildArgs({ ...baseSpec, model: "omc-mock/mock-1", variant: "xhigh" })
     // then
-    expect(args).toEqual(["--no-extensions", "--no-ask-user", "--model", "omo-mock/mock-1", "--thinking", "xhigh"])
+    expect(args).toEqual(["--no-extensions", "--no-ask-user", "--model", "omc-mock/mock-1", "--thinking", "xhigh"])
   })
 
   test("#given a spec with high reasoning effort #when building child args #then it maps to senpi high", () => {
     // when
-    const args = buildChildArgs({ ...baseSpec, model: "omo-mock/mock-1", variant: "high" })
+    const args = buildChildArgs({ ...baseSpec, model: "omc-mock/mock-1", variant: "high" })
     // then
-    expect(args).toEqual(["--no-extensions", "--no-ask-user", "--model", "omo-mock/mock-1", "--thinking", "high"])
+    expect(args).toEqual(["--no-extensions", "--no-ask-user", "--model", "omc-mock/mock-1", "--thinking", "high"])
   })
 
-  test("#given the omo.json reasoningEffort none as variant #when building child args #then it maps to senpi off", () => {
+  test("#given the omc.json reasoningEffort none as variant #when building child args #then it maps to senpi off", () => {
     // when
     const args = buildChildArgs({ ...baseSpec, variant: "none" })
     // then
@@ -364,16 +364,16 @@ describe("buildChildArgs", () => {
 
   test("#given an unknown variant #when building child args #then no --thinking flag is emitted", () => {
     // when
-    const args = buildChildArgs({ ...baseSpec, model: "omo-mock/mock-1", variant: "ultra" })
+    const args = buildChildArgs({ ...baseSpec, model: "omc-mock/mock-1", variant: "ultra" })
     // then
-    expect(args).toEqual(["--no-extensions", "--no-ask-user", "--model", "omo-mock/mock-1"])
+    expect(args).toEqual(["--no-extensions", "--no-ask-user", "--model", "omc-mock/mock-1"])
   })
 
   test("#given a DAG-owned spec with a launcher and provider #when building child and catalog args #then both use the same provider-only extensions", () => {
     // given
     const root = mkdtempSync(join(tmpdir(), "senpi-dag-extension-parity-"))
     const taskId = "st_dag_extension_parity"
-    const launcherExtension = join(root, "omo-launcher.js")
+    const launcherExtension = join(root, "omc-launcher.js")
     const providerExtension = join(root, "provider.js")
     mkdirSync(join(root, "tasks"), { recursive: true })
     writeFileSync(join(root, "tasks", `${taskId}.json`), JSON.stringify({ owner: { kind: "dag" } }))
@@ -414,7 +414,7 @@ describe("buildRpcSpawn spawn strategy", () => {
     try {
       // when
       const descriptor = buildRpcSpawn(
-        { ...baseSpec, model: "omo-mock/mock-1" },
+        { ...baseSpec, model: "omc-mock/mock-1" },
         {
           isBunBinary: false,
           execPath: "C:\\Program Files\\nodejs\\node.exe",
@@ -432,7 +432,7 @@ describe("buildRpcSpawn spawn strategy", () => {
         "--no-extensions",
         "--no-ask-user",
         "--model",
-        "omo-mock/mock-1",
+        "omc-mock/mock-1",
       ])
       expect(descriptor.args).not.toContain("--mode")
     } finally {
@@ -454,7 +454,7 @@ describe("buildRpcSpawn spawn strategy", () => {
     writeFileSync(rpcEntry, "")
     try {
       const descriptor = buildRpcSpawn(
-        { ...baseSpec, model: "omo-mock/mock-1" },
+        { ...baseSpec, model: "omc-mock/mock-1" },
         {
           isBunBinary: false,
           execPath: "C:\\Program Files\\nodejs\\node.exe",
@@ -485,7 +485,7 @@ describe("buildRpcSpawn spawn strategy", () => {
     try {
       // when
       const descriptor = buildRpcSpawn(
-        { ...baseSpec, model: "omo-mock/mock-1", extensions: ["/tmp/mock.ts"] },
+        { ...baseSpec, model: "omc-mock/mock-1", extensions: ["/tmp/mock.ts"] },
         {
           isBunBinary: false,
           execPath: "/usr/local/bin/node",
@@ -503,7 +503,7 @@ describe("buildRpcSpawn spawn strategy", () => {
         "--extension",
         "/tmp/mock.ts",
         "--model",
-        "omo-mock/mock-1",
+        "omc-mock/mock-1",
       ])
       expect(descriptor.args).not.toContain("--mode")
       expect(descriptor.cwd).toBe(baseSpec.cwd)
@@ -521,7 +521,7 @@ describe("buildRpcSpawn spawn strategy", () => {
     try {
       // when
       const descriptor = buildRpcSpawn(
-        { ...baseSpec, model: "omo-mock/mock-1" },
+        { ...baseSpec, model: "omc-mock/mock-1" },
         {
           isBunBinary: false,
           execPath: "/usr/local/bin/node",
@@ -544,12 +544,12 @@ describe("buildRpcSpawn spawn strategy", () => {
     // given: a compiled single-file executable may be named anything; on Windows the shim reader used
     // to claim any non-.exe candidate, discard the engine, and fall through to the rpc-entry guess.
     const root = mkdtempSync(join(tmpdir(), "senpi-compiled-engine-win-"))
-    const execPath = join(root, "omo")
+    const execPath = join(root, "omc")
     writeFileSync(execPath, "")
     try {
       // when
       const descriptor = buildRpcSpawn(
-        { ...baseSpec, model: "omo-mock/mock-1" },
+        { ...baseSpec, model: "omc-mock/mock-1" },
         {
           isBunBinary: false,
           isCompiledEngine: true,
@@ -572,7 +572,7 @@ describe("buildRpcSpawn spawn strategy", () => {
   test("#given a compiled engine with a senpi on PATH #when building an RPC child #then the child is the running executable in rpc mode", () => {
     // given
     const root = mkdtempSync(join(tmpdir(), "senpi-compiled-engine-rpc-"))
-    const execPath = join(root, "omo")
+    const execPath = join(root, "omc")
     const foreign = join(root, "path", "senpi")
     mkdirSync(dirname(foreign), { recursive: true })
     writeFileSync(execPath, "")
@@ -580,7 +580,7 @@ describe("buildRpcSpawn spawn strategy", () => {
     try {
       // when
       const descriptor = buildRpcSpawn(
-        { ...baseSpec, model: "omo-mock/mock-1", extensions: ["/opt/omo-runtime/plugin"] },
+        { ...baseSpec, model: "omc-mock/mock-1", extensions: ["/opt/omc-runtime/plugin"] },
         {
           isBunBinary: false,
           isCompiledEngine: true,
@@ -596,7 +596,7 @@ describe("buildRpcSpawn spawn strategy", () => {
       // buildChildArgs tests above.
       expect(descriptor.command).toBe(realpathSync.native(execPath))
       expect(descriptor.args.slice(0, 3)).toEqual(["--mode", "rpc", "--no-extensions"])
-      expect(descriptor.args).toContain("/opt/omo-runtime/plugin")
+      expect(descriptor.args).toContain("/opt/omc-runtime/plugin")
       expect(descriptor.args).not.toContain("/fallback/rpc-entry.js")
       expect(descriptor.args).not.toContain(foreign)
     } finally {
@@ -607,7 +607,7 @@ describe("buildRpcSpawn spawn strategy", () => {
   test("#given a resolvable senpi executable #when building #then it spawns the EXECUTABLE in rpc mode (not the loader-hijacked rpc-entry)", () => {
     // when
     const descriptor = buildRpcSpawn(
-      { ...baseSpec, model: "omo-mock/mock-1", extensions: ["/tmp/mock.ts"] },
+      { ...baseSpec, model: "omc-mock/mock-1", extensions: ["/tmp/mock.ts"] },
       { isBunBinary: false, execPath: "/usr/bin/node", platform: "linux", parentEnv: {}, ...withExecutable("/opt/homebrew/bin/senpi") },
     )
     // then: the executable is the command; the resolved rpc-entry is NEVER on the argv
@@ -615,7 +615,7 @@ describe("buildRpcSpawn spawn strategy", () => {
     expect(descriptor.args[0]).toBe("--mode")
     expect(descriptor.args[1]).toBe("rpc")
     expect(descriptor.args).toContain("--model")
-    expect(descriptor.args).toContain("omo-mock/mock-1")
+    expect(descriptor.args).toContain("omc-mock/mock-1")
     expect(descriptor.args).toContain("--extension")
     expect(descriptor.args).toContain("/tmp/mock.ts")
     expect(descriptor.args).toContain("--no-ask-user")
@@ -626,12 +626,12 @@ describe("buildRpcSpawn spawn strategy", () => {
   test("#given a bun runtime with a resolvable sibling executable #when building #then the sibling binary runs rpc mode with threaded args", () => {
     // when
     const descriptor = buildRpcSpawn(
-      { ...baseSpec, model: "omo-mock/mock-1" },
+      { ...baseSpec, model: "omc-mock/mock-1" },
       { isBunBinary: true, execPath: "/opt/senpi/bin/bun", platform: "linux", parentEnv: {}, ...withExecutable(join("/opt/senpi/bin", "senpi")) },
     )
     // then
     expect(descriptor.command).toBe(join("/opt/senpi/bin", "senpi"))
-    expect(descriptor.args).toEqual(["--mode", "rpc", "--no-extensions", "--no-ask-user", "--model", "omo-mock/mock-1"])
+    expect(descriptor.args).toEqual(["--mode", "rpc", "--no-extensions", "--no-ask-user", "--model", "omc-mock/mock-1"])
     expect(descriptor.cwd).toBe(baseSpec.cwd)
   })
 
@@ -643,19 +643,19 @@ describe("buildRpcSpawn spawn strategy", () => {
 
     // when
     const descriptor = buildRpcSpawn(
-      { ...baseSpec, model: "omo-mock/mock-1" },
+      { ...baseSpec, model: "omc-mock/mock-1" },
       { isBunBinary: false, execPath: "/home/u/.bun/bin/bun", platform: "linux", parentEnv: { PATH: "/usr/bin" }, ...withExecutable(script) },
     )
 
     // then
     expect(descriptor.command).toBe("/home/u/.bun/bin/bun")
-    expect(descriptor.args).toEqual([script, "--mode", "rpc", "--no-extensions", "--no-ask-user", "--model", "omo-mock/mock-1"])
+    expect(descriptor.args).toEqual([script, "--mode", "rpc", "--no-extensions", "--no-ask-user", "--model", "omc-mock/mock-1"])
   })
 
   test("#given NO resolvable executable #when building #then it falls back to execPath + rpc-entry, still threading child args", () => {
     // when
     const descriptor = buildRpcSpawn(
-      { ...baseSpec, model: "omo-mock/mock-1", extensions: ["/tmp/mock.ts"] },
+      { ...baseSpec, model: "omc-mock/mock-1", extensions: ["/tmp/mock.ts"] },
       {
         isBunBinary: false,
         execPath: "/usr/bin/node",
@@ -674,7 +674,7 @@ describe("buildRpcSpawn spawn strategy", () => {
       "--extension",
       "/tmp/mock.ts",
       "--model",
-      "omo-mock/mock-1",
+      "omc-mock/mock-1",
     ])
   })
 
@@ -708,7 +708,7 @@ describe("buildRpcSpawn spawn strategy", () => {
 
   test("#given a generic child spawned by a member #when building #then member identity and extension do not leak", () => {
     // given
-    const memberExtension = "/tmp/omo-member.js"
+    const memberExtension = "/tmp/omc-member.js"
     const providerExtension = "/tmp/provider.js"
 
     // when
@@ -748,7 +748,7 @@ describe("buildRpcSpawn spawn strategy", () => {
 
     // when
     const descriptor = buildRpcSpawn(
-      { ...baseSpec, extensions: ["/tmp/omo-member.js"], memberEnv },
+      { ...baseSpec, extensions: ["/tmp/omc-member.js"], memberEnv },
       {
         isBunBinary: false,
         execPath: "/usr/bin/node",
@@ -764,6 +764,6 @@ describe("buildRpcSpawn spawn strategy", () => {
     expect(descriptor.env.SENPI_TASK_MEMBER_TASK_ID).toBe(memberEnv.SENPI_TASK_MEMBER_TASK_ID)
     expect(descriptor.env.SENPI_TASK_TEAM_CONFIG).toBe(memberEnv.SENPI_TASK_TEAM_CONFIG)
     expect(descriptor.env.SENPI_CODING_AGENT_SESSION_DIR).toBe(resolveChildSessionDir(baseSpec.state_dir, baseSpec.task_id))
-    expect(descriptor.args).toContain("/tmp/omo-member.js")
+    expect(descriptor.args).toContain("/tmp/omc-member.js")
   })
 })

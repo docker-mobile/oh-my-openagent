@@ -121,7 +121,7 @@ export type RecordDeliveryFailureInput = {
   readonly error: unknown
 }
 
-/** @deprecated Pre-rename alias kept for the omo-senpi caller until todo 18 updates it. */
+/** @deprecated Pre-rename alias kept for the omc-senpi caller until todo 18 updates it. */
 export type ReconcileFailedNotificationsInput = ReconcileUnnotifiedNotificationsInput
 
 export type FlushResult =
@@ -143,7 +143,7 @@ export type CompletionNotifier = {
   recordDeliveryFailure(input: RecordDeliveryFailureInput): void
   flushBuffered(input: FlushInput): FlushResult
   reconcileUnnotifiedNotifications(input: ReconcileUnnotifiedNotificationsInput): void
-  /** Thin alias of reconcileUnnotifiedNotifications for the pre-rename omo-senpi caller (todo 18). */
+  /** Thin alias of reconcileUnnotifiedNotifications for the pre-rename omc-senpi caller (todo 18). */
   reconcileFailedNotifications(input: ReconcileUnnotifiedNotificationsInput): void
   bufferedCount(sessionId: string): number
 }

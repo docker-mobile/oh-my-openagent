@@ -125,7 +125,7 @@ resolve_log_dir() {
 
 LOG_DIR="$(resolve_log_dir)"
 if [ -n "$LOG_DIR" ]; then
-  LOG_FILE="${LOG_DIR%/}/oh-my-openagent-cleanup.log"
+  LOG_FILE="${LOG_DIR%/}/oh-my-cybersecurity-cleanup.log"
 else
   LOG_FILE="/dev/null"
 fi
@@ -144,7 +144,7 @@ fi
 
 mkdir -p "$(dirname "$LOG_FILE")" 2>/dev/null || true
 
-if [ "${OMO_AGENT_CLEANUP_SYNC:-0}" = "1" ]; then
+if [ "${OMC_AGENT_CLEANUP_SYNC:-0}" = "1" ]; then
   bash "$CLEANUP_SCRIPT" >>"$LOG_FILE" 2>&1 || true
   exit 0
 fi

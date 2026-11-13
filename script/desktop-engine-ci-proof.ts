@@ -6,15 +6,15 @@ import { getDesktopEngineHost, locateDesktopEngine } from "../packages/senpi-des
 import { stageCompiledDesktopEngine } from "./release-desktop-engine-target"
 
 export function proveStagedDesktopEngine(stageDir?: string): string {
-  const root = stageDir ?? mkdtempSync(join(tmpdir(), "omo-desktop-ci-proof-"))
+  const root = stageDir ?? mkdtempSync(join(tmpdir(), "omc-desktop-ci-proof-"))
   try {
     const host = getDesktopEngineHost()
     const windows = host.startsWith("win32-")
     const target = host.replace(/^win32-/, "windows-")
     const staged = stageCompiledDesktopEngine(target, root)
     if (staged === null) throw new Error(`desktop engine not declared available for ${host}`)
-    const previous = process.env.OMO_PACKAGE_DIR
-    process.env.OMO_PACKAGE_DIR = root
+    const previous = process.env.OMC_PACKAGE_DIR
+    process.env.OMC_PACKAGE_DIR = root
     let located
     try {
       located = locateDesktopEngine({
@@ -35,8 +35,8 @@ export function proveStagedDesktopEngine(stageDir?: string): string {
       }
       return `host=${host} path=${staged} mode=${windows ? "Windows executable" : mode.toString(8)} selftest=${selftest.stdout.trim()} cleanup=${stageDir === undefined ? "removed" : "retained"}`
     } finally {
-      if (previous === undefined) delete process.env.OMO_PACKAGE_DIR
-      else process.env.OMO_PACKAGE_DIR = previous
+      if (previous === undefined) delete process.env.OMC_PACKAGE_DIR
+      else process.env.OMC_PACKAGE_DIR = previous
     }
   } finally {
     if (stageDir === undefined) rmSync(root, { force: true, recursive: true })
@@ -44,5 +44,5 @@ export function proveStagedDesktopEngine(stageDir?: string): string {
 }
 
 if (import.meta.main) {
-  console.log(proveStagedDesktopEngine(process.env.OMO_DESKTOP_CI_STAGE_DIR))
+  console.log(proveStagedDesktopEngine(process.env.OMC_DESKTOP_CI_STAGE_DIR))
 }

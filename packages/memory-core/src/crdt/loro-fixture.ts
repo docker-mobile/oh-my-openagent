@@ -1,5 +1,5 @@
 // Golden wire bytes for the Loro encoding pin, shared by the memory-core test and the
-// compiled CLI's `omo loro-smoke` self-check. Loro 1.16.4, fixed peer 7, timestamp recording
+// compiled CLI's `omc loro-smoke` self-check. Loro 1.16.4, fixed peer 7, timestamp recording
 // disabled. These are committed bytes, not snapshots regenerated at runtime.
 
 export const LORO_GOLDEN_UPDATE_HEX = "6c6f726f00000000000000000000000099c57bf400045400070007011001070000000000000001010000000000050100000100060104010200000504626f6479001401040206000405000200040505090504010504010b0103020100020102020102080568656c6c6f0161"

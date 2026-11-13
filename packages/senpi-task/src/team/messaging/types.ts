@@ -1,4 +1,4 @@
-import type { Message } from "@oh-my-opencode/team-core/types"
+import type { Message } from "@oh-my-cybersecurity/team-core/types"
 
 import type { PersistedTaskEvent, StateDirConfig } from "../../store"
 import type { MemberTaskMap } from "../member-map"

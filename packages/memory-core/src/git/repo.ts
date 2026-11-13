@@ -41,14 +41,14 @@ export type {
 const GIT_TIMEOUT_MS = 30_000
 // `git commit` runs the memory hooks (secret screening, frontmatter checks, the mirror push) on
 // top of the write itself, and on a loaded host that took longer than GIT_TIMEOUT_MS: the commit
-// was killed after updating HEAD and stranded HEAD.lock (omo #10199 field incident). A commit
+// was killed after updating HEAD and stranded HEAD.lock (omc #10199 field incident). A commit
 // therefore gets a larger budget, and a timed-out commit is still judged by what landed.
 const COMMIT_TIMEOUT_MS = 120_000
 const INITIAL_COMMIT = "chore: initialize local memory"
 const EMPTY_INITIAL_COMMIT = "chore: initialize empty local memory"
 // git commit/merge end with `git maintenance run --auto --detach`, which can start a background
 // gc (cruft pack + prune of loose objects) that races the next writer and readers outside every
-// memory lock (omo #10177). Packing belongs to `maintain()` under the maintenance lock only.
+// memory lock (omc #10177). Packing belongs to `maintain()` under the maintenance lock only.
 export { NO_AUTO_MAINTENANCE } from "./no-auto-maintenance"
 
 export class GitMemoryRepo {
@@ -88,7 +88,7 @@ export class GitMemoryRepo {
     }
 
     await (options.installHooks ?? this.hookInstaller)(this.dir)
-    await this.ensureIdentity(options.authorName?.trim() || "OmO Agent")
+    await this.ensureIdentity(options.authorName?.trim() || "OmC Agent")
     const currentHead = await this.head()
     if (currentHead) return currentHead
 
@@ -103,7 +103,7 @@ export class GitMemoryRepo {
 
     const author: GitCommitAuthor = {
       agentId: this.agentId,
-      authorName: options.authorName?.trim() || "OmO Agent",
+      authorName: options.authorName?.trim() || "OmC Agent",
     }
     if (paths.length > 0) {
       await this.stage(paths)
@@ -268,7 +268,7 @@ export class GitMemoryRepo {
     author: GitCommitAuthor,
   ): Promise<GitCommitResult> {
     // Every index/ref mutation on the commit path runs through transient-lock retry plus stranded
-    // lock recovery, so a SIGKILLed writer's debris never wedges or corrupts the repo (omo #10177).
+    // lock recovery, so a SIGKILLed writer's debris never wedges or corrupts the repo (omc #10177).
     const landedAfterTimeout = await commitJudgedByOutcome(
       () => withStrandedGitLockRecovery(this.dir, () => this.git([...NO_AUTO_MAINTENANCE, ...authorFlags(author), "commit", "-m", reason], this.commitTimeoutMs)),
       { head: () => this.head(), result: (argv) => this.gitResult(argv) },

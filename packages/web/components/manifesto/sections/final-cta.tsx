@@ -23,7 +23,7 @@ export async function FinalCtaSection(): Promise<JSX.Element> {
 
         <Button size="lg" asChild>
           <Link
-            href="https://github.com/code-yeongyu/oh-my-openagent"
+            href="https://github.com/code-yeongyu/oh-my-cybersecurity"
             target="_blank"
             rel="noopener noreferrer"
           >

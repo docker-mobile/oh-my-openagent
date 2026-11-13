@@ -1,5 +1,5 @@
 //! Foreground XTEST delivery against a window manager that holds presses
-//! under a synchronous grab (omo #9136): no button before the target is under
+//! under a synchronous grab (omc #9136): no button before the target is under
 //! the pointer, no focus restore before every press was replayed.
 
 use senpi_desktop_core::backend::{DeliveryMode, PointerEvent};

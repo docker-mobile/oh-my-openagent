@@ -1,5 +1,5 @@
 import { afterEach, expect, test } from "bun:test"
-import { _flushForTesting } from "../../../omo-opencode/src/shared/logger"
+import { _flushForTesting } from "../../../omc-opencode/src/shared/logger"
 import { adaptRpcHandle } from "../manager/child-handle"
 import { fakeClock } from "./rpc/__fixtures__/clock"
 import { silentChild } from "./rpc/__fixtures__/silent-child"

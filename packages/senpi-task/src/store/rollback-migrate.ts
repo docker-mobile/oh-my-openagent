@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils/logger"
+import { log } from "@oh-my-cybersecurity/utils/logger"
 import { createTaskRecordStore } from "./record-store"
 import { R0_COST_STATUSES, R0_FAILURE_KINDS, R0_FAILURE_REASONS, R0_SUSPENSION_REASONS } from "./rollback-r0-contract"
 

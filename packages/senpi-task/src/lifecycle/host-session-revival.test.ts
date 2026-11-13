@@ -244,7 +244,7 @@ describe("host-session revival: attach by session path, drain deferral, daemon-l
   })
 })
 
-describe("a deferred daemon-hosted child is retried in the background (omo#9069)", () => {
+describe("a deferred daemon-hosted child is retried in the background (omc#9069)", () => {
   test("#given a deferred child on a recorded p-shard #when that shard returns #then the retry refreshes, probes and revives only its recorded socket", async () => {
     // given
     const store = tempStore()

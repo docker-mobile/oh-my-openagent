@@ -1,5 +1,5 @@
 /** Sidecar naming the backend that built a sandbox, so a later sweep can route teardown through it. */
-export const BACKEND_FILE = ".omo-isolation-backend.json"
+export const BACKEND_FILE = ".omc-isolation-backend.json"
 
 export type BackendKind = "apfs" | "btrfs" | "zfs" | "reflink" | "overlayfs" | "block-clone" | "rcopy"
 

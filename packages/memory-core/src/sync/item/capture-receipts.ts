@@ -90,7 +90,7 @@ export function receiptLanded(doc: LoroDoc, receipt: CaptureReceipt): boolean {
 }
 
 export function captureMessage(captureId: string): string {
-  return `omo-capture:${captureId}`
+  return `omc-capture:${captureId}`
 }
 
 function asReceipt(entry: unknown, itemKey: string): CaptureReceipt {

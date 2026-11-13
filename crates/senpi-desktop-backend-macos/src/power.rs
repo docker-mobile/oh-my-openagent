@@ -5,7 +5,7 @@ use objc2_core_foundation::CFString;
 
 const PREVENT_USER_IDLE_DISPLAY_SLEEP: &str = "PreventUserIdleDisplaySleep";
 /// Shown by `pmset -g assertions` next to the engine process.
-const DISPLAY_AWAKE_REASON: &str = "OmO computer use is operating the desktop";
+const DISPLAY_AWAKE_REASON: &str = "OmC computer use is operating the desktop";
 /// `kIOPMAssertionLevelOn`.
 const ASSERTION_LEVEL_ON: u32 = 255;
 

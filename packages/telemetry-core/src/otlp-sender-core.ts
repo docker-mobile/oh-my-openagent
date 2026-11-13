@@ -1,7 +1,7 @@
 import { context } from "@opentelemetry/api"
 
 import { createTelemetryProviders, type TelemetryProviders } from "./otel-providers"
-import { createTraceparentFetch, OMO_TRACE_HOSTS, urlHost } from "./otel-traceparent-fetch"
+import { createTraceparentFetch, OMC_TRACE_HOSTS, urlHost } from "./otel-traceparent-fetch"
 import { createTurnTracing } from "./otel-turn-span"
 import { BatchSender } from "./otlp-batch-sender"
 import { DEFAULT_REQUEST_TIMEOUT_MS } from "./otlp-http"
@@ -84,8 +84,8 @@ class OtlpSender {
       ctx: this.#ctx,
       endpoint,
       ingestKey: input.ingestKey,
-      // The collector this transport was pointed at is ours by definition (OMO_TELEMETRY_ENDPOINT included).
-      fetch: createTraceparentFetch(input.fetch ?? fetch, [...OMO_TRACE_HOSTS, urlHost(endpoint) ?? ""].filter((host) => host !== "")),
+      // The collector this transport was pointed at is ours by definition (OMC_TELEMETRY_ENDPOINT included).
+      fetch: createTraceparentFetch(input.fetch ?? fetch, [...OMC_TRACE_HOSTS, urlHost(endpoint) ?? ""].filter((host) => host !== "")),
       requestTimeoutMs: input.requestTimeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS,
       leaseRenewIntervalMs: input.leaseRenewIntervalMs ?? LEASE_RENEW_INTERVAL_MS,
       sleep: input.sleep ?? abortableSleep,
@@ -165,7 +165,7 @@ class OtlpSender {
   #emit(name: string, attributes: WireAttributes): void {
     const uid = attributes["log.record.uid"]
     this.#providers.logger.emit({
-      eventName: `omo.${name}`,
+      eventName: `omc.${name}`,
       attributes: {
         ...attributes,
         "log.record.uid": typeof uid === "string" ? uid : (this.#input.createEventId ?? (() => createBatchId(this.#ctx.nowMs())))(),
@@ -214,7 +214,7 @@ class OtlpSender {
       const count = this.#unreported[reason]
       if (count === 0) continue
       this.#unreported[reason] = 0
-      this.#emit("client_dropped", { "omo.dropped.count": count, "omo.dropped.reason": reason })
+      this.#emit("client_dropped", { "omc.dropped.count": count, "omc.dropped.reason": reason })
     }
   }
 

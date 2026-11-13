@@ -84,7 +84,7 @@ export async function compileMemoryBlockWithReads(
   const externalPaths = paths.filter(isExternalPath)
   const external = await projectionInput(repo, revision, externalPaths, options.projection)
   if (external.recencyUnavailable === true) reads.degraded.push(`commit times unavailable: ${external.recencyError ?? "unknown error"}`)
-  // The listing renderer is a lazy sidecar in bundles that map `#memory-external-projection` (omo-senpi's omo.js);
+  // The listing renderer is a lazy sidecar in bundles that map `#memory-external-projection` (omc-senpi's omc.js);
   // when it cannot load, the block goes out without the listing and is degraded, so it is never persisted.
   const loaded = externalPaths.length === 0 ? undefined : await loadRenderer()
   if (loaded !== undefined && "unavailable" in loaded) reads.degraded.push(loaded.unavailable)

@@ -150,7 +150,7 @@ export type DagRunEvent = DagRunEventEnvelope & DagRunEventPayload
 // Live activity telemetry: UNSEQUENCED, never journaled, emitted on its own channel. It must
 // never be added to DagRunEventPayload - an unsequenced event inside the sequenced WAL union
 // corrupts replay.
-export const DAG_ACTIVITY_CHANNEL = "omo.dag.activity"
+export const DAG_ACTIVITY_CHANNEL = "omc.dag.activity"
 
 export type DagActivityEvent = {
   readonly schemaVersion: 1

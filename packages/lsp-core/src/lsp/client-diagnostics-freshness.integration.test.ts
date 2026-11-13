@@ -14,7 +14,7 @@ import {
 } from "./workspace-apply-edit-test-support.js";
 
 const harness = createWorkspaceEditTestHarness();
-const DIAGNOSTICS_TIMEOUT_ENV = "OMO_LSP_DIAGNOSTICS_FRESHNESS_TIMEOUT_MS";
+const DIAGNOSTICS_TIMEOUT_ENV = "OMC_LSP_DIAGNOSTICS_FRESHNESS_TIMEOUT_MS";
 
 function makeConfiguredClient(
 	scenario: Record<string, unknown>,

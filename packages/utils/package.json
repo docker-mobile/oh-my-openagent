@@ -1,9 +1,9 @@
 {
-  "name": "@oh-my-opencode/utils",
+  "name": "@oh-my-cybersecurity/utils",
   "version": "0.1.0",
   "type": "module",
   "private": true,
-  "description": "Pure TypeScript shared utilities for oh-my-opencode.",
+  "description": "Pure TypeScript shared utilities for oh-my-cybersecurity.",
   "exports": {
     ".": {
       "types": "./index.d.ts",
@@ -120,8 +120,8 @@
     "test": "bun test src/*.test.ts src/**/*.test.ts"
   },
   "dependencies": {
-    "@oh-my-opencode/model-core": "workspace:*",
-    "@oh-my-opencode/omo-config-core": "workspace:*",
+    "@oh-my-cybersecurity/model-core": "workspace:*",
+    "@oh-my-cybersecurity/omc-config-core": "workspace:*",
     "js-yaml": "^5.4.2",
     "jsonc-parser": "^3.3.1"
   },

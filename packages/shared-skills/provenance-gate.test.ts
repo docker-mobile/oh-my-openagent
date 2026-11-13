@@ -43,7 +43,7 @@ describe("DMCA provenance gate", () => {
 	const thirdParty: string[] = thirdPartyRelativePaths();
 	// Materialize into a private root so the checkout's shipped references are never deleted
 	// while other test files read them.
-	const materializeRoot = mkdtempSync(join(tmpdir(), "omo-provenance-refs-"));
+	const materializeRoot = mkdtempSync(join(tmpdir(), "omc-provenance-refs-"));
 	afterAll(() => rmSync(materializeRoot, { recursive: true, force: true }));
 
 	test("no third-party-derived reference file is committed", () => {

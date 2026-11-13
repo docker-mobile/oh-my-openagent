@@ -6,7 +6,7 @@ import { isServerRunning } from "./server-health"
 import type { runTmuxCommand as RunTmuxCommand } from "../runner"
 import { buildPaneAuthEnvironmentArgs, buildSubagentPaneTitle, buildTmuxPlaceholderCommand } from "./pane-command"
 
-const ISOLATED_WINDOW_NAME = "omo-agents"
+const ISOLATED_WINDOW_NAME = "omc-agents"
 
 export type SpawnTmuxWindowDeps = {
 	readonly log: (message: string, data?: unknown) => void

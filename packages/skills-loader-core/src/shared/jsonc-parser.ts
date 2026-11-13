@@ -7,4 +7,4 @@ export {
   readJsoncFile,
   type DetectPluginConfigFileOptions,
   type JsoncParseResult,
-} from "@oh-my-opencode/utils"
+} from "@oh-my-cybersecurity/utils"

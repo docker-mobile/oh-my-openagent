@@ -5,7 +5,7 @@ import * as path from "path"
 
 import { createLogger } from "./logger"
 
-const TEST_PREFIX = "omo-utils-logger"
+const TEST_PREFIX = "omc-utils-logger"
 
 describe("#given a bound utils logger", () => {
   let tempDir: string

@@ -4,7 +4,7 @@
 
 ## OVERVIEW
 
-Public-facing marketing site for OmO (omo.dev). Next.js 16 (App Router) deployed to Cloudflare Workers via [@opennextjs/cloudflare](https://opennext.js.org/cloudflare). Independent of the npm plugin — its own `package.json`, `bun.lock`, and `tsconfig.json`.
+Public-facing marketing site for OmC (omc.nga.hm). Next.js 16 (App Router) deployed to Cloudflare Workers via [@opennextjs/cloudflare](https://opennext.js.org/cloudflare). Independent of the npm plugin — its own `package.json`, `bun.lock`, and `tsconfig.json`.
 
 ## STACK
 
@@ -68,19 +68,19 @@ bun run cf-typegen       # regenerate cloudflare-env.d.ts from wrangler.toml bin
 | `.github/workflows/web-ci.yml`     | push/PR to master/dev that touches `packages/web/**`             | format check, lint, type-check, next build, opennextjs-cloudflare build |
 | `.github/workflows/web-deploy.yml` | push to master that touches `packages/web/**` OR manual dispatch | full deploy via `cloudflare/wrangler-action@v3`                         |
 
-**Account and secret:** the Worker runs on the Sisyphus Labs Cloudflare account (moved 2026-10-09); `wrangler.toml` pins the account id and names the omo.dev zone routes by `zone_id`. The deploy workflow uses the `omo-production` GitHub environment, whose `CLOUDFLARE_API_TOKEN` can edit Workers scripts and the omo.dev zone's routes and nothing else (sisyphuslabs/common-infra `docs/cutover-workers.md`).
+**Account and secret:** the Worker runs on the Sisyphus Labs Cloudflare account (moved 2026-10-09); `wrangler.toml` pins the account id and names the omc.nga.hm zone routes by `zone_id`. The deploy workflow uses the `omc-production` GitHub environment, whose `CLOUDFLARE_API_TOKEN` can edit Workers scripts and the omc.nga.hm zone's routes and nothing else (sisyphuslabs/common-infra `docs/cutover-workers.md`).
 
 **Build id and static assets:** the build id is the commit sha (`lib/build-id.mjs`), so `/_next/static/<sha>/` belongs to one commit. Re-deploying the same commit (a re-run, or a `workflow_dispatch` on the same sha) rebuilds that directory; if the rebuilt manifests are not byte-identical, the asset-retention guard stops the deploy with `Content-addressed asset changed bytes`. That is the guard failing safe, not a bug to bypass: deploy a new commit instead.
 
 ## RELATIONSHIP TO npm PACKAGE
 
-The npm package `oh-my-opencode` ships only `dist/`, `bin/`, and `postinstall.mjs` (see root `package.json` `files` field). `packages/web/` is **not** included in any npm publish — it is exclusively a separate Cloudflare deployment target.
+The npm package `oh-my-cybersecurity` ships only `dist/`, `bin/`, and `postinstall.mjs` (see root `package.json` `files` field). `packages/web/` is **not** included in any npm publish — it is exclusively a separate Cloudflare deployment target.
 
 Root `bun test` ignores `packages/web/**` through `bunfig.toml` so `packages/web/e2e/*.spec.ts` does not pollute plugin tests.
 
 ## CONVENTIONS
 
-- **No path aliases globally** in the omo project, but `packages/web/` is a Next.js app where `@/*` aliases are the framework default. Keep `@/*` confined to packages/web/.
+- **No path aliases globally** in the omc project, but `packages/web/` is a Next.js app where `@/*` aliases are the framework default. Keep `@/*` confined to packages/web/.
 - Use the existing shadcn primitives in `components/ui/` rather than installing new UI libs.
 - All user-facing copy goes through `messages/{locale}.json`; never hardcode strings in components.
 - **Design source of truth:** the tokens in `app/styles/design-system.css` (doriterm.com's Night and Day palettes, light and dark, Timeless Sans + JetBrains Mono) and the landing system in `components/home/styles`. `DESIGN.md` still describes the earlier dark-only Geist design and is being rewritten (#12658); where they differ, the stylesheet wins. Keep: IntersectionObserver over scroll listeners, only `transform`/`opacity` animated.
@@ -104,3 +104,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+<!-- init-deep refresh -->
+## REFRESH 2026-11-09
+
+Visual QA for terminal/TUI evidence runs through [`script/qa/web-terminal-visual-qa.mjs`](../../script/qa/web-terminal-visual-qa.mjs) (node-pty + xterm.js in headless Chrome, true-color screenshots; helpers `web-terminal-redaction.mjs`, `xterm-live-terminal.mjs`), mapped in [`script/qa/AGENTS.md`](../../script/qa/AGENTS.md). Deploy workflow: [`.github/workflows/web-deploy.yml`](../../.github/workflows/web-deploy.yml) (Cloudflare Workers; concurrency group `omc-web-worker-deploy`, cancel-in-progress false; `missing_history_reason` input for the first deploy after an out-of-pipeline deploy). CI workflow map: [`.github/workflows/AGENTS.md`](../../.github/workflows/AGENTS.md).

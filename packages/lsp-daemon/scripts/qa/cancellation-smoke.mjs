@@ -12,7 +12,7 @@ if (!repositoryRoot) throw new Error("repository root argument is required");
 const root = realpathSync(repositoryRoot);
 
 const { callToolViaDaemon } = await import(pathToFileURL(join(root, "packages/lsp-daemon/src/daemon-client.ts")).href);
-const { daemonPaths: resolveDaemonPaths, OMO_LSP_DAEMON_DIR } = await import(
+const { daemonPaths: resolveDaemonPaths, OMC_LSP_DAEMON_DIR } = await import(
 	pathToFileURL(join(root, "packages/lsp-daemon/src/paths.ts")).href
 );
 const { handleDaemonMessage } = await import(pathToFileURL(join(root, "packages/lsp-daemon/src/request-routing.ts")).href);
@@ -33,7 +33,7 @@ let summary;
 
 try {
 	const paths = resolveDaemonPaths(
-		{ [OMO_LSP_DAEMON_DIR]: join(tempRoot, "daemon") },
+		{ [OMC_LSP_DAEMON_DIR]: join(tempRoot, "daemon") },
 		{ version: "manual", cliPath: join(root, "packages/lsp-daemon/src/cli.ts") },
 	);
 	mkdirSync(paths.dir, { recursive: true });

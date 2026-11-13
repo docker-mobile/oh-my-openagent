@@ -63,25 +63,25 @@ describe("planRuntimePrune", () => {
 })
 
 describe("runtimesInUse", () => {
-	const runtimeRoot = join(sep, "home", "dev", ".omo", "binary-runtime")
+	const runtimeRoot = join(sep, "home", "dev", ".omc", "binary-runtime")
 	const names = ["0.0.0-omob.aaaaaaa.bbbbbbb", "0.0.0-omob.aaaaaaa.bbbbbbb2", "0.0.0-omob.ccccccc.ddddddd", "5.0.0-beta.40"]
 
 	test("marks a runtime in use when a process command starts with its provisioned executable", () => {
 		const commands = [
-			`${join(runtimeRoot, "0.0.0-omob.aaaaaaa.bbbbbbb", "omo")}`,
-			`${join(runtimeRoot, "5.0.0-beta.40", "omo")} --resume abc`,
+			`${join(runtimeRoot, "0.0.0-omob.aaaaaaa.bbbbbbb", "omc")}`,
+			`${join(runtimeRoot, "5.0.0-beta.40", "omc")} --resume abc`,
 			"/usr/bin/ps -axo command=",
 		]
 		expect([...runtimesInUse(runtimeRoot, names, commands)].sort()).toEqual(["0.0.0-omob.aaaaaaa.bbbbbbb", "5.0.0-beta.40"])
 	})
 
 	test("matches whole directory names, not string prefixes", () => {
-		const commands = [`${join(runtimeRoot, "0.0.0-omob.aaaaaaa.bbbbbbb2", "omo")}`]
+		const commands = [`${join(runtimeRoot, "0.0.0-omob.aaaaaaa.bbbbbbb2", "omc")}`]
 		expect([...runtimesInUse(runtimeRoot, names, commands)]).toEqual(["0.0.0-omob.aaaaaaa.bbbbbbb2"])
 	})
 
 	test("reports nothing when no process runs from the runtime root", () => {
-		expect(runtimesInUse(runtimeRoot, names, ["/usr/bin/ps", join(sep, "elsewhere", "omo")]).size).toBe(0)
+		expect(runtimesInUse(runtimeRoot, names, ["/usr/bin/ps", join(sep, "elsewhere", "omc")]).size).toBe(0)
 	})
 })
 
@@ -113,7 +113,7 @@ describe("pruneOmobRuntimes", () => {
 			["5.0.0-beta.40", 0],
 		] as const) {
 			mkdirSync(dir(name), { recursive: true })
-			writeFileSync(join(dir(name), "omo"), "#!/bin/sh\n")
+			writeFileSync(join(dir(name), "omc"), "#!/bin/sh\n")
 			utimesSync(dir(name), mtimeMs, mtimeMs)
 		}
 		return { root, dir }
@@ -122,7 +122,7 @@ describe("pruneOmobRuntimes", () => {
 	test("deletes idle runtimes beyond the budget but keeps one a live process executes", () => {
 		const { root, dir } = runtimeFixture()
 		try {
-			const processCommands = [`${join(dir("0.0.0-omob.old0000.old0000"), "omo")} --resume x`]
+			const processCommands = [`${join(dir("0.0.0-omob.old0000.old0000"), "omc")} --resume x`]
 			const kept = pruneOmobRuntimes({ runtimeRoot: root, keep: 1, currentVersion: "0.0.0-omob.cur0000.cur0000", processCommands })
 			expect(existsSync(dir("0.0.0-omob.old0000.old0000"))).toBe(true)
 			expect(existsSync(dir("0.0.0-omob.mid0000.mid0000"))).toBe(false)

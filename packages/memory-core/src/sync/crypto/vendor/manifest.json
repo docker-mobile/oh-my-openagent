@@ -1,6 +1,6 @@
 {
   "source": {
-    "repo": "sisyphuslabs/omo-service",
+    "repo": "sisyphuslabs/omc-service",
     "commit": "5de1455489ea972ef2912e90b88f50628db09359",
     "paths": [
       "packages/contract/src/sync-format/",

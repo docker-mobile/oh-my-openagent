@@ -1,4 +1,4 @@
-import { isExcludedModel } from "@oh-my-opencode/omo-config-core"
+import { isExcludedModel } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { SenpiModelPort, SenpiModelRegistryPort } from "./category/types"
 

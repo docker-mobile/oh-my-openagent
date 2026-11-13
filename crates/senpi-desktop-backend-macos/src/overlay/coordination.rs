@@ -33,7 +33,7 @@ pub(crate) fn path() -> io::Result<PathBuf> {
     let cache = CStr::from_bytes_with_nul(bytes).map_err(io::Error::other)?;
     // Darwin's private per-account cache does not use HOME/TMPDIR overrides,
     // and remains writable when the account's home cache is read-only.
-    Ok(Path::new(OsStr::from_bytes(cache.to_bytes())).join("omo/cursor-overlay.lock"))
+    Ok(Path::new(OsStr::from_bytes(cache.to_bytes())).join("omc/cursor-overlay.lock"))
 }
 
 pub(super) fn open(path: &Path) -> io::Result<File> {

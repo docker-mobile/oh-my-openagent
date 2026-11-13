@@ -1,6 +1,6 @@
 import { fileURLToPath } from "node:url"
-import { createRuntimeState, transitionRuntimeState } from "@oh-my-opencode/team-core/team-state-store"
-import type { OmoTaskSettings } from "@oh-my-opencode/omo-config-core"
+import { createRuntimeState, transitionRuntimeState } from "@oh-my-cybersecurity/team-core/team-state-store"
+import type { OmoTaskSettings } from "@oh-my-cybersecurity/omc-config-core"
 import type { TaskRecordStore } from "../../store"
 import { createTeamMemberRespawnLaunchResolver } from "../../team/member-respawn"
 import { writeMemberTaskMap } from "../../team/member-map"

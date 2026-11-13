@@ -1,26 +1,26 @@
 // Lazy boundary for the @earendil-works/pi-tui barrel.
 //
 // senpi-task uses only pi-tui's terminal-width utilities and Box/Text components, but importing
-// the barrel statically ties the omo-task.js/omo-member.js blobs to it at module-load time. Every
+// the barrel statically ties the omc-task.js/omc-member.js blobs to it at module-load time. Every
 // consumer is a render callback (or a helper called from one), which the engine invokes
 // synchronously long after boot; composeOmoSenpiExtension warms this boundary once before the
-// component loop (see packages/omo-senpi/src/extension/compose.ts) and the task component warms
-// its own bundle's copy at registration (see packages/omo-senpi/src/components/task/index.ts), so
+// component loop (see packages/omc-senpi/src/extension/compose.ts) and the task component warms
+// its own bundle's copy at registration (see packages/omc-senpi/src/components/task/index.ts), so
 // every component's renderers can read the namespace synchronously — including when the task
 // component is disabled by flag. Spawned rpc children never render (renderCall/renderResult are
 // interactive-mode only), so they skip this load entirely.
 export type PiTuiModule = typeof import("@earendil-works/pi-tui")
 
-// The plugin ships senpi-task inside several bundles (omo.js, omo-task.js, omo-member.js), each
+// The plugin ships senpi-task inside several bundles (omc.js, omc-task.js, omc-member.js), each
 // with its own copy of this module. The warm-up state lives on globalThis under a process-wide
-// symbol so that awaiting loadPiTui() through one copy (compose.ts, in omo.js) also satisfies the
-// synchronous readers bundled into another copy (the DAG status widget timer in omo-task.js).
+// symbol so that awaiting loadPiTui() through one copy (compose.ts, in omc.js) also satisfies the
+// synchronous readers bundled into another copy (the DAG status widget timer in omc-task.js).
 interface PiTuiSharedState {
   module: PiTuiModule | undefined
   promise: Promise<PiTuiModule> | undefined
 }
 
-const SHARED_STATE_KEY = Symbol.for("omo.senpi-task.piTui")
+const SHARED_STATE_KEY = Symbol.for("omc.senpi-task.piTui")
 
 function sharedState(): PiTuiSharedState {
   const holder = globalThis as typeof globalThis & { [SHARED_STATE_KEY]?: PiTuiSharedState }

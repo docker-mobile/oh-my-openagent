@@ -18,18 +18,18 @@ export interface ProjectStateDirectoryOptions {
 // expunged, but the store must not move: sessions that already resolved it keep writing there.
 export const IN_PROJECT_STORE_MARKER = ".in-project"
 
-const AGENT_DIR_ENV_NAMES = ["OMO_CODING_AGENT_DIR", "SENPI_CODING_AGENT_DIR", "PI_CODING_AGENT_DIR"] as const
+const AGENT_DIR_ENV_NAMES = ["OMC_CODING_AGENT_DIR", "SENPI_CODING_AGENT_DIR", "PI_CODING_AGENT_DIR"] as const
 
 function agentDirectory(env: AgentDirEnv): string {
   for (const name of AGENT_DIR_ENV_NAMES) {
     const configured = env[name]?.trim()
     if (configured) return resolve(configured)
   }
-  return join(env.HOME ?? env.USERPROFILE ?? homedir(), ".omo", "agent")
+  return join(env.HOME ?? env.USERPROFILE ?? homedir(), ".omc", "agent")
 }
 
 // Keyed by the real path: a project reached through a symlink (or macOS /var vs /private/var) must
-// share one store, as its in-project `.omo` folder did.
+// share one store, as its in-project `.omc` folder did.
 function canonicalProjectPath(projectDir: string): string {
   const absolute = resolve(projectDir)
   try {
@@ -82,7 +82,7 @@ export function projectStateKey(projectDir: string): string {
 }
 
 /**
- * Where omo keeps a project's runtime bookkeeping (task records, locks, team runtime, DAG runs, the
+ * Where omc keeps a project's runtime bookkeeping (task records, locks, team runtime, DAG runs, the
  * thread tools' mailbox): in the agent dir next to the sessions it belongs to, never inside the
  * project, so it never shows up in the user's `git status`. A state directory an earlier release
  * already created inside the project keeps being used when it holds a record, so in-flight tasks and
@@ -96,7 +96,7 @@ export function resolveProjectStateDirectory(
 ): string {
   const { env = process.env, exists = existsSync, hasRecords = holdsRecords, markAdopted = markInProjectStoreAdopted } =
     options
-  const inProject = join(resolve(projectDir), ".omo", name)
+  const inProject = join(resolve(projectDir), ".omc", name)
   if (exists(inProject) && hasRecords(inProject)) {
     markAdopted(inProject)
     return inProject

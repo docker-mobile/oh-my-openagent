@@ -233,7 +233,7 @@ export interface SyncRepo {
    * meanwhile never swallows the sync's rendered files.
    */
   stageTree(paths: readonly string[]): Promise<string>
-  /** Commit exactly `paths` as `OmO Sync` with `message` (trailers included); the shared index is left as it was. */
+  /** Commit exactly `paths` as `OmC Sync` with `message` (trailers included); the shared index is left as it was. */
   commit(paths: readonly string[], message: string): Promise<string>
   /**
    * Brings the shared index's entries for `paths` in line with HEAD. Run once the sync commit is

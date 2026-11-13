@@ -1,4 +1,4 @@
-import type { ToolExecutionResult } from "@oh-my-opencode/lsp-core/tools";
+import type { ToolExecutionResult } from "@oh-my-cybersecurity/lsp-core/tools";
 
 import { DaemonRequestCancelledError, DaemonRequestTimedOutError } from "./daemon-request-error.js";
 import type { DaemonPaths } from "./paths.js";

@@ -3,8 +3,8 @@ import * as fs from "node:fs"
 import { join } from "node:path"
 
 const pluginConfigDetectionOptions = {
-  basenames: ["oh-my-openagent"],
-  legacyBasenames: ["oh-my-opencode"],
+  basenames: ["oh-my-cybersecurity"],
+  legacyBasenames: ["oh-my-cybersecurity"],
 } as const
 
 describe("detectPluginConfigFile memoization", () => {

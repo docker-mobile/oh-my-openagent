@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 // Waits until every named package serves EXACTLY its version from the npm registry, read with no-cache
 // so a cached 404 cannot hide a landed version, and fails once ONE shared deadline (probe time counted) passes.
-// npm answers a publish with 202 "being processed": 5.1.38's oh-my-openagent printed
-// "+ oh-my-openagent@5.1.38" at 10:09Z and was served only from 10:34Z, while the old check waited on
-// omo-ai alone. Every published package is read back, all in one polling window.
+// npm answers a publish with 202 "being processed": 5.1.38's oh-my-cybersecurity printed
+// "+ oh-my-cybersecurity@5.1.38" at 10:09Z and was served only from 10:34Z, while the old check waited on
+// omc-ai alone. Every published package is read back, all in one polling window.
 
 const PROBE_TIMEOUT_MS = 15_000
 
@@ -61,14 +61,14 @@ export async function waitForRegistryVersions({ specs, deadlineMs, delayMs, fetc
 
 /** Every platform package the release publishes, from the root manifest's optionalDependencies: the
  * one list `publish-release-platform-workflow.test.ts` holds equal to build-binaries PLATFORMS, in both
- * the oh-my-opencode-<platform> and oh-my-openagent-<platform> families. */
+ * the oh-my-cybersecurity-<platform> and oh-my-cybersecurity-<platform> families. */
 export function platformPackageNames(rootManifest) {
-  const prefix = "oh-my-opencode-"
+  const prefix = "oh-my-cybersecurity-"
   const platforms = Object.keys(rootManifest.optionalDependencies ?? {})
     .filter((name) => name.startsWith(prefix))
     .map((name) => name.slice(prefix.length))
-  if (platforms.length === 0) throw new Error("root package.json optionalDependencies lists no oh-my-opencode-<platform> package")
-  return platforms.flatMap((platform) => [`oh-my-opencode-${platform}`, `oh-my-openagent-${platform}`])
+  if (platforms.length === 0) throw new Error("root package.json optionalDependencies lists no oh-my-cybersecurity-<platform> package")
+  return platforms.flatMap((platform) => [`oh-my-cybersecurity-${platform}`, `oh-my-cybersecurity-${platform}`])
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

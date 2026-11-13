@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# install-verify.sh - install THIS repo's local omo build into an ISOLATED
+# install-verify.sh - install THIS repo's local omc build into an ISOLATED
 # CODEX_HOME and prove it landed correctly while the real ~/.codex is untouched.
 #
-# Asserts: plugin cache dir exists, config.toml enables omo@sisyphuslabs, the
+# Asserts: plugin cache dir exists, config.toml enables omc@sisyphuslabs, the
 # component bins + agent TOMLs linked inside the sandbox, and the real
 # ~/.codex/config.toml shasum is unchanged.
 #
@@ -16,23 +16,23 @@ cqa_install_verify() {
   cqa_require codex node || return 1
   cqa_guard_real_home
   cqa_mk_isolated_home
-  cqa_log "installing local omo into $CODEX_HOME ..."
+  cqa_log "installing local omc into $CODEX_HOME ..."
   if ! cqa_install_local_omo; then
     cqa_log "install failed; tail:"; tail -25 "$CQA_HOME_ROOT/install.log" >&2 2>/dev/null
     return 1
   fi
   local fails=0
-  if ls "$CODEX_HOME"/plugins/cache/sisyphuslabs/omo/*/ >/dev/null 2>&1; then
-    cqa_pass "plugin cache present ($(ls "$CODEX_HOME"/plugins/cache/sisyphuslabs/omo/ | head -1))"
+  if ls "$CODEX_HOME"/plugins/cache/sisyphuslabs/omc/*/ >/dev/null 2>&1; then
+    cqa_pass "plugin cache present ($(ls "$CODEX_HOME"/plugins/cache/sisyphuslabs/omc/ | head -1))"
   else cqa_log "FAIL: plugin cache missing"; fails=$((fails+1)); fi
 
-  if grep -q '\[plugins."omo@sisyphuslabs"\]' "$CODEX_HOME/config.toml" 2>/dev/null \
-     && grep -A2 '\[plugins."omo@sisyphuslabs"\]' "$CODEX_HOME/config.toml" | grep -q 'enabled = true'; then
-    cqa_pass "config.toml enables omo@sisyphuslabs"
-  else cqa_log "FAIL: omo not enabled in isolated config.toml"; fails=$((fails+1)); fi
+  if grep -q '\[plugins."omc@sisyphuslabs"\]' "$CODEX_HOME/config.toml" 2>/dev/null \
+     && grep -A2 '\[plugins."omc@sisyphuslabs"\]' "$CODEX_HOME/config.toml" | grep -q 'enabled = true'; then
+    cqa_pass "config.toml enables omc@sisyphuslabs"
+  else cqa_log "FAIL: omc not enabled in isolated config.toml"; fails=$((fails+1)); fi
 
-  if ls "$CODEX_HOME"/bin/omo-* >/dev/null 2>&1; then
-    cqa_pass "component bins linked in sandbox ($(ls "$CODEX_HOME"/bin/omo-* | wc -l | tr -d ' ') bins)"
+  if ls "$CODEX_HOME"/bin/omc-* >/dev/null 2>&1; then
+    cqa_pass "component bins linked in sandbox ($(ls "$CODEX_HOME"/bin/omc-* | wc -l | tr -d ' ') bins)"
   else cqa_log "FAIL: no component bins under $CODEX_HOME/bin"; fails=$((fails+1)); fi
 
   if [ -d "$CODEX_HOME/agents" ] && ls "$CODEX_HOME"/agents/*.toml >/dev/null 2>&1; then

@@ -12,7 +12,7 @@ import { GitMemoryRepo } from "./repo"
 import { GIT_TIMEOUT_DIAGNOSTICS_ENV } from "./timeout-diagnostics"
 import { exitedWithin, probeUntil } from "../locks/process-liveness.test-support"
 
-// omo #10199 field incident: a slow `git commit` was SIGKILLed by the 30 s timeout right after it
+// omc #10199 field incident: a slow `git commit` was SIGKILLed by the 30 s timeout right after it
 // updated HEAD, which stranded HEAD.lock, and the write was reported failed although it was on
 // HEAD. A timeout now sends SIGTERM first (git removes its own locks), SIGKILL only after a
 // bounded grace, and a commit that timed out is judged by what landed.
@@ -44,7 +44,7 @@ async function fakeGit(root: string, onTerm: "remove-lock-and-exit" | "ignore"):
   return { bin, lock, started }
 }
 
-describe("a timed-out git (omo #10199 field incident)", () => {
+describe("a timed-out git (omc #10199 field incident)", () => {
   test.skipIf(process.platform === "win32")("#given git cleans up on SIGTERM #when it outlives its timeout #then it gets SIGTERM first and its lock is gone", async () => {
     // #given
     const root = await scratch("git-timeout-term-")

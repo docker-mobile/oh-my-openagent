@@ -67,13 +67,13 @@ describe("shard naming", () => {
 
 describe("shardRoot", () => {
   test("#given no override #when resolving #then the root is <agentDir>/rpc/shards", () => {
-    expect(shardRoot({}, "/h/.omo/agent")).toBe(nativePath("/h/.omo/agent/rpc/shards"))
-    expect(shardRoot({ [SHARD_ROOT_ENV]: "   " }, "/h/.omo/agent")).toBe(nativePath("/h/.omo/agent/rpc/shards"))
+    expect(shardRoot({}, "/h/.omc/agent")).toBe(nativePath("/h/.omc/agent/rpc/shards"))
+    expect(shardRoot({ [SHARD_ROOT_ENV]: "   " }, "/h/.omc/agent")).toBe(nativePath("/h/.omc/agent/rpc/shards"))
   })
 
-  test("#given OMO_RPC_SHARD_ROOT #when resolving the socket #then the override moves it", () => {
+  test("#given OMC_RPC_SHARD_ROOT #when resolving the socket #then the override moves it", () => {
     // when
-    const resolution = resolveShardSocket({ agentDir: "/h/.omo/agent", env: { [SHARD_ROOT_ENV]: " /tmp/x " }, identity: rootIdentity() })
+    const resolution = resolveShardSocket({ agentDir: "/h/.omc/agent", env: { [SHARD_ROOT_ENV]: " /tmp/x " }, identity: rootIdentity() })
 
     // then
     expect(resolution).toEqual({ socket: nativePath(`/tmp/x/p-${OWNER_KEY}.sock`), shard: rootIdentity(), root: "primary" })
@@ -83,7 +83,7 @@ describe("shardRoot", () => {
 describe("validateBindPath", () => {
   test("#given a darwin os.tmpdir()-shaped root #when validating #then the handoff and shield siblings overflow and it is rejected", () => {
     // given
-    const socket = `/var/folders/xx/${"a".repeat(30)}/T/omo-rpc-shards/abcdef01/p-${OWNER_KEY}.sock`
+    const socket = `/var/folders/xx/${"a".repeat(30)}/T/omc-rpc-shards/abcdef01/p-${OWNER_KEY}.sock`
 
     // then
     expect(Buffer.byteLength(`${socket}.next-1`)).toBe(103)
@@ -107,8 +107,8 @@ describe("validateBindPath", () => {
 describe("resolveShardSocket under the primary root", () => {
   test("#given a root and an inherited identity for one owner #when resolving #then socket, meta, parse and child context agree on one key", () => {
     // given
-    const agentDir = "/h/.omo/agent"
-    const baseSpec: RpcSpawnSpec = { task_id: "st_1a2b3c4d", cwd: "/tmp/project", state_dir: "/tmp/project/.omo/senpi-task", prompt: "go" }
+    const agentDir = "/h/.omc/agent"
+    const baseSpec: RpcSpawnSpec = { task_id: "st_1a2b3c4d", cwd: "/tmp/project", state_dir: "/tmp/project/.omc/senpi-task", prompt: "go" }
 
     // when
     const root = resolveShardSocket({ agentDir, env: {}, identity: rootIdentity() })
@@ -116,7 +116,7 @@ describe("resolveShardSocket under the primary root", () => {
     const context = buildChildContext({ ...baseSpec, treeKey: root.shard.key, shardKey: inherited.shard.key }).context
 
     // then
-    expect(root.socket).toBe(nativePath(`/h/.omo/agent/rpc/shards/p-${OWNER_KEY}.sock`))
+    expect(root.socket).toBe(nativePath(`/h/.omc/agent/rpc/shards/p-${OWNER_KEY}.sock`))
     expect(inherited.socket).toBe(root.socket)
     expect(root.root).toBe("primary")
     expect(root.notice).toBeUndefined()
@@ -128,7 +128,7 @@ describe("resolveShardSocket under the primary root", () => {
 
   test("#given the legacy socket overrides in env #when resolving under the primary root #then the result is unchanged", () => {
     // given
-    const agentDir = "/h/.omo/agent"
+    const agentDir = "/h/.omc/agent"
 
     // when / then
     const primary = resolveShardSocket({ agentDir, env: {}, identity: rootIdentity() })

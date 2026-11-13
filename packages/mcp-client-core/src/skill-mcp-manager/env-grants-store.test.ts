@@ -20,7 +20,7 @@ const identity = declarationDigest({ command: "synthetic-probe" })
 const platformDescriptor = Object.getOwnPropertyDescriptor(process, "platform")
 if (platformDescriptor === undefined) throw new Error("process.platform has no property descriptor")
 const platform = platformDescriptor
-beforeEach(() => { root = fs.mkdtempSync(join(tmpdir(), "omo-10693-store-")) })
+beforeEach(() => { root = fs.mkdtempSync(join(tmpdir(), "omc-10693-store-")) })
 afterEach(() => {
   Object.defineProperty(process, "platform", platform)
   stop?.()

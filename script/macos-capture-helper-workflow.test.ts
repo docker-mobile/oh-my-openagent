@@ -75,7 +75,7 @@ describe("embedded macOS capture helper release workflow", () => {
 
   for (const missing of material) {
     test(`refuses helper signing when ${missing} is missing`, () => {
-      const root = mkdtempSync(join(tmpdir(), "omo-helper-signing-"))
+      const root = mkdtempSync(join(tmpdir(), "omc-helper-signing-"))
       const binary = join(root, "senpi-desktop-capture-helper")
       const env: NodeJS.ProcessEnv = { ...process.env, MACOS_SIGNING_REQUIRED: "true" }
       for (const name of material) env[name] = "synthetic"

@@ -5,7 +5,7 @@ import { withContractHost, type ContractHost, type ContractHostOptions } from ".
 
 /**
  * The contract fake must answer the way a real `senpi --mode rpc --multi-session` host does, or a client
- * bug the real host refuses passes against the fake (omo#10995 section 4, omo#11185).
+ * bug the real host refuses passes against the fake (omc#10995 section 4, omc#11185).
  */
 
 async function onConnection<T>(host: ContractHost, exercise: (request: RpcRequest) => Promise<T>): Promise<T> {

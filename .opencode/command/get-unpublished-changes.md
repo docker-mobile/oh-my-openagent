@@ -18,14 +18,14 @@ Analyze every change against these exact layers:
 
 | Layer | Includes | Version question |
 |---|---|---|
-| `omo pure components` | `packages/*-core`, MCP packages, `packages/shared-skills`, reusable scripts | Do shared components need a patch/minor/major release note even if adapters only consume them internally? |
-| `omo opencode` | Root `oh-my-opencode` / `oh-my-openagent`, `src/`, `.opencode/`, `.agents/`, CLI, config, hooks, tools, docs | What semver bump should the OpenCode/OpenAgent npm packages use? |
-| `omo codex` | `packages/omo-codex`, `lazycodex-ai`, Codex plugin metadata/hooks, bundled MCP runtimes, `code-yeongyu/lazycodex` marketplace payload | Does LazyCodex need the same bump, a Codex-only note, or a marketplace release? |
+| `omc pure components` | `packages/*-core`, MCP packages, `packages/shared-skills`, reusable scripts | Do shared components need a patch/minor/major release note even if adapters only consume them internally? |
+| `omc opencode` | Root `oh-my-cybersecurity` / `oh-my-cybersecurity`, `src/`, `.opencode/`, `.agents/`, CLI, config, hooks, tools, docs | What semver bump should the OpenCode/OpenAgent npm packages use? |
+| `omc codex` | `packages/omc-codex`, `lazycodex-ai`, Codex plugin metadata/hooks, bundled MCP runtimes, `code-yeongyu/lazycodex` marketplace payload | Does LazyCodex need the same bump, a Codex-only note, or a marketplace release? |
 
-Exclude commits and paths matching `senpi`, `omo-senpi`, `senpi-task`, `pi-goal`, or `pi-webfetch` from user-facing notes and version recommendations. Record them only in a separate internal-adapter exclusion ledger.
+Exclude commits and paths matching `senpi`, `omc-senpi`, `senpi-task`, `pi-goal`, or `pi-webfetch` from user-facing notes and version recommendations. Record them only in a separate internal-adapter exclusion ledger.
 
 ## Steps:
-1. Detect latest published versions for `oh-my-opencode`, `oh-my-openagent`, and `lazycodex-ai`.
+1. Detect latest published versions for `oh-my-cybersecurity`, `oh-my-cybersecurity`, and `lazycodex-ai`.
 2. Run `git diff v{published-version}..HEAD` to see actual changes.
 3. Classify every file into one or more release layers before grouping by feat/fix/refactor/docs.
 4. Describe the REAL changes and why each layer cares.
@@ -40,7 +40,7 @@ Exclude commits and paths matching `senpi`, `omo-senpi`, `senpi-task`, `pi-goal`
 
 <version-context>
 <published-version>
-!`npm view oh-my-opencode version 2>/dev/null || echo "not published"`
+!`npm view oh-my-cybersecurity version 2>/dev/null || echo "not published"`
 </published-version>
 <local-version>
 !`node -p "require('./package.json').version" 2>/dev/null || echo "unknown"`
@@ -55,13 +55,13 @@ Exclude commits and paths matching `senpi`, `omo-senpi`, `senpi-task`, `pi-goal`
 
 <git-context>
 <commits-since-release>
-!`npm view oh-my-opencode version 2>/dev/null | xargs -I{} git log "v{}"..HEAD --oneline 2>/dev/null || echo "no commits since release"`
+!`npm view oh-my-cybersecurity version 2>/dev/null | xargs -I{} git log "v{}"..HEAD --oneline 2>/dev/null || echo "no commits since release"`
 </commits-since-release>
 <diff-stat>
-!`npm view oh-my-opencode version 2>/dev/null | xargs -I{} git diff "v{}"..HEAD --stat 2>/dev/null || echo "no diff available"`
+!`npm view oh-my-cybersecurity version 2>/dev/null | xargs -I{} git diff "v{}"..HEAD --stat 2>/dev/null || echo "no diff available"`
 </diff-stat>
 <files-changed-summary>
-!`npm view oh-my-opencode version 2>/dev/null | xargs -I{} git diff "v{}"..HEAD --stat 2>/dev/null | tail -1 || echo ""`
+!`npm view oh-my-cybersecurity version 2>/dev/null | xargs -I{} git diff "v{}"..HEAD --stat 2>/dev/null | tail -1 || echo ""`
 </files-changed-summary>
 </git-context>
 
@@ -97,16 +97,16 @@ None or list
 ### Layered Impact Matrix
 | Layer | Impact | Breaking Risk |
 |-------|--------|---------------|
-| omo pure components | ... | ... |
-| omo opencode | ... | ... |
-| omo codex | ... | ... |
+| omc pure components | ... | ... |
+| omc opencode | ... | ... |
+| omc codex | ... | ... |
 
 ### Layer-specific Version Recommendation
 | Layer | Recommendation | Reason |
 |-------|----------------|--------|
-| omo pure components | patch|minor|major | ... |
-| omo opencode | patch|minor|major | ... |
-| omo codex | patch|minor|major | ... |
+| omc pure components | patch|minor|major | ... |
+| omc opencode | patch|minor|major | ... |
+| omc codex | patch|minor|major | ... |
 
 ### Overall Suggested Version Bump
 - **Recommendation**: patch|minor|major

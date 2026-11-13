@@ -5,7 +5,7 @@
     "--phase",
     "baseline",
     "--binary",
-    "/tmp/depdiet-1-20260913/artifact/omo",
+    "/tmp/depdiet-1-20260913/artifact/omc",
     "--out",
     "/tmp/depdiet-1-20260913/baseline"
   ],
@@ -51,7 +51,7 @@
       "commands": [
         {
           "command": [
-            "$SANDBOX/omo",
+            "$SANDBOX/omc",
             "--version"
           ],
           "exitCode": 0,
@@ -96,7 +96,7 @@
         "--no-compile-autoload-dotenv",
         "--no-compile-autoload-bunfig",
         "--asset=unused",
-        "$REPO/packages/omo-native/compile-entry.ts",
+        "$REPO/packages/omc-native/compile-entry.ts",
         "--root=$REPO",
         "--define=SENPI_RPC_SESSION_WORKER_ENTRY=\"./node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/modes/rpc/session-worker.js\"",
         "$REPO/node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/modes/rpc/session-worker.js",
@@ -106,7 +106,7 @@
       "commands": [
         {
           "command": [
-            "$SANDBOX/omo",
+            "$SANDBOX/omc",
             "--version"
           ],
           "exitCode": 0,
@@ -119,7 +119,7 @@
             "build",
             "--target=bun",
             "--minify-whitespace",
-            "$REPO/packages/omo-native/compile-entry.ts",
+            "$REPO/packages/omc-native/compile-entry.ts",
             "--root=$REPO",
             "--define=SENPI_RPC_SESSION_WORKER_ENTRY=\"./node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/modes/rpc/session-worker.js\"",
             "$REPO/node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/modes/rpc/session-worker.js",
@@ -128,7 +128,7 @@
             "--metafile=$OUT/graph-artifacts/meta.json"
           ],
           "exitCode": 0,
-          "stdout": "Bundled 4390 modules in 1832ms\n\n  packages/omo-native/compile-entry.js                                                                                               22.18 MB  (entry point)\n  node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/modes/rpc/session-worker.js  22.1 MB   (entry point)\n  SKILL-8gt84szq.md                                                                                                                  9.34 KB   (asset)\n\n",
+          "stdout": "Bundled 4390 modules in 1832ms\n\n  packages/omc-native/compile-entry.js                                                                                               22.18 MB  (entry point)\n  node_modules/.bun/@code-yeongyu+senpi@2026.9.13+3fa0ac541081a5d9/node_modules/@code-yeongyu/senpi/dist/modes/rpc/session-worker.js  22.1 MB   (entry point)\n  SKILL-8gt84szq.md                                                                                                                  9.34 KB   (asset)\n\n",
           "stderr": ""
         }
       ],
@@ -299,7 +299,7 @@
       "commands": [
         {
           "command": [
-            "$SANDBOX/omo",
+            "$SANDBOX/omc",
             "--version"
           ],
           "exitCode": 0,
@@ -320,7 +320,7 @@
             "audit-ok"
           ],
           "exitCode": 0,
-          "stdout": "omo-senpi ulw-execute-continuation skipped {\n  reason: \"not-continuable\",\n}\nomo-senpi ulw-loop continuation skipped {\n  reason: \"inactive\",\n}\naudit-ok\n",
+          "stdout": "omc-senpi ulw-execute-continuation skipped {\n  reason: \"not-continuable\",\n}\nomo-senpi ulw-loop continuation skipped {\n  reason: \"inactive\",\n}\naudit-ok\n",
           "stderr": ""
         },
         {
@@ -414,7 +414,7 @@
       "commands": [
         {
           "command": [
-            "$SANDBOX/omo",
+            "$SANDBOX/omc",
             "--version"
           ],
           "exitCode": 0,
@@ -480,7 +480,7 @@
             "engine": true
           },
           "label": "audit-identity-classic",
-          "agentDir": "$SANDBOX/home/.omo/agent",
+          "agentDir": "$SANDBOX/home/.omc/agent",
           "packageDir": "$PAYLOAD"
         },
         {
@@ -495,14 +495,14 @@
             "engine": true
           },
           "label": "audit-identity-multi",
-          "agentDir": "$SANDBOX/home/.omo/agent",
+          "agentDir": "$SANDBOX/home/.omc/agent",
           "packageDir": "$PAYLOAD"
         }
       ],
       "commands": [
         {
           "command": [
-            "$SANDBOX/omo",
+            "$SANDBOX/omc",
             "--version"
           ],
           "exitCode": 0,
@@ -684,7 +684,7 @@
       "commands": [
         {
           "command": [
-            "$SANDBOX/omo",
+            "$SANDBOX/omc",
             "--version"
           ],
           "exitCode": 0,
@@ -752,7 +752,7 @@
       "commands": [
         {
           "command": [
-            "$SANDBOX/omo",
+            "$SANDBOX/omc",
             "--version"
           ],
           "exitCode": 0,
@@ -826,7 +826,7 @@
       "commands": [
         {
           "command": [
-            "$SANDBOX/omo",
+            "$SANDBOX/omc",
             "--version"
           ],
           "exitCode": 0,
@@ -866,7 +866,7 @@
           "requestObserved": false,
           "stopReason": "error",
           "failureClass": "module-resolution",
-          "errorMessage": "Cannot find module './bedrock-converse-stream.js' imported from /$bunfs/root/omo-darwin-arm64"
+          "errorMessage": "Cannot find module './bedrock-converse-stream.js' imported from /$bunfs/root/omc-darwin-arm64"
         },
         {
           "mode": "classic",
@@ -874,7 +874,7 @@
           "requestObserved": false,
           "stopReason": "error",
           "failureClass": "module-resolution",
-          "errorMessage": "Cannot find module './cursor-agent.js' imported from /$bunfs/root/omo-darwin-arm64"
+          "errorMessage": "Cannot find module './cursor-agent.js' imported from /$bunfs/root/omc-darwin-arm64"
         },
         {
           "mode": "classic",
@@ -882,7 +882,7 @@
           "requestObserved": false,
           "stopReason": "error",
           "failureClass": "module-resolution",
-          "errorMessage": "Cannot find module './devin-agent.js' imported from /$bunfs/root/omo-darwin-arm64"
+          "errorMessage": "Cannot find module './devin-agent.js' imported from /$bunfs/root/omc-darwin-arm64"
         },
         {
           "mode": "multi",
@@ -914,7 +914,7 @@
       "commands": [
         {
           "command": [
-            "$SANDBOX/omo",
+            "$SANDBOX/omc",
             "--version"
           ],
           "exitCode": 0,
@@ -3297,7 +3297,7 @@
       "commands": [
         {
           "command": [
-            "$SANDBOX/omo",
+            "$SANDBOX/omc",
             "--version"
           ],
           "exitCode": 0,
@@ -3420,7 +3420,7 @@
       "commands": [
         {
           "command": [
-            "$SANDBOX/omo",
+            "$SANDBOX/omc",
             "--version"
           ],
           "exitCode": 0,
@@ -3434,9 +3434,9 @@
             "download",
             "v5.0.0-beta.62",
             "--repo",
-            "code-yeongyu/oh-my-openagent",
+            "code-yeongyu/oh-my-cybersecurity",
             "--pattern",
-            "omo-darwin-arm64",
+            "omc-darwin-arm64",
             "--dir",
             "$SANDBOX/release-assets"
           ],
@@ -3451,9 +3451,9 @@
             "download",
             "v5.0.0-beta.62",
             "--repo",
-            "code-yeongyu/oh-my-openagent",
+            "code-yeongyu/oh-my-cybersecurity",
             "--pattern",
-            "omo-darwin-x64",
+            "omc-darwin-x64",
             "--dir",
             "$SANDBOX/release-assets"
           ],
@@ -3468,9 +3468,9 @@
             "download",
             "v5.0.0-beta.62",
             "--repo",
-            "code-yeongyu/oh-my-openagent",
+            "code-yeongyu/oh-my-cybersecurity",
             "--pattern",
-            "omo-darwin-x64-baseline",
+            "omc-darwin-x64-baseline",
             "--dir",
             "$SANDBOX/release-assets"
           ],
@@ -3485,9 +3485,9 @@
             "download",
             "v5.0.0-beta.62",
             "--repo",
-            "code-yeongyu/oh-my-openagent",
+            "code-yeongyu/oh-my-cybersecurity",
             "--pattern",
-            "omo-linux-arm64",
+            "omc-linux-arm64",
             "--dir",
             "$SANDBOX/release-assets"
           ],
@@ -3502,9 +3502,9 @@
             "download",
             "v5.0.0-beta.62",
             "--repo",
-            "code-yeongyu/oh-my-openagent",
+            "code-yeongyu/oh-my-cybersecurity",
             "--pattern",
-            "omo-linux-arm64-musl",
+            "omc-linux-arm64-musl",
             "--dir",
             "$SANDBOX/release-assets"
           ],
@@ -3519,9 +3519,9 @@
             "download",
             "v5.0.0-beta.62",
             "--repo",
-            "code-yeongyu/oh-my-openagent",
+            "code-yeongyu/oh-my-cybersecurity",
             "--pattern",
-            "omo-linux-x64",
+            "omc-linux-x64",
             "--dir",
             "$SANDBOX/release-assets"
           ],
@@ -3536,9 +3536,9 @@
             "download",
             "v5.0.0-beta.62",
             "--repo",
-            "code-yeongyu/oh-my-openagent",
+            "code-yeongyu/oh-my-cybersecurity",
             "--pattern",
-            "omo-linux-x64-baseline",
+            "omc-linux-x64-baseline",
             "--dir",
             "$SANDBOX/release-assets"
           ],
@@ -3553,9 +3553,9 @@
             "download",
             "v5.0.0-beta.62",
             "--repo",
-            "code-yeongyu/oh-my-openagent",
+            "code-yeongyu/oh-my-cybersecurity",
             "--pattern",
-            "omo-linux-x64-musl",
+            "omc-linux-x64-musl",
             "--dir",
             "$SANDBOX/release-assets"
           ],
@@ -3570,9 +3570,9 @@
             "download",
             "v5.0.0-beta.62",
             "--repo",
-            "code-yeongyu/oh-my-openagent",
+            "code-yeongyu/oh-my-cybersecurity",
             "--pattern",
-            "omo-linux-x64-musl-baseline",
+            "omc-linux-x64-musl-baseline",
             "--dir",
             "$SANDBOX/release-assets"
           ],
@@ -3587,9 +3587,9 @@
             "download",
             "v5.0.0-beta.62",
             "--repo",
-            "code-yeongyu/oh-my-openagent",
+            "code-yeongyu/oh-my-cybersecurity",
             "--pattern",
-            "omo-windows-arm64.exe",
+            "omc-windows-arm64.exe",
             "--dir",
             "$SANDBOX/release-assets"
           ],
@@ -3604,9 +3604,9 @@
             "download",
             "v5.0.0-beta.62",
             "--repo",
-            "code-yeongyu/oh-my-openagent",
+            "code-yeongyu/oh-my-cybersecurity",
             "--pattern",
-            "omo-windows-x64.exe",
+            "omc-windows-x64.exe",
             "--dir",
             "$SANDBOX/release-assets"
           ],
@@ -3621,9 +3621,9 @@
             "download",
             "v5.0.0-beta.62",
             "--repo",
-            "code-yeongyu/oh-my-openagent",
+            "code-yeongyu/oh-my-cybersecurity",
             "--pattern",
-            "omo-windows-x64-baseline.exe",
+            "omc-windows-x64-baseline.exe",
             "--dir",
             "$SANDBOX/release-assets"
           ],

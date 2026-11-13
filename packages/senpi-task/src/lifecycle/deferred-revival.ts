@@ -13,7 +13,7 @@ import { withDroppedSteeringNotice } from "../state/queued-steering"
 /**
  * Sessions whose scoped retries must stop: the engine shut that session down or was disposed. A retry
  * re-checks this after every wait, so it never revives a child under a session the user has left, and
- * never exhausts into `lost` for one (review of omo#9714, H1).
+ * never exhausts into `lost` for one (review of omc#9714, H1).
  */
 const stoppedSessions = new WeakMap<LifecycleContext, Set<string>>()
 const disposedContexts = new WeakSet<LifecycleContext>()

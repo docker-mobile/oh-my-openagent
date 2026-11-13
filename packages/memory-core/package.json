@@ -1,9 +1,9 @@
 {
-  "name": "@oh-my-opencode/memory-core",
+  "name": "@oh-my-cybersecurity/memory-core",
   "version": "0.1.0",
   "type": "module",
   "private": true,
-  "description": "Harness-neutral agent memory engine: git-backed MemFS, memory tools, prompt compiler, reflection state machine, and transcript search for oh-my-openagent.",
+  "description": "Harness-neutral agent memory engine: git-backed MemFS, memory tools, prompt compiler, reflection state machine, and transcript search for oh-my-cybersecurity.",
   "exports": {
     ".": {
       "import": "./src/index.ts"

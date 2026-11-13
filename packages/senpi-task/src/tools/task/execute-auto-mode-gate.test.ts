@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 
-import { OmoTaskSettingsSchema, type OmoConfig } from "@oh-my-opencode/omo-config-core"
+import { OmoTaskSettingsSchema, type OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { AgentDefinition } from "../../agents/types"
 import type { ExecutionMode, ExecutionModeGate, ManagerStartSpec, StartResult } from "../../manager"

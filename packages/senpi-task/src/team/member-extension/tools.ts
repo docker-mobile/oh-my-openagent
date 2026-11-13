@@ -1,8 +1,8 @@
 import { randomUUID } from "node:crypto"
 
 import type { AgentToolResult, ToolDefinition } from "@code-yeongyu/senpi"
-import type { TeamModeConfig } from "@oh-my-opencode/team-core/config"
-import { sendMessage } from "@oh-my-opencode/team-core/team-mailbox"
+import type { TeamModeConfig } from "@oh-my-cybersecurity/team-core/config"
+import { sendMessage } from "@oh-my-cybersecurity/team-core/team-mailbox"
 import type { Static, TSchema } from "typebox"
 
 import type { PersistedTaskEvent } from "../../store"

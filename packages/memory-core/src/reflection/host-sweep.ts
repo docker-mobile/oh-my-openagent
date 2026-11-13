@@ -1,5 +1,5 @@
 // One host-wide pass over every memory identity (DESIGN.r2 6b, H4 of the #10144/#11976 review): the
-// backlog sits mostly on identities no session will bind again, so `omo doctor --fix` (unbounded) and
+// backlog sits mostly on identities no session will bind again, so `omc doctor --fix` (unbounded) and
 // a bound session's maintenance pass (bounded) walk the same sorted identity list from one persisted
 // cursor, under one lock, and each identity is the unit of work. Steps are supplied by the caller so
 // retention (#12479) and the size cap (#10144) can join this pass without a second cursor.
@@ -102,7 +102,7 @@ async function writeHostSweepState(memoryRoot: string, state: HostSweepState): P
 }
 
 // The identities still to visit in this round (after the cursor), and, for an unbounded driver, the ones
-// before it too, so `omo doctor --fix` covers every identity in one run.
+// before it too, so `omc doctor --fix` covers every identity in one run.
 function resumeOrder(identities: readonly HostSweepIdentity[], cursor: string | undefined, unbounded: boolean): { readonly rest: readonly HostSweepIdentity[]; readonly wrap: readonly HostSweepIdentity[] } {
   if (cursor === undefined) return { rest: identities, wrap: [] }
   const rest = identities.filter((identity) => identity.name > cursor)

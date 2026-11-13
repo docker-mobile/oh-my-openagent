@@ -1,14 +1,14 @@
-import { isPlainRecord } from "@oh-my-opencode/utils"
+import { isPlainRecord } from "@oh-my-cybersecurity/utils"
 import { cp, mkdir, readdir, readFile, rm, stat, writeFile } from "node:fs/promises"
 import { dirname, join, resolve, sep } from "node:path"
 import { validateLazycodexPluginBundle } from "./lazycodex-marketplace-validation"
 import { copyLazycodexRuntimeDists } from "./lazycodex-runtime-dists"
 
-const MARKETPLACE_SOURCE_PATH = join("packages", "omo-codex", "marketplace.json")
-const PLUGIN_SOURCE_PATH = join("packages", "omo-codex", "plugin")
+const MARKETPLACE_SOURCE_PATH = join("packages", "omc-codex", "marketplace.json")
+const PLUGIN_SOURCE_PATH = join("packages", "omc-codex", "plugin")
 const LAZYCODEX_PR_SOURCE_GUIDANCE_SOURCE_PATH = join(
   "packages",
-  "omo-codex",
+  "omc-codex",
   "lazycodex-repository",
   ".github",
   "workflows",
@@ -16,7 +16,7 @@ const LAZYCODEX_PR_SOURCE_GUIDANCE_SOURCE_PATH = join(
 )
 const MARKETPLACE_DESTINATION_PATH = join(".agents", "plugins", "marketplace.json")
 const MARKETPLACE_ROOT_DESTINATION_PATH = "marketplace.json"
-const PLUGIN_DESTINATION_PATH = join("plugins", "omo")
+const PLUGIN_DESTINATION_PATH = join("plugins", "omc")
 const LAZYCODEX_PR_SOURCE_GUIDANCE_DESTINATION_PATH = join(".github", "workflows", "pr-source-guidance.yml")
 const GIT_BASH_MCP_SOURCE_ARG = "../../git-bash-mcp/dist/cli.js"
 const GIT_BASH_MCP_PLUGIN_ARG = "./components/git-bash-mcp/dist/cli.js"
@@ -60,8 +60,8 @@ export async function syncLazycodexMarketplace(input: SyncLazycodexMarketplaceIn
   }
 
   const pluginManifest = await readPluginManifest(pluginManifestPath)
-  if (pluginManifest.name !== "omo") {
-    throw new Error(`Sisyphus Labs plugin manifest must be named omo, got ${pluginManifest.name}`)
+  if (pluginManifest.name !== "omc") {
+    throw new Error(`Sisyphus Labs plugin manifest must be named omc, got ${pluginManifest.name}`)
   }
 
   const marketplaceContents = await readFile(marketplacePath, "utf8")
@@ -70,7 +70,7 @@ export async function syncLazycodexMarketplace(input: SyncLazycodexMarketplaceIn
   await writeFile(destinationMarketplacePath, marketplaceContents)
   // `codex plugin marketplace add <repo>` scans the repository ROOT for a
   // supported manifest, so publish marketplace.json at the root as well (the
-  // .agents/plugins copy stays for back-compat). Its "source": "./plugins/omo"
+  // .agents/plugins copy stays for back-compat). Its "source": "./plugins/omc"
   // resolves correctly from the root, where the plugin payload is copied.
   await writeFile(join(lazycodexRoot, MARKETPLACE_ROOT_DESTINATION_PATH), marketplaceContents)
 
@@ -236,11 +236,11 @@ export function shouldCopyPluginPath(path: string, root: string): boolean {
   // Codex loads MCP servers only from the plugin-root .mcp.json (.codex-plugin/plugin.json declares
   // "mcpServers": "./.mcp.json"). A component's own nested .mcp.json is a standalone-plugin dev
   // manifest whose relative daemon path dangles once the plugin is flattened into the bundle, so it
-  // must never ship in plugins/omo.
+  // must never ship in plugins/omc.
   if (name === ".mcp.json") return false
   // A component's nested .gitignore is a standalone-repository dev artifact. When it ships in the
   // marketplace payload, a `dist/` rule in it overrides the lazycodex repository's root negation
-  // (`!plugins/omo/components/*/dist/**`), so `git add plugins/omo` silently drops the component's
+  // (`!plugins/omc/components/*/dist/**`), so `git add plugins/omc` silently drops the component's
   // built CLI from the repo even though the file was copied and validated on disk. That is how
   // ulw-execute-continuation/dist/cli.js and ulw-loop/dist/cli.js went missing while rules and
   // ultrawork (whose nested .gitignore has no `dist/` rule) survived (lazycodex#108).

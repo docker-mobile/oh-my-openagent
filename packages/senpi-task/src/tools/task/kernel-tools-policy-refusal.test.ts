@@ -4,7 +4,7 @@ import { tmpdir } from "node:os"
 import { join } from "node:path"
 
 import type { CreateAgentSessionOptions } from "@code-yeongyu/senpi"
-import { OmoTaskSettingsSchema } from "@oh-my-opencode/omo-config-core"
+import { OmoTaskSettingsSchema } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { AgentDefinition } from "../../agents"
 import { createTaskManager } from "../../manager/manager"
@@ -24,7 +24,7 @@ afterEach(() => {
 // The child surface a real parent shares: the engine's write-capable builtins are added by the rule.
 const CHILD_TOOLS = ["read", "grep", "x_search"]
 
-// The two supported ways an omo.json agent takes `write` away. The first resolves to an EMPTY
+// The two supported ways an omc.json agent takes `write` away. The first resolves to an EMPTY
 // allowlist plus a denylist (the shape that slipped through the old length-based guard), the second
 // to a denylist only.
 const NO_WRITE_RULE: AgentDefinition = { name: "probe-no-write", tools: [{ pattern: "write", allow: false }] }
@@ -57,7 +57,7 @@ function harness() {
     config: OmoTaskSettingsSchema.parse({}),
     cwd: root,
     runners: { "in-process": runner, process: runner },
-    // Mirrors omo's planner for these agents: the persona's literal rules ride the plan.
+    // Mirrors omc's planner for these agents: the persona's literal rules ride the plan.
     planner: (spec) => ({
       kind: "resolved",
       plan: {

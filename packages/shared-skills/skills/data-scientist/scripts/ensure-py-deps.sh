@@ -20,7 +20,7 @@ fi
 
 TAG="$("$PYTHON_BIN" -c 'import sys; print(f"cp{sys.version_info[0]}{sys.version_info[1]}")')" \
   || { log "not a working python interpreter: $PYTHON_BIN"; exit 1; }
-CACHE_DIR="${OMO_DATA_SCIENTIST_CACHE:-$HOME/.cache/omo-data-scientist}"
+CACHE_DIR="${OMC_DATA_SCIENTIST_CACHE:-$HOME/.cache/omc-data-scientist}"
 SITE_DIR="$CACHE_DIR/py-$TAG"
 
 if [ ! -d "$SITE_DIR/polars" ] || [ ! -d "$SITE_DIR/pyarrow" ]; then

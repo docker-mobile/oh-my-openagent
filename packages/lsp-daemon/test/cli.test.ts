@@ -29,9 +29,9 @@ describe("daemon CLI error output", () => {
 		mkdirSync(paths.dir, { recursive: true });
 		writeFileSync(paths.lock, `${process.pid}\n`);
 		const result = await runCli({
-			OMO_LSP_DAEMON_DIR: dir,
-			OMO_LSP_DAEMON_CLI: cli,
-			OMO_LSP_DAEMON_VERSION: "cli-test",
+			OMC_LSP_DAEMON_DIR: dir,
+			OMC_LSP_DAEMON_CLI: cli,
+			OMC_LSP_DAEMON_VERSION: "cli-test",
 		});
 		expect(result.code).toBe(1);
 		expect(result.stderr.trim().split("\n")).toHaveLength(1);
@@ -43,9 +43,9 @@ describe("daemon CLI error output", () => {
 		const dir = mkdtempSync(join(tmpdir(), "lsp-cli-invalid-"));
 		directories.push(dir);
 		const result = await runCli({
-			OMO_LSP_DAEMON_DIR: dir,
-			OMO_LSP_DAEMON_CLI: join(dir, "missing-cli.js"),
-			OMO_LSP_DAEMON_VERSION: "cli-test",
+			OMC_LSP_DAEMON_DIR: dir,
+			OMC_LSP_DAEMON_CLI: join(dir, "missing-cli.js"),
+			OMC_LSP_DAEMON_VERSION: "cli-test",
 		});
 		expect(result.code).toBe(1);
 		expect(result.stderr).toContain("InvalidRuntimeOverrideError");

@@ -1,11 +1,11 @@
 {
   "biome": "@biomejs/biome@2.5.14",
   "rules": {
-    "omo/no-enum": [
+    "omc/no-enum": [
       1,
       7
     ],
-    "omo/no-implicit-any-let": [
+    "omc/no-implicit-any-let": [
       4,
       5,
       10,
@@ -16,7 +16,7 @@
       15,
       20
     ],
-    "omo/no-string-case-mismatch": [
+    "omc/no-string-case-mismatch": [
       3,
       5,
       8,

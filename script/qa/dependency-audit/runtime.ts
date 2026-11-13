@@ -3,7 +3,7 @@ import { chmod, copyFile, mkdir, mkdtemp, readdir, realpath, rm, stat } from "no
 import { hostname } from "node:os"
 import { dirname, join, resolve } from "node:path"
 import { z } from "zod"
-import { withTelemetryOptOut } from "../../../packages/omo-senpi/scripts/qa/telemetry-opt-out-env.mjs"
+import { withTelemetryOptOut } from "../../../packages/omc-senpi/scripts/qa/telemetry-opt-out-env.mjs"
 import { AuditError, normalizeReceipt, type CaptureOptions } from "./contracts"
 
 export const REPO = resolve(import.meta.dir, "../../..")
@@ -46,11 +46,11 @@ export async function createRuntime(options: CaptureOptions): Promise<Runtime> {
   const root = await realpath(await mkdtemp(join(dirname(out), ".dependency-audit-")))
   try {
     const home = join(root, "home")
-    const agent = join(home, ".omo/agent")
+    const agent = join(home, ".omc/agent")
     const cwd = join(root, "workspace")
     for (const path of [home, agent, cwd, join(root, "tmp"), join(root, "fixtures")]) await mkdir(path, { recursive: true })
     for (const file of ["extension.ts", "helper.ts", "wide.png"]) await copyFile(join(FIXTURES, file), join(root, "fixtures", file))
-    const binary = join(root, process.platform === "win32" ? "omo.exe" : "omo")
+    const binary = join(root, process.platform === "win32" ? "omc.exe" : "omc")
     await copyFile(resolve(options.binary), binary)
     await chmod(binary, 0o755)
     const [sha256, sourceHash, stats] = await Promise.all([hashFile(binary), hashFile(resolve(options.binary)), stat(binary)])
@@ -58,22 +58,22 @@ export async function createRuntime(options: CaptureOptions): Promise<Runtime> {
     const env = withTelemetryOptOut({
       PATH: process.env.PATH ?? "", HOME: home, USERPROFILE: home, TMPDIR: join(root, "tmp"), TMP: join(root, "tmp"), TEMP: join(root, "tmp"),
       XDG_CONFIG_HOME: join(home, "config"), XDG_DATA_HOME: join(home, "data"), XDG_STATE_HOME: join(home, "state"), XDG_CACHE_HOME: join(home, "cache"),
-      OMO_CODING_AGENT_DIR: agent, SENPI_CODING_AGENT_DIR: agent, PI_CODING_AGENT_DIR: agent,
-      OMO_OFFLINE: "1", SENPI_OFFLINE: "1", PI_OFFLINE: "1",
-      OMO_DISABLE_POSTHOG: "1", OMO_SENPI_DISABLE_POSTHOG: "1", OMO_SEND_ANONYMOUS_TELEMETRY: "0", OMO_SENPI_SEND_ANONYMOUS_TELEMETRY: "0",
-      OMO_RPC_CLIENT_CAPABILITIES: "extension_events",
+      OMC_CODING_AGENT_DIR: agent, SENPI_CODING_AGENT_DIR: agent, PI_CODING_AGENT_DIR: agent,
+      OMC_OFFLINE: "1", SENPI_OFFLINE: "1", PI_OFFLINE: "1",
+      OMC_DISABLE_POSTHOG: "1", OMC_SENPI_DISABLE_POSTHOG: "1", OMC_SEND_ANONYMOUS_TELEMETRY: "0", OMC_SENPI_SEND_ANONYMOUS_TELEMETRY: "0",
+      OMC_RPC_CLIENT_CAPABILITIES: "extension_events",
       TERM: "xterm-256color", COLORTERM: "truecolor", LANG: "en_US.UTF-8",
       AWS_ACCESS_KEY_ID: "AKIAAUDITFAKE00000000", AWS_SECRET_ACCESS_KEY: "audit-fake-secret", AWS_REGION: "us-east-1",
       AWS_DEFAULT_REGION: "us-east-1", AWS_EC2_METADATA_DISABLED: "true", AWS_BEDROCK_FORCE_HTTP1: "1",
     })
     await Bun.write(join(agent, "settings.json"), JSON.stringify({ defaultProvider: "audit-local", defaultModel: "audit-v1", retry: { enabled: false }, installTelemetry: false, autoCompactEnabled: false }))
-    await Bun.write(join(home, ".omo/omo.json"), JSON.stringify({ telemetry: { enabled: false }, memory: { enabled: false } }))
+    await Bun.write(join(home, ".omc/omc.json"), JSON.stringify({ telemetry: { enabled: false }, memory: { enabled: false } }))
     const provision = requireSuccess(await run([binary, "--version"], { cwd, env }))
-    const runtimes = await readdir(join(home, ".omo/binary-runtime"))
+    const runtimes = await readdir(join(home, ".omc/binary-runtime"))
     const version = z.array(z.string()).length(1).parse(runtimes)[0]
     if (version === undefined) throw new AuditError("provision", "no runtime payload")
-    const payload = join(home, ".omo/binary-runtime", version)
-    const provisionedBinary = join(payload, process.platform === "win32" ? "omo.exe" : "omo")
+    const payload = join(home, ".omc/binary-runtime", version)
+    const provisionedBinary = join(payload, process.platform === "win32" ? "omc.exe" : "omc")
     const node = requireSuccess(await run(["node", "--version"], { cwd, env })).stdout.trim()
     const runtime: Runtime = { root, home, agent, cwd, binary: provisionedBinary, inputBinary: resolve(options.binary), payload, out, env, sha256, size: stats.size,
       machine: `${process.platform}-${process.arch}-${createHash("sha256").update(hostname()).digest("hex").slice(0, 12)}`,

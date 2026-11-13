@@ -1,13 +1,13 @@
 import { describe, expect, test } from "bun:test"
 
-import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
+import type { OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { AgentDefinition } from "../../agents"
 import { CATEGORY_PROMPT_APPENDS } from "../../category"
 import { listTaskAgents, listTaskCategories } from "./categories"
 
 describe("listTaskCategories", () => {
-  test("#given empty omo config #when listed #then builtin categories carry their descriptions", () => {
+  test("#given empty omc config #when listed #then builtin categories carry their descriptions", () => {
     // given
     const config: OmoConfig = { categories: {}, agents: {} }
 
@@ -20,7 +20,7 @@ describe("listTaskCategories", () => {
     expect(quick?.description).toBeTruthy()
   })
 
-  test("#given a custom omo.json category #when listed #then it appears with its description", () => {
+  test("#given a custom omc.json category #when listed #then it appears with its description", () => {
     // given
     const config: OmoConfig = {
       categories: { "release-crew": { description: "Ships the release train" } },

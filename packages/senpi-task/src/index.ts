@@ -240,7 +240,7 @@ export {
   type RunInOrigin,
   buildChildArgs,
   buildRpcSpawn,
-  OMO_SENPI_TASK_RPC_CHILD,
+  OMC_SENPI_TASK_RPC_CHILD,
   classifyChildExit,
   createRpcChildHandle,
   detectBunBinary,
@@ -393,7 +393,7 @@ export { buildNoticeBox, noticeTone } from "./notice-box"
 export type { NoticeLine, NoticeSpec, NoticeTheme, NoticeTone } from "./notice-box"
 // Render-runtime lazy boundary: the task component awaits this at registration so the render
 // helpers above can read the pi-tui namespace synchronously without statically binding the
-// omo-task.js/omo-member.js blobs to the pi-tui barrel.
+// omc-task.js/omc-member.js blobs to the pi-tui barrel.
 export { loadPiTui } from "./lazy/pi-tui"
 export { recoveryPresentation } from "./state/recovery-presentation"
 export {

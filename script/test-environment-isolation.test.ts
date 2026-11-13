@@ -29,17 +29,17 @@ describe("test environment isolation", () => {
 
 describe("test file environment integrity", () => {
   test("#given shared worker files #when a file restores or leaks env keys #then teardown reports leaks and the next file sees the baseline", () => {
-    const root = mkdtempSync(join(tmpdir(), "omo-env-integrity-"))
+    const root = mkdtempSync(join(tmpdir(), "omc-env-integrity-"))
     try {
       const integrityPath = resolve(import.meta.dir, "../test-support/environment-integrity.ts")
       writeFileSync(join(root, "preload.ts"), `import { installEnvironmentIntegrityCheck } from ${JSON.stringify(integrityPath)}\ninstallEnvironmentIntegrityCheck()\n`)
       writeFileSync(join(root, "bunfig.toml"), '[test]\npreload = ["./preload.ts"]\n')
       const mutation = [
-        'process.env.OMO_ENV_ADDED = "secret-added-value"',
-        'delete process.env.OMO_ENV_REMOVED',
-        'process.env.OMO_ENV_CHANGED = "secret-changed-value"',
+        'process.env.OMC_ENV_ADDED = "secret-added-value"',
+        'delete process.env.OMC_ENV_REMOVED',
+        'process.env.OMC_ENV_CHANGED = "secret-changed-value"',
       ].join("\n")
-      const env: NodeJS.ProcessEnv = { ...process.env, OMO_ENV_REMOVED: "original", OMO_ENV_CHANGED: "original" }
+      const env: NodeJS.ProcessEnv = { ...process.env, OMC_ENV_REMOVED: "original", OMC_ENV_CHANGED: "original" }
       delete env.CI
       delete env.GITHUB_ACTIONS
       const mutatePath = join(root, "a-mutate.test.ts")
@@ -47,9 +47,9 @@ describe("test file environment integrity", () => {
       writeFileSync(nextPath, [
         'import { expect, test } from "bun:test"',
         'test("next file has original env", () => {',
-        '  expect(process.env.OMO_ENV_ADDED).toBeUndefined()',
-        '  expect(process.env.OMO_ENV_REMOVED).toBe("original")',
-        '  expect(process.env.OMO_ENV_CHANGED).toBe("original")',
+        '  expect(process.env.OMC_ENV_ADDED).toBeUndefined()',
+        '  expect(process.env.OMC_ENV_REMOVED).toBe("original")',
+        '  expect(process.env.OMC_ENV_CHANGED).toBe("original")',
         '})',
       ].join("\n"))
       const run = () => runChildBunTest(root, env, [mutatePath, nextPath])
@@ -57,8 +57,8 @@ describe("test file environment integrity", () => {
         'import { afterAll, expect, test } from "bun:test"',
         'const baseline = { ...process.env }',
         mutation,
-        'afterAll(() => { delete process.env.OMO_ENV_ADDED; Object.assign(process.env, baseline) })',
-        'test("mutated file runs", () => { process.env.OMO_ENV_ADDED = "secret-added-value"; delete process.env.OMO_ENV_REMOVED; process.env.OMO_ENV_CHANGED = "secret-changed-value"; expect(process.env.OMO_ENV_ADDED).toBeDefined() })',
+        'afterAll(() => { delete process.env.OMC_ENV_ADDED; Object.assign(process.env, baseline) })',
+        'test("mutated file runs", () => { process.env.OMC_ENV_ADDED = "secret-added-value"; delete process.env.OMC_ENV_REMOVED; process.env.OMC_ENV_CHANGED = "secret-changed-value"; expect(process.env.OMC_ENV_ADDED).toBeDefined() })',
       ].join("\n"))
       const clean = run()
       expect(clean.output).toContain("2 pass")
@@ -67,13 +67,13 @@ describe("test file environment integrity", () => {
       writeFileSync(mutatePath, [
         'import { expect, test } from "bun:test"',
         mutation,
-        'test("mutated file runs", () => { process.env.OMO_ENV_ADDED = "secret-added-value"; delete process.env.OMO_ENV_REMOVED; process.env.OMO_ENV_CHANGED = "secret-changed-value"; expect(process.env.OMO_ENV_ADDED).toBeDefined() })',
+        'test("mutated file runs", () => { process.env.OMC_ENV_ADDED = "secret-added-value"; delete process.env.OMC_ENV_REMOVED; process.env.OMC_ENV_CHANGED = "secret-changed-value"; expect(process.env.OMC_ENV_ADDED).toBeDefined() })',
       ].join("\n"))
       const leaking = run()
       const output = leaking.output
       expect(leaking.status).not.toBe(0)
       expect(output).toContain("a-mutate.test.ts")
-      expect(output).toContain("added [OMO_ENV_ADDED]; removed [OMO_ENV_REMOVED]; changed [OMO_ENV_CHANGED]")
+      expect(output).toContain("added [OMC_ENV_ADDED]; removed [OMC_ENV_REMOVED]; changed [OMC_ENV_CHANGED]")
       expect(output).not.toContain("secret-added-value")
       expect(output).not.toContain("secret-changed-value")
       expect(output).toContain("next file has original env")
@@ -86,7 +86,7 @@ describe("test file environment integrity", () => {
 
 describe("process.env replacement", () => {
   test("#given a file that assigns a new object to process.env #when the next file pins the temp dir (TMPDIR, TEMP, TMP) #then teardown names the file and os.tmpdir() follows the pin again", () => {
-    const root = mkdtempSync(join(tmpdir(), "omo-env-replace-"))
+    const root = mkdtempSync(join(tmpdir(), "omc-env-replace-"))
     try {
       const integrityPath = resolve(import.meta.dir, "../test-support/environment-integrity.ts")
       writeFileSync(join(root, "preload.ts"), `import { installEnvironmentIntegrityCheck } from ${JSON.stringify(integrityPath)}\ninstallEnvironmentIntegrityCheck()\n`)

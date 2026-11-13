@@ -1,5 +1,5 @@
 import type { RpcTransportGoneError } from "@code-yeongyu/senpi"
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 import { loadSenpiBarrel } from "../../lazy/senpi-barrel"
 import { engineAcceptsSpawnedBy } from "../engine-spawned-by"
 import { HostUnavailableError } from "./daemon"

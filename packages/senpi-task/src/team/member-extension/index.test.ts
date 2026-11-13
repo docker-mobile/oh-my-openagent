@@ -4,8 +4,8 @@ import { join } from "node:path"
 
 import { afterEach, describe, expect, test } from "bun:test"
 import type { ExtensionAPI } from "@code-yeongyu/senpi"
-import { TeamModeConfigSchema } from "@oh-my-opencode/team-core/config"
-import { sendMessage } from "@oh-my-opencode/team-core/team-mailbox"
+import { TeamModeConfigSchema } from "@oh-my-cybersecurity/team-core/config"
+import { sendMessage } from "@oh-my-cybersecurity/team-core/team-mailbox"
 
 import registerMemberExtension from "./index"
 

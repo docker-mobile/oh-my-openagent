@@ -35,7 +35,7 @@
         "params": {
           "target": "1",
           "caps": null,
-          "excludeWindowTitles": ["OmO HUD"]
+          "excludeWindowTitles": ["OmC HUD"]
         }
       },
       "expect": [

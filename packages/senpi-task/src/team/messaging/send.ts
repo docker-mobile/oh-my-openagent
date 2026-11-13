@@ -1,4 +1,4 @@
-import { sendMessage } from "@oh-my-opencode/team-core/team-mailbox"
+import { sendMessage } from "@oh-my-cybersecurity/team-core/team-mailbox"
 
 import { readMemberTaskMap } from "../member-map"
 import { TEAM_LEAD_SENTINEL } from "../normalize"

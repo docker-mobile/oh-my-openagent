@@ -22,7 +22,7 @@ describe("discoverInstalledPlugins components", () => {
       log: () => {},
     }))
 
-    process.env.CLAUDE_PLUGINS_HOME = createTemporaryDirectory("omo-component-plugins-")
+    process.env.CLAUDE_PLUGINS_HOME = createTemporaryDirectory("omc-component-plugins-")
   })
 
   afterEach(() => {
@@ -42,7 +42,7 @@ describe("discoverInstalledPlugins components", () => {
   it("#given plugin component folders and files exist #when discovery loads the plugin #then component paths are populated", async () => {
     //#given
     const pluginsHome = process.env.CLAUDE_PLUGINS_HOME as string
-    const installPath = createTemporaryDirectory("omo-component-paths-")
+    const installPath = createTemporaryDirectory("omc-component-paths-")
     mkdirSync(join(installPath, "commands"), { recursive: true })
     mkdirSync(join(installPath, "agents"), { recursive: true })
     mkdirSync(join(installPath, "skills"), { recursive: true })

@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 import type { ObservedHold } from "./ports"
 import type { PauseParticipant } from "./registry"
 import { inRemoteClass, REMOTE_DEADLINE_MS, writeRemote } from "./remote-participants"

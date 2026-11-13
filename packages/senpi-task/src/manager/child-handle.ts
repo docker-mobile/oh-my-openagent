@@ -65,13 +65,13 @@ export type ManagedChildHandle = {
   onReplaced?(listener: (event: HostSessionReplaced) => void): () => void
   // A daemon-session child whose durable id arrived after spawn: the record's child_session_id follows (#10873).
   onDurableSessionId?(listener: (id: string) => void): () => void
-  // A daemon-session child whose connection dropped and is being recovered (omo#9403).
+  // A daemon-session child whose connection dropped and is being recovered (omc#9403).
   transportRecovering?(): boolean
   // A cancel was accepted: no transport recovery may bring this child back as running.
   markStopping?(): void
-  // Host-session: the host answered this child's end of its session (omo#11765).
+  // Host-session: the host answered this child's end of its session (omc#11765).
   hostEndAnswered?(): boolean
-  // Host-session: publish `task_status` in the session's context while still attached (omo#10778).
+  // Host-session: publish `task_status` in the session's context while still attached (omc#10778).
   publishTaskStatus?(status: TaskStatus): Promise<void>
   // Stop it once reachable, before it runs anything else; resolves once it has ended on this side.
   stopWhenReachable?(): Promise<void>

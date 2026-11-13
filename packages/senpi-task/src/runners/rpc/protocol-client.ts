@@ -1,6 +1,6 @@
 import type { ChildProcess } from "node:child_process"
 import type { AgentSessionEvent, RpcCommand, RpcExtensionUIRequest, RpcResponse } from "@code-yeongyu/senpi"
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 import { TEARDOWN_STEP_BUDGET_MS } from "../../lifecycle/teardown-budget"
 
 import type { ChildEventListener, RpcEntriesResult, RpcSwitchSessionResult } from "../types"
@@ -89,7 +89,7 @@ export class RpcProtocolClient {
     return this.request(command, options)
   }
 
-  // The task-parent run hold commands (senpi#3811) are omo's contract with the child engine, typed
+  // The task-parent run hold commands (senpi#3811) are omc's contract with the child engine, typed
   // apart from the pinned engine's RpcCommand; an older child answers them with an error response.
   sendTaskParent(command: TaskParentCommand): Promise<RpcResponse> {
     return this.request(command, {})

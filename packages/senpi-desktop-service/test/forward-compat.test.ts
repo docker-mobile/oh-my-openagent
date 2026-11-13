@@ -1,4 +1,4 @@
-import type { AuditEvent } from "@oh-my-opencode/senpi-desktop-protocol";
+import type { AuditEvent } from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import { afterEach, describe, expect, it } from "vitest";
 import { isExecResult } from "../src/run/engine-results";
 import { runComputerCode } from "../src/run/runtime";

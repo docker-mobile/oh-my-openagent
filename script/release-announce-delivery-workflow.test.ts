@@ -22,7 +22,7 @@ test.each(failures.flatMap((failure) => [true, false].map((automatic) => ({ ...f
     const step = job.steps.find((item) => item.name === "Announce release")
     const warning = job.steps.find((item) => item.name === "Warn about undelivered announcement")
     if (!step?.run || !warning?.run || !warning.if) throw new Error("Missing announcement or recovery step")
-    const directory = mkdtempSync(join(tmpdir(), "omo-announcement-failure-"))
+    const directory = mkdtempSync(join(tmpdir(), "omc-announcement-failure-"))
     const summary = join(directory, "summary")
     const preload = join(directory, "transport.mjs")
     writeFileSync(summary, "")
@@ -93,7 +93,7 @@ test("#given skipped or cancelled automatic announcement #when recovery runs #th
   }).passthrough() }) }).parse(Bun.YAML.parse(readFileSync(".github/workflows/publish.yml", "utf8")))
   const step = workflow.jobs["release-announce-recovery"].steps.find((item) => item.name === "Write job summary")
   if (!step) throw new Error("Missing recovery summary writer")
-  const directory = mkdtempSync(join(tmpdir(), "omo-announcement-recovery-"))
+  const directory = mkdtempSync(join(tmpdir(), "omc-announcement-recovery-"))
   const summary = join(directory, "summary")
   writeFileSync(summary, "")
   try {

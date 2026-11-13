@@ -1,5 +1,5 @@
-import type { OmoTaskSettings } from "@oh-my-opencode/omo-config-core"
-import { createRuntimeState } from "@oh-my-opencode/team-core/team-state-store"
+import type { OmoTaskSettings } from "@oh-my-cybersecurity/omc-config-core"
+import { createRuntimeState } from "@oh-my-cybersecurity/team-core/team-state-store"
 
 import type { TeamSpecSource } from "./registry"
 
@@ -21,8 +21,8 @@ const TEAM_CORE_TRANSPORT_DEFAULTS = {
 } as const
 
 /**
- * Projects the omo `task.team` bounds onto a team-core config, pinning `base_dir` to the senpi team
- * storage root so team-core writes runtime state under the senpi state dir instead of `~/.omo`.
+ * Projects the omc `task.team` bounds onto a team-core config, pinning `base_dir` to the senpi team
+ * storage root so team-core writes runtime state under the senpi state dir instead of `~/.omc`.
  */
 export function toTeamCoreConfig(task: OmoTaskSettings, baseDir: string): TeamCoreConfig {
   return {
@@ -35,7 +35,7 @@ export function toTeamCoreConfig(task: OmoTaskSettings, baseDir: string): TeamCo
 }
 
 // team-core records spec provenance as "project" | "user"; senpi's registry distinguishes project
-// spec files from `omo.json` inline specs. The inline specs land in the non-project ("user") slot.
+// spec files from `omc.json` inline specs. The inline specs land in the non-project ("user") slot.
 export function toTeamCoreSpecSource(source: TeamSpecSource): TeamCoreSpecSource {
   return source === "project" ? "project" : "user"
 }

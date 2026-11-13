@@ -5,14 +5,14 @@ import { basename, dirname, join, relative, resolve, sep } from "node:path"
 import { BUILTIN_AGENT_NAMES } from "../packages/senpi-task/src/agents/builtin/names"
 import { LEGACY_AGENT_NAME_ALIASES } from "../packages/senpi-task/src/agents/builtin/legacy-agent-names"
 import { DEFAULT_CATEGORIES as SENPI_CATEGORIES } from "../packages/senpi-task/src/category/builtins"
-import { LEGACY_CATEGORY_NAME_ALIASES } from "../packages/omo-config-core/src/schema/legacy-category-names"
+import { LEGACY_CATEGORY_NAME_ALIASES } from "../packages/omc-config-core/src/schema/legacy-category-names"
 import {
   BuiltinAgentNameSchema,
   BuiltinSkillNameSchema,
   OverridableAgentNameSchema,
-} from "../packages/omo-opencode/src/config/schema/agent-names"
-import { DEFAULT_CATEGORIES as OPENCODE_CATEGORIES } from "../packages/omo-opencode/src/tools/delegate-task/builtin-categories"
-import { createNativeSkillSources } from "../packages/omo-senpi/plugin/scripts/native-skill-sources.mjs"
+} from "../packages/omc-opencode/src/config/schema/agent-names"
+import { DEFAULT_CATEGORIES as OPENCODE_CATEGORIES } from "../packages/omc-opencode/src/tools/delegate-task/builtin-categories"
+import { createNativeSkillSources } from "../packages/omc-senpi/plugin/scripts/native-skill-sources.mjs"
 import {
   designpowersThirdPartyRelativePaths,
   frontendSkillRoot,
@@ -137,12 +137,12 @@ function skillNamesUnder(root: string): string[] {
 }
 
 function codexComponentSkillRoots(repoRoot: string): string[] {
-  const componentsRoot = join(repoRoot, "packages", "omo-codex", "plugin", "components")
+  const componentsRoot = join(repoRoot, "packages", "omc-codex", "plugin", "components")
   return listDirectories(componentsRoot).flatMap((component) => skillRootsUnder(join(componentsRoot, component, "skills")))
 }
 
 function codexAgentRoleNames(repoRoot: string): string[] {
-  const componentsRoot = join(repoRoot, "packages", "omo-codex", "plugin", "components")
+  const componentsRoot = join(repoRoot, "packages", "omc-codex", "plugin", "components")
   return listDirectories(componentsRoot).flatMap((component) => {
     const agentsDir = join(componentsRoot, component, "agents")
     if (!existsSync(agentsDir)) return []
@@ -158,7 +158,7 @@ function codexAgentRoleNames(repoRoot: string): string[] {
  * installed pin, so a skill renamed upstream fails this audit on the pin bump that ships the rename.
  */
 function senpiEngineSkillRoots(repoRoot: string): string[] {
-  const requireFromSenpiAdapter = createRequire(join(repoRoot, "packages", "omo-senpi", "package.json"))
+  const requireFromSenpiAdapter = createRequire(join(repoRoot, "packages", "omc-senpi", "package.json"))
   const senpiRoot = dirname(requireFromSenpiAdapter.resolve("@code-yeongyu/senpi/package.json"))
   const requireFromSenpi = createRequire(join(senpiRoot, "package.json"))
   const codemodeRoot = dirname(requireFromSenpi.resolve("@code-yeongyu/senpi-codemode/package.json"))
@@ -181,7 +181,7 @@ function buildReferenceCatalog(repoRoot: string): ReferenceCatalog {
   const packagesRoot = join(repoRoot, "packages")
   const sharedRoots = skillRootsUnder(join(packagesRoot, "shared-skills", "skills"))
   const nativeSources = createNativeSkillSources(packagesRoot).sources
-  const xSearchRoot = join(packagesRoot, "omo-senpi", "src", "components", "x-search", "skill")
+  const xSearchRoot = join(packagesRoot, "omc-senpi", "src", "components", "x-search", "skill")
   const loaderBuiltinRoots = skillRootsUnder(join(packagesRoot, "skills-loader-core", "src", "features", "builtin-skills"))
   const codexComponentRoots = codexComponentSkillRoots(repoRoot)
   const engineRoots = senpiEngineSkillRoots(repoRoot)
@@ -282,7 +282,7 @@ function collectAuditedFiles(repoRoot: string): AuditedFile[] {
   for (const source of nativeSources) {
     files.push(...auditedTree(repoRoot, source.source, ["senpi"], "senpi", source.source))
   }
-  const xSearchRoot = join(packagesRoot, "omo-senpi", "src", "components", "x-search", "skill")
+  const xSearchRoot = join(packagesRoot, "omc-senpi", "src", "components", "x-search", "skill")
   files.push(...auditedTree(repoRoot, xSearchRoot, ["senpi"], "senpi", xSearchRoot))
 
   for (const skillRoot of codexComponentSkillRoots(repoRoot)) {
@@ -309,7 +309,7 @@ function collectAuditedFiles(repoRoot: string): AuditedFile[] {
 
   // Agent prompts written in TypeScript: OpenCode's agents and the Senpi task engine's builtin agents.
   for (const [agentsRoot, edition] of [
-    [join(packagesRoot, "omo-opencode", "src", "agents"), "opencode"],
+    [join(packagesRoot, "omc-opencode", "src", "agents"), "opencode"],
     [join(packagesRoot, "senpi-task", "src", "agents"), "senpi"],
   ] as const) {
     for (const path of listFilesRecursive(agentsRoot)) {
@@ -318,7 +318,7 @@ function collectAuditedFiles(repoRoot: string): AuditedFile[] {
     }
   }
 
-  const senpiComponentsRoot = join(packagesRoot, "omo-senpi", "src", "components")
+  const senpiComponentsRoot = join(packagesRoot, "omc-senpi", "src", "components")
   for (const path of listFilesRecursive(senpiComponentsRoot)) {
     if (!path.endsWith(".md") || basename(path) === "AGENTS.md" || path.startsWith(xSearchRoot)) continue
     if (NON_SHIPPED_FILE.test(toPortable(relative(repoRoot, path)))) continue
@@ -527,7 +527,7 @@ function catalogFor(
 
 /**
  * Shared skills are written in the OpenCode dialect and the Senpi and Codex syncs translate their
- * `task(...)` examples (the synced Senpi output is checked by omo-senpi's skills-sync test), so a
+ * `task(...)` examples (the synced Senpi output is checked by omc-senpi's skills-sync test), so a
  * target there must be real in OpenCode or Senpi. A Codex `agent_type` must be a Codex role.
  */
 function taskTargetAccepted(file: AuditedFile, catalog: ReferenceCatalog, kind: "agent-name" | "category-name", name: string, isAgentType: boolean): boolean {

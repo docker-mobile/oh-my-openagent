@@ -3,13 +3,13 @@ import { tmpdir } from "node:os"
 import { join } from "node:path"
 
 import { afterEach, describe, expect, test } from "bun:test"
-import { TeamModeConfigSchema, type TeamModeConfig } from "@oh-my-opencode/team-core/config"
+import { TeamModeConfigSchema, type TeamModeConfig } from "@oh-my-cybersecurity/team-core/config"
 import {
   commitDeliveryReservation,
   reserveMessageForDelivery,
   sendMessage,
-} from "@oh-my-opencode/team-core/team-mailbox"
-import type { Message } from "@oh-my-opencode/team-core/types"
+} from "@oh-my-cybersecurity/team-core/team-mailbox"
+import type { Message } from "@oh-my-cybersecurity/team-core/types"
 
 import type { PersistedTaskEvent } from "../../store"
 import { buildPeerMessageEnvelope } from "../messaging/message"

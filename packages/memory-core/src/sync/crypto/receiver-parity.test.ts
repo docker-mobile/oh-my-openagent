@@ -18,7 +18,7 @@ import { snapshotPreimage } from "./vendor/sync-format/snapshot.ts"
 // multi-file `bun test` gives every file after the first Bun's 5 s default, since only CI passes --timeout (#12453).
 const SLOW_TEST_TIMEOUT_MS = process.platform === "win32" ? 30_000 : 20_000
 
-// The client's local chain must refuse exactly what the merged omo-service receiver
+// The client's local chain must refuse exactly what the merged omc-service receiver
 // (vendored sync-format receiveKeyringChain and createKeyringReceiver, 5de1455489) refuses, and accept what it accepts.
 
 const run = async (entries: ReadonlyArray<SyncEntry>, state: ChainState = emptyChain(ACCOUNT, fixtureAnchor())) => {

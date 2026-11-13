@@ -75,7 +75,7 @@ function lineDelta(edits: readonly TextEdit[]): { readonly linesAdded: number; r
 }
 
 function writeAtomically(filePath: string, content: string): void {
-	const tempPath = `${filePath}.omo-format.tmp`;
+	const tempPath = `${filePath}.omc-format.tmp`;
 	writeFileSync(tempPath, content, "utf-8");
 	try {
 		renameSync(tempPath, filePath);

@@ -82,7 +82,7 @@ describe("hello helper launch refusal", () => {
 
 describe("user-facing contract (senpi#4990)", () => {
 	const action =
-		"Restart this host from a local terminal and keep that terminal app running, or use the OmO desktop app (Settings > Restart engine)." +
+		"Restart this host from a local terminal and keep that terminal app running, or use the OmC desktop app (Settings > Restart engine)." +
 		" Opening a new terminal or reconnecting to this same host does not repair its launch context.";
 
 	it.each([

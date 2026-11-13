@@ -13,7 +13,7 @@ import { sweepStrandedGitLockFiles } from "../git/repo-lock-sweep"
 import { exitedWithin, probeUntil } from "../locks/process-liveness.test-support"
 import { git } from "./two-process-kit.test-support"
 
-// omo #10177 root cause: every `git commit`/`git merge` ends with `git maintenance run --auto
+// omc #10177 root cause: every `git commit`/`git merge` ends with `git maintenance run --auto
 // --detach`. When git decides a gc is due, that detached child writes a cruft pack and deletes the
 // loose objects it packed, in the background and outside every memory lock, while the next writer
 // commits and readers (fsck, cat-file) look objects up as loose files: "unable to mmap ... No such
@@ -45,7 +45,7 @@ async function tracedArgvs(traceDir: string): Promise<string[]> {
   return argvs
 }
 
-describe("memory commit path and git auto-maintenance (omo #10177)", () => {
+describe("memory commit path and git auto-maintenance (omc #10177)", () => {
   test("#given a memory repo whose git config asks for auto maintenance and aggressive auto gc #when the commit path commits and merges #then no git auto-maintenance or auto gc is ever spawned", async () => {
     // #given: raw git init like the two-process fixture, plus maintenance.auto=true and gc.auto=1 so git would gc on any commit
     const root = realpathSync.native(await mkdtemp(join(tmpdir(), "memory-auto-maintenance-")))
@@ -64,7 +64,7 @@ describe("memory commit path and git auto-maintenance (omo #10177)", () => {
     // raw fixture must set the same, or `merge` cannot resolve a committer on hosts with no
     // global git identity (CI runners, clean boxes).
     await git(dir, ["config", "user.name", "Auto Maintenance"])
-    await git(dir, ["config", "user.email", "auto-maintenance@omo.local"])
+    await git(dir, ["config", "user.email", "auto-maintenance@omc.local"])
     const repo = new GitMemoryRepo({ dir, agentId: "auto-maintenance", exec: tracingExec(traceDir) })
     const author = { agentId: "auto-maintenance", authorName: "Auto Maintenance" }
 
@@ -89,7 +89,7 @@ describe("memory commit path and git auto-maintenance (omo #10177)", () => {
   test.skipIf(process.platform === "win32")("#given a LIVE git holding .git/index.lock with an unchanging mtime #when the stranded-lock sweep runs #then the live lock survives, and after the holder dies the debris is KEPT (unknown ownership)", async () => {
     // #given: `git update-index --stdin` creates index.lock at startup and holds the fd while it
     // waits for input, writing nothing - exactly a slow live writer whose lock mtime never moves.
-    // The sweep must leave it live (omo #10199 review HIGH 1), and must STILL leave it after the
+    // The sweep must leave it live (omc #10199 review HIGH 1), and must STILL leave it after the
     // holder dies: a killed git holder's debris has unknown ownership here (no memory-write lock
     // takeover proved a dead previous owner), so reclamation is reported, not performed.
     const root = realpathSync.native(await mkdtemp(join(tmpdir(), "memory-live-lock-")))

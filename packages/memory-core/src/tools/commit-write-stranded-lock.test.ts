@@ -10,7 +10,7 @@ import { renderMemoryFile } from "../memfs/frontmatter"
 import { runMemoryTool, type MemoryToolLock } from "./memory"
 import { removeTree } from "../../../../test-support/remove-tree"
 
-// omo #10199: a memory write that fails behind a kept stranded git lock must leave the working
+// omc #10199: a memory write that fails behind a kept stranded git lock must leave the working
 // tree exactly as it found it, so the retry after /memory unlock lands. The failed `git add`
 // never touched the index, so only the files this write produced are put back, from HEAD.
 
@@ -38,7 +38,7 @@ afterEach(async () => {
 })
 
 async function fixture(): Promise<{ repo: GitMemoryRepo; lock: MemoryToolLock; lockPath: string }> {
-  const root = realpathSync.native(await mkdtemp(join(tmpdir(), "omo-memory-stranded-write-")))
+  const root = realpathSync.native(await mkdtemp(join(tmpdir(), "omc-memory-stranded-write-")))
   roots.push(root)
   const repo = new GitMemoryRepo({ dir: join(root, "repo"), agentId: AUTHOR.agentId })
   await repo.init({ authorName: AUTHOR.authorName })
@@ -61,7 +61,7 @@ function create(setup: Awaited<ReturnType<typeof fixture>>, path: string, text: 
   })
 }
 
-describe("a memory write behind a kept stranded git lock (omo #10199)", () => {
+describe("a memory write behind a kept stranded git lock (omc #10199)", () => {
   it("#given a kept index.lock #when a create fails #then the new file is gone and the repository is clean apart from the lock", async () => {
     // #given
     const setup = await fixture()
@@ -180,7 +180,7 @@ describe("a memory write behind a kept stranded git lock (omo #10199)", () => {
   })
 })
 
-describe("restoreWorktreeFromHead (omo #10199)", () => {
+describe("restoreWorktreeFromHead (omc #10199)", () => {
   it("#given an unrelated dirty file #when only the write's own paths are restored #then the unrelated change survives", async () => {
     // #given
     const setup = await fixture()

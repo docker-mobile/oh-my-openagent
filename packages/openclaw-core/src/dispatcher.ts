@@ -1,4 +1,4 @@
-import { spawn } from "@oh-my-opencode/utils/runtime"
+import { spawn } from "@oh-my-cybersecurity/utils/runtime"
 import { validateGatewayUrl } from "./gateway-url-validation"
 import type { OpenClawGateway, WakeResult } from "./types"
 
@@ -22,7 +22,7 @@ export function shellEscapeArg(value: string): string {
 
 export function resolveCommandTimeoutMs(
   gatewayTimeout?: number,
-  envTimeoutRaw = process.env.OMO_OPENCLAW_COMMAND_TIMEOUT_MS,
+  envTimeoutRaw = process.env.OMC_OPENCLAW_COMMAND_TIMEOUT_MS,
 ): number {
   const parseFinite = (value: unknown): number | undefined => {
     if (typeof value !== "number" || !Number.isFinite(value)) return undefined

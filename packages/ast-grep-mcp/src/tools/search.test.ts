@@ -15,7 +15,7 @@ const SG_PATH = "/opt/homebrew/bin/sg";
 const directories: string[] = [];
 
 function fixtureRepo(): string {
-  const dir = mkdtempSync(join(tmpdir(), "omo-search-"));
+  const dir = mkdtempSync(join(tmpdir(), "omc-search-"));
   directories.push(dir);
   mkdirSync(join(dir, "src"), { recursive: true });
   writeFileSync(

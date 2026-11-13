@@ -36,7 +36,7 @@ function cancelSurface(store: TaskRecordStore, registry: FakeRegistry, options?:
   return { lifecycle, engine, cancel: () => runTaskCancel(manager, { task_id: TASK }), cancelWith: () => engine.cancelTask(TASK, undefined, options) }
 }
 
-describe("task_cancel on a finished child that is still resident (omo#9785)", () => {
+describe("task_cancel on a finished child that is still resident (omc#9785)", () => {
   test("#given an errored child still resident here #when cancelled #then its child is stopped and the record parks, readable and revivable", async () => {
     // given
     const store = tempStore()

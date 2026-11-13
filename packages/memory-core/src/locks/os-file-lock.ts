@@ -1,7 +1,7 @@
 import { constants as osConstants } from "node:os"
 
 // flock(2) through bun:ffi, so liveness can be answered by the kernel instead of by reading other
-// processes' /proc entries (omo #10322). A flock belongs to the open file description: every
+// processes' /proc entries (omc #10322). A flock belongs to the open file description: every
 // process that inherits the descriptor keeps it held, and the kernel drops it when the last such
 // process exits, SIGKILL included. Only non-blocking attempts are made, so the JS thread never
 // waits inside the kernel.
@@ -69,7 +69,7 @@ export type OsLockAttempt =
 
 const errnos = osConstants.errno
 
-// omo #10604 review M1: only "another process holds a conflicting lock" is busy. The calls are
+// omc #10604 review M1: only "another process holds a conflicting lock" is busy. The calls are
 // non-blocking, so EINTR means nothing was decided and the caller tries again.
 export function classifyFlockFailure(errno: number): OsLockAttempt {
   if (errno === errnos.EWOULDBLOCK || errno === errnos.EAGAIN || errno === errnos.EINTR) return { kind: "busy" }

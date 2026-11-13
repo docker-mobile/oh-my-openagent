@@ -37,7 +37,7 @@ the XPC-only files `peers.rs`, `native.rs`, `agent.rs`, `dictionary.rs`,
 | A2 | Screen content: captures, frames, element refs, the artifact dir, the audit log | the daemon session opened from its CLI flags (`senpi-desktop-engine/src/daemon.rs:1-4,26-42,50-72`) |
 | A3 | Stop authority: stop paths, latched stop, the resume token | **UDS daemon:** the token is random per process (`engine.rs:60-62`) and written by `daemon.rs:70-71` through `write_token`, 0600 at creation on unix (`daemon.rs:84-94`; the non-unix writer at `daemon.rs:97-100` sets no mode). **XPC agent:** `StopPaths` are shared by its sessions (`sessions.rs:1,34-47`; `sessions` compiles only under `cfg(any(test, target_os = "macos"))`, `main.rs:21-22`) and the persistent latch exists only there (`stop_latch.rs:1`, `sessions.rs:26-32`) |
 | A4 | TCC grants (Accessibility, Screen Recording) of the responsible process | macOS charges requests to the responsible process (`senpi-desktop-backend-macos/src/launch_gate.rs:3-12`) |
-| A5 | The omo host's per-call permission preflight (`computer:read` / `computer:exec`) | the tool pipeline; kernels reach the engine only through it (`toolBridge`) |
+| A5 | The omc host's per-call permission preflight (`computer:read` / `computer:exec`) | the tool pipeline; kernels reach the engine only through it (`toolBridge`) |
 | A6 | Request content in transit: `typeText` text, `clipboard.write` content, the `--resume` token | the request lines a client sends to whatever answers at the endpoint |
 
 ## Trust boundaries
@@ -257,12 +257,12 @@ inside such a binary is out of scope.
     `GetNamedPipeServerProcessId` must equal the caller's.
   - **Server:** check the client SID, then admit concurrent clients.
 
-### B4: omo-hosted kernels never attach
+### B4: omc-hosted kernels never attach
 
 The js and py kernels' `computer` global goes through `toolBridge`, which is one
 `tool.computer` call per helper. That keeps the host's per-call preflight (A5)
 on every call. Kernels use neither `attach` nor `spawn` (DESIGN §3 attach,
-§6). The omo host never starts its own engine as `--serve`: that would let any
+§6). The omc host never starts its own engine as `--serve`: that would let any
 same-uid process skip A5 (Q decision 2, MCP exposure).
 
 The SDK ships into the kernels as a prelude asset that includes the `attach`
@@ -382,7 +382,7 @@ covers an explicit `--serve` path or a loose directory.
   gate refuses a self-responsible engine.
 - **XPC: stopped**, unless the process is one of our signed binaries (B2.2).
 
-### M3: model code inside an omo kernel (js or py eval)
+### M3: model code inside an omc kernel (js or py eval)
 
 - **Intended path.** `toolBridge` only; every call passes A5 (B4).
 - **Raw socket.** Model code that opens the daemon socket itself is M2. The
@@ -446,13 +446,13 @@ covers an explicit `--serve` path or a loose directory.
 | XPC approval missing, or sequence mismatch | `senpi-desktop-xpc/src/connection.rs:166-182` | message rejected | existing transport tests |
 | Engine is its own responsible process, or unresolved | `launch_gate.rs:23-41`, `main.rs:53-56` | refuse before any mode (except `--xpc-agent`) | `tests/launch_gate.rs` |
 | `--serve` / `--oneshot` / `--mcp` without `--enable-daemon` | `cli.rs:151` | usage error (accident guard only) | existing CLI tests |
-| `attach` inside an omo session | SDK | `ControlRequired{reason: "attach_inside_session"}` (accident guard, not a boundary; the boundary is the eval permission gate) | T25-21 |
+| `attach` inside an omc session | SDK | `ControlRequired{reason: "attach_inside_session"}` (accident guard, not a boundary; the boundary is the eval permission gate) | T25-21 |
 | Stale socket at the endpoint | daemon start (P3b) | unlinked only after a failed `connect`, inside the checked parent | T25-20 |
 | A second daemon racing a cold start | daemon start (P3b) | instance lock refused before bind; no token written; the first daemon's token is untouched | T25-19 |
 | A daemon started while one is already running (explicit `--serve` or a lost auto-start) | daemon start (P3b) | instance lock refused; exits non-zero; the live socket and token are untouched; clients use the live daemon | T25-22 |
 | Two daemons recovering the same stale socket | daemon start (P3b) | only the lock holder unlinks and binds; the other exits | T25-23 |
 | A daemon exiting while its successor starts, or an orphan's idle exit | daemon exit (P3b) | the exiting daemon closes its listener fd, then removes its socket and token under the hold it took at start (no re-acquire, no wait), only if the socket's inode is the one it bound, then releases the lock; a successor refused during the exit exits non-zero and the P3b client start retry (a required client change; today's client starts once) starts it after the release | T25-24 |
-| `spawn` inside an omo session | SDK | `ControlRequired{reason: "spawn_inside_session"}` (accident guard). The boundary is the eval permission gate, plus TCC only for a P4b out-of-process kernel without interpreter grants (M3) | SDK spawn tests |
+| `spawn` inside an omc session | SDK | `ControlRequired{reason: "spawn_inside_session"}` (accident guard). The boundary is the eval permission gate, plus TCC only for a P4b out-of-process kernel without interpreter grants (M3) | SDK spawn tests |
 
 ## Residual risk
 
@@ -494,7 +494,7 @@ covers an explicit `--serve` path or a loose directory.
   - No environment variable or flag that a non-test build honors may change
     the peer check, unlike the existing fake-backend environment hooks
     (`config.rs:31-37,55-60`, `stop_path.rs:33-36`).
-- **Host-spawned `--serve` for omo's own engine.** Rejected: same-uid processes
+- **Host-spawned `--serve` for omc's own engine.** Rejected: same-uid processes
   would skip A5 (Q decision 2).
 - **Daemon-side host-only filtering on UDS.** Not in this plan.
   - **What it would stop:** an accidental or naive raw client calling

@@ -1,9 +1,9 @@
 import { describe, expect, test } from "bun:test"
 
 import { CATEGORY_FALLBACK_CHAINS } from "./fallback-chains"
-import { FABLE_55_RELEASED } from "@oh-my-opencode/model-core"
+import { FABLE_55_RELEASED } from "@oh-my-cybersecurity/model-core"
 
-// Coupling guard: this test file must NEVER import chain data from @oh-my-opencode/model-core. The one
+// Coupling guard: this test file must NEVER import chain data from @oh-my-cybersecurity/model-core. The one
 // allowed import is the FABLE_55_RELEASED launch switch, which gates the literal provisional 5.5 rows.
 // packages/model-core/src/category-model-requirements.ts is the source of truth; this file is the
 // independent transcription that catches drift between the two mirrors (senpi adds the kimi-coding

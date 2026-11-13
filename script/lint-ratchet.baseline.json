@@ -101,325 +101,325 @@
   "packages/model-core/src/model-error-classifier.test.ts": {
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-codex/src/telemetry/posthog-diagnostics.test.ts": {
+  "packages/omc-codex/src/telemetry/posthog-diagnostics.test.ts": {
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-codex/src/telemetry/posthog.test.ts": {
+  "packages/omc-codex/src/telemetry/posthog.test.ts": {
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-native/test/compile-entry.test.ts": {
+  "packages/omc-native/test/compile-entry.test.ts": {
     "typescript/no-explicit-any": 5
   },
-  "packages/omo-native/test/compile-prebuilds.test.ts": {
+  "packages/omc-native/test/compile-prebuilds.test.ts": {
     "typescript/no-non-null-assertion": 3
   },
-  "packages/omo-native/test/packed-install.test.ts": {
+  "packages/omc-native/test/packed-install.test.ts": {
     "typescript/no-non-null-assertion": 6
   },
-  "packages/omo-native/test/setup-detect.test.ts": {
+  "packages/omc-native/test/setup-detect.test.ts": {
     "typescript/no-non-null-assertion": 2
   },
-  "packages/omo-native/test/setup-import.test.ts": {
+  "packages/omc-native/test/setup-import.test.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-native/test/setup-model-choices.test.ts": {
+  "packages/omc-native/test/setup-model-choices.test.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-native/test/setup-opencode-providers.test.ts": {
+  "packages/omc-native/test/setup-opencode-providers.test.ts": {
     "typescript/no-explicit-any": 9
   },
-  "packages/omo-native/test/setup-summary.test.ts": {
+  "packages/omc-native/test/setup-summary.test.ts": {
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-opencode/src/cli/run/continuation-state.json-backend.test.ts": {
+  "packages/omc-opencode/src/cli/run/continuation-state.json-backend.test.ts": {
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-opencode/src/cli/run/stdin-suppression.ts": {
+  "packages/omc-opencode/src/cli/run/stdin-suppression.ts": {
     "typescript/no-non-null-assertion": 2
   },
-  "packages/omo-opencode/src/cli/run/timestamp-output.test.ts": {
+  "packages/omc-opencode/src/cli/run/timestamp-output.test.ts": {
     "typescript/no-non-null-assertion": 3
   },
-  "packages/omo-opencode/src/cli/worktree-sweep/worktree-sweep.test.ts": {
+  "packages/omc-opencode/src/cli/worktree-sweep/worktree-sweep.test.ts": {
     "typescript/no-non-null-assertion": 11
   },
-  "packages/omo-opencode/src/features/background-agent/default-message-staleness-timeout.test.ts": {
+  "packages/omc-opencode/src/features/background-agent/default-message-staleness-timeout.test.ts": {
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-opencode/src/features/background-agent/default-stale-timeout.test.ts": {
+  "packages/omc-opencode/src/features/background-agent/default-stale-timeout.test.ts": {
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-opencode/src/features/background-agent/fallback-retry-handler.test.ts": {
+  "packages/omc-opencode/src/features/background-agent/fallback-retry-handler.test.ts": {
     "typescript/no-non-null-assertion": 14
   },
-  "packages/omo-opencode/src/features/background-agent/manager.test.ts": {
+  "packages/omc-opencode/src/features/background-agent/manager.test.ts": {
     "typescript/no-non-null-assertion": 16
   },
-  "packages/omo-opencode/src/features/background-agent/manager.ts": {
+  "packages/omc-opencode/src/features/background-agent/manager.ts": {
     "typescript/no-non-null-assertion": 5
   },
-  "packages/omo-opencode/src/features/background-agent/session-idle-event-handler.test.ts": {
+  "packages/omc-opencode/src/features/background-agent/session-idle-event-handler.test.ts": {
     "typescript/no-non-null-assertion": 12
   },
-  "packages/omo-opencode/src/features/background-agent/task-poller.test.ts": {
+  "packages/omc-opencode/src/features/background-agent/task-poller.test.ts": {
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-opencode/src/features/boulder-state/storage.test.ts": {
+  "packages/omc-opencode/src/features/boulder-state/storage.test.ts": {
     "typescript/no-non-null-assertion": 36
   },
-  "packages/omo-opencode/src/features/btw-side/context-injector.test.ts": {
+  "packages/omc-opencode/src/features/btw-side/context-injector.test.ts": {
     "typescript/no-non-null-assertion": 11
   },
-  "packages/omo-opencode/src/features/claude-code-session-state/state.test.ts": {
+  "packages/omc-opencode/src/features/claude-code-session-state/state.test.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-opencode/src/features/context-injector/collector.ts": {
+  "packages/omc-opencode/src/features/context-injector/collector.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-opencode/src/features/context-injector/injector.test.ts": {
+  "packages/omc-opencode/src/features/context-injector/injector.test.ts": {
     "disable-directive": 4,
     "typescript/no-non-null-assertion": 8
   },
-  "packages/omo-opencode/src/features/task-toast-manager/manager.test.ts": {
+  "packages/omc-opencode/src/features/task-toast-manager/manager.test.ts": {
     "disable-directive": 3,
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-opencode/src/features/task-toast-manager/manager.ts": {
+  "packages/omc-opencode/src/features/task-toast-manager/manager.ts": {
     "typescript/no-non-null-assertion": 2
   },
-  "packages/omo-opencode/src/features/team-mode/team-runtime/create.test.ts": {
+  "packages/omc-opencode/src/features/team-mode/team-runtime/create.test.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-opencode/src/features/team-mode/team-runtime/resolve-member.test.ts": {
+  "packages/omc-opencode/src/features/team-mode/team-runtime/resolve-member.test.ts": {
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-opencode/src/features/tmux-subagent/manager.test.ts": {
+  "packages/omc-opencode/src/features/tmux-subagent/manager.test.ts": {
     "typescript/no-non-null-assertion": 3
   },
-  "packages/omo-opencode/src/hooks/anthropic-context-window-limit-recovery/recovery-deduplication.test.ts": {
+  "packages/omc-opencode/src/hooks/anthropic-context-window-limit-recovery/recovery-deduplication.test.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-opencode/src/hooks/atlas/compaction-agent-filter.test.ts": {
+  "packages/omc-opencode/src/hooks/atlas/compaction-agent-filter.test.ts": {
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-opencode/src/hooks/atlas/idle-event-persisted-lineage.test.ts": {
+  "packages/omc-opencode/src/hooks/atlas/idle-event-persisted-lineage.test.ts": {
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-opencode/src/hooks/atlas/session-last-agent.json.test.ts": {
+  "packages/omc-opencode/src/hooks/atlas/session-last-agent.json.test.ts": {
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-opencode/src/hooks/category-skill-reminder/hook.ts": {
+  "packages/omc-opencode/src/hooks/category-skill-reminder/hook.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-opencode/src/hooks/keyword-detector/default-mode-session-eviction.test.ts": {
+  "packages/omc-opencode/src/hooks/keyword-detector/default-mode-session-eviction.test.ts": {
     "typescript/no-non-null-assertion": 9
   },
-  "packages/omo-opencode/src/hooks/ralph-loop/oracle-double-fire-race.test.ts": {
+  "packages/omc-opencode/src/hooks/ralph-loop/oracle-double-fire-race.test.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-opencode/src/hooks/zauc-sync-mocks/sync-package-json.test.ts": {
+  "packages/omc-opencode/src/hooks/zauc-sync-mocks/sync-package-json.test.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-opencode/src/plugin/event.model-fallback-2941.test.ts": {
+  "packages/omc-opencode/src/plugin/event.model-fallback-2941.test.ts": {
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-opencode/src/plugin/event.model-fallback-pin-agent.test.ts": {
+  "packages/omc-opencode/src/plugin/event.model-fallback-pin-agent.test.ts": {
     "typescript/no-explicit-any": 1,
     "typescript/no-non-null-assertion": 4
   },
-  "packages/omo-opencode/src/plugin/fallback.cliproxyapi-matrix.test.ts": {
+  "packages/omc-opencode/src/plugin/fallback.cliproxyapi-matrix.test.ts": {
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-opencode/src/shared/connected-providers-cache.test.ts": {
+  "packages/omc-opencode/src/shared/connected-providers-cache.test.ts": {
     "typescript/no-non-null-assertion": 4
   },
-  "packages/omo-opencode/src/shared/disabled-providers.test.ts": {
+  "packages/omc-opencode/src/shared/disabled-providers.test.ts": {
     "typescript/no-non-null-assertion": 3
   },
-  "packages/omo-opencode/src/shared/dist-bundle-prompt-content.test.ts": {
+  "packages/omc-opencode/src/shared/dist-bundle-prompt-content.test.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-opencode/src/shared/model-availability.test.ts": {
+  "packages/omc-opencode/src/shared/model-availability.test.ts": {
     "typescript/no-explicit-any": 5
   },
-  "packages/omo-opencode/src/shared/prompt-tools.test.ts": {
+  "packages/omc-opencode/src/shared/prompt-tools.test.ts": {
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-opencode/src/shared/session-cursor.ts": {
+  "packages/omc-opencode/src/shared/session-cursor.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-opencode/src/shared/session-prompt-params-state.test.ts": {
+  "packages/omc-opencode/src/shared/session-prompt-params-state.test.ts": {
     "typescript/no-non-null-assertion": 2
   },
-  "packages/omo-opencode/src/shared/session-tools-store.test.ts": {
+  "packages/omc-opencode/src/shared/session-tools-store.test.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-opencode/src/tools/delegate-task/builtin-categories.ts": {
+  "packages/omc-opencode/src/tools/delegate-task/builtin-categories.ts": {
     "typescript/no-non-null-assertion": 2
   },
-  "packages/omo-opencode/src/tools/delegate-task/category-dispatch.test.ts": {
+  "packages/omc-opencode/src/tools/delegate-task/category-dispatch.test.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-opencode/src/tools/delegate-task/category-resolver-unknown-category.test.ts": {
+  "packages/omc-opencode/src/tools/delegate-task/category-resolver-unknown-category.test.ts": {
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-opencode/src/tools/delegate-task/category-resolver.test.ts": {
+  "packages/omc-opencode/src/tools/delegate-task/category-resolver.test.ts": {
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-opencode/src/tools/delegate-task/category-resolver.ts": {
+  "packages/omc-opencode/src/tools/delegate-task/category-resolver.ts": {
     "typescript/no-non-null-assertion": 9
   },
-  "packages/omo-opencode/src/tools/delegate-task/listed-providers-only.test.ts": {
+  "packages/omc-opencode/src/tools/delegate-task/listed-providers-only.test.ts": {
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-opencode/src/tools/delegate-task/metadata-model-unification.test.ts": {
+  "packages/omc-opencode/src/tools/delegate-task/metadata-model-unification.test.ts": {
     "typescript/no-non-null-assertion": 16
   },
-  "packages/omo-opencode/src/tools/delegate-task/metadata-task-id-consistency.test.ts": {
+  "packages/omc-opencode/src/tools/delegate-task/metadata-task-id-consistency.test.ts": {
     "typescript/no-non-null-assertion": 16
   },
-  "packages/omo-opencode/src/tools/delegate-task/openai-categories.test.ts": {
+  "packages/omc-opencode/src/tools/delegate-task/openai-categories.test.ts": {
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-opencode/src/tools/delegate-task/sync-poll-timeout.test.ts": {
+  "packages/omc-opencode/src/tools/delegate-task/sync-poll-timeout.test.ts": {
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-opencode/src/tools/delegate-task/sync-session-poller.test.ts": {
+  "packages/omc-opencode/src/tools/delegate-task/sync-session-poller.test.ts": {
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-opencode/src/tools/delegate-task/timing.test.ts": {
+  "packages/omc-opencode/src/tools/delegate-task/timing.test.ts": {
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-opencode/src/tools/delegate-task/tools.test.ts": {
+  "packages/omc-opencode/src/tools/delegate-task/tools.test.ts": {
     "typescript/no-non-null-assertion": 6
   },
-  "packages/omo-opencode/src/tools/delegate-task/unstable-agent-cleanup.test.ts": {
+  "packages/omc-opencode/src/tools/delegate-task/unstable-agent-cleanup.test.ts": {
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-opencode/src/tools/delegate-task/unstable-agent-task.test.ts": {
+  "packages/omc-opencode/src/tools/delegate-task/unstable-agent-task.test.ts": {
     "typescript/no-non-null-assertion": 3
   },
-  "packages/omo-opencode/src/tools/delegate-task/unstable-agent-timeout.test.ts": {
+  "packages/omc-opencode/src/tools/delegate-task/unstable-agent-timeout.test.ts": {
     "typescript/no-explicit-any": 1
   },
-  "packages/omo-opencode/src/tools/hashline-edit/formatter-trigger.test.ts": {
+  "packages/omc-opencode/src/tools/hashline-edit/formatter-trigger.test.ts": {
     "typescript/no-non-null-assertion": 4
   },
-  "packages/omo-opencode/src/tools/look-at/tools.test.ts": {
+  "packages/omc-opencode/src/tools/look-at/tools.test.ts": {
     "typescript/no-non-null-assertion": 6
   },
-  "packages/omo-opencode/src/tools/session-manager/sdk-storage.ts": {
+  "packages/omc-opencode/src/tools/session-manager/sdk-storage.ts": {
     "typescript/no-non-null-assertion": 7
   },
-  "packages/omo-opencode/src/tools/skill/zauc-mocks-skill-tools/short-name-resolution.test.ts": {
+  "packages/omc-opencode/src/tools/skill/zauc-mocks-skill-tools/short-name-resolution.test.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-senpi/src/components/formatter/formatter.ts": {
+  "packages/omc-senpi/src/components/formatter/formatter.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-senpi/src/components/init-deep-advisor/component.test.ts": {
+  "packages/omc-senpi/src/components/init-deep-advisor/component.test.ts": {
     "typescript/no-non-null-assertion": 3
   },
-  "packages/omo-senpi/src/components/init-deep-advisor/coverage.test.ts": {
+  "packages/omc-senpi/src/components/init-deep-advisor/coverage.test.ts": {
     "typescript/no-non-null-assertion": 15
   },
-  "packages/omo-senpi/src/components/init-deep-advisor/eligibility.ts": {
+  "packages/omc-senpi/src/components/init-deep-advisor/eligibility.ts": {
     "typescript/no-non-null-assertion": 3
   },
-  "packages/omo-senpi/src/components/init-deep-advisor/fixtures.test-support.ts": {
+  "packages/omc-senpi/src/components/init-deep-advisor/fixtures.test-support.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-senpi/src/components/init-deep-advisor/git-helpers.ts": {
+  "packages/omc-senpi/src/components/init-deep-advisor/git-helpers.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-senpi/src/components/memory/facts-oversized-child.test.ts": {
+  "packages/omc-senpi/src/components/memory/facts-oversized-child.test.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-senpi/src/components/memory/kibitzer/notice.test.ts": {
+  "packages/omc-senpi/src/components/memory/kibitzer/notice.test.ts": {
     "typescript/no-non-null-assertion": 2
   },
-  "packages/omo-senpi/src/components/memory/memory-rpc-bridge.test.ts": {
+  "packages/omc-senpi/src/components/memory/memory-rpc-bridge.test.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-senpi/src/components/memory/memory-rpc-snapshot-state.test.ts": {
+  "packages/omc-senpi/src/components/memory/memory-rpc-snapshot-state.test.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-senpi/src/components/memory/nudge-wiring.test.ts": {
+  "packages/omc-senpi/src/components/memory/nudge-wiring.test.ts": {
     "typescript/no-non-null-assertion": 3
   },
-  "packages/omo-senpi/src/components/memory/project-memory-recall.test.ts": {
+  "packages/omc-senpi/src/components/memory/project-memory-recall.test.ts": {
     "typescript/no-non-null-assertion": 2
   },
-  "packages/omo-senpi/src/components/memory/recall-notice.test.ts": {
+  "packages/omc-senpi/src/components/memory/recall-notice.test.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-senpi/src/components/memory/recall-transcript-mentions.test.ts": {
+  "packages/omc-senpi/src/components/memory/recall-transcript-mentions.test.ts": {
     "typescript/no-non-null-assertion": 2
   },
-  "packages/omo-senpi/src/components/memory/soul-notice.test.ts": {
+  "packages/omc-senpi/src/components/memory/soul-notice.test.ts": {
     "typescript/no-non-null-assertion": 2
   },
-  "packages/omo-senpi/src/components/memory/wiring-reflection-live.test.ts": {
+  "packages/omc-senpi/src/components/memory/wiring-reflection-live.test.ts": {
     "typescript/no-non-null-assertion": 5
   },
-  "packages/omo-senpi/src/components/memory/wiring-shutdown-settle.test.ts": {
+  "packages/omc-senpi/src/components/memory/wiring-shutdown-settle.test.ts": {
     "typescript/no-non-null-assertion": 3
   },
-  "packages/omo-senpi/src/components/memory/worker/entry-renderers.test.ts": {
+  "packages/omc-senpi/src/components/memory/worker/entry-renderers.test.ts": {
     "typescript/no-non-null-assertion": 2
   },
-  "packages/omo-senpi/src/components/memory/worker/health-alert.test.ts": {
+  "packages/omc-senpi/src/components/memory/worker/health-alert.test.ts": {
     "typescript/no-non-null-assertion": 3
   },
-  "packages/omo-senpi/src/components/memory/worker/health-alert.ts": {
+  "packages/omc-senpi/src/components/memory/worker/health-alert.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-senpi/src/components/memory/worker/park-alert.test.ts": {
+  "packages/omc-senpi/src/components/memory/worker/park-alert.test.ts": {
     "typescript/no-non-null-assertion": 2
   },
-  "packages/omo-senpi/src/components/memory/worker/park-alert.ts": {
+  "packages/omc-senpi/src/components/memory/worker/park-alert.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-senpi/src/components/memory/worker/spawn.test.ts": {
+  "packages/omc-senpi/src/components/memory/worker/spawn.test.ts": {
     "typescript/no-non-null-assertion": 2
   },
-  "packages/omo-senpi/src/components/model-profile/request-auth.test.ts": {
+  "packages/omc-senpi/src/components/model-profile/request-auth.test.ts": {
     "typescript/no-non-null-assertion": 3
   },
-  "packages/omo-senpi/src/components/model-profile/request-auth.ts": {
+  "packages/omc-senpi/src/components/model-profile/request-auth.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-senpi/src/components/onboarding/claim-takeover-race.test.ts": {
+  "packages/omc-senpi/src/components/onboarding/claim-takeover-race.test.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-senpi/src/components/onboarding/state.test.ts": {
+  "packages/omc-senpi/src/components/onboarding/state.test.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-senpi/src/components/onboarding/understand-runtime.test.ts": {
+  "packages/omc-senpi/src/components/onboarding/understand-runtime.test.ts": {
     "typescript/no-non-null-assertion": 2
   },
-  "packages/omo-senpi/src/components/onboarding/understand-runtime.ts": {
+  "packages/omc-senpi/src/components/onboarding/understand-runtime.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-senpi/src/components/side-panel/data/task-records.test.ts": {
+  "packages/omc-senpi/src/components/side-panel/data/task-records.test.ts": {
     "typescript/no-non-null-assertion": 2
   },
-  "packages/omo-senpi/src/components/task/parent-notifier.test.ts": {
+  "packages/omc-senpi/src/components/task/parent-notifier.test.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-senpi/src/components/task/shutdown-process.test.ts": {
+  "packages/omc-senpi/src/components/task/shutdown-process.test.ts": {
     "typescript/no-non-null-assertion": 1
   },
-  "packages/omo-senpi/src/components/thread/offline-address.test.ts": {
+  "packages/omc-senpi/src/components/thread/offline-address.test.ts": {
     "typescript/no-non-null-assertion": 4
   },
-  "packages/omo-senpi/src/components/thread/tools.test.ts": {
+  "packages/omc-senpi/src/components/thread/tools.test.ts": {
     "typescript/no-non-null-assertion": 2
   },
-  "packages/omo-senpi/src/components/thread/tools/internals.ts": {
+  "packages/omc-senpi/src/components/thread/tools/internals.ts": {
     "typescript/no-explicit-any": 2
   },
-  "packages/omo-senpi/src/extension/dag-library.test.ts": {
+  "packages/omc-senpi/src/extension/dag-library.test.ts": {
     "typescript/no-non-null-assertion": 6
   },
   "packages/openclaw-core/src/runtime-dispatch.ts": {
@@ -491,10 +491,10 @@
   "packages/web/lib/install-targets.test.ts": {
     "typescript/no-non-null-assertion": 2
   },
-  "script/build-omo-binary.test.ts": {
+  "script/build-omc-binary.test.ts": {
     "typescript/no-non-null-assertion": 11
   },
-  "script/build-omo-binary.ts": {
+  "script/build-omc-binary.ts": {
     "typescript/no-non-null-assertion": 1
   },
   "script/changelog-backfill-verify.ts": {

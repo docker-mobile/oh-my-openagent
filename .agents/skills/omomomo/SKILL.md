@@ -1,6 +1,6 @@
 ---
 name: omomomo
-description: "Easter egg command - about oh-my-opencode. Triggers: omomomo, about, easter egg."
+description: "Easter egg command - about oh-my-cybersecurity. Triggers: omomomo, about, easter egg."
 ---
 
 You found an easter egg! 🥚✨
@@ -28,7 +28,7 @@ Print the following message to the user EXACTLY as written (in a friendly, celeb
 
 Created with ❤️ by **[code-yeongyu](https://github.com/code-yeongyu)**
 
-🔗 **GitHub**: https://github.com/code-yeongyu/oh-my-opencode
+🔗 **GitHub**: https://github.com/code-yeongyu/oh-my-cybersecurity
 
 ---
 

@@ -1,6 +1,6 @@
 # Team Mode
 
-Parallel multi-agent coordination for omo, modeled after Claude Code's experimental Agent Teams.
+Parallel multi-agent coordination for omc, modeled after Claude Code's experimental Agent Teams.
 
 ## Status
 
@@ -14,7 +14,7 @@ OFF by default. Enable via JSONC config.
 
 ## Enable
 
-Add to the `[opencode]` block of `~/.omo/omo.jsonc` (user) or `.omo/omo.jsonc` (project):
+Add to the `[opencode]` block of `~/.omc/omc.jsonc` (user) or `.omc/omc.jsonc` (project):
 
 ```jsonc
 {
@@ -29,7 +29,7 @@ Add to the `[opencode]` block of `~/.omo/omo.jsonc` (user) or `.omo/omo.jsonc` (
 
 After enabling, restart opencode. The 12 `team_*` tools become available.
 
-> Bug-fix note: a fresh-install regression test covers this minimal config and startup logs the resolved `team_mode` state plus team tool count (`[tool-registry] Built tool registry`). If the tools still do not appear after restart, inspect `oh-my-opencode.log` for the loaded config path and `[tool-registry] Built tool registry` entry.
+> Bug-fix note: a fresh-install regression test covers this minimal config and startup logs the resolved `team_mode` state plus team tool count (`[tool-registry] Built tool registry`). If the tools still do not appear after restart, inspect `oh-my-cybersecurity.log` for the loaded config path and `[tool-registry] Built tool registry` entry.
 
 ## Config schema (11 fields)
 
@@ -42,14 +42,14 @@ All fields live under `team_mode`:
 - `max_messages_per_run` (int, `>=1`, default `10000`)
 - `max_wall_clock_minutes` (int, `>=1`, default `120`)
 - `max_member_turns` (int, `>=1`, default `500`)
-- `base_dir` (optional string; default resolves to `~/.omo`)
+- `base_dir` (optional string; default resolves to `~/.omc`)
 - `message_payload_max_bytes` (int, `>=1024`, default `32768`)
 - `recipient_unread_max_bytes` (int, `>=1024`, default `262144`)
 - `mailbox_poll_interval_ms` (int, `>=500`, default `3000`)
 
 ## Define a team
 
-Team specs live under `~/.omo/teams/{name}/config.json` (user scope) or `<project>/.omo/teams/{name}/config.json` (project scope):
+Team specs live under `~/.omc/teams/{name}/config.json` (user scope) or `<project>/.omc/teams/{name}/config.json` (project scope):
 
 ```json
 {
@@ -70,12 +70,12 @@ When both scopes define the same team name, project scope wins.
 ## Member kinds
 
 - **`kind: "category"`**: routed to the category worker, a fresh worker session configured by the category's model and skills. `prompt` REQUIRED. Unknown categories fail with `UNRESOLVABLE_CATEGORY` and the error lists the available ones.
-- **`kind: "subagent_type"`** (alias `"agent"`): a user-defined agent from `omo.json` `agents`, invoked directly. `prompt` optional. The kind is inferred from whichever field you set, so you can omit it.
+- **`kind: "subagent_type"`** (alias `"agent"`): a user-defined agent from `omc.json` `agents`, invoked directly. `prompt` optional. The kind is inferred from whichever field you set, so you can omit it.
 
 ## Who can be a member
 
 - **Eligible:** any resolvable category, and any user-defined agent.
-- **Rejected at parse:** the curated read-only agents (`explore`, `librarian`, `plan-consultant`, `plan-reviewer`) and the ulw-loop reviewer trio (`omo-native-code-reviewer`, `omo-native-qa-executor`, `omo-native-gate-reviewer`).
+- **Rejected at parse:** the curated read-only agents (`explore`, `librarian`, `plan-consultant`, `plan-reviewer`) and the ulw-loop reviewer trio (`omc-native-code-reviewer`, `omc-native-qa-executor`, `omc-native-gate-reviewer`).
 
 The curated agents are read-only and in-process, so they can't write mailbox state. The reviewer trio is rejected because process-mode members drop reviewer instructions and tool allowlists. Route both groups through the `task` tool instead (`packages/senpi-task/src/team/member-validator.ts`).
 
@@ -174,12 +174,12 @@ When enabled, each member gets a dedicated tmux pane attached to that member's s
 
 ## Diagnostics
 
-`bunx oh-my-openagent doctor` includes a `team-mode` check showing tmux/git availability, declared team count, and active runtime dirs.
+`bunx oh-my-cybersecurity doctor` includes a `team-mode` check showing tmux/git availability, declared team count, and active runtime dirs.
 
 ## Storage layout
 
 ```
-~/.omo/
+~/.omc/
 ├── teams/{name}/config.json                      # declared specs
 └── runtime/{teamRunId}/
     ├── state.json                                # durable runtime state
@@ -195,4 +195,4 @@ When enabled, each member gets a dedicated tmux pane attached to that member's s
 
 ## Reference
 
-Implementation notes: `packages/omo-opencode/src/features/team-mode/AGENTS.md` and `packages/team-core/AGENTS.md`.
+Implementation notes: `packages/omc-opencode/src/features/team-mode/AGENTS.md` and `packages/team-core/AGENTS.md`.

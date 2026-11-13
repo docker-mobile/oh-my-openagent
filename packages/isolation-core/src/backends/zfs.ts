@@ -38,7 +38,7 @@ export class ZfsBackend implements IsolationBackend {
     const source = await this.dataset(lower)
     if (!source) throw new IsolationUnavailableError("source is not a ZFS dataset root")
     if (!/^[a-zA-Z0-9_.-]+$/.test(ctx.id)) throw new Error("Invalid ZFS isolation id")
-    const snapshot = `${source}@omo-${ctx.id}`, dataset = `${source}/omo-${ctx.id}`
+    const snapshot = `${source}@omc-${ctx.id}`, dataset = `${source}/omc-${ctx.id}`
     await mkdir(ctx.baseDir, { recursive: true })
     await this.capable(["zfs", "snapshot", snapshot])
     // Persist the snapshot before clone so a crash or clone failure can be reclaimed.
@@ -54,9 +54,9 @@ export class ZfsBackend implements IsolationBackend {
       throw error
     }
     if (!marker.dataset && !marker.snapshot) return undefined
-    const source = marker.snapshot?.split("@omo-")[0]
-    const suffix = marker.snapshot?.split("@omo-")[1]
-    if (marker.backend !== "zfs" || !source || !suffix || !/^[a-zA-Z0-9_.-]+$/.test(suffix) || marker.dataset !== `${source}/omo-${suffix}`) throw new Error("Invalid ZFS isolation marker")
+    const source = marker.snapshot?.split("@omc-")[0]
+    const suffix = marker.snapshot?.split("@omc-")[1]
+    if (marker.backend !== "zfs" || !source || !suffix || !/^[a-zA-Z0-9_.-]+$/.test(suffix) || marker.dataset !== `${source}/omc-${suffix}`) throw new Error("Invalid ZFS isolation marker")
     return marker
   }
   async relocate(from: string, to: string) {

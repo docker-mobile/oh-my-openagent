@@ -31,10 +31,10 @@ export type { SenpiLauncher } from "./senpi-launcher"
 const require = createRequire(import.meta.url)
 
 const SESSION_DIR_ENV = "SENPI_CODING_AGENT_SESSION_DIR"
-export const OMO_SENPI_TASK_RPC_CHILD = "OMO_SENPI_TASK_RPC_CHILD"
-export const OMO_SENPI_TASK_DEPTH = "OMO_SENPI_TASK_DEPTH"
-export const OMO_SENPI_TASK_ROOT_SESSION_ID = "OMO_SENPI_TASK_ROOT_SESSION_ID"
-export const OMO_SENPI_TASK_TRACEPARENT = "OMO_SENPI_TASK_TRACEPARENT"
+export const OMC_SENPI_TASK_RPC_CHILD = "OMC_SENPI_TASK_RPC_CHILD"
+export const OMC_SENPI_TASK_DEPTH = "OMC_SENPI_TASK_DEPTH"
+export const OMC_SENPI_TASK_ROOT_SESSION_ID = "OMC_SENPI_TASK_ROOT_SESSION_ID"
+export const OMC_SENPI_TASK_TRACEPARENT = "OMC_SENPI_TASK_TRACEPARENT"
 const RPC_ENTRY_SPECIFIER = "@code-yeongyu/senpi/rpc-entry"
 
 export type RpcSpawnSpec = RpcRunnerSpec & {
@@ -50,7 +50,7 @@ export type RpcSpawnDescriptor = {
 
 export type RpcSpawnRuntime = {
   readonly isBunBinary: boolean
-  // The running process embeds the engine (a compiled omo or senpi binary), so it IS the child engine.
+  // The running process embeds the engine (a compiled omc or senpi binary), so it IS the child engine.
   readonly isCompiledEngine?: boolean
   readonly execPath: string
   readonly platform: NodeJS.Platform
@@ -168,12 +168,12 @@ function buildChildProfile(
   for (const name of [...MEMBER_PROCESS_ENV_NAMES, ...WORKPOOL_PROCESS_ENV_NAMES]) delete env[name]
   Object.assign(env, spec.memberEnv)
   env[SESSION_DIR_ENV] = resolveChildSessionDir(spec.state_dir, spec.task_id)
-  env[OMO_SENPI_TASK_RPC_CHILD] = "1"
+  env[OMC_SENPI_TASK_RPC_CHILD] = "1"
   // stdio-RPC children forward extension events (e.g. computer.permission_required) only when
   // their client capabilities advertise extension_events; without it the event never reaches the wire.
   // senpi's parseClientCapabilities splits on COMMAS only, so join and check with a comma split:
   // a space-joined value would parse one capability as "b extension_events" and drop the event.
-  for (const varName of ["SENPI_RPC_CLIENT_CAPABILITIES", "RPC_CLIENT_CAPABILITIES", "OMO_RPC_CLIENT_CAPABILITIES"]) {
+  for (const varName of ["SENPI_RPC_CLIENT_CAPABILITIES", "RPC_CLIENT_CAPABILITIES", "OMC_RPC_CLIENT_CAPABILITIES"]) {
     const current = env[varName]
     if (current !== undefined && !current.split(",").map((entry) => entry.trim()).includes("extension_events")) {
       env[varName] = current.trim() === "" ? "extension_events" : `${current.trim()},extension_events`
@@ -181,12 +181,12 @@ function buildChildProfile(
   }
   if (env.SENPI_RPC_CLIENT_CAPABILITIES === undefined) env.SENPI_RPC_CLIENT_CAPABILITIES = "extension_events"
   // A parent that is itself a child must not hand its OWN place in the tree down unchanged.
-  delete env[OMO_SENPI_TASK_DEPTH]
-  delete env[OMO_SENPI_TASK_ROOT_SESSION_ID]
-  delete env[OMO_SENPI_TASK_TRACEPARENT]
-  if (spec.depth !== undefined) env[OMO_SENPI_TASK_DEPTH] = String(spec.depth)
-  if (spec.root_session_id !== undefined) env[OMO_SENPI_TASK_ROOT_SESSION_ID] = spec.root_session_id
-  if (spec.traceparent !== undefined) env[OMO_SENPI_TASK_TRACEPARENT] = spec.traceparent
+  delete env[OMC_SENPI_TASK_DEPTH]
+  delete env[OMC_SENPI_TASK_ROOT_SESSION_ID]
+  delete env[OMC_SENPI_TASK_TRACEPARENT]
+  if (spec.depth !== undefined) env[OMC_SENPI_TASK_DEPTH] = String(spec.depth)
+  if (spec.root_session_id !== undefined) env[OMC_SENPI_TASK_ROOT_SESSION_ID] = spec.root_session_id
+  if (spec.traceparent !== undefined) env[OMC_SENPI_TASK_TRACEPARENT] = spec.traceparent
   const extensions = spec.memberEnv === undefined
     ? spec.extensions?.filter((entry) => basename(entry) !== MEMBER_EXTENSION_BUNDLE_NAME)
     : spec.extensions

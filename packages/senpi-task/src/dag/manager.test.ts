@@ -458,7 +458,7 @@ describe("createDagManager list", () => {
   })
 
   test("#given the runs directory vanished after the store opened #when listed #then the session has no runs instead of an ENOENT crash", async () => {
-    // given - a worktree cleanup (git clean, rm -rf .omo) removes the state dir while the session is live
+    // given - a worktree cleanup (git clean, rm -rf .omc) removes the state dir while the session is live
     const { store, dag } = manager(tempProject())
     await dag.start({ definition: definition(), parentSessionId, rootSessionId })
     fs.rmSync(store.paths.runs, { recursive: true, force: true })
@@ -522,7 +522,7 @@ describe("createDagManager amend", () => {
     expect(amended.nodes[1]?.error).toBeUndefined()
     expect(amended.amendHistory).toHaveLength(1)
     expect(store.readEvents(started.snapshot.runId, 0, { limit: 10 }).events.at(-1)?.type).toBe("dag.definition.amended")
-    // Observe surfaces (/dag, widget, omo.dag.updated) read the projected snapshot, so the amend
+    // Observe surfaces (/dag, widget, omc.dag.updated) read the projected snapshot, so the amend
     // history has to survive the projection or the "amended xN" marker can never render.
     expect(dag.snapshot(started.snapshot.runId, parentSessionId).amendHistory).toHaveLength(1)
     expect(dag.snapshot(started.snapshot.runId, parentSessionId).nodes[1]?.attempt).toBe(1)

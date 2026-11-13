@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next"
 
 /**
  * `/design` is the primitive showcase (DESIGN.md §5/§13). It only renders when
- * OMO_WEB_SHOWCASE=1 and is never indexable.
+ * OMC_WEB_SHOWCASE=1 and is never indexable.
  */
-const SHOWCASE_ENABLED = process.env.OMO_WEB_SHOWCASE === "1"
+const SHOWCASE_ENABLED = process.env.OMC_WEB_SHOWCASE === "1"
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -13,6 +13,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: SHOWCASE_ENABLED ? ["/design"] : [],
     },
-    sitemap: "https://omo.dev/sitemap.xml",
+    sitemap: "https://omc.nga.hm/sitemap.xml",
   }
 }

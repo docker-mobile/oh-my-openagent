@@ -8,8 +8,8 @@ Checked-in JSON artifacts consumed by editors, CLIs, installers, and published p
 
 ```
 assets/
-├── oh-my-opencode.schema.json   # OpenCode edition config schema
-├── omo.schema.json              # Harness-neutral omo.json schema
+├── oh-my-cybersecurity.schema.json   # OpenCode edition config schema
+├── omc.schema.json              # Harness-neutral omc.json schema
 └── help/                        # Machine-readable CLI help schemas
     ├── acp.schema.json
     ├── doctor.schema.json
@@ -21,17 +21,17 @@ assets/
 
 | Artifact | Generator / source |
 |----------|--------------------|
-| `oh-my-opencode.schema.json` | `script/build-schema.ts` + OpenCode Zod schemas under `packages/omo-opencode/src/config/schema/` |
-| `omo.schema.json` | `script/build-omo-schema.ts` + `packages/omo-config-core/` |
+| `oh-my-cybersecurity.schema.json` | `script/build-schema.ts` + OpenCode Zod schemas under `packages/omc-opencode/src/config/schema/` |
+| `omc.schema.json` | `script/build-omc-schema.ts` + `packages/omc-config-core/` |
 | `help/*.schema.json` | `script/build-help-schemas.ts` + CLI help definitions |
 
 ## COMMANDS
 
 ```bash
 bun run build:schema
-bun run build:omo-schema
+bun run build:omc-schema
 bun run script/build-help-schemas.ts
-bun test tests/omo-schema-freshness.test.ts
+bun test tests/omc-schema-freshness.test.ts
 ```
 
 ## CONVENTIONS

@@ -2,9 +2,9 @@
  * Herdr backend for the tmux-subagent pane manager.
  *
  * The tmux backend maps subagents onto panes of the caller's window (inline)
- * or a dedicated `omo-agents-<pid>` window/session (isolated). On herdr every
+ * or a dedicated `omc-agents-<pid>` window/session (isolated). On herdr every
  * isolation mode maps to the same shape: one workspace per manager process
- * (`omo-agents-<pid>[-<managerId>]`, mirroring `getIsolatedSessionName`) with
+ * (`omc-agents-<pid>[-<managerId>]`, mirroring `getIsolatedSessionName`) with
  * one tab per subagent. Tabs are cheap, so there is no grid-capacity
  * arithmetic - the spawn decision is only session readiness.
  *
@@ -30,8 +30,8 @@ import {
   type HerdrOpsDeps,
 } from "./herdr-core"
 
-/** `omo-agents-<pid>` / `omo-agents-<pid>-<managerId>` - same grammar as tmux isolated sessions. */
-export const HERDR_AGENTS_WORKSPACE_LABEL_PATTERN = /^omo-agents-(\d+)(?:-([A-Za-z0-9]+))?$/
+/** `omc-agents-<pid>` / `omc-agents-<pid>-<managerId>` - same grammar as tmux isolated sessions. */
+export const HERDR_AGENTS_WORKSPACE_LABEL_PATTERN = /^omc-agents-(\d+)(?:-([A-Za-z0-9]+))?$/
 
 export function getHerdrAgentsWorkspaceLabel(pid: number = process.pid, managerId?: string): string {
   return managerId
@@ -114,7 +114,7 @@ export type SweepStaleHerdrAgentsWorkspacesDeps = {
 }
 
 /**
- * Herdr-side stale sweep for subagent workspaces: close `omo-agents-<pid>`
+ * Herdr-side stale sweep for subagent workspaces: close `omc-agents-<pid>`
  * workspaces whose owning manager process is gone, but only when no live
  * agent remains in them (the workspace may still host a running attach).
  * Mirrors `sweepStaleHerdrTeamWorkspacesWith` in team-core and the tmux

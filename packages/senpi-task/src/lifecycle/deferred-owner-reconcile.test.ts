@@ -70,7 +70,7 @@ async function bounded<T>(promise: Promise<T>): Promise<T> {
   }
 }
 
-describe("deferred foreign owner reconciliation (omo#9715)", () => {
+describe("deferred foreign owner reconciliation (omc#9715)", () => {
   test("startup observes dead-child recovery before a one-response parent can exit", async () => {
     // Given a dead child whose owner is still visible during startup.
     const f = fixture([1, 2])

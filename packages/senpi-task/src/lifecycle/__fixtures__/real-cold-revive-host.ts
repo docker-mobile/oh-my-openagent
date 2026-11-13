@@ -7,7 +7,7 @@ import { runTaskSend } from "../../tools/control/send"
  * The host-session variant of the real cold revival: the SAME real manager, lifecycle, steering
  * engine and store as `real-cold-revive.ts`, with the child living as a SESSION of a daemon instead
  * of a child process. The daemon is faked at the socket (no provider, no network, no engine), but
- * everything omo owns is real - including the JSONL transcript the daemon writes, which is what a
+ * everything omc owns is real - including the JSONL transcript the daemon writes, which is what a
  * cold revival needs on disk to consider the child continuable at all.
  *
  * What it proves: an idle-parked daemon child is reopened at its RECORDED session path exactly once,

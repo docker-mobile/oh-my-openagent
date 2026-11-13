@@ -33,11 +33,11 @@ afterEach(() => {
 function tempProject(): string {
   const directory = fs.mkdtempSync(join(tmpdir(), "senpi-dag-store-"))
   cleanupRoots.push(directory)
-  const dagRoot = join(directory, ".omo", "senpi-task", "dag")
+  const dagRoot = join(directory, ".omc", "senpi-task", "dag")
   for (const name of ["keys", "runs", "events", "results", "locks"]) {
     fs.mkdirSync(join(dagRoot, name), { recursive: true })
   }
-  fs.writeFileSync(join(directory, ".omo", "senpi-task", ".in-project"), "")
+  fs.writeFileSync(join(directory, ".omc", "senpi-task", ".in-project"), "")
   return directory
 }
 
@@ -1135,7 +1135,7 @@ describe("createDagFileStore locks and retention", () => {
 
 describe("createDagFileStore state directory loss", () => {
   test("#given the whole dag state directory vanished after the store opened #when a run lock and a checkpoint are written #then both recreate their directories", () => {
-    // given - a worktree cleanup (git clean, rm -rf .omo) removes the state dir while the session is live
+    // given - a worktree cleanup (git clean, rm -rf .omc) removes the state dir while the session is live
     const store = createDagFileStore({ project_dir: tempProject() })
     fs.rmSync(store.paths.root, { recursive: true, force: true })
 

@@ -27,27 +27,27 @@ describe("readSessionRole", () => {
     expect(readSessionRole({}, NO_ENV)).toBeUndefined()
   })
 
-  test("#given a session opened with each omo role #when read #then the role comes from the session, not the process", () => {
+  test("#given a session opened with each omc role #when read #then the role comes from the session, not the process", () => {
     // given / when / then
     expect(readSessionRole({ sessionContext: { role: "child" } }, NO_ENV)).toBe("child")
     expect(readSessionRole({ sessionContext: { role: "dag_child" } }, NO_ENV)).toBe("dag_child")
     expect(readSessionRole({ sessionContext: { role: "member" } }, NO_ENV)).toBe("member")
   })
 
-  test("#given a role this build does not know #when read #then it still reads as omo-spawned child work", () => {
+  test("#given a role this build does not know #when read #then it still reads as omc-spawned child work", () => {
     // given / when / then
     expect(readSessionRole({ sessionContext: { role: "dream_child" } }, NO_ENV)).toBe("child")
   })
 
   test("#given no session context but the per-child process env #when read #then the env answers for that process", () => {
     // given / when / then
-    expect(readSessionRole({}, { OMO_SENPI_TASK_RPC_CHILD: "1" })).toBe("child")
+    expect(readSessionRole({}, { OMC_SENPI_TASK_RPC_CHILD: "1" })).toBe("child")
     expect(readSessionRole({}, { SENPI_TASK_MEMBER: "run::builder" })).toBe("member")
   })
 
   test("#given a host session whose opener labelled it #when the process env says otherwise #then the session wins", () => {
     // given / when / then
-    expect(readSessionRole({ sessionContext: { role: "dag_child" } }, { OMO_SENPI_TASK_RPC_CHILD: "1" })).toBe("dag_child")
+    expect(readSessionRole({ sessionContext: { role: "dag_child" } }, { OMC_SENPI_TASK_RPC_CHILD: "1" })).toBe("dag_child")
   })
 })
 
@@ -88,20 +88,20 @@ describe("readSessionAncestry (#9036)", () => {
     const pi = { sessionContext: { role: "child", task_id: "st_1", state_dir: "/s", depth: "2", root_session_id: "root" } }
 
     // when / then
-    expect(readSessionAncestry(pi, { OMO_SENPI_TASK_RPC_CHILD: "1", OMO_SENPI_TASK_DEPTH: "7" })).toEqual({ depth: 2, rootSessionId: "root" })
+    expect(readSessionAncestry(pi, { OMC_SENPI_TASK_RPC_CHILD: "1", OMC_SENPI_TASK_DEPTH: "7" })).toEqual({ depth: 2, rootSessionId: "root" })
   })
 
   test("#given a per-child process env #when read #then the env depth and root are returned", () => {
     // given / when / then
-    expect(readSessionAncestry({}, { OMO_SENPI_TASK_RPC_CHILD: "1", OMO_SENPI_TASK_DEPTH: "3", OMO_SENPI_TASK_ROOT_SESSION_ID: "root" }))
+    expect(readSessionAncestry({}, { OMC_SENPI_TASK_RPC_CHILD: "1", OMC_SENPI_TASK_DEPTH: "3", OMC_SENPI_TASK_ROOT_SESSION_ID: "root" }))
       .toEqual({ depth: 3, rootSessionId: "root" })
   })
 
   test("#given a known child launched without a depth #when read #then it counts as depth 1, never as top-level", () => {
     // given / when / then
     expect(readSessionAncestry({ sessionContext: { role: "child", task_id: "st_1", state_dir: "/s" } }, NO_ENV)).toEqual({ depth: 1 })
-    expect(readSessionAncestry({}, { OMO_SENPI_TASK_RPC_CHILD: "1" })).toEqual({ depth: 1 })
-    expect(readSessionAncestry({}, { OMO_SENPI_TASK_RPC_CHILD: "1", OMO_SENPI_TASK_DEPTH: "garbage" })).toEqual({ depth: 1 })
+    expect(readSessionAncestry({}, { OMC_SENPI_TASK_RPC_CHILD: "1" })).toEqual({ depth: 1 })
+    expect(readSessionAncestry({}, { OMC_SENPI_TASK_RPC_CHILD: "1", OMC_SENPI_TASK_DEPTH: "garbage" })).toEqual({ depth: 1 })
   })
 
   test("#given a child spec with depth #when the daemon context is built #then the reader recovers the same depth and root", () => {
@@ -122,7 +122,7 @@ describe("readSessionTraceparent", () => {
     const context = buildChildContext({ task_id: "st_1", cwd: "/p", state_dir: "/s", prompt: "work", traceparent: delegating }).context
 
     // when / then
-    expect(readSessionTraceparent({ sessionContext: context }, { OMO_SENPI_TASK_RPC_CHILD: "1", OMO_SENPI_TASK_TRACEPARENT: stale }))
+    expect(readSessionTraceparent({ sessionContext: context }, { OMC_SENPI_TASK_RPC_CHILD: "1", OMC_SENPI_TASK_TRACEPARENT: stale }))
       .toBe(delegating)
   })
 
@@ -132,13 +132,13 @@ describe("readSessionTraceparent", () => {
 
     // when / then
     expect(context["traceparent"]).toBeUndefined()
-    expect(readSessionTraceparent({ sessionContext: context }, { OMO_SENPI_TASK_RPC_CHILD: "1", OMO_SENPI_TASK_TRACEPARENT: stale }))
+    expect(readSessionTraceparent({ sessionContext: context }, { OMC_SENPI_TASK_RPC_CHILD: "1", OMC_SENPI_TASK_TRACEPARENT: stale }))
       .toBeUndefined()
   })
 
-  test("#given the per-child process env #when read #then only an omo-spawned child adopts it; an ordinary session ignores the variable", () => {
+  test("#given the per-child process env #when read #then only an omc-spawned child adopts it; an ordinary session ignores the variable", () => {
     // given / when / then
-    expect(readSessionTraceparent({}, { OMO_SENPI_TASK_RPC_CHILD: "1", OMO_SENPI_TASK_TRACEPARENT: delegating })).toBe(delegating)
-    expect(readSessionTraceparent({}, { OMO_SENPI_TASK_TRACEPARENT: delegating })).toBeUndefined()
+    expect(readSessionTraceparent({}, { OMC_SENPI_TASK_RPC_CHILD: "1", OMC_SENPI_TASK_TRACEPARENT: delegating })).toBe(delegating)
+    expect(readSessionTraceparent({}, { OMC_SENPI_TASK_TRACEPARENT: delegating })).toBeUndefined()
   })
 })

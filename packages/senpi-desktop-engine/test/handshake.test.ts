@@ -1,7 +1,7 @@
 import { spawn } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { ENGINE_ABI, PROTOCOL_VERSION } from "@oh-my-opencode/senpi-desktop-protocol";
+import { ENGINE_ABI, PROTOCOL_VERSION } from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import { describe, expect, it } from "vitest";
 import {
 	DesktopEngineAbiMismatchError,

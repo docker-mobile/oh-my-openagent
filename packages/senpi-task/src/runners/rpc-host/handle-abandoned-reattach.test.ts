@@ -14,7 +14,7 @@ import { createReattachPort } from "./reattach-port"
 import type { OpenedHostSession } from "./session-client"
 
 /**
- * omo#10925: once a lost transport's recovery bound runs out, the child parks and live-parent
+ * omc#10925: once a lost transport's recovery bound runs out, the child parks and live-parent
  * recovery owns its session (it respawns it, or closes it on the host when the budget runs out).
  * The reattach the bound abandoned must not start another attempt when its stalled open finally
  * fails: on Windows that failure arrives after the give-up closed the session, and the retry

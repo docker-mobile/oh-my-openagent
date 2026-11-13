@@ -230,7 +230,7 @@ describe("resolveCategory on GPT registries", () => {
     expect(result.spec).toMatchObject({ modelId: "gpt-5.6-sol", variant: "medium" })
   })
 
-  it("#given an omo.json prompt_append for deep-high #when it resolves on Astra #then the user overlay follows the lane append", () => {
+  it("#given an omc.json prompt_append for deep-high #when it resolves on Astra #then the user overlay follows the lane append", () => {
     const result = resolveCategory("deep-high", { categories: { "deep-high": { prompt_append: "team-overlay" } } }, astraRegistry)
     expect(result.kind).toBe("resolved")
     if (result.kind !== "resolved") throw new Error("Expected resolved")

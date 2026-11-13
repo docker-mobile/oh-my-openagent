@@ -18,7 +18,7 @@ import type { DagNodeId, DagRoute } from "./types"
 const nodeId = (value: string): DagNodeId => value as DagNodeId
 
 const categoryRoute: DagRoute = { kind: "category", category: "quick" }
-const agentRoute: DagRoute = { kind: "agent", agent: "omo", model: "gpt-5.6" }
+const agentRoute: DagRoute = { kind: "agent", agent: "omc", model: "gpt-5.6" }
 
 const baseNode: DagNodeFingerprintInputV1 = {
   nodeId: nodeId("a"),

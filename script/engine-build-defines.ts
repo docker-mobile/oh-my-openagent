@@ -8,7 +8,7 @@ import {
 	resolveEngineBuildStamp,
 	type EngineBuildStamp,
 	type OmoBuildInfo,
-} from "../packages/omo-native/build-info"
+} from "../packages/omc-native/build-info"
 
 /** bun `--define` pairs matching senpi `scripts/build-binaries.sh`. Empty when scheme is `nodef`. */
 export function engineBuildDefineArgs(stamp: EngineBuildStamp): readonly string[] {

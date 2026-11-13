@@ -81,7 +81,7 @@ function ownerCannotApplyText(outcome: { readonly task_id: string; readonly owne
   const where = outcome.reason === "channel_disabled"
     ? "task.control_channel is off in this process, so it cannot carry a cancel there"
     : outcome.reason === "handle_gone" ? "that process no longer holds the child" : "that process cannot take a cancel from here"
-  return `owner cannot apply: ${outcome.reason} - task ${outcome.task_id} is running in another omo process (pid ${outcome.owner_pid}); ${where}. It can be cancelled once that process restarts or exits, or from that process. No change.`
+  return `owner cannot apply: ${outcome.reason} - task ${outcome.task_id} is running in another omc process (pid ${outcome.owner_pid}); ${where}. It can be cancelled once that process restarts or exits, or from that process. No change.`
 }
 
 export function createTaskCancelTool(deps: TaskCancelDeps): ToolDefinition<typeof TaskCancelParams, CancelResultDetails> {

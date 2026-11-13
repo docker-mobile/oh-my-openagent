@@ -418,7 +418,7 @@ describe("validateTaskTarget category+model exclusivity", () => {
     expect(result.kind).toBe("error")
     if (result.kind !== "error") throw new Error("expected error")
     expect(result.error.code).toBe("category_with_model")
-    expect(result.error.message).toContain("omo.json")
+    expect(result.error.message).toContain("omc.json")
   })
 
   test("#given subagent_type with model #when validated #then resolves to a subagent selection", () => {
@@ -442,7 +442,7 @@ describe("resolveSpawnItems category+model exclusivity", () => {
     expect(result.kind).toBe("error")
     if (result.kind !== "error") throw new Error("expected error")
     expect(result.error.code).toBe("item_target")
-    expect(result.error.message).toContain("omo.json")
+    expect(result.error.message).toContain("omc.json")
   })
 
   test("#given a top-level model inherited by a category item #then returns an item_target error", () => {

@@ -12,7 +12,7 @@ afterEach(cleanupProjects)
 
 const TASK = "st_00009791"
 
-// A running child whose abort is never answered: the case that held task_cancel forever (omo#9791).
+// A running child whose abort is never answered: the case that held task_cancel forever (omc#9791).
 function deafChild(calls: string[]): ManagedChildHandle {
   return {
     task_id: TASK,
@@ -62,7 +62,7 @@ function steeringFor(store: TaskRecordStore, handle: ManagedChildHandle, deadlin
 
 type ManualDeadline = ReturnType<typeof manualDeadline>
 
-describe("task_cancel and interrupt on a running child that never answers its abort (omo#9791)", () => {
+describe("task_cancel and interrupt on a running child that never answers its abort (omc#9791)", () => {
   test("#given a running child that ignores abort #when cancelled #then once the abort budget expires the child is destroyed and the cancel completes", async () => {
     // given
     const store = tempStore()

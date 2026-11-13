@@ -53,7 +53,7 @@ and CJK width):
 ```bash
 node script/qa/web-terminal-visual-qa.mjs --title "Codex TUI /debug-config" \
   --command "codex" --input "/debug-config" --input "{Enter}" \
-  --evidence-dir .omo/evidence/<slug>/codex-debug-config-web-terminal
+  --evidence-dir .omc/evidence/<slug>/codex-debug-config-web-terminal
 ```
 
 Attach the resulting `terminal.png` and keep `metadata.json` with the cleanup

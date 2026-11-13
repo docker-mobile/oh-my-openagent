@@ -34,7 +34,7 @@ export const connectOrNotRunning = async (
     // dead_endpoint: nothing listens (a dead service left its file); refused: it refused us or failed the mutual proof;
     // unreadable: its state dir or token could not be read safely; timed_out: it did not answer in time.
     const { cause, detail } = connectFailure(error)
-    log?.(`OmO device service: ${cause}, treated as not running (${detail}).`)
+    log?.(`OmC device service: ${cause}, treated as not running (${detail}).`)
     return "not_running"
   }
 }

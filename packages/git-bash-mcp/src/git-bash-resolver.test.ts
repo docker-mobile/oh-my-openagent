@@ -60,7 +60,7 @@ describe("resolveGitBash checkedPaths on success", () => {
     const overridePath = "D:\\Tools\\Git\\bin\\bash.exe";
     const result = resolveGitBash({
       platform: "win32",
-      env: { OMO_CODEX_GIT_BASH_PATH: overridePath },
+      env: { OMC_CODEX_GIT_BASH_PATH: overridePath },
       exists: (path) => path === overridePath,
       where: () => [],
     });

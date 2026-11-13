@@ -1,15 +1,15 @@
 import { shouldDisableTelemetry } from "./env"
 import type { TelemetryEnv } from "./types"
 
-export const DEFAULT_OTLP_ENDPOINT = "https://t.omo.dev"
+export const DEFAULT_OTLP_ENDPOINT = "https://t.omc.nga.hm"
 
 /**
- * `OMO_TELEMETRY_ENDPOINT` overrides the configured endpoint. The standard `OTEL_EXPORTER_OTLP_*`
+ * `OMC_TELEMETRY_ENDPOINT` overrides the configured endpoint. The standard `OTEL_EXPORTER_OTLP_*`
  * variables are deliberately never read: a machine-wide OpenTelemetry setup must not redirect
  * product telemetry (D-H).
  */
 export function resolveOtlpEndpoint(env: TelemetryEnv, configured?: string): string {
-  const override = env["OMO_TELEMETRY_ENDPOINT"]?.trim()
+  const override = env["OMC_TELEMETRY_ENDPOINT"]?.trim()
   const base = override !== undefined && override.length > 0 ? override : configured ?? DEFAULT_OTLP_ENDPOINT
   return base.replace(/\/+$/, "")
 }

@@ -35,17 +35,17 @@ The refactor splits packages into strict layers by runtime boundary:
 | Platform | Generated Node launcher packages per target | Deployment artifacts. Never imported. |
 | Web | Marketing site | Independent application. |
 
-**Dependency rule:** The intended DAG flows downward: Adapters depend on Core, MCP, and Skills, while Platform and Web are leaves. The source-backed exceptions are the intentional same-layer adapter-support edge `@oh-my-opencode/omo-senpi -> @oh-my-opencode/senpi-task` (`senpi-task` is adapter support consumed by `omo-senpi`) and the transitional adapter-to-adapter edge `@oh-my-opencode/omo-opencode -> @oh-my-opencode/omo-codex` for Codex installer/distribution integration; both are outside the target layering.
+**Dependency rule:** The intended DAG flows downward: Adapters depend on Core, MCP, and Skills, while Platform and Web are leaves. The source-backed exceptions are the intentional same-layer adapter-support edge `@oh-my-cybersecurity/omc-senpi -> @oh-my-cybersecurity/senpi-task` (`senpi-task` is adapter support consumed by `omc-senpi`) and the transitional adapter-to-adapter edge `@oh-my-cybersecurity/omc-opencode -> @oh-my-cybersecurity/omc-codex` for Codex installer/distribution integration; both are outside the target layering.
 
 **Migration principle:** Existing behavior is preserved. Nothing breaks. Each extraction is a pure move: copy logic into Core, make the original location re-export from Core, verify tests still pass, then delete the duplicate in the other repositories.
 
 **Current extraction status:**
 
-- 19 Core packages are now extracted under `packages/`, including `omo-config-core`: `utils`, `model-core`, `prompts-core`, `rules-engine`, `agents-md-core`, `comment-checker-core`, `hashline-core`, `boulder-state`, `telemetry-core`, `lsp-core`, `mcp-stdio-core`, `tmux-core`, `claude-code-compat-core`, `skills-loader-core`, `mcp-client-core`, `openclaw-core`, `team-core`, `delegate-core`, and `omo-config-core`.
-- `omo` consumes these packages via workspace dependencies, with adapter shims left at original `packages/omo-opencode/src/` locations where OpenCode-facing import paths or runtime wiring still need stable anchors.
+- 19 Core packages are now extracted under `packages/`, including `omc-config-core`: `utils`, `model-core`, `prompts-core`, `rules-engine`, `agents-md-core`, `comment-checker-core`, `hashline-core`, `boulder-state`, `telemetry-core`, `lsp-core`, `mcp-stdio-core`, `tmux-core`, `claude-code-compat-core`, `skills-loader-core`, `mcp-client-core`, `openclaw-core`, `team-core`, `delegate-core`, and `omc-config-core`.
+- `omc` consumes these packages via workspace dependencies, with adapter shims left at original `packages/omc-opencode/src/` locations where OpenCode-facing import paths or runtime wiring still need stable anchors.
 - The `lsp-tools-mcp` and `lsp-daemon` packages are vendored in-tree and now consume `lsp-core` plus `mcp-stdio-core` instead of deep-importing each other's source internals.
 
-Current layering: Core (19 pure-TS packages, including `omo-config-core`) -> MCP packages -> Adapters (OpenCode, Codex, Senpi, standalone Pi goal/webfetch) -> generated platform launcher packages, with the intentional same-layer Senpi adapter-support edge and transitional OpenCode-to-Codex adapter edge documented above. The adapter boundaries keep future harnesses able to consume the same Core layer.
+Current layering: Core (19 pure-TS packages, including `omc-config-core`) -> MCP packages -> Adapters (OpenCode, Codex, Senpi, standalone Pi goal/webfetch) -> generated platform launcher packages, with the intentional same-layer Senpi adapter-support edge and transitional OpenCode-to-Codex adapter edge documented above. The adapter boundaries keep future harnesses able to consume the same Core layer.
 
 The Pi Engine DI abstraction was deferred. It can be revisited once the adapter migration is complete.
 
@@ -74,7 +74,7 @@ The industry changes too fast. Fixed patterns and agreed conventions should be i
 
 We express what each component does in markdown documentation, not in interface definitions.
 
-### Status: omo.json config core (landed senpi-first)
+### Status: omc.json config core (landed senpi-first)
 
 The first concrete step toward a harness-neutral config layer has landed: `omo-config-core` provides an `omo.json` schema, a walked multi-layer loader, and a comment-preserving atomic writer as pure, harness-neutral code, and the Senpi adapter's `task` component reads it in production. This was delivered senpi-first on purpose - Senpi had no existing config surface to preserve, so it was the safe place to prove the schema. The OpenCode edition still reads its own `oh-my-openagent.json` chain, and the two files have zero interaction today. Adopting `omo.json` in the OpenCode edition, and any migration path from `oh-my-openagent.json`, is the next phase. See [`docs/reference/omo-json.md`](docs/reference/omo-json.md).
 

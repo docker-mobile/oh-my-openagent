@@ -4,7 +4,7 @@ import { getMessages } from "next-intl/server"
 import { GraphHero } from "@/components/landing/graph/graph-hero"
 
 export default async function GraphDesignPage() {
-  if (process.env.OMO_WEB_SHOWCASE !== "1") notFound()
+  if (process.env.OMC_WEB_SHOWCASE !== "1") notFound()
   const messages = await getMessages()
   return (
     <NextIntlClientProvider messages={messages}>

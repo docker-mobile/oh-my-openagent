@@ -1,6 +1,6 @@
 import { normalizeModelFormat } from "../../shared/model-format-normalizer"
 import { normalizeModelID } from "../../shared/model-normalization"
-import { LATEST_MODEL_BY_FAMILY } from "@oh-my-opencode/model-core/latest-models"
+import { LATEST_MODEL_BY_FAMILY } from "@oh-my-cybersecurity/model-core/latest-models"
 
 const ANTHROPIC_PREFIX = "anthropic/"
 

@@ -5,7 +5,7 @@ import { join } from "node:path";
 
 const SCRIPT = join(import.meta.dir, "..", "scripts", "check-migrations-applied.sh");
 const check = async (files: Record<string, string>) => {
-  const dir = mkdtempSync(join(tmpdir(), "omo-get-migrations-"));
+  const dir = mkdtempSync(join(tmpdir(), "omc-get-migrations-"));
   try {
     for (const [name, body] of Object.entries(files)) writeFileSync(join(dir, name), body);
     const p = Bun.spawn(["bash", SCRIPT, dir], { stdout: "pipe", stderr: "pipe" });
@@ -36,6 +36,6 @@ test("a ledger line must match the whole file name", async () => {
 test("a missing ledger or a directory without migrations stops the deploy", async () => {
   expect((await check({ "0001_a.sql": "" })).code).toBe(1);
   expect((await check({ "applied.txt": "0001_a.sql\n" })).code).toBe(1);
-  const p = Bun.spawn(["bash", SCRIPT, join(tmpdir(), "omo-get-no-such-dir")], { stdout: "pipe" });
+  const p = Bun.spawn(["bash", SCRIPT, join(tmpdir(), "omc-get-no-such-dir")], { stdout: "pipe" });
   expect(await p.exited).toBe(1);
 });

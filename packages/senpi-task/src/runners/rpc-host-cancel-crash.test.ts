@@ -5,7 +5,7 @@ import { bounded, concurrencyOf, hostHolds, recordAt, startCancelLane } from "./
 import { HOST_CHILD_MODEL, type HostWorld } from "./rpc-host/__fixtures__/host-world"
 
 /**
- * omo#9403, seen live: a parent cancelled a child, the child's task-host shard crashed before the stop
+ * omc#9403, seen live: a parent cancelled a child, the child's task-host shard crashed before the stop
  * reached it, and crash recovery reopened the child's session from its transcript - it ran on for
  * minutes after its record said cancelled. An accepted cancel is final: recovery that reaches the
  * host again ends the session there instead of bringing the child back.

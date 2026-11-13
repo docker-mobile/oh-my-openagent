@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import type { HostSessionIdentity } from "../../state"
 import { HostSessionClient } from "./session-client"

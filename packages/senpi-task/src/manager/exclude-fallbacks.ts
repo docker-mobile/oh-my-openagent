@@ -1,9 +1,9 @@
-import { isExcludedModel } from "@oh-my-opencode/omo-config-core"
+import { isExcludedModel } from "@oh-my-cybersecurity/omc-config-core"
 
 import { splitModelDecorators } from "../senpi/explicit-pin"
 import type { ManagedRunner, ManagedStartSpec } from "./types"
 
-/** omo.json `exclude_models` patterns, or a getter read at every launch so a mid-session edit applies. */
+/** omc.json `exclude_models` patterns, or a getter read at every launch so a mid-session edit applies. */
 export type ExcludedModelPatterns = readonly string[] | (() => readonly string[] | undefined) | undefined
 
 /**

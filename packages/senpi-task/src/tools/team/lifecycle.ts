@@ -47,7 +47,7 @@ const InlineTeamSpecSchema = Type.Object(
 
 export const TeamCreateParams = Type.Object({
   team_name: Type.Optional(
-    Type.String({ description: "Named team spec (project .omo/teams or omo.json) to create. Ignored when inline_spec is also provided." }),
+    Type.String({ description: "Named team spec (project .omc/teams or omc.json) to create. Ignored when inline_spec is also provided." }),
   ),
   inline_spec: Type.Optional(
     Type.Union([InlineTeamSpecSchema, Type.String({ description: "The same spec as a JSON string; parsed automatically. Passing the object form is preferred." })], {

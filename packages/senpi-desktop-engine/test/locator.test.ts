@@ -121,8 +121,8 @@ describe("locateDesktopEngine", () => {
 		expect(result.diagnostic?.code).toBe("quarantined");
 	});
 
-	it("uses OMO_PACKAGE_DIR before a compiled sidecar without an explicit runtime directory", () => {
-		vi.stubEnv("OMO_PACKAGE_DIR", layout.runtimeDir);
+	it("uses OMC_PACKAGE_DIR before a compiled sidecar without an explicit runtime directory", () => {
+		vi.stubEnv("OMC_PACKAGE_DIR", layout.runtimeDir);
 		placeEngine(layout.extracted);
 		placeEngine(layout.sidecar);
 

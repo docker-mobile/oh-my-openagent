@@ -1,8 +1,8 @@
 #!/usr/bin/env bun
 // script/build-omob.ts
 // Builds a single-file dev binary ("omob") from the latest tracked senpi (origin/main)
-// and omo (origin/dev) commits and installs it under the omob name. Dev builds share
-// ~/.omo state with a regular omo installation; only the binary and its provisioned
+// and omc (origin/dev) commits and installs it under the omob name. Dev builds share
+// ~/.omc state with a regular omc installation; only the binary and its provisioned
 // runtime dir are namespaced by the commit pair.
 
 import { spawn, spawnSync } from "node:child_process"
@@ -10,7 +10,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, wri
 import { homedir } from "node:os"
 import { dirname, join, resolve } from "node:path"
 import { pathToFileURL } from "node:url"
-import { versionLines, type OmoBuildInfo } from "../packages/omo-native/build-info"
+import { versionLines, type OmoBuildInfo } from "../packages/omc-native/build-info"
 import { installOmobLauncher, isCurrentOmobBuild } from "./omob-launcher"
 import { writeProvenanceMarker } from "./omob-provenance"
 import { pruneOmobRuntimes } from "./omob-runtime-prune"
@@ -54,9 +54,9 @@ export function parseOmobArgs(argv: readonly string[], platform: string, arch: s
 	for (let index = 0; index < argv.length; index += 1) {
 		const argument = argv[index]
 		const value = argv[index + 1]
-		if (argument === "--senpi-ref" || argument === "--omo-ref" || argument === "--cache-dir" || argument === "--install-dir" || argument === "--name" || argument === "--target" || argument === "--senpi-url") {
+		if (argument === "--senpi-ref" || argument === "--omc-ref" || argument === "--cache-dir" || argument === "--install-dir" || argument === "--name" || argument === "--target" || argument === "--senpi-url") {
 			if (value === undefined) throw new Error(`${argument} requires a value`)
-			const normalizedKey = argument === "--senpi-ref" ? "senpiRef" : argument === "--omo-ref" ? "omoRef" : argument === "--cache-dir" ? "cacheDir" : argument === "--install-dir" ? "installDir" : argument === "--name" ? "name" : argument === "--senpi-url" ? "senpiUrl" : "target"
+			const normalizedKey = argument === "--senpi-ref" ? "senpiRef" : argument === "--omc-ref" ? "omoRef" : argument === "--cache-dir" ? "cacheDir" : argument === "--install-dir" ? "installDir" : argument === "--name" ? "name" : argument === "--senpi-url" ? "senpiUrl" : "target"
 			;(options as Record<string, unknown>)[normalizedKey] = value
 			index += 1
 		} else if (argument === "--keep") {
@@ -248,7 +248,7 @@ export function ensureCacheClone(url: string, directory: string, ref: string, sk
 	run("git", ["checkout", "--force", ref], directory)
 	run("git", ["reset", "--hard", ref], directory)
 	// checkout/reset do not recurse, so submodule pointers only match the ref AFTER it
-	// lands; omo materializes plugin skills from these upstreams during its build.
+	// lands; omc materializes plugin skills from these upstreams during its build.
 	run("git", ["submodule", "update", "--init", "--recursive", "--force"], directory)
 	const commit = runCaptured("git", ["rev-parse", "HEAD"], directory)
 	return { directory, commit }
@@ -433,7 +433,7 @@ function swapSenpi(omoDir: string, builtSenpiRoot: string): void {
 	mkdirSync(dirname(target), { recursive: true })
 	cpSync(builtSenpiRoot, target, { recursive: true })
 	// Re-apply the launcher's claude-code version floor patch on the swapped engine.
-	run("bun", [join("packages", "omo-native", "bin", "senpi-patch.mjs")], omoDir, { ...process.env, OMO_SENPI_PATCH_ROOT: target })
+	run("bun", [join("packages", "omc-native", "bin", "senpi-patch.mjs")], omoDir, { ...process.env, OMC_SENPI_PATCH_ROOT: target })
 }
 
 function installBinary(binaryPath: string, installDir: string, name: string, info: OmoBuildInfo): string {
@@ -465,10 +465,10 @@ async function main(argv: readonly string[]): Promise<number> {
 
 async function runBuild(options: OmobOptions): Promise<number> {
 	const senpiUrl = options.senpiUrl ?? DEFAULT_SENPI_URL
-	const omoUrl = "https://github.com/code-yeongyu/oh-my-openagent.git"
+	const omoUrl = "https://github.com/code-yeongyu/oh-my-cybersecurity.git"
 	console.error(`[omob] checking ${options.omoRef} + ${options.senpiRef}`)
 	const senpiSpec: CacheCloneSpec = { url: senpiUrl, directory: join(options.cacheDir, "senpi"), ref: options.senpiRef }
-	const omoSpec: CacheCloneSpec = { url: omoUrl, directory: join(options.cacheDir, "omo"), ref: options.omoRef }
+	const omoSpec: CacheCloneSpec = { url: omoUrl, directory: join(options.cacheDir, "omc"), ref: options.omoRef }
 	ensureCloneExists(senpiSpec.url, senpiSpec.directory)
 	ensureCloneExists(omoSpec.url, omoSpec.directory)
 	if (!options.skipFetch) await fetchCacheClones([senpiSpec, omoSpec])
@@ -477,7 +477,7 @@ async function runBuild(options: OmobOptions): Promise<number> {
 	const omoInfo = readCommitInfo(omoSpec.directory, options.omoRef)
 	const buildInfo: OmoBuildInfo = {
 		command: options.name,
-		omo: omoInfo,
+		omc: omoInfo,
 		engine: { commit: senpiInfo.commit, committedAt: senpiInfo.committedAt, branch: senpiInfo.branch },
 	}
 
@@ -485,52 +485,52 @@ async function runBuild(options: OmobOptions): Promise<number> {
 	// The filename needs a Windows executable suffix; the command/provenance name does not.
 	const installedName = options.target.startsWith("windows-") && !/\.exe$/i.test(options.name) ? `${options.name}.exe` : options.name
 	if (options.ifChanged && !options.skipInstall && isCurrentOmobBuild(join(installDir, installedName), buildInfo, options.target)) {
-		console.error(`[omob] current: omo ${omoInfo.commit} + senpi ${senpiInfo.commit}; no build needed`)
+		console.error(`[omob] current: omc ${omoInfo.commit} + senpi ${senpiInfo.commit}; no build needed`)
 		if (options.launcher) installOmobLauncher(options)
 		return 0
 	}
-	console.error(`[omob] building: omo ${omoInfo.commit} + senpi ${senpiInfo.commit}`)
+	console.error(`[omob] building: omc ${omoInfo.commit} + senpi ${senpiInfo.commit}`)
 	ensureCacheClone(senpiUrl, senpiSpec.directory, options.senpiRef, true)
 	ensureCacheClone(omoUrl, omoSpec.directory, options.omoRef, true)
 	const builtSenpiRoot = await buildSenpiPackage(senpiSpec.directory, options.cacheDir, senpiInfo.commit)
-	// The omo prepare chain materializes gitignored plugin/skills from the shared-skills
-	// upstream submodules; a caller's OMO_SKIP_MATERIALIZE=1 would skip that and break the
+	// The omc prepare chain materializes gitignored plugin/skills from the shared-skills
+	// upstream submodules; a caller's OMC_SKIP_MATERIALIZE=1 would skip that and break the
 	// build, so the dev-binary install always runs the full materialization.
 	const installEnv: NodeJS.ProcessEnv = { ...process.env }
-	delete installEnv.OMO_SKIP_MATERIALIZE
+	delete installEnv.OMC_SKIP_MATERIALIZE
 	// `bun install` triggers the root prepare, which otherwise builds the whole product - the
 	// OpenCode plugin bundle, the Codex Light plugin and its components, the CLI, the TUI,
-	// schemas and declarations - none of which the compiled binary embeds. build-omo-native
+	// schemas and declarations - none of which the compiled binary embeds. build-omc-native
 	// builds the plugin payload it does embed, so the binary only needs the materialized
 	// frontend from that chain.
-	run("bun", ["install"], omoSpec.directory, { ...installEnv, OMO_BUILD_PROFILE: "omo-native" })
+	run("bun", ["install"], omoSpec.directory, { ...installEnv, OMC_BUILD_PROFILE: "omc-native" })
 	swapSenpi(omoSpec.directory, builtSenpiRoot)
 
 	// Imported here, not at module scope: the fast path returns above, and this module graph
 	// (zod plus the sidecar fixture) is parsed on every managed launch otherwise.
-	const { RELEASE_BINARY_TARGETS } = await import("./build-omo-binary")
+	const { RELEASE_BINARY_TARGETS } = await import("./build-omc-binary")
 	const target = RELEASE_BINARY_TARGETS.find((entry) => entry.target === options.target)
 	if (target === undefined) throw new Error(`unknown target: ${options.target}`)
 	const omoAiVersion = deriveOmobAiVersion(omoInfo.commit, senpiInfo.commit)
-	// The compiled binary embeds the Rust desktop engine; build-omo-binary only stages it.
+	// The compiled binary embeds the Rust desktop engine; build-omc-binary only stages it.
 	const { ensureDesktopEngine } = await import("./omob-desktop-engine")
 	ensureDesktopEngine(omoSpec.directory, target.target)
 	const { ensureKeychainHelper } = await import("./omob-keychain-helper")
 	ensureKeychainHelper(omoSpec.directory, target.target)
 	const outDir = join(options.cacheDir, "out")
 	rmSync(outDir, { recursive: true, force: true })
-	// Build INSIDE the cache clone: build-omo-binary.ts derives repoRoot from its own
+	// Build INSIDE the cache clone: build-omc-binary.ts derives repoRoot from its own
 	// location, so only the clone's script sees the swapped engine + the clone's install.
 	run(
 		"bun",
 		[
 			"run",
-			join("script", "build-omo-binary.ts"),
+			join("script", "build-omc-binary.ts"),
 			"--target",
 			target.target,
-			"--omo-version",
+			"--omc-version",
 			omoAiVersion,
-			"--omo-ai-version",
+			"--omc-ai-version",
 			omoAiVersion,
 			"--out-dir",
 			outDir,
@@ -541,7 +541,7 @@ async function runBuild(options: OmobOptions): Promise<number> {
 		installEnv,
 	)
 	const binaryPath = join(outDir, target.binaryName)
-	if (!existsSync(binaryPath)) throw new Error(`build-omo-binary produced no binary at ${binaryPath}`)
+	if (!existsSync(binaryPath)) throw new Error(`build-omc-binary produced no binary at ${binaryPath}`)
 	const result = { binaryPath, size: statSync(binaryPath).size }
 
 	if (!options.skipInstall) {
@@ -551,7 +551,7 @@ async function runBuild(options: OmobOptions): Promise<number> {
 	}
 	// Pruning is only safe once the new binary is in place: a --skip-install run would
 	// otherwise delete the runtime a still-installed (possibly running) omob depends on.
-	if (!options.skipInstall) pruneOmobRuntimes({ runtimeRoot: join(homedir(), ".omo", "binary-runtime"), keep: options.keep, currentVersion: omoAiVersion })
+	if (!options.skipInstall) pruneOmobRuntimes({ runtimeRoot: join(homedir(), ".omc", "binary-runtime"), keep: options.keep, currentVersion: omoAiVersion })
 	// versionLines is the single formatter for provenance output; --version, doctor, the
 	// startup banner and this summary must never drift apart.
 	console.log(versionLines(buildInfo).join("\n"))

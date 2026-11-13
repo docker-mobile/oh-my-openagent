@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 
-import { resolveOmoTaskSettings } from "@oh-my-opencode/omo-config-core"
+import { resolveOmoTaskSettings } from "@oh-my-cybersecurity/omc-config-core"
 
 describe("task settings", () => {
   test("#given omitted or configured idle retention #when task settings resolve #then the canonical value reaches the engine", () => {

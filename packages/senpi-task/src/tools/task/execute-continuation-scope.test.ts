@@ -1,20 +1,20 @@
 import { afterEach, describe, expect, test } from "bun:test"
 
-import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
+import type { OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import { cleanupProjects, makeManager } from "../../manager/__fixtures__/manager-fakes"
 import type { TaskManager } from "../../manager"
 import { buildTaskExecute } from "./execute"
 import type { TaskToolContext, TaskToolDeps } from "./types"
 
-const OMO_CONFIG: OmoConfig = { categories: {}, agents: {} }
+const OMC_CONFIG: OmoConfig = { categories: {}, agents: {} }
 
 function ctxFor(sessionId: string): TaskToolContext {
   return { cwd: "/work/project", sessionManager: { getSessionId: () => sessionId } }
 }
 
 function deps(manager: TaskManager): TaskToolDeps {
-  return { manager, omoConfig: OMO_CONFIG, agents: {}, loadSkills: () => ({ prepend: "", resolved: [], missing: [] }) }
+  return { manager, omoConfig: OMC_CONFIG, agents: {}, loadSkills: () => ({ prepend: "", resolved: [], missing: [] }) }
 }
 
 afterEach(() => {

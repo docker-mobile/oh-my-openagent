@@ -1,7 +1,7 @@
 import type { GitMasterConfig } from "../../types"
 import { assertValidGitEnvPrefix } from "../../config/git-env-prefix"
 import { detectShellType, buildEnvPrefix, type ShellType } from "../../shared/shell-env"
-import { resolveGitAttribution, type GitAttributionCheckOptions } from "@oh-my-opencode/utils"
+import { resolveGitAttribution, type GitAttributionCheckOptions } from "@oh-my-cybersecurity/utils"
 
 const BASH_CODE_BLOCK_PATTERN = /```bash\r?\n([\s\S]*?)```/g
 const LEADING_GIT_COMMAND_PATTERN = /^([ \t]*(?:[A-Za-z_][A-Za-z0-9_]*=[^ \t]+\s+)*)git(?=[ \t]|$)/gm
@@ -191,7 +191,7 @@ function buildCommitAttributionInjection(
 			? undefined
 			: typeof commitFooter === "string"
 				? commitFooter
-				: "Ultraworked with [Sisyphus](https://github.com/code-yeongyu/oh-my-openagent)"
+				: "Ultraworked with [Sisyphus](https://github.com/code-yeongyu/oh-my-cybersecurity)"
 
 	const footerStep = footerText === undefined ? [] : ["1. **Footer in commit body:**", "```", footerText, "```", ""]
 	const coAuthorStep = includeCoAuthor

@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import type { TaskRecord } from "../state"
 import { TERMINAL_STATUSES, type LifecycleContext } from "./context"
@@ -7,8 +7,8 @@ import type { HostSessionCancelSink, HostSessionEnd } from "./host-session"
 import { endHostSessionChild, inFlightHostSessionEnd } from "./host-session-end"
 
 /**
- * Re-drives a no-handle host-session cancel that did not end on its first pass (omo#11765): nothing else
- * would in a live parent - the pending-cancel finish runs only at session start, and the omo#9403 deferred
+ * Re-drives a no-handle host-session cancel that did not end on its first pass (omc#11765): nothing else
+ * would in a live parent - the pending-cancel finish runs only at session start, and the omc#9403 deferred
  * stop resolves on a handle's connection, which this child has none of. Each backoff wait races an
  * in-flight close, so a close that never settles cannot hold the loop. Every exit but an engine dispose
  * settles the stop exactly once; a close confirmed after the loop gave up still finishes the cancel here.

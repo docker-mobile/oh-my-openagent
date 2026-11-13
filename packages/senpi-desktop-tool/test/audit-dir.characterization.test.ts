@@ -5,7 +5,7 @@
 // `DesktopService` whose engine child is the scripted fake desktop, and reads the wire requests it logged.
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { ExecuteTool } from "@oh-my-opencode/senpi-desktop-service";
+import type { ExecuteTool } from "@oh-my-cybersecurity/senpi-desktop-service";
 import { afterEach, describe, expect, it } from "vitest";
 import type { ComputerHandle } from "../src/activation";
 import {

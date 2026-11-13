@@ -1,9 +1,9 @@
 {
-  "name": "@oh-my-opencode/device-service-core",
+  "name": "@oh-my-cybersecurity/device-service-core",
   "version": "0.1.0",
   "type": "module",
   "private": true,
-  "description": "Typed SDK over the OmO device service's local API v1 (vendored client, pinned in PIN.json).",
+  "description": "Typed SDK over the OmC device service's local API v1 (vendored client, pinned in PIN.json).",
   "exports": {
     ".": "./src/index.ts"
   },

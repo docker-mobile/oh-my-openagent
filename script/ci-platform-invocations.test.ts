@@ -54,8 +54,8 @@ describe("#given the macOS/Windows-only steps in ci.yml", () => {
 
   test("#then the structural parse finds the dedicated Windows and macOS invocations", () => {
     expect(named).toContain("packages/senpi-task/src/runners/rpc-host")
-    expect(named).toContain("packages/omo-codex/plugin/test/node-install-surface.test.mjs")
-    expect(isPlatformSensitivePath("packages/omo-codex/plugin/test/node-install-surface.test.mjs", coverage)).toBe(true)
+    expect(named).toContain("packages/omc-codex/plugin/test/node-install-surface.test.mjs")
+    expect(isPlatformSensitivePath("packages/omc-codex/plugin/test/node-install-surface.test.mjs", coverage)).toBe(true)
   })
 
   test("#then every named file, and every dedicated directory below package level, forces the full matrix", () => {

@@ -1,0 +1,19 @@
+{
+  "name": "oh-my-cybersecurity-windows-x64",
+  "version": "5.1.65",
+  "description": "Platform-specific binary for oh-my-cybersecurity (windows-x64)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/code-yeongyu/oh-my-cybersecurity"
+  },
+  "os": [
+    "win32"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "files": [
+    "bin"
+  ]
+}

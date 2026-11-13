@@ -22,7 +22,7 @@ afterEach(async () => {
 })
 
 async function fakeDaemon(browsers: ReadonlyArray<Record<string, unknown>>) {
-  const home = await mkdtemp(join(tmpdir(), "omo-bsk-doctor-"))
+  const home = await mkdtemp(join(tmpdir(), "omc-bsk-doctor-"))
   await mkdir(join(home, "run"))
   const sockets = new Set<Socket>()
   const server: Server = createServer((socket) => {

@@ -1,6 +1,6 @@
 // mcp.ts — the ast_grep stdio MCP server surface.
 //
-// Transport and sequential dispatch come from @oh-my-opencode/mcp-stdio-core; this module
+// Transport and sequential dispatch come from @oh-my-cybersecurity/mcp-stdio-core; this module
 // owns only the ast_grep protocol shape: descriptors, lifecycle methods, and tools/call
 // dispatch into the tool execute functions.
 //
@@ -21,8 +21,8 @@ import {
   type McpLifecycleLog,
   type McpToolDescriptor,
   type ParentWatchdogConfig,
-} from "@oh-my-opencode/mcp-stdio-core";
-import { resolveSgBinarySync } from "@oh-my-opencode/utils";
+} from "@oh-my-cybersecurity/mcp-stdio-core";
+import { resolveSgBinarySync } from "@oh-my-cybersecurity/utils";
 import { executeSearch, searchInputSchema, SEARCH_TOOL_DESCRIPTION, SEARCH_TOOL_NAME, type SearchInput, type SearchPayload } from "./tools/search";
 import { executeRewrite, REWRITE_TOOL_DESCRIPTION, REWRITE_TOOL_NAME, type RewritePayload } from "./tools/rewrite";
 import { executeScan, SCAN_TOOL_DESCRIPTION, SCAN_TOOL_NAME, type ScanPayload } from "./tools/scan";
@@ -35,7 +35,7 @@ const DEFAULT_PROTOCOL_VERSION = "2024-11-05";
 // auto-reconnects a degraded stdio server, so an idle exit costs one
 // backoff-delayed respawn rather than a broken session.
 export const DEFAULT_AST_GREP_IDLE_TIMEOUT_MS = 10 * 60_000;
-const IDLE_TIMEOUT_ENV_KEY = "OMO_AST_GREP_IDLE_TIMEOUT_MS";
+const IDLE_TIMEOUT_ENV_KEY = "OMC_AST_GREP_IDLE_TIMEOUT_MS";
 
 /**
  * The 19-code failure taxonomy: ub §6's 18 codes plus RULE_PARSE_FAILED from the
@@ -222,7 +222,7 @@ export interface AstGrepMcpOptions {
   readonly executors?: AstGrepToolExecutors;
   readonly signal?: AbortSignal;
   readonly lifecycleLog?: McpLifecycleLog;
-  /** Test seam / explicit override: wins over OMO_AST_GREP_IDLE_TIMEOUT_MS. */
+  /** Test seam / explicit override: wins over OMC_AST_GREP_IDLE_TIMEOUT_MS. */
   readonly idleTimeoutMs?: number;
   /** Test seam: production callers leave this unset so the watchdog uses its defaults. */
   readonly parentWatchdog?: ParentWatchdogConfig;
@@ -283,7 +283,7 @@ export async function runMcpStdioServer(
   });
 }
 
-// Precedence: explicit option > OMO_AST_GREP_IDLE_TIMEOUT_MS > 10-minute default.
+// Precedence: explicit option > OMC_AST_GREP_IDLE_TIMEOUT_MS > 10-minute default.
 // Values <= 0 disable the timer (createIdleTimer semantics). A missing or
 // unparseable env value falls back to the default rather than disabling: the
 // timeout exists to reclaim abandoned servers, and a typo must not silently

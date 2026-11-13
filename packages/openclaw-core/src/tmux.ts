@@ -1,4 +1,4 @@
-import { runTmuxCommand, type TmuxCommandResult } from "@oh-my-opencode/tmux-core"
+import { runTmuxCommand, type TmuxCommandResult } from "@oh-my-cybersecurity/tmux-core"
 import { getTmuxPath } from "./tmux-path"
 
 type OpenClawTmuxDeps = {

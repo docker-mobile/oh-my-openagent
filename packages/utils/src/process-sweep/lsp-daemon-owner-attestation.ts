@@ -23,7 +23,7 @@ export interface LspDaemonOwnerTarget {
 }
 
 const OWNER_PING_REQUEST_ID = "process-sweep-owner-attestation"
-const OMO_DAEMON_PROTOCOL_VERSION = 1
+const OMC_DAEMON_PROTOCOL_VERSION = 1
 
 export interface LspDaemonOwnerAttestationDeps {
   readonly pingOwner?: (endpoint: LspDaemonOwnerEndpoint, authToken: string) => Promise<LspDaemonOwnerIdentity | null>
@@ -72,8 +72,8 @@ export function createLspDaemonOwnerPingRequest(authToken: string): Record<strin
   return {
     id: OWNER_PING_REQUEST_ID,
     jsonrpc: "2.0",
-    method: "omo/ping",
-    params: { _omo: { protocolVersion: OMO_DAEMON_PROTOCOL_VERSION, token: authToken } },
+    method: "omc/ping",
+    params: { _omo: { protocolVersion: OMC_DAEMON_PROTOCOL_VERSION, token: authToken } },
   }
 }
 

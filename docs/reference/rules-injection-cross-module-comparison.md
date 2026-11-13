@@ -3,9 +3,9 @@
 Comparison and porting record for the three rule injection implementations
 tracked during cross-repository development:
 
-- **codex-rules** — Codex hook plugin now bundled under the OMO Codex marketplace plugin (`packages/omo-codex/plugin/components/rules`, marketplace `sisyphuslabs`, plugin `omo`). The original standalone repo was `code-yeongyu/codex-rules`, branch `main`.
+- **codex-rules** — Codex hook plugin now bundled under the OMO Codex marketplace plugin (`packages/omc-codex/plugin/components/rules`, marketplace `sisyphuslabs`, plugin `omc`). The original standalone repo was `code-yeongyu/codex-rules`, branch `main`.
 - **pi-rules** — pi-mono extension (`pi-extensions/pi-rules`, repo `code-yeongyu/pi-rules`, branch `main`).
-- **omo rules-injector** — opencode plugin path (`packages/omo-opencode/src/hooks/rules-injector`, repo `code-yeongyu/oh-my-openagent`, branch `dev`).
+- **omc rules-injector** — opencode plugin path (`packages/omc-opencode/src/hooks/rules-injector`, repo `code-yeongyu/oh-my-cybersecurity`, branch `dev`).
 
 ## 0. Latest pushed commits
 
@@ -13,12 +13,12 @@ tracked during cross-repository development:
 | --- | --- | --- | --- |
 | codex-rules | main | `9f49c68 fix(hooks): keep compacted channels independent` | unchanged in this round |
 | pi-rules | main | `9789f12 perf(rules): skip unchanged dynamic targets via fingerprint` | new |
-| omo | dev | `fbe423a2d feat(rules-injector): hydrate dedup cache from session transcript` | new |
+| omc | dev | `fbe423a2d feat(rules-injector): hydrate dedup cache from session transcript` | new |
 
 Installation state after the porting round:
 
-- **omo** — `~/.bun/install/global/node_modules/oh-my-opencode` is a symlink to the local workspace, so `bun run build` immediately publishes the rebuilt `dist/`. Verified via `grep -c transcriptHydration dist/index.js` → 6.
-- **codex-rules** — now installed through the aggregate OMO Codex plugin cache at `~/.codex/plugins/cache/sisyphuslabs/omo/<version>/components/rules`, enabled by `[plugins."omo@sisyphuslabs"]`.
+- **omc** — `~/.bun/install/global/node_modules/oh-my-cybersecurity` is a symlink to the local workspace, so `bun run build` immediately publishes the rebuilt `dist/`. Verified via `grep -c transcriptHydration dist/index.js` → 6.
+- **codex-rules** — now installed through the aggregate OMO Codex plugin cache at `~/.codex/plugins/cache/sisyphuslabs/omc/<version>/components/rules`, enabled by `[plugins."omc@sisyphuslabs"]`.
 - **pi-rules** — pi-mono consumes the package source directly; no separate install step.
 
 ## 1. Performance baseline
@@ -36,11 +36,11 @@ targets):
 
 A unified cross-module benchmark harness does not yet exist; the other two
 modules were validated via their existing unit and integration suites
-(243 tests pass on pi-rules, 70 tests pass on omo rules-injector).
+(243 tests pass on pi-rules, 70 tests pass on omc rules-injector).
 
 ## 2. Functional gap matrix (pre-porting)
 
-| Feature | codex-rules | pi-rules | omo rules-injector |
+| Feature | codex-rules | pi-rules | omc rules-injector |
 | --- | --- | --- | --- |
 | Pre-compaction dedup | persistent JSON + transcript scan | in-memory Set/Map | in-memory Map + persistent JSON |
 | Transcript-aware dedup | **YES** | NO (pi-mono SDK does not expose `transcript_path`) | **NO** (was a real gap) |
@@ -49,11 +49,11 @@ modules were validated via their existing unit and integration suites
 | Post-compact strategy | Independent static / dynamic pending channels | `engine.resetSession(cwd)` (full reset) | `clearSessionState(sessionID)` (full reset) |
 | Multiple injection hooks | SessionStart, UserPromptSubmit, PostToolUse, PostCompact | session_start, session_compact, before_agent_start, tool_result | tool.execute.after only |
 | Rule discovery cache | per-call discovery cache + parsed content cache | per-call discovery cache + parsed content cache + match cache | parsed-rule LRU + match decision LRU + scan cache |
-| Rule sources implementation | own finder (matches pi-rules layout) | own finder | shared `@oh-my-opencode/rules-engine` workspace package |
+| Rule sources implementation | own finder (matches pi-rules layout) | own finder | shared `@oh-my-cybersecurity/rules-engine` workspace package |
 
 ## 3. Performance gap matrix (pre-porting)
 
-| Scenario | codex-rules | pi-rules | omo |
+| Scenario | codex-rules | pi-rules | omc |
 | --- | --- | --- | --- |
 | Hot path: identical target repeats | fingerprint matches → skip parse + match (~2.5 ms) | always re-discovers, but match cache absorbs match cost | parsed-rule cache + match decision cache absorb match cost |
 | Cold start with N rules | ~200 ms for 120 rules across 80 distinct targets | comparable | comparable |
@@ -65,10 +65,10 @@ modules were validated via their existing unit and integration suites
 | Capability | Applied to | Rationale / outcome |
 | --- | --- | --- |
 | Dynamic target fingerprinting | pi-rules | Skips discovery + parse + match entirely when the on-disk fingerprint of every candidate is unchanged. Mirrors codex-rules' `fingerprintDynamicTargets` + `dynamicTargetCacheKey` + `fileStatFingerprint`. A new `EngineDeps.fileFingerprint?` injection keeps tests deterministic when fixtures use synthetic paths. |
-| Transcript-aware dedup | omo rules-injector | A fresh process whose persistent JSON has been deleted, or a session whose cache has been cleared by `session.compacted`, can still detect prior `[Rule: <relativePath>]` banners that survive in the transcript and avoid emitting duplicates. Lazy (one fetch per session per process), capped (200 messages / 1 MB scanned), fails open on transport errors, and concurrent calls share a single in-flight promise. |
-| Transcript-aware dedup → pi-rules | not applied | pi-mono `ToolResultEvent` does not carry `transcript_path`. Porting requires upstream SDK changes. Net loss is small because pi-rules is in-process and rarely sees the "cache vanished mid-session" case codex-rules / omo can hit. |
-| Dynamic target fingerprinting → omo | deferred | omo already has parsed-rule LRU + match-decision LRU caches that absorb most hot-path work. Adding a third fingerprint layer is low ROI today. Tracked as future work in section 7. |
-| Post-compact channel pending → pi-rules / omo | not applied | Both run hooks sequentially in-process; the codex-rules channel-pending state is specifically a workaround for Codex's out-of-process hook model. Full reset works correctly for both pi-rules and omo. |
+| Transcript-aware dedup | omc rules-injector | A fresh process whose persistent JSON has been deleted, or a session whose cache has been cleared by `session.compacted`, can still detect prior `[Rule: <relativePath>]` banners that survive in the transcript and avoid emitting duplicates. Lazy (one fetch per session per process), capped (200 messages / 1 MB scanned), fails open on transport errors, and concurrent calls share a single in-flight promise. |
+| Transcript-aware dedup → pi-rules | not applied | pi-mono `ToolResultEvent` does not carry `transcript_path`. Porting requires upstream SDK changes. Net loss is small because pi-rules is in-process and rarely sees the "cache vanished mid-session" case codex-rules / omc can hit. |
+| Dynamic target fingerprinting → omc | deferred | omc already has parsed-rule LRU + match-decision LRU caches that absorb most hot-path work. Adding a third fingerprint layer is low ROI today. Tracked as future work in section 7. |
+| Post-compact channel pending → pi-rules / omc | not applied | Both run hooks sequentially in-process; the codex-rules channel-pending state is specifically a workaround for Codex's out-of-process hook model. Full reset works correctly for both pi-rules and omc. |
 
 ## 5. Implementation details
 
@@ -83,9 +83,9 @@ modules were validated via their existing unit and integration suites
   - fingerprint flips when underlying file fingerprint changes
   - `resetSession` clears `dynamicTargetFingerprints`
 
-### omo rules-injector (`fbe423a2d feat(rules-injector): hydrate dedup cache from session transcript`)
+### omc rules-injector (`fbe423a2d feat(rules-injector): hydrate dedup cache from session transcript`)
 
-- New file `packages/omo-opencode/src/hooks/rules-injector/transcript-hydration.ts` (~140 LOC) exposing `createTranscriptHydrationStore({ client })` with three methods: `hydrateSession(sessionID)`, `getHydratedRelativePaths(sessionID)`, `clearSession(sessionID)`.
+- New file `packages/omc-opencode/src/hooks/rules-injector/transcript-hydration.ts` (~140 LOC) exposing `createTranscriptHydrationStore({ client })` with three methods: `hydrateSession(sessionID)`, `getHydratedRelativePaths(sessionID)`, `clearSession(sessionID)`.
 - Hydration scans the last `200` messages and at most `1_000_000` characters of text per session, matches `\[Rule: <relativePath>\]\n\[Match: <reason>\]` exactly once per session per process, and joins concurrent calls onto a single in-flight promise. Transport errors fail open so injection never blocks.
 - New optional dep `transcriptHydration?: TranscriptHydrationHook` on `createRuleInjectionProcessor`. Existing tests that do not pass it keep their old behavior, which keeps all 70 rules-injector tests green.
 - `hook.ts` wires `createTranscriptHydrationStore({ client: ctx.client })` into the processor and also calls `transcriptHydration.clearSession(sessionID)` on `session.deleted` and `session.compacted` events so post-compaction reinjection still works.
@@ -101,16 +101,16 @@ codex-rules already implements both transcript-aware dedup and post-compact chan
 | --- | --- | --- | --- | --- | --- | --- |
 | codex-rules | 59/59 vitest (prior commit verified), bench rerun | tsc OK | biome OK | tsc -p tsconfig.build.json OK | `~/.codex/plugins/cache/...` refreshed | up to date |
 | pi-rules | 243/243 vitest | tsgo OK | biome OK | n/a (source-import package) | n/a | pushed `9789f12` |
-| omo | rules-injector 70/70 bun test | tsgo OK (workspace + packages) | biome OK | `bun run build` (dist/index.js 4.53 MB) | global symlink picks up new dist | pushed `fbe423a2d` |
+| omc | rules-injector 70/70 bun test | tsgo OK (workspace + packages) | biome OK | `bun run build` (dist/index.js 4.53 MB) | global symlink picks up new dist | pushed `fbe423a2d` |
 
-Note: omo's broader hooks test suite still surfaces pre-existing
+Note: omc's broader hooks test suite still surfaces pre-existing
 test-isolation flakiness (the most recent merge on dev is literally named
 `fix/test-isolation-cross-test-state-leak`). Each affected file passes when
 run alone; the failures are unrelated to the changes in this round.
 
 ## 7. Follow-ups intentionally left for later
 
-1. Port dynamic target fingerprinting into omo so cache miss does not re-walk `findRuleFiles` when nothing about the target changed.
+1. Port dynamic target fingerprinting into omc so cache miss does not re-walk `findRuleFiles` when nothing about the target changed.
 2. Author a shared `bench-rules-comparison.mjs` harness that drives each of the three implementations through an identical rule fixture so future regressions can be detected quantitatively.
-3. Upstream a PR to pi-mono exposing `transcript_path` (or an equivalent transcript reader) on `ToolResultEvent` so pi-rules can adopt transcript-aware dedup the same way codex-rules and omo do.
-4. Resolve the residual cross-suite state leak flakiness in omo's broader hook tests so a full `bun test src/hooks` run is reliably green.
+3. Upstream a PR to pi-mono exposing `transcript_path` (or an equivalent transcript reader) on `ToolResultEvent` so pi-rules can adopt transcript-aware dedup the same way codex-rules and omc do.
+4. Resolve the residual cross-suite state leak flakiness in omc's broader hook tests so a full `bun test src/hooks` run is reliably green.

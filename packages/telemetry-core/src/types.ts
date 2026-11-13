@@ -102,7 +102,7 @@ export type TurnSpanStart = {
   readonly parentTraceparent?: string
 }
 
-/** One live `omo.turn` span: lowercase hex ids, its own `traceparent`, and a scope that makes it active. */
+/** One live `omc.turn` span: lowercase hex ids, its own `traceparent`, and a scope that makes it active. */
 export type TurnSpanHandle = {
   readonly traceId: string
   readonly spanId: string

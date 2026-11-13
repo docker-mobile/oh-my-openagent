@@ -1,4 +1,4 @@
-import { OmoTaskSettingsSchema } from "@oh-my-opencode/omo-config-core"
+import { OmoTaskSettingsSchema } from "@oh-my-cybersecurity/omc-config-core"
 import { createTaskManager } from "../../manager/manager"
 import { createTaskRecordStore } from "../../store"
 import { createTaskLifecycle } from "../../lifecycle"

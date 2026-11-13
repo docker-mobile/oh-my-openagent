@@ -1,6 +1,6 @@
 # Isolation — QA ONLY our plugin, never the user's real Codex
 
-The whole point of this skill: exercise the omo plugin in a real Codex without
+The whole point of this skill: exercise the omc plugin in a real Codex without
 reading or writing the user's `~/.codex`, and without a real model API call. Two
 levers do all the work.
 
@@ -15,12 +15,12 @@ Gotcha: when `CODEX_HOME` is set it **must already exist** or Codex hard-errors.
 
 `cqa_mk_isolated_home` also exports:
 
-- `OMO_CODEX_PROJECT` + `QA_CWD` → a sandbox project dir, so the installer's
+- `OMC_CODEX_PROJECT` + `QA_CWD` → a sandbox project dir, so the installer's
   project-local cleanup and the TUI's cwd never touch your real tree.
 - `CODEX_LOCAL_BIN_DIR=$CODEX_HOME/bin` → component bins land in the sandbox.
   (Even without this, a non-default `CODEX_HOME` already routes bins to
   `$CODEX_HOME/bin`; with the DEFAULT home they would leak to `~/.local/bin`.)
-- `OMO_DISABLE_POSTHOG=1` + `OMO_CODEX_DISABLE_POSTHOG=1` → no install/telemetry
+- `OMC_DISABLE_POSTHOG=1` + `OMC_CODEX_DISABLE_POSTHOG=1` → no install/telemetry
   network call.
 
 Proof it stayed clean: `cqa_guard_real_home` shasums `~/.codex/config.toml`

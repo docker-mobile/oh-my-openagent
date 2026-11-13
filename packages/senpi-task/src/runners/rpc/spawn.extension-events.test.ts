@@ -5,7 +5,7 @@ import { buildRpcSpawn } from "./spawn"
 const baseSpec = {
   task_id: "st_1a2b3c4d",
   cwd: "/tmp/project",
-  state_dir: "/tmp/project/.omo/senpi-task",
+  state_dir: "/tmp/project/.omc/senpi-task",
   prompt: "do the work",
 } as const
 

@@ -15,16 +15,16 @@ import {
 } from "node:fs";
 import { dirname } from "node:path";
 
-import { isPlainRecord } from "@oh-my-opencode/mcp-stdio-core/record";
+import { isPlainRecord } from "@oh-my-cybersecurity/mcp-stdio-core/record";
 
 import type { DaemonPaths } from "./paths.js";
 
-export const OMO_DAEMON_PROTOCOL_VERSION = 1;
+export const OMC_DAEMON_PROTOCOL_VERSION = 1;
 export const AUTH_ERROR_CODE = -32001;
 export const PROTOCOL_ERROR_CODE = -32002;
 
 export type DaemonAuthEnvelope = {
-	readonly protocolVersion: typeof OMO_DAEMON_PROTOCOL_VERSION;
+	readonly protocolVersion: typeof OMC_DAEMON_PROTOCOL_VERSION;
 	readonly token: string;
 };
 
@@ -66,7 +66,7 @@ export class UnsafePrivateDirectoryError extends Error {
 }
 
 export function authEnvelope(token: string): DaemonAuthEnvelope {
-	return { protocolVersion: OMO_DAEMON_PROTOCOL_VERSION, token };
+	return { protocolVersion: OMC_DAEMON_PROTOCOL_VERSION, token };
 }
 
 export function readAuthToken(paths: DaemonPaths): string | null {
@@ -102,7 +102,7 @@ export function authenticateMessage(raw: unknown, expectedToken: string): Authen
 	const envelope = params["_omo"];
 	if (!isPlainRecord(envelope)) return authError(id);
 	const protocolVersion = envelope["protocolVersion"];
-	if (protocolVersion !== OMO_DAEMON_PROTOCOL_VERSION) return protocolError(id);
+	if (protocolVersion !== OMC_DAEMON_PROTOCOL_VERSION) return protocolError(id);
 	const token = envelope["token"];
 	if (typeof token !== "string" || !tokenMatches(token, expectedToken)) return authError(id);
 	const cleanParams: Record<string, unknown> = { ...params };

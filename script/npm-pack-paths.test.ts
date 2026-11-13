@@ -3,9 +3,9 @@
 import { describe, expect, test } from "bun:test"
 import { parseNpmPackPaths } from "./npm-pack-paths.mjs"
 
-const npm11Output = JSON.stringify([{ id: "oh-my-opencode@5.0.0", files: [{ path: "package.json" }, { path: "bin/omo.js" }] }])
+const npm11Output = JSON.stringify([{ id: "oh-my-cybersecurity@5.0.0", files: [{ path: "package.json" }, { path: "bin/omc.js" }] }])
 const npm12Output = JSON.stringify({
-  "oh-my-opencode": { id: "oh-my-opencode@5.0.0", files: [{ path: "package.json" }, { path: "bin/omo.js" }] },
+  "oh-my-cybersecurity": { id: "oh-my-cybersecurity@5.0.0", files: [{ path: "package.json" }, { path: "bin/omc.js" }] },
 })
 
 describe("npm pack path reader", () => {
@@ -14,7 +14,7 @@ describe("npm pack path reader", () => {
     const paths = parseNpmPackPaths(npm11Output)
 
     // then
-    expect(paths).toEqual(["package.json", "bin/omo.js"])
+    expect(paths).toEqual(["package.json", "bin/omc.js"])
   })
 
   test("#given npm 12 object output keyed by package name #when packed paths are read #then the same paths are returned", () => {

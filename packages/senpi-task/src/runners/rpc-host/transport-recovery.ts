@@ -1,5 +1,5 @@
 /**
- * The bound on ONE lost transport's recovery (omo#9403). Within it the child either runs again on a
+ * The bound on ONE lost transport's recovery (omc#9403). Within it the child either runs again on a
  * recovered connection or ends as `transport lost`; it never waits on a connection that is gone.
  * The bound only starts on transport evidence (the connection closed), so a quiet child whose
  * connection is fine is never failed by it.

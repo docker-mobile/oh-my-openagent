@@ -1,0 +1,27 @@
+{
+  "name": "@oh-my-cybersecurity/payload-forge-core",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "description": "Absorbed offensive payload corpus: templated injection payloads and intruder wordlists as typed, disk-loaded JSON with a frozen render/classify contract.",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./src/index.ts"
+    },
+    "./types": {
+      "types": "./types.d.ts",
+      "import": "./src/types.ts"
+    },
+    "./loader": {
+      "types": "./loader.d.ts",
+      "import": "./src/loader.ts"
+    }
+  },
+  "types": "./index.d.ts",
+  "scripts": {
+    "typecheck": "tsgo --noEmit -p tsconfig.json",
+    "test": "bun test src"
+  },
+  "dependencies": {}
+}

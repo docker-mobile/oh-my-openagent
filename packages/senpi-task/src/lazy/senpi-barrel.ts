@@ -1,7 +1,7 @@
 // Lazy boundary for the @code-yeongyu/senpi engine barrel.
 //
 // The barrel (dist/index.js) aggregates the whole engine - importing it statically from the
-// omo-task.js/omo-member.js blobs makes it 89-90% of each blob's module graph, so every fresh
+// omc-task.js/omc-member.js blobs makes it 89-90% of each blob's module graph, so every fresh
 // process that loads those blobs (notably spawned rpc children at boot) pays the full barrel
 // evaluation cost before any task runs. All senpi-task value imports are function-scoped, so the
 // barrel is only actually needed once a child session, a curated bash execution, or a skill
@@ -16,18 +16,18 @@
 // awaited it observes the same error, exactly as a static import would have failed at load time.
 export type SenpiBarrelModule = typeof import("@code-yeongyu/senpi")
 
-// The plugin ships senpi-task inside several bundles (omo.js, omo-task.js, omo-member.js), each
+// The plugin ships senpi-task inside several bundles (omc.js, omc-task.js, omc-member.js), each
 // with its own copy of this module. The warm-up state lives on globalThis under a process-wide
 // symbol so awaiting loadSenpiBarrel() through one bundle copy also satisfies senpiBarrel()
 // readers compiled into another copy - the same cross-bundle split that stranded the pi-tui
-// boundary cold in omo-task.js (see ./pi-tui.ts).
+// boundary cold in omc-task.js (see ./pi-tui.ts).
 interface SenpiBarrelSharedState {
   module: SenpiBarrelModule | undefined
   promise: Promise<SenpiBarrelModule> | undefined
   exports: Readonly<Record<string, unknown>> | undefined
 }
 
-const SHARED_STATE_KEY = Symbol.for("omo.senpi-task.senpiBarrel")
+const SHARED_STATE_KEY = Symbol.for("omc.senpi-task.senpiBarrel")
 
 function sharedState(): SenpiBarrelSharedState {
   const holder = globalThis as typeof globalThis & { [SHARED_STATE_KEY]?: SenpiBarrelSharedState }
@@ -63,7 +63,7 @@ export function senpiBarrel(): SenpiBarrelModule {
 // The shared-daemon host surface.
 //
 // The engine owns every protocol decision (senpi `host-decision.ts`, `host-ensure.ts`, the
-// `senpi host` CLI); omo only calls it. These shapes are omo's OWN structural view of that
+// `senpi host` CLI); omc only calls it. These shapes are omc's OWN structural view of that
 // surface, for the same reason `kernel-tools/contract.ts` duck-types the JS kernel capability:
 // the pinned engine can predate the release that exports them, and the pinned `EnsureHostOptions`
 // still keeps `hostArgs`/`env`/`upgrade` under `_test`. Each accessor therefore fails CLOSED with

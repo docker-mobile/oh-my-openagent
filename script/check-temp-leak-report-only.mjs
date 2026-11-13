@@ -26,7 +26,7 @@ export function addedReportOnlyEntries(base, head) {
   return added.sort()
 }
 
-// Replacing a broad prefix with the narrower names under it ("omo-test-" -> "omo-test-session-manager-")
+// Replacing a broad prefix with the narrower names under it ("omc-test-" -> "omc-test-session-manager-")
 // only shrinks what is report-only, so it is not an addition. Same rule as test-temp-leak-match.ts.
 function narrowsBaseEntry(entry, baseEntries) {
   const name = entry.endsWith("$") ? entry.slice(0, -1) : entry

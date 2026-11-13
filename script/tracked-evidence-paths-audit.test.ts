@@ -10,8 +10,8 @@ const PREVIEW_LIMIT = 25
 // This audit reads the index directly rather than .gitignore, so a later `!` negation or a
 // `git add -f` cannot reintroduce evidence without turning this test red.
 const EVIDENCE_ROOT_PATTERNS: readonly { readonly label: string; readonly pattern: RegExp }[] = [
-  { label: ".omo/evidence/", pattern: /^\.omo\/evidence\// },
-  { label: "packages/*/.omo/evidence/", pattern: /^packages\/[^/]+\/\.omo\/evidence\// },
+  { label: ".omc/evidence/", pattern: /^\.omc\/evidence\// },
+  { label: "packages/*/.omc/evidence/", pattern: /^packages\/[^/]+\/\.omc\/evidence\// },
   { label: ".qa-evidence/ (any depth)", pattern: /(^|\/)\.qa-evidence\// },
   { label: "qa-evidence/ (any depth)", pattern: /(^|\/)qa-evidence\// },
 ]
@@ -37,7 +37,7 @@ function describeViolations(paths: readonly string[]): string {
   const roots = EVIDENCE_ROOT_PATTERNS.map((root) => root.label).join(", ")
   return [
     `${paths.length} tracked file(s) live under a QA evidence root (${roots}).`,
-    "Evidence stays local: keep it under .omo/evidence/<slug>/ (gitignored), summarize it in the PR body,",
+    "Evidence stays local: keep it under .omc/evidence/<slug>/ (gitignored), summarize it in the PR body,",
     "and remove these from the index with `git rm -r --cached <path>`:",
     ...preview,
     ...remainder,
@@ -59,14 +59,14 @@ describe("tracked evidence paths audit", () => {
   test("#given paths inside and outside the evidence roots #when filtered #then only evidence paths are reported", () => {
     // given
     const paths = [
-      ".omo/evidence/20260922-run/red.txt",
-      "packages/omo-senpi/.omo/evidence/x.txt",
-      ".qa-evidence/omo-row-RED.txt",
+      ".omc/evidence/20260922-run/red.txt",
+      "packages/omc-senpi/.omc/evidence/x.txt",
+      ".qa-evidence/omc-row-RED.txt",
       "packages/senpi-task/.qa-evidence/GREEN.txt",
       "local-ignore/qa-evidence/20260819-senpi/log.txt",
-      ".omo/rules/test-discipline.md",
-      ".omo/fixtures/releases.json",
-      "packages/omo-codex/plugin/components/lazycodex-executor-verify/test/codex-hook.test.ts",
+      ".omc/rules/test-discipline.md",
+      ".omc/fixtures/releases.json",
+      "packages/omc-codex/plugin/components/lazycodex-executor-verify/test/codex-hook.test.ts",
       "script/qa/web-terminal-visual-qa.mjs",
     ]
 
@@ -75,10 +75,10 @@ describe("tracked evidence paths audit", () => {
 
     // then
     expect(reported).toEqual([
-      ".omo/evidence/20260922-run/red.txt",
-      ".qa-evidence/omo-row-RED.txt",
+      ".omc/evidence/20260922-run/red.txt",
+      ".qa-evidence/omc-row-RED.txt",
       "local-ignore/qa-evidence/20260819-senpi/log.txt",
-      "packages/omo-senpi/.omo/evidence/x.txt",
+      "packages/omc-senpi/.omc/evidence/x.txt",
       "packages/senpi-task/.qa-evidence/GREEN.txt",
     ])
   })

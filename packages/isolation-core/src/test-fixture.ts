@@ -13,7 +13,7 @@ export async function fixture() {
   onTestFinished(() => removeTree(root, { maxRetries: 10, retryDelay: 500 }))
   const homeDir = join(root, "home")
   const repoRoot = join(root, "repo")
-  await mkdir(join(homeDir, ".omo"), { recursive: true })
+  await mkdir(join(homeDir, ".omc"), { recursive: true })
   await mkdir(repoRoot)
   return { root, homeDir, repoRoot }
 }

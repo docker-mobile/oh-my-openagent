@@ -6,7 +6,7 @@ import type { PassBudget } from "./budget"
 
 export const DAY_MS = 24 * 60 * 60 * 1000
 
-/** Windows in days; `memory.runtime.*` in omo.json, per-agent overridable. */
+/** Windows in days; `memory.runtime.*` in omc.json, per-agent overridable. */
 export interface RuntimeRetentionPolicy {
   /** Folded reflection runs, fully-reflected transcripts, idle sidecars, legacy stores. */
   readonly retentionDays: number

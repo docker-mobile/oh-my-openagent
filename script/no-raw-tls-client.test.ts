@@ -29,49 +29,49 @@ import {
 // This is a regression guard, not a complete data-flow or evasion detector.
 const ALLOWLIST: AllowlistEntry[] = [
   {
-    file: "packages/omo-senpi/plugin/runtime/bunshin-ts/sdk.js",
+    file: "packages/omc-senpi/plugin/runtime/bunshin-ts/sdk.js",
     call: "t.connect()",
     count: 1,
     reason: "no TLS and no remote host: `t` is the SDK's relay transport, whose connect() opens the local device service through node:net createConnection({ path: <stateDir>/<socket> }) or, on Windows, { host: \"127.0.0.1\", port } (vendor/bunshin-ts-relay/index.js:766); the bundle imports no node:tls/https/http2 and has no wss URL (#12258, senpi#3078).",
   },
-  ...["omo-codex", "omo-senpi"].flatMap((edition) => ["https", "tls"].map((module) => ({
+  ...["omc-codex", "omc-senpi"].flatMap((edition) => ["https", "tls"].map((module) => ({
     file: `packages/${edition}/plugin/skills/browser/runtime/omowright/index.js`,
     call: `__require("${module}")`,
     count: 1,
     reason: "bundled ws@8.21.3 acquisition: request options and tls.connect(options) derive host/servername from new URL(address).hostname; the connector call remains independently pinned (omowright#40, senpi#3078).",
   }))),
   {
-    file: "packages/omo-native/trust-acquisition.ts",
+    file: "packages/omc-native/trust-acquisition.ts",
     call: 'import { getCACertificates} from "node:tls"',
     count: 1,
     reason: "no connection and no host: the launcher trust importer reads getCACertificates(\"bundled\") only to pass Bun's compiled-in roots to the Windows trust helper on stdin (#10762, design 4.2); it never calls connect, createConnection, TLSSocket, createSecureContext or checkServerIdentity (senpi#3078).",
   },
   {
-    file: "packages/omo-native/trust-stage.ts",
+    file: "packages/omc-native/trust-stage.ts",
     call: 'import { getCACertificates} from "node:tls"',
     count: 1,
     reason: "no connection and no host: the launcher trust stage reads getCACertificates(\"extra\"), Bun's own parse of the native NODE_EXTRA_CA_CERTS, to compare the loaded set at adoption and capture user extras (#10762, design 5.2, 5.9); it never calls connect, createConnection, TLSSocket, createSecureContext or checkServerIdentity (senpi#3078).",
   },
   {
-    file: "packages/omo-codex/plugin/scripts/auto-update-release-notes.mjs",
+    file: "packages/omc-codex/plugin/scripts/auto-update-release-notes.mjs",
     call: 'import { get as httpsGet } from "node:https"',
     count: 1,
     reason: "this acquisition supplies the single pinned httpsGet(url, ...) call below; https.get parses the literal api.github.com authority before TLS (senpi#3078).",
   },
   {
-    file: "packages/omo-codex/plugin/scripts/auto-update-release-notes.mjs",
+    file: "packages/omc-codex/plugin/scripts/auto-update-release-notes.mjs",
     call: "httpsGet(url, { headers: { Accept: \"application/vnd.github+json\", \"User-Agent\": \"lazycodex-auto-update\", }, }, (response) => { if (response.statusCode !== 200) { response.resume(); resolve(undefined); return; } let body = \"\"; response.setEncoding(\"utf8\"); response.on(\"data\", (chunk) => { body += chunk; if (body.length > 128_000) request.destroy(); }); response.on(\"end\", () => { try { const parsed = JSON.parse(body); resolve(typeof parsed.body === \"string\" && parsed.body.trim() ? truncateReleaseNotes(parsed.body) : undefined); } catch (error) { if (error instanceof Error) { resolve(undefined); return; } throw error; } }); })",
     count: 1,
     reason: "the only outbound call; the url argument is the api.github.com template prefix built in fetchGithubReleaseNotes (repo and version interpolate into the path, not the host) and https.get URL-parses it before TLS (senpi#3078).",
   },
   {
-    file: "packages/omo-codex/plugin/skills/browser/runtime/omowright/index.js",
+    file: "packages/omc-codex/plugin/skills/browser/runtime/omowright/index.js",
     call: "tls.connect(options)",
     count: 1,
     reason: "bundled ws@8.21.3 WebSocket client: host and servername come from new URL(address).hostname (ws/lib/websocket.js:703-758,1083-1090); verified on Bun 1.4.2 in omowright#40",
   },
   {
-    file: "packages/omo-senpi/plugin/skills/browser/runtime/omowright/index.js",
+    file: "packages/omc-senpi/plugin/skills/browser/runtime/omowright/index.js",
     call: "tls.connect(options)",
     count: 1,
     reason: "bundled ws@8.21.3 WebSocket client: host and servername come from new URL(address).hostname (ws/lib/websocket.js:703-758,1083-1090); verified on Bun 1.4.2 in omowright#40",
@@ -148,13 +148,13 @@ describe("no raw TLS client calls in shipped source (CVE-2026-48618, Bun 1.4.2)"
   })
 
   test("#given candidate paths #when classified #then only shipped source files are scanned", () => {
-    expect(isScannedSourceFile("packages/omo-opencode/src/shared/client.ts")).toBe(true)
-    expect(isScannedSourceFile("packages/omo-codex/plugin/components/bootstrap/src/cli.ts")).toBe(true)
-    expect(isScannedSourceFile("packages/omo-codex/plugin/scripts/tool.mjs")).toBe(true)
+    expect(isScannedSourceFile("packages/omc-opencode/src/shared/client.ts")).toBe(true)
+    expect(isScannedSourceFile("packages/omc-codex/plugin/components/bootstrap/src/cli.ts")).toBe(true)
+    expect(isScannedSourceFile("packages/omc-codex/plugin/scripts/tool.mjs")).toBe(true)
     expect(isScannedSourceFile("bin/platform.js")).toBe(true)
     expect(isScannedSourceFile("packages/memory-core/src/fs/client.test.ts")).toBe(false)
     expect(isScannedSourceFile("packages/memory-core/src/README.md")).toBe(false)
-    expect(isScannedSourceFile("packages/omo-codex/plugin/components/bootstrap/test/download.test.ts")).toBe(false)
+    expect(isScannedSourceFile("packages/omc-codex/plugin/components/bootstrap/test/download.test.ts")).toBe(false)
     expect(isScannedSourceFile("packages/memory-core/src/types.d.ts")).toBe(false)
   })
 
@@ -169,8 +169,8 @@ describe("no raw TLS client calls in shipped source (CVE-2026-48618, Bun 1.4.2)"
       "bin/platform.js",
       "postinstall.mjs",
       "packages/shared-skills/index.mjs",
-      "packages/omo-native/compile-entry.ts",
-      "packages/omo-codex/scripts/check-model-catalog-parity.mjs",
+      "packages/omc-native/compile-entry.ts",
+      "packages/omc-codex/scripts/check-model-catalog-parity.mjs",
     ]) {
       expect(collected.has(shipped), "shipped file not scanned: " + shipped).toBe(true)
     }

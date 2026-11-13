@@ -1,7 +1,7 @@
 import { cp, mkdir, readdir, readFile, stat } from "node:fs/promises"
 import { dirname, join } from "node:path"
 
-import { isPlainRecord } from "@oh-my-opencode/utils"
+import { isPlainRecord } from "@oh-my-cybersecurity/utils"
 
 interface RuntimeDist {
   readonly label: string
@@ -19,32 +19,32 @@ const RUNTIME_DISTS: readonly RuntimeDist[] = [
   {
     label: "git-bash MCP",
     sourcePath: join("packages", "git-bash-mcp", "dist"),
-    destinationPath: join("plugins", "omo", "components", "git-bash-mcp", "dist"),
+    destinationPath: join("plugins", "omc", "components", "git-bash-mcp", "dist"),
   },
   {
     label: "LSP MCP",
     sourcePath: join("packages", "lsp-tools-mcp", "dist"),
-    destinationPath: join("plugins", "omo", "components", "lsp-tools-mcp", "dist"),
+    destinationPath: join("plugins", "omc", "components", "lsp-tools-mcp", "dist"),
   },
   {
     label: "LSP daemon dist",
     sourcePath: join("packages", "lsp-daemon", "dist"),
-    destinationPath: join("plugins", "omo", "components", "lsp-daemon", "dist"),
+    destinationPath: join("plugins", "omc", "components", "lsp-daemon", "dist"),
   },
   {
     label: "OMO root CLI dist",
     sourcePath: join("dist", "cli"),
-    destinationPath: join("plugins", "omo", "dist", "cli"),
+    destinationPath: join("plugins", "omc", "dist", "cli"),
   },
   {
     label: "OMO node fallback CLI dist",
     sourcePath: join("dist", "cli-node"),
-    destinationPath: join("plugins", "omo", "dist", "cli-node"),
+    destinationPath: join("plugins", "omc", "dist", "cli-node"),
   },
 ] as const
 
-const PLUGIN_COMPONENTS_SOURCE_PATH = join("packages", "omo-codex", "plugin", "components")
-const PLUGIN_COMPONENTS_DESTINATION_PATH = join("plugins", "omo", "components")
+const PLUGIN_COMPONENTS_SOURCE_PATH = join("packages", "omc-codex", "plugin", "components")
+const PLUGIN_COMPONENTS_DESTINATION_PATH = join("plugins", "omc", "components")
 
 export async function copyLazycodexRuntimeDists(input: CopyLazycodexRuntimeDistsInput): Promise<void> {
   for (const dist of RUNTIME_DISTS) {

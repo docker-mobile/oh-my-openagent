@@ -12,7 +12,7 @@ const host = "darwin-arm64";
 const asset = `senpi-desktop-engine-${host}`;
 const hash = (bytes: Buffer) => createHash("sha256").update(bytes).digest("hex");
 
-beforeEach(() => { root = mkdtempSync(join(tmpdir(), "omo-stable-engine-")); });
+beforeEach(() => { root = mkdtempSync(join(tmpdir(), "omc-stable-engine-")); });
 afterEach(() => { rmSync(root, { recursive: true, force: true }); });
 
 function options(version: string, bytes: Buffer): AcquireDesktopEngineOptions {
@@ -102,7 +102,7 @@ describe("stable release engine launch", () => {
 		const payload = join(payloadDir, "senpi-desktop-engine");
 		mkdirSync(payloadDir, { recursive: true });
 		writeFileSync(payload, "extracted release", { mode: 0o755 });
-		writeFileSync(join(runtimeDir, "package.json"), JSON.stringify({ name: "omo", version: "5.1.5" }));
+		writeFileSync(join(runtimeDir, "package.json"), JSON.stringify({ name: "omc", version: "5.1.5" }));
 		const releaseOptions = options("5.1.5", Buffer.from("unused"));
 		const extracted = { ...releaseOptions, locatorOptions: { ...releaseOptions.locatorOptions, runtimeDir } };
 

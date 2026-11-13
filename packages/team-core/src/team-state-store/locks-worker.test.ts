@@ -30,7 +30,7 @@ function reply(worker: Worker, event: string): Promise<z.infer<typeof Reply>> {
     const onExit = (code: number) => done(new Error(`worker exited ${code} before ${event}`))
     const onMessage = (message: unknown) => {
       if (event === "registered" && typeof message === "object" && message !== null &&
-        "kind" in message && message.kind === "omo-team-lock-register-v1") {
+        "kind" in message && message.kind === "omc-team-lock-register-v1") {
         done(undefined, { event: "registered" })
         return
       }

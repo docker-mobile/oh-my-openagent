@@ -4,8 +4,8 @@ import { tmpdir } from "node:os"
 import { join } from "node:path"
 
 import { afterEach, describe, expect, test } from "bun:test"
-import { TeamModeConfigSchema } from "@oh-my-opencode/team-core/config"
-import { sendMessage } from "@oh-my-opencode/team-core/team-mailbox"
+import { TeamModeConfigSchema } from "@oh-my-cybersecurity/team-core/config"
+import { sendMessage } from "@oh-my-cybersecurity/team-core/team-mailbox"
 
 import { HEARTBEAT_DEADLINE_MS, HEARTBEAT_MISSES_BEFORE_UNRESPONSIVE } from "../../runners/rpc/heartbeat"
 import { RPC_REQUEST_DEADLINE_MS } from "../../runners/rpc/protocol-client"

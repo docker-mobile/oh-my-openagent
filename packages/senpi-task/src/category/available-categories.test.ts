@@ -3,7 +3,7 @@
 import { describe, expect, it } from "bun:test"
 
 import { resolveAvailableCategoryNames } from "./resolver"
-import { FABLE_55_RELEASED } from "@oh-my-opencode/model-core"
+import { FABLE_55_RELEASED } from "@oh-my-cybersecurity/model-core"
 import type { SenpiModelRegistryPort } from "./types"
 
 type FakeModel = { readonly provider: string; readonly id: string }
@@ -38,7 +38,7 @@ describe("resolveAvailableCategoryNames", () => {
   describe("#given no user categories and a registry without the architect gate model", () => {
     describe("#when the runtime category list is resolved", () => {
       it("#then the builtin architect category is not exposed", () => {
-        const names = resolveAvailableCategoryNames({}, fakeRegistry([{ provider: "omo-mock", id: "mock-weak" }]))
+        const names = resolveAvailableCategoryNames({}, fakeRegistry([{ provider: "omc-mock", id: "mock-weak" }]))
         expect(names).not.toContain("architect")
         expect(names).toEqual([])
       })
@@ -50,7 +50,7 @@ describe("resolveAvailableCategoryNames", () => {
       it("#then the explicit declaration still exposes architect", () => {
         const names = resolveAvailableCategoryNames(
           { categories: { architect: { model: "anthropic/claude-fable-5-1" } } },
-          fakeRegistry([{ provider: "omo-mock", id: "mock-weak" }]),
+          fakeRegistry([{ provider: "omc-mock", id: "mock-weak" }]),
         )
         expect(names).toContain("architect")
       })

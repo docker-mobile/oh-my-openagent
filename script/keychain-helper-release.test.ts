@@ -10,10 +10,10 @@ import {
   KEYCHAIN_HELPER_IDENTIFIER,
   KEYCHAIN_HELPER_REQUIREMENT,
   KEYCHAIN_HELPER_TEAM,
-} from "../packages/omo-native/keychain-helper/build"
+} from "../packages/omc-native/keychain-helper/build"
 import { designatedRequirement, keychainHelperFailures, type ToolResult, type ToolRunner } from "./keychain-helper-release"
 
-const FILE = "/release/omo-keychain"
+const FILE = "/release/omc-keychain"
 
 type Signed = {
   readonly archs: string
@@ -77,7 +77,7 @@ describe("keychain helper release gate", () => {
     ["a helper without u+x", null, /not executable by its owner/],
     ["a single-architecture build", { archs: "arm64" }, /lacks the x86_64 slice/],
     ["a strict verification failure", { strictStatus: 3 }, /codesign --verify --strict/],
-    ["a re-sign that renamed the identifier", { requirement: KEYCHAIN_HELPER_REQUIREMENT.replace(KEYCHAIN_HELPER_IDENTIFIER, "omo-keychain") }, /designated requirement differs/],
+    ["a re-sign that renamed the identifier", { requirement: KEYCHAIN_HELPER_REQUIREMENT.replace(KEYCHAIN_HELPER_IDENTIFIER, "omc-keychain") }, /designated requirement differs/],
     ["an ad-hoc signature", { requirement: 'cdhash H"0000"', team: "not set" }, /TeamIdentifier=not set/],
     ["another team", { team: "ABCDE12345" }, /TeamIdentifier=ABCDE12345, expected 523JNR86LZ/],
     ["a missing hardened runtime", { flags: "0x0(none)" }, /lacks the hardened runtime/],
@@ -91,9 +91,9 @@ describe("keychain helper release gate", () => {
   }
 
   test.skipIf(process.platform !== "darwin")("refuses a real linker-signed build of the helper through codesign itself", async () => {
-    const root = mkdtempSync(join(tmpdir(), "omo-keychain-gate-"))
+    const root = mkdtempSync(join(tmpdir(), "omc-keychain-gate-"))
     try {
-      const output = join(root, "omo-keychain")
+      const output = join(root, "omc-keychain")
       await buildKeychainHelper({ output, flavor: "release" })
       const failures = keychainHelperFailures(output)
       expect(failures.some((failure) => failure.startsWith("designated requirement differs"))).toBe(true)

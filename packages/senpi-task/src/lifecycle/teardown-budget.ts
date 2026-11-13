@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 export type TeardownStep = "abort" | "terminate" | "dispose" | "publish_task_status"
 
@@ -15,7 +15,7 @@ export const defaultTeardownStepDeadline: TeardownStepDeadline = () =>
   })
 
 /**
- * Runs one teardown step for at most its budget (omo#9785): a child that never answers abort, ignores
+ * Runs one teardown step for at most its budget (omc#9785): a child that never answers abort, ignores
  * its signals, or never finishes disposing must not hold the caller - the idle sweep, a cancel, an
  * eviction - forever. A rejection still propagates; an expired budget is logged and the caller moves on.
  */

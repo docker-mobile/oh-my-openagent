@@ -1,5 +1,5 @@
-import type { CommandDefinition } from "@oh-my-opencode/claude-code-compat-core/claude-code-command-loader/types"
-import type { ClaudeCodeMcpServer } from "@oh-my-opencode/claude-code-compat-core/claude-code-mcp-loader/types"
+import type { CommandDefinition } from "@oh-my-cybersecurity/claude-code-compat-core/claude-code-command-loader/types"
+import type { ClaudeCodeMcpServer } from "@oh-my-cybersecurity/claude-code-compat-core/claude-code-mcp-loader/types"
 
 export type { CommandDefinition }
 

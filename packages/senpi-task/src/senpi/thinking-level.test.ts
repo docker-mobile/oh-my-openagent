@@ -10,7 +10,7 @@ describe("asSenpiThinkingLevel", () => {
     }
   })
 
-  test("#given the omo.json reasoningEffort none #when validated #then it maps to senpi off", () => {
+  test("#given the omc.json reasoningEffort none #when validated #then it maps to senpi off", () => {
     // given / when / then
     expect(asSenpiThinkingLevel("none")).toBe("off")
   })

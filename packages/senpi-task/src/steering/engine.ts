@@ -89,7 +89,7 @@ export function createSteeringEngine(port: SteeringPort): SteeringEngine {
       return enqueuePending(record, input.message, deliverAs)
     }
     if (port.isEvicting?.(record.task_id) === true) return evictionRefusal(record.task_id)
-    // An accepted cancel is final: nothing may revive or steer the child it is stopping (omo#9403).
+    // An accepted cancel is final: nothing may revive or steer the child it is stopping (omc#9403).
     if (record.status === "running" && record.cancel_requested !== undefined) {
       return {
         kind: "not_continuable",
@@ -144,7 +144,7 @@ export function createSteeringEngine(port: SteeringPort): SteeringEngine {
     }
     if (handle.hasExited?.() === true) {
       // A child whose connection never came back ended for that reason; say so instead of pointing at
-      // a message (omo#9403). Its transcript and worktree are left for the parent to recover from.
+      // a message (omc#9403). Its transcript and worktree are left for the parent to recover from.
       const lost = isTransportLostMessage(record.error_message)
       return {
         kind: "not_continuable",

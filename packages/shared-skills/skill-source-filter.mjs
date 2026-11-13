@@ -1,14 +1,14 @@
 /**
  * Single source of truth for which files inside a skill source tree are copied into a
- * harness plugin. Both omo-codex and omo-senpi sync-skills scripts consume this.
+ * harness plugin. Both omc-codex and omc-senpi sync-skills scripts consume this.
  *
  * Segments are tested RELATIVE to the copy root. The ignore list targets the skill tree's
  * own cache directories; it must never react to where the repository happens to be checked
- * out (a clone under ~/.omo/... or beneath any __pycache__-named ancestor still ships its
+ * out (a clone under ~/.omc/... or beneath any __pycache__-named ancestor still ships its
  * skills). Testing the absolute path was the defect this module replaces.
  */
 
-export const ignoredSkillSourceDirNames = Object.freeze([".mypy_cache", ".omo", ".pytest_cache", ".ruff_cache", "__pycache__"]);
+export const ignoredSkillSourceDirNames = Object.freeze([".mypy_cache", ".omc", ".pytest_cache", ".ruff_cache", "__pycache__"]);
 export const ignoredSkillSourceFileNames = Object.freeze([".gitignore", ".npmignore", "pyrightconfig.json"]);
 const sourceTestFilePattern = /\.test\.ts$/;
 const testDirNamePattern = /^(?:tests?|__tests__|.+_test)$/;

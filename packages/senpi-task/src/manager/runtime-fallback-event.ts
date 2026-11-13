@@ -6,9 +6,9 @@ export type ModelEventStore = {
   readonly load?: (taskId: string) => TaskRecord | null | undefined
   readonly replace?: (record: TaskRecord) => void
   /**
-   * Whether a `model_changed` effect id was minted by THIS omo process (the S1 effect ledger).
+   * Whether a `model_changed` effect id was minted by THIS omc process (the S1 effect ledger).
    * Pre-S1 no checker exists - nothing is ours - so every `set`/`cycle` switch reads as the
-   * operator's, which is the truthful answer until omo can issue its own child `set_model`.
+   * operator's, which is the truthful answer until omc can issue its own child `set_model`.
    */
   readonly isOwnEffect?: (effectId: string) => boolean
 }
@@ -33,8 +33,8 @@ const MODEL_CHANGED_SOURCES: ReadonlySet<string> = new Set([
 /**
  * Apply a child's live model events to its record (F12): `retry_fallback_applied` (as before),
  * `retry_fallback_reverted` (restore the pre-fallback `resolved_model`) and `model_changed` (any
- * source) keep `effective_model` current, so `task_output`, `/tasks`, `omo.task.updated` and the
- * completion notice report the model the child actually runs. A `set`/`cycle` switch omo did not
+ * source) keep `effective_model` current, so `task_output`, `/tasks`, `omc.task.updated` and the
+ * completion notice report the model the child actually runs. A `set`/`cycle` switch omc did not
  * mint itself is marked `switched_by_operator`. Never touches the spawn plan (`model` /
  * `resolved_model` state the plan except on the two fallback events) or the parent's model.
  */

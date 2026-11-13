@@ -98,7 +98,7 @@ export interface RuntimeSizeUnknown {
 }
 
 /**
- * The doctors' measurement (`/doctor` and `omo doctor`): {@link measureRuntimeSize} under a deadline of
+ * The doctors' measurement (`/doctor` and `omc doctor`): {@link measureRuntimeSize} under a deadline of
  * `budgetMs` (or the caller's `signal`), so a huge tree reports "size unknown" instead of stalling.
  */
 export async function measureRuntimeSizeWithinBudget(

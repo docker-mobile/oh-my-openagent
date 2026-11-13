@@ -1,7 +1,7 @@
 import { existsSync, realpathSync, readdirSync, statSync } from "node:fs"
 import { basename, dirname, join, resolve, sep } from "node:path"
 import { homedir } from "node:os"
-import { sharedSkillsRootPath } from "@oh-my-opencode/shared-skills"
+import { sharedSkillsRootPath } from "@oh-my-cybersecurity/shared-skills"
 import { getClaudeConfigDir, getOpenCodeConfigDirs, detectWorktreePath } from "../../shared"
 
 export type SkillProvenance = {
@@ -56,7 +56,7 @@ export function knownUserSkillRoots(): string[] {
   const home = homedir()
   return [
     join(getClaudeConfigDir(), "skills"), join(home, ".agents", "skills"),
-    join(home, ".omo", "agent", "skills"), join(home, ".senpi", "agent", "skills"),
+    join(home, ".omc", "agent", "skills"), join(home, ".senpi", "agent", "skills"),
     sharedSkillsRootPath(),
     ...getOpenCodeConfigDirs({ binary: "opencode" }).flatMap((dir) => [
       join(dir, "skills"), join(dir, "skill"),

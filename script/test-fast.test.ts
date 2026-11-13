@@ -39,7 +39,7 @@ describe("isReentry", () => {
     const reentry = isReentry(env)
 
     // then
-    expect(REENTRY_ENV_VAR).toBe("OMO_TEST_FAST_ACTIVE")
+    expect(REENTRY_ENV_VAR).toBe("OMC_TEST_FAST_ACTIVE")
     expect(reentry).toBe(true)
   })
 
@@ -262,35 +262,35 @@ describe("partition tiling", () => {
     // then — the canonical tiling is whole packages on both sides, compared verbatim
     expect(sorted(owned)).toEqual([
       "packages/memory-core/**",
-      "packages/omo-opencode/**",
-      "packages/omo-senpi/**",
+      "packages/omc-opencode/**",
+      "packages/omc-senpi/**",
     ])
     expect(sorted(ignored)).toEqual(sorted(owned))
   })
 
   it("#given a win2 ignore narrowed below a package a group runs whole #when the tiling is checked #then the overlap outside that subtree is reported", () => {
-    // given — win2 hides only src/, so packages/omo-senpi/test/** runs in BOTH groups
+    // given — win2 hides only src/, so packages/omc-senpi/test/** runs in BOTH groups
     const base = readFileSync(new URL("../bunfig.toml", import.meta.url), "utf8")
     const win2 = readFileSync(new URL("../bunfig.win2.toml", import.meta.url), "utf8").replace(
-      '"packages/omo-senpi/**"',
-      '"packages/omo-senpi/src/**"',
+      '"packages/omc-senpi/**"',
+      '"packages/omc-senpi/src/**"',
     )
 
     // when
     const ignored = ignoredScopes(base, win2)
 
     // then
-    expect(ignored).toContain("packages/omo-senpi/src/**")
+    expect(ignored).toContain("packages/omc-senpi/src/**")
     expect(sorted(ignored)).not.toEqual(sorted(groupScopes(testFastGroups())))
   })
 
   it("#given a group argument narrowed below the package win2 hides whole #when the tiling is checked #then the uncovered subtree is reported", () => {
-    // given — the senpi group runs only src/, so packages/omo-senpi/test/** runs NOWHERE
+    // given — the senpi group runs only src/, so packages/omc-senpi/test/** runs NOWHERE
     const base = readFileSync(new URL("../bunfig.toml", import.meta.url), "utf8")
     const win2 = readFileSync(new URL("../bunfig.win2.toml", import.meta.url), "utf8")
     const narrowed = testFastGroups().map((group) =>
       group.name === "senpi"
-        ? { ...group, args: ["test", "packages/omo-senpi/src"] }
+        ? { ...group, args: ["test", "packages/omc-senpi/src"] }
         : group,
     )
 
@@ -298,7 +298,7 @@ describe("partition tiling", () => {
     const owned = groupScopes(narrowed)
 
     // then
-    expect(owned).toContain("packages/omo-senpi/src/**")
+    expect(owned).toContain("packages/omc-senpi/src/**")
     expect(sorted(owned)).not.toEqual(sorted(ignoredScopes(base, win2)))
   })
 
@@ -374,13 +374,13 @@ describe("spawnInheritingStdio", () => {
     // when
     void spawnInheritingStdio(registry, () => {}, spawner)({
       name: "senpi",
-      args: ["test", "packages/omo-senpi"],
+      args: ["test", "packages/omc-senpi"],
     })
 
     // then
     const call = calls[0]
     expect(calls.length).toBe(1)
-    expect(call?.args).toEqual(["test", "packages/omo-senpi"])
+    expect(call?.args).toEqual(["test", "packages/omc-senpi"])
     expect(call?.options.env?.[REENTRY_ENV_VAR]).toBe("1")
     const spawnEnv = call?.options.env ?? {}
     const pathKey = Object.keys(spawnEnv).find((key) => key.toUpperCase() === "PATH") ?? "PATH"

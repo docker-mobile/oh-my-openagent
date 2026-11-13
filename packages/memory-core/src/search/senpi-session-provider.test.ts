@@ -165,11 +165,11 @@ describe("SenpiSessionProvider", () => {
     writeSession(projectDir, "plain.jsonl", [header("plain"), userEntry("p1", null, "beta visible")])
     writeSession(projectDir, "archived.jsonl", [header("archived"), userEntry("a1", null, "beta archived")])
     writeFileSync(join(projectDir, "archived.jsonl.archived"), "")
-    writeSession(join(root, "--omo-reflection--"), "reflect.jsonl", [header("reflect"), userEntry("r1", null, "beta reflection")])
+    writeSession(join(root, "--omc-reflection--"), "reflect.jsonl", [header("reflect"), userEntry("r1", null, "beta reflection")])
     writeSession(projectDir, "task-child.jsonl", [header("task-child"), userEntry("k1", null, "beta task child")])
     const provider = new SenpiSessionProvider({
       sessionsDir: root,
-      excludedDirs: ["--omo-reflection--"],
+      excludedDirs: ["--omc-reflection--"],
       isHidden: (candidate) => candidate.header?.id === "task-child",
     })
 
@@ -189,9 +189,9 @@ describe("SenpiSessionProvider", () => {
     const root = sessionsRoot()
     const hiddenDir = join(root, "--tmp-hidden--")
     writeSession(hiddenDir, "one.jsonl", [header("one"), userEntry("h1", null, "beta hidden dir")])
-    writeFileSync(join(hiddenDir, ".omo-hidden"), "")
+    writeFileSync(join(hiddenDir, ".omc-hidden"), "")
     writeSession(join(root, "--tmp-project--"), "two.jsonl", [header("two"), userEntry("v1", null, "beta plain dir")])
-    const provider = new SenpiSessionProvider({ sessionsDir: root, hiddenMarkerFile: ".omo-hidden" })
+    const provider = new SenpiSessionProvider({ sessionsDir: root, hiddenMarkerFile: ".omc-hidden" })
 
     // when
     const results = searchTranscripts(provider, "beta")

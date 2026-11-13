@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test } from "bun:test"
 
-import { createManagerResidencyRegistry } from "../../../omo-senpi/src/components/task/residency-registry"
+import { createManagerResidencyRegistry } from "../../../omc-senpi/src/components/task/residency-registry"
 import { createTaskLifecycle } from "../lifecycle/create"
 import type { DestroyCause } from "../lifecycle/port"
 import { NO_HOST_ENDPOINT } from "../lifecycle/host-session"
@@ -12,7 +12,7 @@ import { createTaskManager } from "./manager"
 import type { ManagedStartSpec } from "./types"
 
 // senpi#3266 review: re-dispatch must work with the REAL destruction port, wired exactly as
-// omo-senpi's engine wires it (components/task/engine.ts). A mock that skips teardown hid that the
+// omc-senpi's engine wires it (components/task/engine.ts). A mock that skips teardown hid that the
 // port's residency `dispose` left the record un-reattachable.
 
 afterEach(cleanupProjects)

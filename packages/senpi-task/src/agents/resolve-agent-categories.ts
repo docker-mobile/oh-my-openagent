@@ -1,5 +1,5 @@
-import type { DelegateFallbackEntry } from "@oh-my-opencode/delegate-core"
-import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
+import type { DelegateFallbackEntry } from "@oh-my-cybersecurity/delegate-core"
+import type { OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import { DEFAULT_CATEGORIES, resolveCategory, type ModelSelectionSource, type SenpiModelPort, type SenpiModelRegistryPort } from "../category"
 import { recordRungKey } from "../model-chain"
@@ -38,7 +38,7 @@ export type ResolveAgentCategoryInput<TModel extends SenpiModelPort> = {
   readonly omoConfig: OmoConfig
   readonly registry: SenpiModelRegistryPort<TModel>
   readonly configuredTuning: AgentCategoryTuning
-  readonly distributeModels?: import("@oh-my-opencode/omo-config-core").ModelDistributor
+  readonly distributeModels?: import("@oh-my-cybersecurity/omc-config-core").ModelDistributor
 }
 
 // `resolveCategory` fails closed when the registry's available-model container is unparseable,

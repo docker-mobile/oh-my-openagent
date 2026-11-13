@@ -4,7 +4,7 @@ import { dirname, resolve } from "node:path"
 
 import type { HostEnginePolicy } from "../../lazy/senpi-barrel"
 import { MEMBER_PROCESS_ENV_NAMES, WORKPOOL_PROCESS_ENV_NAMES } from "../../team/member-extension/identity"
-import { OMO_SENPI_TASK_DEPTH, OMO_SENPI_TASK_ROOT_SESSION_ID, OMO_SENPI_TASK_RPC_CHILD } from "../rpc/spawn"
+import { OMC_SENPI_TASK_DEPTH, OMC_SENPI_TASK_ROOT_SESSION_ID, OMC_SENPI_TASK_RPC_CHILD } from "../rpc/spawn"
 import type { DaemonLaunchSpec } from "./launch-spec"
 
 export interface DaemonLaunchOptionsInput {
@@ -28,7 +28,7 @@ const SESSION_IDLE_EVICTION_ENV = "SENPI_RPC_SESSION_IDLE_EVICTION_MS"
 const CHILD_SESSION_DIR_ENV = "SENPI_CODING_AGENT_SESSION_DIR"
 
 /**
- * The launch spec is the ONLY producer of the daemon's argv and env: nothing else in omo composes
+ * The launch spec is the ONLY producer of the daemon's argv and env: nothing else in omc composes
  * `hostArgs`. Extension paths resolve against the spec's own directory, so the same spec works from
  * the npm package, a compiled binary's payload and the desktop's resolved plugin dir.
  */
@@ -37,9 +37,9 @@ export function daemonLaunchOptions(input: DaemonLaunchOptionsInput): DaemonLaun
   const env: Record<string, string | null> = { ...input.spec.env }
   // Child- and member-scoped identity never reaches a host shared by every child on the machine.
   for (const name of [
-    OMO_SENPI_TASK_RPC_CHILD,
-    OMO_SENPI_TASK_DEPTH,
-    OMO_SENPI_TASK_ROOT_SESSION_ID,
+    OMC_SENPI_TASK_RPC_CHILD,
+    OMC_SENPI_TASK_DEPTH,
+    OMC_SENPI_TASK_ROOT_SESSION_ID,
     CHILD_SESSION_DIR_ENV,
     ...MEMBER_PROCESS_ENV_NAMES,
     ...WORKPOOL_PROCESS_ENV_NAMES,
@@ -65,7 +65,7 @@ export function daemonLaunchOptions(input: DaemonLaunchOptionsInput): DaemonLaun
 }
 
 /**
- * omo's view of the host's `launch_profile.profile_id`: sha256 over the canonical JSON of the
+ * omc's view of the host's `launch_profile.profile_id`: sha256 over the canonical JSON of the
  * resolved core (sorted absolute extension roots). The engine computes the same digest from its own
  * argv; a client whose digest differs attaches with a profile warning instead of handing off.
  */

@@ -10,8 +10,8 @@ file instead, named for the pull request: `changes/unreleased/<pr-number>.md`.
 The text that used to go under `## [Unreleased]`, in either of the shapes the changelog uses:
 
 ```md
-**OmO loads the analytics SDK only when an event is captured.** PostHog now ships as a lazy
-sidecar ... ([#10640](https://github.com/code-yeongyu/oh-my-openagent/pull/10640))
+**OmC loads the analytics SDK only when an event is captured.** PostHog now ships as a lazy
+sidecar ... ([#10640](https://github.com/code-yeongyu/oh-my-cybersecurity/pull/10640))
 ```
 
 ```md
@@ -23,8 +23,8 @@ sidecar ... ([#10640](https://github.com/code-yeongyu/oh-my-openagent/pull/10640
 After it, one block for each log you used to prepend to, naming the log:
 
 ```md
-<!-- changes-log: packages/omo-senpi/changes.md -->
-## 2026-10-24 - What changed in omo-senpi (#123)
+<!-- changes-log: packages/omc-senpi/changes.md -->
+## 2026-10-24 - What changed in omc-senpi (#123)
 
 The text you used to prepend to that log.
 ```

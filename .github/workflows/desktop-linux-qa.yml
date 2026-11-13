@@ -80,7 +80,7 @@ jobs:
           set -euo pipefail
           qa="${RUNNER_TEMP}/desktop-linux-qa"
           mkdir -p "$qa"
-          workdir=$(mktemp -d "${RUNNER_TEMP}/omo-desktop-qa.XXXXXX")
+          workdir=$(mktemp -d "${RUNNER_TEMP}/omc-desktop-qa.XXXXXX")
           cleanup() {
             code=$?
             rm -rf "$workdir"
@@ -122,7 +122,7 @@ jobs:
         run: |
           set -euo pipefail
           qa="${RUNNER_TEMP}/desktop-linux-qa"
-          workdir=$(mktemp -d "${RUNNER_TEMP}/omo-desktop-qa-sabotage.XXXXXX")
+          workdir=$(mktemp -d "${RUNNER_TEMP}/omc-desktop-qa-sabotage.XXXXXX")
           cleanup() {
             code=$?
             rm -rf "$workdir"

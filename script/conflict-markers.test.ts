@@ -30,7 +30,7 @@ function committedMarkerLines(repoRoot: string): string[] {
 }
 
 function fixtureRepo(files: Record<string, string | Buffer>): string {
-  const root = mkdtempSync(join(tmpdir(), "omo-conflict-markers-"))
+  const root = mkdtempSync(join(tmpdir(), "omc-conflict-markers-"))
   execFileSync("git", ["init", "-q"], { cwd: root })
   for (const [name, content] of Object.entries(files)) writeFileSync(join(root, name), content)
   execFileSync("git", ["add", "."], { cwd: root })

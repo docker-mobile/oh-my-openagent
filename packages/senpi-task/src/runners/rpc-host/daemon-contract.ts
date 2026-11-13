@@ -6,10 +6,10 @@ import type { ShardOwner } from "./shard-sidecar"
 import type { ShardNotice } from "./shard-socket"
 
 export const TASK_HOST_SOCKET_ENV_NAMES = [
-  "OMO_RPC_SOCKET",
+  "OMC_RPC_SOCKET",
   "SENPI_RPC_SOCKET",
   "PI_RPC_SOCKET",
-  "OMO_RPC_SOCKET_PATH",
+  "OMC_RPC_SOCKET_PATH",
 ] as const
 
 /** The ONE public socket of the machine-wide daemon: an override, else `<agentDir>/rpc/rpc.sock`. */
@@ -25,7 +25,7 @@ export function resolveTaskHostSocket(
 }
 
 /**
- * Capabilities a daemon must advertise before omo will run task children as its sessions.
+ * Capabilities a daemon must advertise before omc will run task children as its sessions.
  * `retry_fallback_profile` holds each child to its designated models: a host without it builds the session
  * from its own fallback settings, which can move a child to a model outside its chain (#12006).
  */
@@ -37,7 +37,7 @@ export const TASK_DAEMON_REQUIRED_CAPABILITIES = [
   "retry_fallback_profile",
 ] as const
 
-/** The protocol generation this omo build speaks (senpi `get_protocol_info.protocolVersion`). */
+/** The protocol generation this omc build speaks (senpi `get_protocol_info.protocolVersion`). */
 export const TASK_DAEMON_PROTOCOL_VERSION = 1
 
 /** How long an ensured daemon is trusted before the socket is probed again. */
@@ -61,7 +61,7 @@ export class HostUnavailableError extends Error {
   override readonly name = "HostUnavailableError"
   readonly reason: HostUnavailableReason
   readonly fallbackAllowed: boolean
-  // The refused spec's path, computed by omo itself (never child output), so the public start
+  // The refused spec's path, computed by omc itself (never child output), so the public start
   // failure can name the file and its fix.
   readonly launchSpecPath?: string
 

@@ -1,7 +1,7 @@
 import { execFileSync } from "node:child_process"
 import { existsSync } from "node:fs"
 
-export const GIT_BASH_ENV_KEY = "OMO_CODEX_GIT_BASH_PATH"
+export const GIT_BASH_ENV_KEY = "OMC_CODEX_GIT_BASH_PATH"
 export const WINGET_INSTALL_ARGS = ["install", "--id", "Git.Git", "-e", "--source", "winget"] as const
 
 const PROGRAM_FILES_GIT_BASH = "C:\\Program Files\\Git\\bin\\bash.exe"

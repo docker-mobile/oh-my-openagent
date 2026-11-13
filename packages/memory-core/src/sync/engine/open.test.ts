@@ -15,7 +15,7 @@ afterEach(async () => {
 })
 
 async function deviceDirs(name: string) {
-  const base = await mkdtemp(join(tmpdir(), `omo-open-${name}-`))
+  const base = await mkdtemp(join(tmpdir(), `omc-open-${name}-`))
   cleanup.push(() => rm(base, { recursive: true, force: true }))
   const repo = join(base, "repo")
   await mkdir(repo, { recursive: true })

@@ -40,7 +40,7 @@ function seedSpool(dir: string): void {
 
 async function optOut(spoolDir: string, spoolRoot: string, diagnostics: TelemetryDiagnosticInput[]): Promise<void> {
   const transport = await createOtlpTelemetryTransport({
-    productEnvPrefix: "OMO_TEST",
+    productEnvPrefix: "OMC_TEST",
     ingestKey: "k",
     spoolDir,
     spoolRoot,
@@ -228,7 +228,7 @@ describe("the opt-out purge deletes only what the spool created, only inside a v
 })
 
 describe("opt-out purges the spool", () => {
-  for (const env of [{ DO_NOT_TRACK: "1" }, { OTEL_SDK_DISABLED: "true" }, { OMO_TEST_SEND_ANONYMOUS_TELEMETRY: "0" }]) {
+  for (const env of [{ DO_NOT_TRACK: "1" }, { OTEL_SDK_DISABLED: "true" }, { OMC_TEST_SEND_ANONYMOUS_TELEMETRY: "0" }]) {
     test(`#given a spool left by earlier runs #when the process starts opted out (${Object.keys(env)[0]}) #then every batch, claim, WAL and quarantined file is deleted`, async () => {
       // given
       const dir = root()
@@ -236,7 +236,7 @@ describe("opt-out purges the spool", () => {
 
       // when
       const transport = await createOtlpTelemetryTransport({
-        productEnvPrefix: "OMO_TEST",
+        productEnvPrefix: "OMC_TEST",
         ingestKey: "k",
         spoolDir: dir,
         spoolRoot: dirname(dir),
@@ -288,7 +288,7 @@ describe("opt-out purges the spool", () => {
     await b.flush()
 
     // then
-    const features = calls.flatMap((c) => logRecordsOf(decodeLogs(c.body))).map((r) => r.attributes.find((kv) => kv.key === "omo.feature")?.value?.value)
+    const features = calls.flatMap((c) => logRecordsOf(decodeLogs(c.body))).map((r) => r.attributes.find((kv) => kv.key === "omc.feature")?.value?.value)
     expect(features).toContainEqual({ case: "stringValue", value: "after-purge" })
     expect(diagnostics.filter((d) => d.event === "telemetry_spool_write_failed")).toEqual([])
     expect(spoolNames(dir)).toEqual([])

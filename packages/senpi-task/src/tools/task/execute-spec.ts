@@ -10,7 +10,7 @@ import type { ResolvedSpawnItem, TaskSkillSummary, TaskToolContext, TaskToolDeps
 type SingleSpawnParams = Omit<TaskToolParamsStatic, "prompt" | "tasks"> & { readonly prompt: string }
 
 export type ResolvedManagerStartSpec = ManagerStartSpec & {
-  // Absent only when omo.json says `auto` and the parent session's daemon check has not settled
+  // Absent only when omc.json says `auto` and the parent session's daemon check has not settled
   // yet: the manager then resolves it (awaiting that check) instead of the tool guessing here.
   readonly execution_mode?: ExecutionMode
   readonly skills?: TaskSkillSummary
@@ -68,7 +68,7 @@ export function taskExecutionModeFor(
 export type TaskTarget = { readonly category: string } | { readonly subagentType: string }
 
 /**
- * The parent session's ONE `auto` resolution, asked only when omo.json really says `auto` AND this
+ * The parent session's ONE `auto` resolution, asked only when omc.json really says `auto` AND this
  * call has a target the daemon check could still decide: a call whose every target already runs
  * in-process (an agent configured in-process, e.g. `explore`) never ensures the session's task
  * host (IS-9). Awaited at the tool's async entry so every synchronous resolution below reads a

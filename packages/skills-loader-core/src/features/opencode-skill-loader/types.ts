@@ -1,4 +1,4 @@
-import type { CommandDefinition } from "@oh-my-opencode/claude-code-compat-core/claude-code-command-loader/types"
+import type { CommandDefinition } from "@oh-my-cybersecurity/claude-code-compat-core/claude-code-command-loader/types"
 import type { SkillMcpConfig } from "../../types"
 import type { SkillProvenance } from "./skill-provenance"
 

@@ -172,6 +172,6 @@ const noStringCaseMismatch = {
 };
 
 export default {
-  meta: { name: "omo" },
+  meta: { name: "omc" },
   rules: { "no-enum": noEnum, "no-implicit-any-let": noImplicitAnyLet, "no-string-case-mismatch": noStringCaseMismatch },
 };

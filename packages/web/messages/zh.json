@@ -1,10 +1,10 @@
 {
   "metadata": {
-    "title": "OmO",
-    "description": "Your tool for real work. But it's an agent. OmO 把你的 token 变成现实世界里有价值的成果。"
+    "title": "OmC",
+    "description": "Your tool for real work. But it's an agent. OmC 把你的 token 变成现实世界里有价值的成果。"
   },
   "nav": {
-    "brand": "OmO",
+    "brand": "OmC",
     "features": "功能",
     "docs": "文档",
     "manifesto": "宣言",
@@ -16,7 +16,7 @@
     "skipToContent": "跳到正文"
   },
   "footer": {
-    "brand": "OmO",
+    "brand": "OmC",
     "copyright": "© {year} Sisyphus Labs · 依据 SUL-1.0 源码可用",
     "product": "产品",
     "community": "社区",
@@ -56,7 +56,7 @@
         "powershell": "PowerShell",
         "cmd": "CMD"
       },
-      "next": "然后打开一个新终端，运行 omo。",
+      "next": "然后打开一个新终端，运行 omc。",
       "onComputer": "请在 Mac、Linux 或 Windows 电脑上运行。"
     },
     "proof": {
@@ -82,7 +82,7 @@
     "multiModel": {
       "title": "不用纠结的多模型。",
       "body": "把你喜爱的前沿模型和便宜的模型混着用。登录即可。每个模型都自带为它调好的系统提示词，你永远不会选错。",
-      "caption": "OmO 内置的调优配置"
+      "caption": "OmC 内置的调优配置"
     },
     "ulw": {
       "title": "让数百个代理为你工作。只需一个关键词。",
@@ -114,7 +114,7 @@
     },
     "skills": {
       "title": "高质量技能，只给你需要的那一点。",
-      "body": "你的模型很聪明，但解决现实问题时仍有很多不知道的事。OmO 把缺失的知识做成技能，只加载当前任务需要的部分。"
+      "body": "你的模型很聪明，但解决现实问题时仍有很多不知道的事。OmC 把缺失的知识做成技能，只加载当前任务需要的部分。"
     },
     "crafted": {
       "title": "而且，你会触及的每一个方面都经过精心打造。",
@@ -167,7 +167,7 @@
         "author": "Arthur Guiot"
       },
       "review2": {
-        "text": "If Claude Code does in 7 days what a human does in 3 months, OmO does it in 1 hour.",
+        "text": "If Claude Code does in 7 days what a human does in 3 months, OmC does it in 1 hour.",
         "author": "B, Quant Researcher"
       },
       "review3": {
@@ -178,13 +178,13 @@
     "cta": {
       "eyebrow": "安装",
       "title": "一条命令。然后回到你的工作。",
-      "subtitle": "安装 OmO，打开项目，说出要做的事。设置就这么多。",
+      "subtitle": "安装 OmC，打开项目，说出要做的事。设置就这么多。",
       "installNow": "立即安装",
       "readTheDocs": "阅读文档"
     },
     "dag": {
-      "region": "打开工作流图的 OmO 桌面端",
-      "windowTitle": "OmO — 市场研究 12k 来源",
+      "region": "打开工作流图的 OmC 桌面端",
+      "windowTitle": "OmC — 市场研究 12k 来源",
       "threads": "会话",
       "thread1": "市场研究 12k 来源",
       "thread2": "训练排序模型",
@@ -206,13 +206,13 @@
     }
   },
   "docs": {
-    "mobileHeader": "OmO 文档",
+    "mobileHeader": "OmC 文档",
     "searchPlaceholder": "搜索文档...",
     "searchLabel": "筛选文档章节",
     "sectionsLabel": "文档章节",
     "install": {
-      "title": "安装 OmO",
-      "description": "在 macOS、Linux、WSL 和 Windows 上用一条命令安装 OmO。"
+      "title": "安装 OmC",
+      "description": "在 macOS、Linux、WSL 和 Windows 上用一条命令安装 OmC。"
     }
   },
   "manifesto": {
@@ -263,7 +263,7 @@
     "closing": {
       "lead": "所以，别再犹豫",
       "title": "just ulw ulw",
-      "button": "获取 OmO"
+      "button": "获取 OmC"
     },
     "legacyNote": "注：早在<date>2026年1月19日</date>，我们就写过，让人不得不去看代码的代理，是没做好的工具。<link>阅读旧版</link>"
   },
@@ -285,7 +285,7 @@
     },
     "notCollaboration": "那不是'人机协作'——那是 AI 没有完成它的工作。",
     "premise": "{linkText} 建立在一个人类应该是架构师，而非拼写检查员的前提上。",
-    "premiseLinkText": "OmO",
+    "premiseLinkText": "OmC",
     "indistinguishable": {
       "title": "无法区分的代码",
       "subtitle": "Agent 写的代码应该与资深工程师写的代码无法区分。",
@@ -402,7 +402,7 @@
     },
     "finalCta": {
       "title": "只需 ulw ulw",
-      "button": "获取 OmO"
+      "button": "获取 OmC"
     },
     "archive": {
       "eyebrow": "旧版 · 2026.01.19",
@@ -412,12 +412,12 @@
   },
   "download": {
     "metadata": {
-      "title": "下载 OmO 桌面应用",
-      "description": "下载适用于 macOS、Windows 和 Linux 的 OmO 桌面应用。每个安装包都标有大小和 SHA-256 校验和。"
+      "title": "下载 OmC 桌面应用",
+      "description": "下载适用于 macOS、Windows 和 Linux 的 OmC 桌面应用。每个安装包都标有大小和 SHA-256 校验和。"
     },
     "eyebrow": "桌面应用",
-    "title": "下载 OmO",
-    "lead": "适用于 Mac、Windows 电脑和 Linux 的 OmO 桌面应用。我们会选出适合你电脑的安装包,并在下方列出全部安装包及其校验和。",
+    "title": "下载 OmC",
+    "lead": "适用于 Mac、Windows 电脑和 Linux 的 OmC 桌面应用。我们会选出适合你电脑的安装包,并在下方列出全部安装包及其校验和。",
     "channel": {
       "label": "发布渠道",
       "stable": "稳定版",
@@ -440,8 +440,8 @@
     },
     "primary": {
       "button": "下载 {os} 版",
-      "meta": "OmO {version} · {arch} · {size}",
-      "metaNoSize": "OmO {version} · {arch}",
+      "meta": "OmC {version} · {arch} · {size}",
+      "metaNoSize": "OmC {version} · {arch}",
       "intelPrompt": "不是 Apple 芯片的 Mac?",
       "intelLink": "下载 Intel Mac 版",
       "released": "{date} 发布",
@@ -457,12 +457,12 @@
     },
     "coming": {
       "title": "{date}上线",
-      "body": "桌面应用尚未公开。在此之前,你可以通过命令行安装 OmO。",
+      "body": "桌面应用尚未公开。在此之前,你可以通过命令行安装 OmC。",
       "cli": "通过命令行安装"
     },
     "unavailable": {
       "title": "暂时无法下载",
-      "body": "下载列表加载失败。请几分钟后重试,或通过命令行安装 OmO。",
+      "body": "下载列表加载失败。请几分钟后重试,或通过命令行安装 OmC。",
       "cli": "通过命令行安装"
     },
     "all": {
@@ -494,13 +494,13 @@
   },
   "support": {
     "metadata": {
-      "title": "OmO 帮助",
-      "description": "报告 OmO 的问题，或向社区寻求帮助。"
+      "title": "OmC 帮助",
+      "description": "报告 OmC 的问题，或向社区寻求帮助。"
     },
     "eyebrow": "支持",
-    "title": "OmO 帮助",
+    "title": "OmC 帮助",
     "lead": "发现问题或有疑问？在 GitHub 上提交 issue，或在社区 Discord 中提问。",
-    "leadWithReport": "你在 OmO 应用中写的报告如下。可以作为 GitHub issue 提交，或带到社区 Discord。",
+    "leadWithReport": "你在 OmC 应用中写的报告如下。可以作为 GitHub issue 提交，或带到社区 Discord。",
     "report": {
       "heading": "你的报告",
       "titleLabel": "标题",
@@ -513,7 +513,7 @@
       "openIssueNote": "将打开已填好报告内容的 GitHub issue。GitHub issue 是公开的，提交前请先检查内容。如果有诊断 zip 文件，请在那里附上。",
       "discord": "在 Discord 提问"
     },
-    "privacy": "此页面不会保存你的报告，但报告已包含在应用打开的链接中发送到 omo.dev。只有在你自己提交 issue 时，报告才会发送到 GitHub。"
+    "privacy": "此页面不会保存你的报告，但报告已包含在应用打开的链接中发送到 omc.nga.hm。只有在你自己提交 issue 时，报告才会发送到 GitHub。"
   },
   "notFound": {
     "title": "找不到此页面。",
@@ -521,7 +521,7 @@
     "home": "返回首页"
   },
   "home": {
-    "metaTitle": "OmO: Your tool for real work. But it's an agent.",
+    "metaTitle": "OmC: Your tool for real work. But it's an agent.",
     "nav": {
       "primary": "主菜单",
       "skip": "跳到正文",
@@ -574,7 +574,7 @@
       "step1": "动一行代码之前先读完整个代码库",
       "step2": "先规划，每一步先证明再前进",
       "step3": "在真实界面上验证结果，然后才停下",
-      "frame": "omo · ~/reports"
+      "frame": "omc · ~/reports"
     },
     "massUlw": {
       "eyebrow": "Mass ulw",
@@ -587,7 +587,7 @@
       "title": "前沿模型与便宜模型，一起用。",
       "soft": "每个模型都自带调好的提示词。",
       "body": "把你喜爱的前沿模型和便宜的模型混着用。登录即可。每个模型都自带为它调好的系统提示词，你永远不会选错。",
-      "caption": "OmO 内置的调优配置"
+      "caption": "OmC 内置的调优配置"
     },
     "kibitzer": {
       "eyebrow": "Kibitzer",
@@ -615,7 +615,7 @@
       "eyebrow": "技能",
       "title": "现实世界的经验，做成技能。",
       "soft": "只在任务需要时加载。",
-      "body": "你的模型很聪明，但解决现实问题时仍有很多不知道的事。OmO 把缺失的知识做成技能，只加载当前任务需要的部分。",
+      "body": "你的模型很聪明，但解决现实问题时仍有很多不知道的事。OmC 把缺失的知识做成技能，只加载当前任务需要的部分。",
       "more": "在文档中查看全部技能"
     },
     "crafted": {
@@ -646,10 +646,10 @@
       "title": "今天在你的终端里。",
       "soft": "接下来在你的聊天应用里。",
       "terminalTitle": "在终端里",
-      "terminalBody": "一条命令安装 OmO。然后在任意项目中运行 omo。",
+      "terminalBody": "一条命令安装 OmC。然后在任意项目中运行 omc。",
       "terminalMeta": "macOS、Linux、WSL 和 Windows",
       "desktopTitle": "在桌面应用里",
-      "desktopBody": "适用于 Mac、Windows 电脑和 Linux 的 OmO 桌面应用。",
+      "desktopBody": "适用于 Mac、Windows 电脑和 Linux 的 OmC 桌面应用。",
       "desktopMeta": "测试版",
       "chatTitle": "在你的聊天应用里",
       "chatBody": "在你已经在的地方和代理对话。它以你的身份而不是机器人发消息，覆盖你使用的每一个平台。",
@@ -660,7 +660,7 @@
       "title": "用户怎么说。",
       "q1": "It made me cancel my Cursor subscription. Unbelievable things are happening in the open source community.",
       "a1": "Arthur Guiot",
-      "q2": "If Claude Code does in 7 days what a human does in 3 months, OmO does it in 1 hour.",
+      "q2": "If Claude Code does in 7 days what a human does in 3 months, OmC does it in 1 hour.",
       "a2": "B, Quant Researcher",
       "q3": "You guys should pull this into core and recruit him. Seriously. It's really, really, really good.",
       "a3": "Henning Kilset"
@@ -669,12 +669,12 @@
       "title": "由 Sisyphus Labs 打造。",
       "soft": "Dori 和 doriterm 的开发团队。",
       "dori": "住在你聊天里的工程师。在 Slack、Discord 或 Telegram 里告诉他做什么；他为每项工作开一个独立的编程代理会话，合并后向你汇报。",
-      "doriterm": "你的每一台机器，通过端到端加密网络连接，汇聚在一个终端里。在家里的 mac mini 上启动 OmO，用手机回复它。"
+      "doriterm": "你的每一台机器，通过端到端加密网络连接，汇聚在一个终端里。在家里的 mac mini 上启动 OmC，用手机回复它。"
     },
     "closing": {
       "title": "一条命令。",
       "soft": "然后回到你的工作。",
-      "body": "安装 OmO，打开项目，说出要做的事。设置就这么多。",
+      "body": "安装 OmC，打开项目，说出要做的事。设置就这么多。",
       "docs": "阅读文档",
       "manifesto": "阅读宣言"
     },
@@ -683,7 +683,7 @@
       "unix": "macOS, Linux, WSL",
       "powershell": "PowerShell",
       "cmd": "CMD",
-      "next": "然后打开一个新终端，运行 omo。",
+      "next": "然后打开一个新终端，运行 omc。",
       "copy": "复制",
       "copied": "已复制",
       "copyAria": "复制安装命令",

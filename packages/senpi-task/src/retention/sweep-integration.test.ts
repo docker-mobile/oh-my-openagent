@@ -4,7 +4,7 @@ import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { afterEach, describe, expect, test } from "bun:test"
 
-import type { OmoTaskSettings } from "@oh-my-opencode/omo-config-core"
+import type { OmoTaskSettings } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { RetainTranscriptMark, TaskStatus } from "../state"
 import { createTaskLifecycle } from "../lifecycle/create"
@@ -34,7 +34,7 @@ type Fixture = {
 
 function fixture(): Fixture {
   const store = tempStore()
-  const archiveDir = join(store.stateDir, "archive", "sessions", "--omo-senpi-task-archive--")
+  const archiveDir = join(store.stateDir, "archive", "sessions", "--omc-senpi-task-archive--")
   return { store, archiveDir }
 }
 

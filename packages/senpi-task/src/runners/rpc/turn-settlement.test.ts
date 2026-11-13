@@ -128,7 +128,7 @@ describe("createTurnSettlement terminal provider error (senpi#3262)", () => {
     // when - the turn ends terminally; its wake tracker says a goal owns the recovery
     fixture.settlement.observe(agentEnd(PROVIDER_TIMEOUT) as never)
 
-    // then - the armed confirmation sees the live wake and holds: no probe, no settle, re-armed (omo#9711)
+    // then - the armed confirmation sees the live wake and holds: no probe, no settle, re-armed (omc#9711)
     expect(fixture.scheduler.pending()).toBe(1)
     fixture.scheduler.runNext()
     await flushSettlement()

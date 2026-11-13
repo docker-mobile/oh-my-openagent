@@ -1,6 +1,6 @@
 # Third Party Notices
 
-This file enumerates third-party components redistributed by the root `oh-my-opencode` package surface from `package.json` `files[]`, root production dependencies, and bundled MCP/runtime payloads.
+This file enumerates third-party components redistributed by the root `oh-my-cybersecurity` package surface from `package.json` `files[]`, root production dependencies, and bundled MCP/runtime payloads.
 
 Generator/checker note: update this file with the audited component list, then run `node scripts/check-third-party-notices.mjs`. Task 11 owns tarball ship verification.
 
@@ -10,7 +10,7 @@ Generator/checker note: update this file with the audited component list, then r
 - License: MIT, as declared by the upstream project.
 - Copyright: Yeongyu Kim and contributors.
 - Upstream URL: https://github.com/code-yeongyu/go-claude-code-comment-checker/releases
-- Distribution: the OpenCode hook downloads the host-platform release binary into its local cache on first use. The root package no longer installs the npm package or its all-platform `vendor/` payload. Separate Codex component notices remain in `packages/omo-codex/THIRD-PARTY-NOTICES.md`.
+- Distribution: the OpenCode hook downloads the host-platform release binary into its local cache on first use. The root package no longer installs the npm package or its all-platform `vendor/` payload. Separate Codex component notices remain in `packages/omc-codex/THIRD-PARTY-NOTICES.md`.
 
 ## Components
 
@@ -87,22 +87,22 @@ Generator/checker note: update this file with the audited component list, then r
 - Where-bundled: root production dependency.
 
 ### pi-comment-checker
-- License: MIT, from `packages/omo-codex/plugin/components/comment-checker/LICENSE` and component NOTICE.
+- License: MIT, from `packages/omc-codex/plugin/components/comment-checker/LICENSE` and component NOTICE.
 - Copyright: Yeongyu Kim.
 - Upstream URL: https://github.com/code-yeongyu
-- Where-bundled: ported source in `packages/omo-codex/plugin/components/comment-checker`, shipped by the root package file surface.
+- Where-bundled: ported source in `packages/omc-codex/plugin/components/comment-checker`, shipped by the root package file surface.
 
 ### pi-lsp-client
-- License: MIT, from `packages/lsp-tools-mcp/LICENSE`, `packages/lsp-tools-mcp/NOTICE`, and `packages/omo-codex/plugin/components/lsp/LICENSE`.
+- License: MIT, from `packages/lsp-tools-mcp/LICENSE`, `packages/lsp-tools-mcp/NOTICE`, and `packages/omc-codex/plugin/components/lsp/LICENSE`.
 - Copyright: Yeongyu Kim.
 - Upstream URL: https://github.com/code-yeongyu
 - Where-bundled: adapted LSP runtime in `packages/lsp-tools-mcp`, `packages/lsp-core`, and the Codex plugin LSP component shipped by the root package file surface.
 
 ### pi-rules
-- License: MIT, from `packages/omo-codex/plugin/components/rules/LICENSE` and component NOTICE.
+- License: MIT, from `packages/omc-codex/plugin/components/rules/LICENSE` and component NOTICE.
 - Copyright: Yeongyu Kim.
 - Upstream URL: https://github.com/code-yeongyu
-- Where-bundled: ported rules/context loading behavior in `packages/omo-codex/plugin/components/rules`, shipped by the root package file surface.
+- Where-bundled: ported rules/context loading behavior in `packages/omc-codex/plugin/components/rules`, shipped by the root package file surface.
 
 ### picocolors@1.1.1
 - License: ISC, from `node_modules/picocolors/LICENSE`.

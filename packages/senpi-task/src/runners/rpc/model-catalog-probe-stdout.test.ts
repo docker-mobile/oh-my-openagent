@@ -36,7 +36,7 @@ describe("model catalog probe output capture (#9068)", () => {
   describe("#given a listing child that exits right after writing more than a pipe holds", () => {
     it("#when nothing drains its output until it has exited #then the probe still returns every row", async () => {
       // given
-      const dir = mkdtempSync(join(tmpdir(), "omo-catalog-stall-"))
+      const dir = mkdtempSync(join(tmpdir(), "omc-catalog-stall-"))
 
       try {
         // when
@@ -66,7 +66,7 @@ describe("model catalog probe output capture (#9068)", () => {
         child.once("exit", () => {
           for (const entry of readdirSync(tmpdir())) {
             const candidate = join(tmpdir(), entry, "stdout")
-            if (entry.startsWith("omo-model-catalog-") && statSync(candidate, { throwIfNoEntry: false })?.ino === captureInode) rmSync(candidate)
+            if (entry.startsWith("omc-model-catalog-") && statSync(candidate, { throwIfNoEntry: false })?.ino === captureInode) rmSync(candidate)
           }
         })
         return child

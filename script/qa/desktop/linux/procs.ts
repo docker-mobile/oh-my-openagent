@@ -1,10 +1,10 @@
-// Every process the driver starts carries `OMO_DESKTOP_QA_RUN=<run id>` in its environment, so teardown
+// Every process the driver starts carries `OMC_DESKTOP_QA_RUN=<run id>` in its environment, so teardown
 // can stop what it started and then count, from /proc, anything (grandchildren included) still alive.
 import { type ChildProcess, spawn } from "node:child_process";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 
 export const HANG_GUARD_MS = 30_000;
-export const RUN_MARKER = "OMO_DESKTOP_QA_RUN";
+export const RUN_MARKER = "OMC_DESKTOP_QA_RUN";
 const POLL_MS = 50;
 const KILL_ESCALATION_MS = 5_000;
 

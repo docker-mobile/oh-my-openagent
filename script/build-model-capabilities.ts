@@ -3,9 +3,9 @@ import { resolve } from "path"
 import {
   fetchModelCapabilitiesSnapshot,
   MODELS_DEV_SOURCE_URL,
-} from "../packages/omo-opencode/src/shared/model-capabilities-cache"
+} from "../packages/omc-opencode/src/shared/model-capabilities-cache"
 
-const OUTPUT_PATH = resolve(import.meta.dir, "../packages/omo-opencode/src/generated/model-capabilities.generated.json")
+const OUTPUT_PATH = resolve(import.meta.dir, "../packages/omc-opencode/src/generated/model-capabilities.generated.json")
 
 console.log(`Fetching model capabilities snapshot from ${MODELS_DEV_SOURCE_URL}...`)
 const snapshot = await fetchModelCapabilitiesSnapshot()

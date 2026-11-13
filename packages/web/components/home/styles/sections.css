@@ -495,7 +495,7 @@
   }
 }
 
-/* Eyebrow status dot (current omo.dev): pulses unless reduced motion. */
+/* Eyebrow status dot (current omc.nga.hm): pulses unless reduced motion. */
 .eyebrow__dot {
   width: 8px;
   height: 8px;
@@ -512,7 +512,7 @@
   }
 }
 
-/* Sticky aside: the title column stays beside the desktop window while it scrolls (current omo.dev 02). */
+/* Sticky aside: the title column stays beside the desktop window while it scrolls (current omc.nga.hm 02). */
 .aside {
   display: grid;
   gap: var(--space-7);

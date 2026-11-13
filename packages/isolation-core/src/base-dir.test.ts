@@ -20,29 +20,29 @@ const sameDevice: BaseDirIO = {
 }
 test("chooses the home directory on the same device", async () => {
   expect(await chooseBaseDir(repo, home, id, sameDevice)).toEqual({
-    baseDir: join(home, ".omo/wt", segment), crossDevice: false,
+    baseDir: join(home, ".omc/wt", segment), crossDevice: false,
   })
 })
 test("chooses the mount root on a different writable device", async () => {
   const io: BaseDirIO = {
     stat: async (path) => ({ dev: onVolume(path) ? 2 : 1 }),
-    writable: async (path) => resolve(path) === join(volume, ".omo-wt"),
+    writable: async (path) => resolve(path) === join(volume, ".omc-wt"),
   }
   expect(await chooseBaseDir(repo, home, id, io)).toEqual({
-    baseDir: join(volume, ".omo-wt", segment), crossDevice: false,
+    baseDir: join(volume, ".omc-wt", segment), crossDevice: false,
   })
 })
 test("flags cross-device home fallback when volume is not writable", async () => {
   expect(await chooseBaseDir(repo, home, id, {
     stat: async (path) => ({ dev: onVolume(path) ? 2 : 1 }),
     writable: async () => false,
-  })).toEqual({ baseDir: join(home, ".omo/wt", segment), crossDevice: true })
+  })).toEqual({ baseDir: join(home, ".omc/wt", segment), crossDevice: true })
 })
 test("different task ids get different paths without interpolating the id", async () => {
   const first = await chooseBaseDir(repo, home, "../escape", sameDevice)
   const second = await chooseBaseDir(repo, home, "other", sameDevice)
   expect(first.baseDir).not.toEqual(second.baseDir)
-  expect(first.baseDir.startsWith(join(home, ".omo", "wt"))).toBe(true)
+  expect(first.baseDir.startsWith(join(home, ".omc", "wt"))).toBe(true)
   expect(first.baseDir).toMatch(/t[0-9a-f]{10}$/)
   expect(first.baseDir).not.toContain("escape")
 })
@@ -57,7 +57,7 @@ test("never places the base directory inside a subvolume-style repository root",
   }
   const selection = await chooseBaseDir(repo, home, id, io)
   expect(selection.baseDir).not.toContain(repo)
-  expect(selection).toEqual({ baseDir: join(volume, ".omo-wt", segment), crossDevice: false })
+  expect(selection).toEqual({ baseDir: join(volume, ".omc-wt", segment), crossDevice: false })
 })
 
 test("falls back home cross-device when a subvolume-style root has no writable ancestor outside it", async () => {
@@ -67,5 +67,5 @@ test("falls back home cross-device when a subvolume-style root has no writable a
   }
   const selection = await chooseBaseDir(repo, home, id, io)
   expect(selection.baseDir).not.toContain(repo)
-  expect(selection).toEqual({ baseDir: join(home, ".omo/wt", segment), crossDevice: true })
+  expect(selection).toEqual({ baseDir: join(home, ".omc/wt", segment), crossDevice: true })
 })

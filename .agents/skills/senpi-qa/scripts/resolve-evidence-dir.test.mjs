@@ -30,7 +30,7 @@ describe("resolveEvidenceDir", () => {
     const resolved = resolveEvidenceDir({ repoRoot, slug: "20260820-senpi-qa-contract" })
 
     // then
-    expect(resolved).toBe(join(repoRoot, ".omo", "evidence", "omo-senpi-adapter", "20260820-senpi-qa-contract"))
+    expect(resolved).toBe(join(repoRoot, ".omc", "evidence", "omc-senpi-adapter", "20260820-senpi-qa-contract"))
   })
 
   test("#given a relative git worktree path #when resolved #then it still returns an absolute evidence directory", () => {
@@ -42,7 +42,7 @@ describe("resolveEvidenceDir", () => {
     const resolved = resolveEvidenceDir({ repoRoot: relativeRoot, slug: "20260820-relative-root" })
 
     // then
-    expect(resolved).toBe(join(repoRoot, ".omo", "evidence", "omo-senpi-adapter", "20260820-relative-root"))
+    expect(resolved).toBe(join(repoRoot, ".omc", "evidence", "omc-senpi-adapter", "20260820-relative-root"))
   })
 
   test("#given a resolved evidence path #when the resolver returns #then it has created no directory", () => {
@@ -54,12 +54,12 @@ describe("resolveEvidenceDir", () => {
 
     // then
     expect(existsSync(resolved)).toBe(false)
-    expect(existsSync(join(repoRoot, ".omo"))).toBe(false)
+    expect(existsSync(join(repoRoot, ".omc"))).toBe(false)
   })
 
-  test("#given the adapter evidence root #when it is the declared relative root #then it stays under .omo/evidence", () => {
+  test("#given the adapter evidence root #when it is the declared relative root #then it stays under .omc/evidence", () => {
     // given / when / then
-    expect(EVIDENCE_RELATIVE_ROOT).toBe(join(".omo", "evidence", "omo-senpi-adapter"))
+    expect(EVIDENCE_RELATIVE_ROOT).toBe(join(".omc", "evidence", "omc-senpi-adapter"))
   })
 
   test("#given an unsafe slug #when resolved #then it is rejected before any path is produced", () => {

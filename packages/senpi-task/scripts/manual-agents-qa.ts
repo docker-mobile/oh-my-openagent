@@ -33,7 +33,7 @@ Finder prompt
 )
 const brokenPath = join(projectDir, ".pi", "agent", "broken.md")
 writeText(brokenPath, "---\nmodel: [unterminated\n---\nBroken prompt")
-const userConfigPath = join(homeDir, ".config", "omo", "omo.jsonc")
+const userConfigPath = join(homeDir, ".config", "omc", "omc.jsonc")
 mkdirSync(userConfigPath, { recursive: true })
 const externalRoot = join(fixtureRoot, "external-agents")
 const symlinkedScanRoot = join(projectDir, ".senpi", "agent")
@@ -50,13 +50,13 @@ symlinkSync(configuredExternalRoot, symlinkedConfiguredRoot, "dir")
 const brokenDirectorySymlink = join(projectDir, ".pi", "agents", "nested", "missing")
 mkdirSync(dirname(brokenDirectorySymlink), { recursive: true })
 symlinkSync(join(projectDir, "missing-directory"), brokenDirectorySymlink, "dir")
-const projectConfigPath = join(projectDir, ".omo", "omo.json")
+const projectConfigPath = join(projectDir, ".omc", "omc.json")
 writeText(
   projectConfigPath,
   JSON.stringify({
     agents: {
       finder: {
-        model: "omo-override",
+        model: "omc-override",
         execution_mode: "process",
       },
     },
@@ -66,7 +66,7 @@ writeText(
 const loaded = loadAgents({ homeDir, projectDir })
 const finder = loaded.agents.finder
 if (finder === undefined) throw new Error("finder did not load")
-if (finder.model !== "omo-override") throw new Error("omo.json model override did not win")
+if (finder.model !== "omc-override") throw new Error("omc.json model override did not win")
 if (finder.models?.[0] !== "file-primary") throw new Error("finder models fallback list did not load")
 if (resolveToolRule(finder.tools ?? [], "read") !== true) throw new Error("finder read tool allow did not load")
 const brokenDiagnostic = loaded.diagnostics.find((diagnostic) => diagnostic.path === brokenPath)

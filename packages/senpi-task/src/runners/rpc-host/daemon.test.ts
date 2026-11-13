@@ -108,17 +108,17 @@ function ensureInput(
 describe("resolveTaskHostSocket", () => {
   test("#given several socket overrides #when resolving #then the four names win in order and blanks are skipped", () => {
     // given / when / then
-    expect(TASK_HOST_SOCKET_ENV_NAMES).toEqual(["OMO_RPC_SOCKET", "SENPI_RPC_SOCKET", "PI_RPC_SOCKET", "OMO_RPC_SOCKET_PATH"])
-    const agentDir = join("/h", ".omo", "agent")
-    expect(resolveTaskHostSocket({ OMO_RPC_SOCKET: "/brand.sock", SENPI_RPC_SOCKET: "/legacy.sock" }, agentDir)).toBe("/brand.sock")
+    expect(TASK_HOST_SOCKET_ENV_NAMES).toEqual(["OMC_RPC_SOCKET", "SENPI_RPC_SOCKET", "PI_RPC_SOCKET", "OMC_RPC_SOCKET_PATH"])
+    const agentDir = join("/h", ".omc", "agent")
+    expect(resolveTaskHostSocket({ OMC_RPC_SOCKET: "/brand.sock", SENPI_RPC_SOCKET: "/legacy.sock" }, agentDir)).toBe("/brand.sock")
     expect(resolveTaskHostSocket({ SENPI_RPC_SOCKET: "/legacy.sock", PI_RPC_SOCKET: "/pi.sock" }, agentDir)).toBe("/legacy.sock")
-    expect(resolveTaskHostSocket({ PI_RPC_SOCKET: "/pi.sock", OMO_RPC_SOCKET_PATH: "/desktop.sock" }, agentDir)).toBe("/pi.sock")
-    expect(resolveTaskHostSocket({ OMO_RPC_SOCKET: "  ", OMO_RPC_SOCKET_PATH: "/desktop.sock" }, agentDir)).toBe("/desktop.sock")
+    expect(resolveTaskHostSocket({ PI_RPC_SOCKET: "/pi.sock", OMC_RPC_SOCKET_PATH: "/desktop.sock" }, agentDir)).toBe("/pi.sock")
+    expect(resolveTaskHostSocket({ OMC_RPC_SOCKET: "  ", OMC_RPC_SOCKET_PATH: "/desktop.sock" }, agentDir)).toBe("/desktop.sock")
   })
 
   test("#given no socket override #when resolving #then the agent dir's public rpc socket is used", () => {
     // given / when / then
-    expect(resolveTaskHostSocket({}, join("/h", ".omo", "agent"))).toBe(join("/h", ".omo", "agent", "rpc", "rpc.sock"))
+    expect(resolveTaskHostSocket({}, join("/h", ".omc", "agent"))).toBe(join("/h", ".omc", "agent", "rpc", "rpc.sock"))
   })
 })
 
@@ -259,7 +259,7 @@ describe("ensureTaskDaemon", () => {
     const host = fakeHostPort({
       host: protocolInfo(),
       ensure: async () => {
-        throw new Error(`EACCES: permission denied, mkdir '${home}/.omo/agent/rpc'\n  at startHost (${home}/engine.js:1:1)`)
+        throw new Error(`EACCES: permission denied, mkdir '${home}/.omc/agent/rpc'\n  at startHost (${home}/engine.js:1:1)`)
       },
     })
 
@@ -271,7 +271,7 @@ describe("ensureTaskDaemon", () => {
     expect((failure as HostUnavailableError).reason).toBe("ensure_failed")
     expect((failure as HostUnavailableError).fallbackAllowed).toBe(false)
     expect((failure as HostUnavailableError).message).toContain("EACCES")
-    expect((failure as HostUnavailableError).message).toContain("~/.omo/agent/rpc")
+    expect((failure as HostUnavailableError).message).toContain("~/.omc/agent/rpc")
     expect((failure as HostUnavailableError).message).not.toContain(home)
     expect((failure as HostUnavailableError).message).not.toContain("\n")
   })
@@ -414,7 +414,7 @@ describe("ensureTaskDaemon capabilities", () => {
 })
 
 // senpi #2242: the ensured host carries an attach hold the caller owns. The task daemon is transient,
-// so a hold kept for the life of a long omo session would keep it from ever idle-exiting (omo#9041).
+// so a hold kept for the life of a long omc session would keep it from ever idle-exiting (omc#9041).
 describe("ensureTaskDaemon attach hold", () => {
   function heldEnsure(order: string[], result: { readonly reused: boolean }) {
     return async (input: EnsureHostInput): Promise<EnsuredSenpiHost> => {

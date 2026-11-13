@@ -1,4 +1,4 @@
-import type { ExecuteTool } from "@oh-my-opencode/senpi-desktop-service";
+import type { ExecuteTool } from "@oh-my-cybersecurity/senpi-desktop-service";
 import { afterEach, expect, it } from "vitest";
 import { createComputerActionsTool } from "../src/cua-adapter";
 import { closeDesktops, desktopFixture, hostContext } from "./fixtures";

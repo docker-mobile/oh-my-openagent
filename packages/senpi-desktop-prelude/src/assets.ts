@@ -31,7 +31,7 @@ let cached: PreludeAssets | undefined;
 
 /**
  * Reads the generated asset JSON once per process. The JSON sits beside this module in the source
- * tree and beside the built bundle in the omo plugin (`extensions/assets.generated.json`, staged by
+ * tree and beside the built bundle in the omc plugin (`extensions/assets.generated.json`, staged by
  * `build-extension.mjs`), so the prelude text never enters a file senpi's extension loader
  * re-transpiles at every session start (#9113).
  */

@@ -62,36 +62,36 @@ describe("git attribution resolution", () => {
       expect(decision.suppressed).toBe(false)
     })
 
-    it("suppresses attribution when OMO_NO_COMMIT_ATTRIBUTION is set", () => {
+    it("suppresses attribution when OMC_NO_COMMIT_ATTRIBUTION is set", () => {
       const decision = shouldSuppressGitAttribution({
-        env: { OMO_NO_COMMIT_ATTRIBUTION: "1" },
+        env: { OMC_NO_COMMIT_ATTRIBUTION: "1" },
         gitConfigReader: () => undefined,
       })
       expect(decision.suppressed).toBe(true)
       expect(decision.reason).toBe("env_disabled")
     })
 
-    it("suppresses attribution when OMO_GIT_ATTRIBUTION is 0", () => {
+    it("suppresses attribution when OMC_GIT_ATTRIBUTION is 0", () => {
       const decision = shouldSuppressGitAttribution({
-        env: { OMO_GIT_ATTRIBUTION: "0" },
+        env: { OMC_GIT_ATTRIBUTION: "0" },
         gitConfigReader: () => undefined,
       })
       expect(decision.suppressed).toBe(true)
       expect(decision.reason).toBe("env_disabled")
     })
 
-    it("explicitly allows attribution when OMO_GIT_ATTRIBUTION is 1", () => {
+    it("explicitly allows attribution when OMC_GIT_ATTRIBUTION is 1", () => {
       const decision = shouldSuppressGitAttribution({
-        env: { OMO_GIT_ATTRIBUTION: "1" },
+        env: { OMC_GIT_ATTRIBUTION: "1" },
         gitConfigReader: () => "false", // Even if git config had false
       })
       expect(decision.suppressed).toBe(false)
     })
 
-    it("suppresses attribution when git config omo.attribution is false", () => {
+    it("suppresses attribution when git config omc.attribution is false", () => {
       const decision = shouldSuppressGitAttribution({
         env: {},
-        gitConfigReader: (key) => (key === "omo.attribution" ? "false" : undefined),
+        gitConfigReader: (key) => (key === "omc.attribution" ? "false" : undefined),
       })
       expect(decision.suppressed).toBe(true)
       expect(decision.reason).toBe("git_config_disabled")
@@ -127,10 +127,10 @@ describe("git attribution resolution", () => {
       expect(result.suppressed).toBe(false)
     })
 
-    it("suppresses footers and trailers when git config omo.attribution is false", () => {
+    it("suppresses footers and trailers when git config omc.attribution is false", () => {
       const result = resolveGitAttribution(undefined, {
         env: {},
-        gitConfigReader: (key) => (key === "omo.attribution" ? "false" : undefined),
+        gitConfigReader: (key) => (key === "omc.attribution" ? "false" : undefined),
       })
       expect(result.commitFooter).toBe(false)
       expect(result.includeCoAuthoredBy).toBe(false)
@@ -164,11 +164,11 @@ describe("git attribution resolution", () => {
       expect(result.suppressed).toBe(false)
     })
 
-    it("re-enables the builtin footer when OMO_GIT_ATTRIBUTION is 1", () => {
+    it("re-enables the builtin footer when OMC_GIT_ATTRIBUTION is 1", () => {
       const result = resolveGitAttribution(
         { commit_footer: false },
         {
-          env: { OMO_GIT_ATTRIBUTION: "1" },
+          env: { OMC_GIT_ATTRIBUTION: "1" },
           gitConfigReader: () => undefined,
         },
       )
@@ -178,12 +178,12 @@ describe("git attribution resolution", () => {
       expect(result.reason).toBe("env_enabled")
     })
 
-    it("re-enables the builtin footer when git config omo.attribution is true", () => {
+    it("re-enables the builtin footer when git config omc.attribution is true", () => {
       const result = resolveGitAttribution(
         { commit_footer: false },
         {
           env: {},
-          gitConfigReader: (key) => (key === "omo.attribution" ? "true" : undefined),
+          gitConfigReader: (key) => (key === "omc.attribution" ? "true" : undefined),
         },
       )
       expect(result.commitFooter).toBe(true)

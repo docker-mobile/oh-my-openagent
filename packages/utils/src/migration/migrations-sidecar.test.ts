@@ -8,7 +8,7 @@ describe("migrations sidecar", () => {
   let workdir: string
 
   beforeEach(() => {
-    workdir = mkdtempSync(join(tmpdir(), "omo-migrations-sidecar-"))
+    workdir = mkdtempSync(join(tmpdir(), "omc-migrations-sidecar-"))
   })
 
   afterEach(() => {

@@ -658,9 +658,9 @@ Record the chosen path in the todo list.
 
 1. When the session lists the \`team-mode\` skill, load it for lifecycle, message protocol, and limits.
 2. Call \`team_list\` and verify no active \`refactor-squad\` run exists; if one does, shutdown + delete the orphan before proceeding.
-3. If the project-level spec \`.omo/teams/refactor-squad/config.json\` (under the project root) is missing, write it using the spec below.
+3. If the project-level spec \`.omc/teams/refactor-squad/config.json\` (under the project root) is missing, write it using the spec below.
 
-**Team spec** (\`<project root>/.omo/teams/refactor-squad/config.json\`):
+**Team spec** (\`<project root>/.omc/teams/refactor-squad/config.json\`):
 
 \`\`\`json
 {
@@ -741,7 +741,7 @@ If Phase 5 used the team path, dismantle \`refactor-squad\` BEFORE producing the
 2. \`team_delete(teamRunId=<id>)\`.
 3. \`team_list\` to confirm no residual \`refactor-squad\` run.
 
-The \`.omo/teams/refactor-squad/config.json\` declaration stays on disk in the project; next session reuses it.
+The \`.omc/teams/refactor-squad/config.json\` declaration stays on disk in the project; next session reuses it.
 
 Append to the 6.6 summary a "Dispatch path" line and, when team path was used, team metrics (teamRunId, tasks created, verifier runs, team lifetime).
 

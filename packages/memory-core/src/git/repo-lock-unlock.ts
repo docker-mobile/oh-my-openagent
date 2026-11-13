@@ -6,7 +6,7 @@ import { LockContentionError, acquireLock, createLockRecord, getPidLiveness, par
 import { PRODUCTION_LOCK_SCANS, type GitLockScans } from "./lock-scans"
 import { presentLockFiles, writerLockPathForRepo } from "./repo-lock-sweep"
 
-// The manual way out of a kept stranded git lock (omo #10199). It re-checks ONE lock with the
+// The manual way out of a kept stranded git lock (omc #10199). It re-checks ONE lock with the
 // sweep's own evidence and never decides on its own: a visible live holder, repository user or
 // memory writer refuses; anything else needs the user's confirmation, and an unknown answer is
 // reported as unknown rather than read as "nobody".

@@ -24,14 +24,14 @@ function lastJsonLine(stdout: string): unknown {
 }
 
 /**
- * Classifies `omo account show` by its JSON, never by the exit code alone: signed in and signed out both exit 0 and
+ * Classifies `omc account show` by its JSON, never by the exit code alone: signed in and signed out both exit 0 and
  * differ only in `signedIn`, while 7 is a locked keychain and 8/9 an unavailable credential store.
  */
 export function classifyAccountShow(result: AccountShowResult): AccountState {
   const value = lastJsonLine(result.stdout)
   if (result.exitCode === KEYCHAIN_LOCKED_EXIT && isRecord(value) && value.keychain === "locked") return { kind: "keychain_locked" }
   if (STORE_UNAVAILABLE_EXITS.includes(result.exitCode)) return { kind: "store_unavailable" }
-  if (!isRecord(value)) return { kind: "account_unavailable", reason: "omo account show printed no JSON" }
+  if (!isRecord(value)) return { kind: "account_unavailable", reason: "omc account show printed no JSON" }
   if (value.signedIn === false) return { kind: "signed_out" }
   if (value.signedIn === true && result.exitCode === 0) {
     const device = value.device
@@ -42,7 +42,7 @@ export function classifyAccountShow(result: AccountShowResult): AccountState {
         refreshState: text(value.refreshState) ? value.refreshState : "ok",
       }
   }
-  return { kind: "account_unavailable", reason: `omo account show answered an unexpected shape (exit ${result.exitCode})` }
+  return { kind: "account_unavailable", reason: `omc account show answered an unexpected shape (exit ${result.exitCode})` }
 }
 
 /** The one line a user can act on for each state that stops the bootstrap; undefined when signed in. */
@@ -51,12 +51,12 @@ export function accountStateNotice(state: AccountState): string | undefined {
     case "signed_in":
       return undefined
     case "signed_out":
-      return "Sign in to OmO first: run omo login (or sign in from the OmO desktop app)."
+      return "Sign in to OmC first: run omc login (or sign in from the OmC desktop app)."
     case "keychain_locked":
-      return "Your OmO sign-in is behind a locked keychain. Unlock it, then try again."
+      return "Your OmC sign-in is behind a locked keychain. Unlock it, then try again."
     case "store_unavailable":
-      return "The credential store holding your OmO sign-in is not available right now. Try again in a moment."
+      return "The credential store holding your OmC sign-in is not available right now. Try again in a moment."
     case "account_unavailable":
-      return `Could not read your OmO sign-in (${state.reason}). Sign in again with omo login.`
+      return `Could not read your OmC sign-in (${state.reason}). Sign in again with omc login.`
   }
 }

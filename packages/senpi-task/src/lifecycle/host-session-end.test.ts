@@ -7,7 +7,7 @@ import { cleanupProjects, seedRecord, tempStore, type CallLog } from "./__fixtur
 
 afterEach(cleanupProjects)
 
-// Contract (omo#11765): a no-handle host-session cancel is recorded cancelled and destroyed only behind
+// Contract (omc#11765): a no-handle host-session cancel is recorded cancelled and destroyed only behind
 // exactly one host_session_closed that names how the end was confirmed, and the destroy that follows a
 // confirmation reuses it instead of probing the daemon again.
 

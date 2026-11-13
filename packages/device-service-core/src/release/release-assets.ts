@@ -23,7 +23,7 @@ export const deviceServiceHost = (platform: NodeJS.Platform, arch: string): Devi
 }
 
 export const deviceServiceAssetName = (host: DeviceServiceHost): string =>
-  host.startsWith("windows-") ? `omo-device-service-${host}.exe` : `omo-device-service-${host}`
+  host.startsWith("windows-") ? `omc-device-service-${host}.exe` : `omc-device-service-${host}`
 
 const RELEASE_FILES: ReadonlySet<string> = new Set([MANIFEST, ...DEVICE_SERVICE_HOSTS.map(deviceServiceAssetName)])
 const CHECKSUM_LINE = /^([0-9a-f]{64}) {2}([A-Za-z0-9.-]+)$/

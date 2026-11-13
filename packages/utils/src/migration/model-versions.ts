@@ -1,4 +1,4 @@
-import { LATEST_MODEL_BY_FAMILY } from "@oh-my-opencode/model-core/latest-models"
+import { LATEST_MODEL_BY_FAMILY } from "@oh-my-cybersecurity/model-core/latest-models"
 
 /**
  * Model version migration map: old full model strings → new full model strings.

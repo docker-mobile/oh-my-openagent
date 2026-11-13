@@ -1,6 +1,6 @@
 import type { AgentDefinition } from "../types"
 
-// Ported and senpi-adapted from packages/omo-opencode/src/agents/explore.ts.
+// Ported and senpi-adapted from packages/omc-opencode/src/agents/explore.ts.
 // Adaptation: opencode file tools remapped to senpi builtins (glob -> find); lsp_* names kept verbatim.
 export const EXPLORE_AGENT: AgentDefinition = {
   name: "explore",

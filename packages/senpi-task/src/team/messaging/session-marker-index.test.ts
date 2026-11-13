@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 
-import type { Message } from "@oh-my-opencode/team-core/types"
+import type { Message } from "@oh-my-cybersecurity/team-core/types"
 
 import { buildPeerMessageEnvelope } from "./message"
 import { createSessionMarkerIndex } from "./session-marker-index"

@@ -24,7 +24,7 @@ describe("desktop engine GitHub release assets", () => {
   })
 
   test("a release dry run stages and checksums every required binary without publishing", () => {
-    const root = mkdtempSync(join(tmpdir(), "omo-desktop-release-"))
+    const root = mkdtempSync(join(tmpdir(), "omc-desktop-release-"))
     try {
       const source = join(root, "source")
       const staged = join(root, "assets")
@@ -47,7 +47,7 @@ describe("desktop engine GitHub release assets", () => {
   })
 
   test("missing available assets fail the release instead of publishing a partial checksum list", () => {
-    const root = mkdtempSync(join(tmpdir(), "omo-desktop-partial-"))
+    const root = mkdtempSync(join(tmpdir(), "omc-desktop-partial-"))
     try {
       writeFileSync(join(root, "source"), "one")
       stageDesktopEngineReleaseAsset("linux-x64", join(root, "source"), root)

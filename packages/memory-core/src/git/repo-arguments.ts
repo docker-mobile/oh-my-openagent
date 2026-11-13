@@ -4,7 +4,7 @@ import type { GitCommitAuthor } from "./repo-types"
 
 export function authorFlags(author: GitCommitAuthor): string[] {
   const name = author.authorName.trim() || author.agentId
-  const email = author.authorEmail ?? `${author.agentId}@omo.local`
+  const email = author.authorEmail ?? `${author.agentId}@omc.local`
   return ["-c", `user.name=${name}`, "-c", `user.email=${email}`]
 }
 

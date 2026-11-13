@@ -1,6 +1,6 @@
 import type { ChildProcessWithoutNullStreams } from "node:child_process";
-import type { DesktopLaunchContextError } from "@oh-my-opencode/senpi-desktop-engine";
-import type { EngineMethod, ErrorCode, JsonRpcErrorData } from "@oh-my-opencode/senpi-desktop-protocol";
+import type { DesktopLaunchContextError } from "@oh-my-cybersecurity/senpi-desktop-engine";
+import type { EngineMethod, ErrorCode, JsonRpcErrorData } from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import { EngineChild } from "./child";
 import { isRecord, parseErrorData } from "./parse";
 import { GRACE_MS, HOLD_RELEASE_GRACE_MS, RESTART_MESSAGE } from "./timeouts";

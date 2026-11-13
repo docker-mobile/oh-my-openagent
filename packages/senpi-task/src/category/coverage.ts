@@ -1,4 +1,4 @@
-import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
+import type { OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import { DEFAULT_CATEGORIES } from "./builtins"
 import { CATEGORY_FALLBACK_CHAINS } from "./fallback-chains"

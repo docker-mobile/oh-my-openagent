@@ -9,8 +9,8 @@ This project treats model capability resolution as a layered system:
 
 ## Internal policy
 
-- Built-in OmO agent/category requirement models must use canonical model IDs.
-- Aliases exist only to preserve compatibility with historical OmO names or provider-specific decorations.
+- Built-in OmC agent/category requirement models must use canonical model IDs.
+- Aliases exist only to preserve compatibility with historical OmC names or provider-specific decorations.
 - New decorated names like `-high`, `-low`, or `-thinking` should not be added to built-in requirements when a canonical model ID plus structured settings can express the same thing.
 - If a provider or config input still uses an alias, normalize it at the edge and continue internally with the canonical ID.
 
@@ -23,7 +23,7 @@ This project treats model capability resolution as a layered system:
 
 ## Hand-scoped snapshot entries
 
-`packages/omo-opencode/src/generated/model-capabilities.generated.json` has two writers:
+`packages/omc-opencode/src/generated/model-capabilities.generated.json` has two writers:
 
 - the scheduled `refresh-model-capabilities` workflow (`bun run build:model-capabilities`, fetched from `models.dev`), and
 - feature PRs that add one scoped entry for a model the upstream catalog does not carry yet (for example #10187 added `gemini-4-argon`).

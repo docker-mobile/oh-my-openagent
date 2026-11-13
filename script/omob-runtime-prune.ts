@@ -1,5 +1,5 @@
 // script/omob-runtime-prune.ts
-// Retires old omob dev runtimes under ~/.omo/binary-runtime. A compiled omob re-execs from its
+// Retires old omob dev runtimes under ~/.omc/binary-runtime. A compiled omob re-execs from its
 // provisioned runtime dir and reads plugin assets (skills, personas, sidecars) lazily, so a
 // runtime that any live process still executes from must survive every prune.
 

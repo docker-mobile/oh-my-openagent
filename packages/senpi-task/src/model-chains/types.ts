@@ -1,5 +1,5 @@
 /** Where a rung of a category's or agent's chain was declared. */
-export type ChainRungSource = "built-in" | "omo.json" | `category:${string}`
+export type ChainRungSource = "built-in" | "omc.json" | `category:${string}`
 
 /**
  * What the spawn resolver does with a rung right now: `primary` and `fallback` are the runtime

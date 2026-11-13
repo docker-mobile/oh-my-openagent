@@ -1,6 +1,6 @@
 import type { AgentDefinition } from "../types"
 
-// Ported and senpi-adapted from packages/omo-opencode/src/agents/librarian.ts.
+// Ported and senpi-adapted from packages/omc-opencode/src/agents/librarian.ts.
 // Remote research uses Senpi's curated, shell-free gh/curl broker.
 export const LIBRARIAN_AGENT: AgentDefinition = {
   name: "librarian",

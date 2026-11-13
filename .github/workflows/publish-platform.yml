@@ -11,8 +11,8 @@ on:
         required: false
         type: string
         default: ""
-      omo_ai_version:
-        # omo-ai version stamped into the release binaries. Optional here so the
+      omc_ai_version:
+        # omc-ai version stamped into the release binaries. Optional here so the
         # caller wiring stays actionlint-clean; the binary lane fails loud when
         # it is missing or malformed (see "Check release assets").
         required: false
@@ -29,8 +29,8 @@ on:
         required: false
         type: string
         default: ""
-      omo_ai_version:
-        description: "omo-ai version to stamp into release binaries (e.g., 3.0.0-0.beta.12)"
+      omc_ai_version:
+        description: "omc-ai version to stamp into release binaries (e.g., 3.0.0-0.beta.12)"
         required: true
         type: string
 
@@ -40,7 +40,7 @@ permissions:
 
 jobs:
   desktop-engine:
-    if: github.repository == 'code-yeongyu/oh-my-openagent'
+    if: github.repository == 'code-yeongyu/oh-my-cybersecurity'
     runs-on: ${{ matrix.runner }}
     defaults:
       run:
@@ -95,7 +95,7 @@ jobs:
             -o "$HELPER"
           # The helper carries the engine's identifier (build.rs signs dev builds the same way). The
           # engine stages it at a fresh temp path on every start, so TCC charges Screen Recording to the
-          # responsible process (the app that launched OmO), not to the helper. It is signed, not
+          # responsible process (the app that launched OmC), not to the helper. It is signed, not
           # notarized: the engine writes it unquarantined into a private directory at runtime, so
           # Gatekeeper never assesses it.
           bash .github/scripts/macos-sign-and-notarize.sh --sign-only \
@@ -118,7 +118,7 @@ jobs:
           bun script/desktop-engine-release.ts stage \
             "${{ matrix.host }}" \
             "target/${{ matrix.rust_target }}/release/${{ matrix.binary }}" \
-            ".omo/desktop-engine-assets"
+            ".omc/desktop-engine-assets"
 
       - name: Smoke native desktop engine
         if: matrix.host != 'darwin-x64'
@@ -130,7 +130,7 @@ jobs:
           arch -x86_64 /usr/bin/true 2>/dev/null || sudo softwareupdate --install-rosetta --agree-to-license
           arch -x86_64 "target/${{ matrix.rust_target }}/release/${{ matrix.binary }}" --selftest
 
-      # The memory-core git floor-job helper (omo#10391) ships on Windows only, unsigned like the engine, with a static
+      # The memory-core git floor-job helper (omc#10391) ships on Windows only, unsigned like the engine, with a static
       # CRT (design v4.2 section 3). Its own cargo call, so RUSTFLAGS reaches no other package. The selftest proves the
       # release bytes can create, limit and join a Global floor job on this runner's own architecture.
       - name: Build git job helper
@@ -141,16 +141,16 @@ jobs:
           RUSTFLAGS: -C target-feature=+crt-static
         run: |
           set -euo pipefail
-          cargo build --release -p omo-git-job-helper --locked --target "$RUST_TARGET"
-          HELPER_DIR=".omo/desktop-engine-assets/git-job-helper-${HOST}"
+          cargo build --release -p omc-git-job-helper --locked --target "$RUST_TARGET"
+          HELPER_DIR=".omc/desktop-engine-assets/git-job-helper-${HOST}"
           mkdir -p "$HELPER_DIR"
-          cp "target/${RUST_TARGET}/release/omo-git-job-helper.exe" "$HELPER_DIR/"
-          chmod 755 "$HELPER_DIR/omo-git-job-helper.exe"
-          SELFTEST="$("$HELPER_DIR/omo-git-job-helper.exe" selftest)"
+          cp "target/${RUST_TARGET}/release/omc-git-job-helper.exe" "$HELPER_DIR/"
+          chmod 755 "$HELPER_DIR/omc-git-job-helper.exe"
+          SELFTEST="$("$HELPER_DIR/omc-git-job-helper.exe" selftest)"
           echo "$SELFTEST"
           [[ "$SELFTEST" == "selftest ok "* ]]
 
-      # The engine CA importer's fact helper (omo#10762) ships on macOS and Windows; Linux reads its trust store
+      # The engine CA importer's fact helper (omc#10762) ships on macOS and Windows; Linux reads its trust store
       # from files and gets none. The Windows build stays unsigned, like the Windows engine.
       - name: Build engine trust helper
         if: startsWith(matrix.host, 'darwin-') || startsWith(matrix.host, 'win32-')
@@ -161,15 +161,15 @@ jobs:
           RUST_TARGET: ${{ matrix.rust_target }}
         run: |
           set -euo pipefail
-          cargo build --release -p omo-engine-trust-helper --locked --target "$RUST_TARGET"
+          cargo build --release -p omc-engine-trust-helper --locked --target "$RUST_TARGET"
           EXE=""
           if [[ "$HOST" == win32-* ]]; then EXE=".exe"; fi
           # A host-named directory: publish.yml merges every desktop-engine artifact into one directory and
-          # uploads only its top-level omo-* and senpi-desktop-engine-* files as release assets.
-          HELPER_DIR=".omo/desktop-engine-assets/engine-trust-helper-${HOST}"
+          # uploads only its top-level omc-* and senpi-desktop-engine-* files as release assets.
+          HELPER_DIR=".omc/desktop-engine-assets/engine-trust-helper-${HOST}"
           mkdir -p "$HELPER_DIR"
-          cp "target/${RUST_TARGET}/release/omo-engine-trust-helper${EXE}" "$HELPER_DIR/"
-          chmod 755 "$HELPER_DIR/omo-engine-trust-helper${EXE}"
+          cp "target/${RUST_TARGET}/release/omc-engine-trust-helper${EXE}" "$HELPER_DIR/"
+          chmod 755 "$HELPER_DIR/omc-engine-trust-helper${EXE}"
 
       - name: Sign Darwin engine trust helper
         if: startsWith(matrix.host, 'darwin-')
@@ -184,8 +184,8 @@ jobs:
           HOST: ${{ matrix.host }}
         run: |
           set -euo pipefail
-          HELPER=".omo/desktop-engine-assets/engine-trust-helper-${HOST}/omo-engine-trust-helper"
-          # Signed, not notarized, like the capture helper: the compiled omo extracts it unquarantined into its
+          HELPER=".omc/desktop-engine-assets/engine-trust-helper-${HOST}/omc-engine-trust-helper"
+          # Signed, not notarized, like the capture helper: the compiled omc extracts it unquarantined into its
           # runtime directory and spawns it from there, so Gatekeeper never assesses it. The bytes signed here
           # are the bytes the build job hashes into the runtime manifest.
           bash .github/scripts/macos-sign-and-notarize.sh --sign-only \
@@ -202,7 +202,7 @@ jobs:
           HOST: ${{ matrix.host }}
         run: |
           set -euo pipefail
-          HELPER=".omo/desktop-engine-assets/engine-trust-helper-${HOST}/omo-engine-trust-helper"
+          HELPER=".omc/desktop-engine-assets/engine-trust-helper-${HOST}/omc-engine-trust-helper"
           OUTPUT="${RUNNER_TEMP}/engine-trust-helper-output.json"
           if [ "$HOST" = darwin-x64 ]; then
             arch -x86_64 /usr/bin/true 2>/dev/null || sudo softwareupdate --install-rosetta --agree-to-license
@@ -225,7 +225,7 @@ jobs:
           HOST: ${{ matrix.host }}
         run: |
           set -euo pipefail
-          ASSET=".omo/desktop-engine-assets/senpi-desktop-engine-${HOST}"
+          ASSET=".omc/desktop-engine-assets/senpi-desktop-engine-${HOST}"
           bash .github/scripts/macos-sign-and-notarize.sh --identifier ai.sisyphuslabs.senpi-desktop-engine "$ASSET"
           if [ "$HOST" = darwin-x64 ]; then
             arch -x86_64 "$ASSET" --selftest
@@ -238,9 +238,9 @@ jobs:
         with:
           name: desktop-engine-${{ matrix.host }}
           path: |
-            .omo/desktop-engine-assets/senpi-desktop-engine-*
-            .omo/desktop-engine-assets/engine-trust-helper-*/omo-engine-trust-helper*
-            .omo/desktop-engine-assets/git-job-helper-*/omo-git-job-helper*
+            .omc/desktop-engine-assets/senpi-desktop-engine-*
+            .omc/desktop-engine-assets/engine-trust-helper-*/omc-engine-trust-helper*
+            .omc/desktop-engine-assets/git-job-helper-*/omc-git-job-helper*
           retention-days: 1
           if-no-files-found: error
 
@@ -259,10 +259,10 @@ jobs:
 
   # The signed keychain helper (#11262): one universal build, signed with its fixed identifier and
   # notarized, then gated on its exact designated requirement. Every darwin output takes these bytes:
-  # the darwin build legs (compiled payload and platform packages), publish-main (omo-ai) and the
+  # the darwin build legs (compiled payload and platform packages), publish-main (omc-ai) and the
   # GitHub release asset the desktop fetches.
   keychain-helper:
-    if: github.repository == 'code-yeongyu/oh-my-openagent'
+    if: github.repository == 'code-yeongyu/oh-my-cybersecurity'
     runs-on: macos-latest
     defaults:
       run:
@@ -277,10 +277,10 @@ jobs:
       - name: Build universal keychain helper
         run: |
           set -euo pipefail
-          HELPER_DIR="${RUNNER_TEMP}/omo-keychain"
+          HELPER_DIR="${RUNNER_TEMP}/omc-keychain"
           mkdir -p "$HELPER_DIR"
-          bun packages/omo-native/keychain-helper/build.ts --out "$HELPER_DIR/omo-keychain"
-          echo "KEYCHAIN_HELPER=$HELPER_DIR/omo-keychain" >> "$GITHUB_ENV"
+          bun packages/omc-native/keychain-helper/build.ts --out "$HELPER_DIR/omc-keychain"
+          echo "KEYCHAIN_HELPER=$HELPER_DIR/omc-keychain" >> "$GITHUB_ENV"
 
       - name: Sign and notarize keychain helper
         timeout-minutes: 75
@@ -294,7 +294,7 @@ jobs:
           MACOS_SIGNING_REQUIRED: "true"
         run: |
           set -euo pipefail
-          bash .github/scripts/macos-sign-and-notarize.sh --identifier com.mengmota.omo-keychain-helper "$KEYCHAIN_HELPER"
+          bash .github/scripts/macos-sign-and-notarize.sh --identifier com.mengmota.omc-keychain-helper "$KEYCHAIN_HELPER"
 
       - name: Verify keychain helper signature
         run: bun script/keychain-helper-release.ts verify "$KEYCHAIN_HELPER"
@@ -303,24 +303,24 @@ jobs:
         run: |
           set -euo pipefail
           chmod 0755 "$KEYCHAIN_HELPER"
-          mkdir -p .omo/keychain-helper .omo/release-binaries
+          mkdir -p .omc/keychain-helper .omc/release-binaries
           # The tarball keeps the mode across jobs; upload-artifact alone would drop u+x.
-          tar -czf .omo/keychain-helper/omo-keychain.tar.gz -C "$(dirname "$KEYCHAIN_HELPER")" omo-keychain
-          cp "$KEYCHAIN_HELPER" .omo/release-binaries/omo-keychain-darwin-universal
+          tar -czf .omc/keychain-helper/omc-keychain.tar.gz -C "$(dirname "$KEYCHAIN_HELPER")" omc-keychain
+          cp "$KEYCHAIN_HELPER" .omc/release-binaries/omc-keychain-darwin-universal
 
       - name: Upload keychain helper artifact
         uses: actions/upload-artifact@v7
         with:
           name: keychain-helper
-          path: .omo/keychain-helper/omo-keychain.tar.gz
+          path: .omc/keychain-helper/omc-keychain.tar.gz
           retention-days: 1
           if-no-files-found: error
 
       - name: Upload keychain helper release asset artifact
         uses: actions/upload-artifact@v7
         with:
-          name: release-binary-omo-keychain
-          path: .omo/release-binaries/omo-keychain-darwin-universal
+          name: release-binary-omc-keychain
+          path: .omc/release-binaries/omc-keychain-darwin-universal
           retention-days: 1
           if-no-files-found: error
 
@@ -331,8 +331,8 @@ jobs:
           JOB_SUMMARY_TITLE: Keychain helper release build
           JOB_SUMMARY_STATUS: ${{ job.status }}
           JOB_SUMMARY_DETAILS: |
-            - Builds the universal (arm64 + x86_64) omo-keychain helper from the release commit.
-            - Signs it as com.mengmota.omo-keychain-helper with the hardened runtime and notarizes it.
+            - Builds the universal (arm64 + x86_64) omc-keychain helper from the release commit.
+            - Signs it as com.mengmota.omc-keychain-helper with the hardened runtime and notarizes it.
             - Fails unless its designated requirement, team, architectures and mode match the helper contract.
           JOB_SUMMARY_NEXT: Check the clang build, the signing/notarization log, or the requirement mismatch printed by the verify step.
         run: GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" bash .github/scripts/write-job-summary.sh
@@ -345,7 +345,7 @@ jobs:
   # =============================================================================
   build:
     needs: [desktop-engine, keychain-helper]
-    if: github.repository == 'code-yeongyu/oh-my-openagent'
+    if: github.repository == 'code-yeongyu/oh-my-cybersecurity'
     # Pin until this release/deploy path is proven on Ubuntu 26.04: #9945.
     runs-on: ${{ startsWith(matrix.platform, 'windows-') && 'windows-latest' || startsWith(matrix.platform, 'darwin-') && 'macos-latest' || 'ubuntu-24.04' }}
     defaults:
@@ -401,28 +401,28 @@ jobs:
           PLATFORM_KEY="${{ matrix.platform }}"
           PLATFORM_KEY="${PLATFORM_KEY//-/_}"
           
-          # Check oh-my-opencode
-          OC_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://registry.npmjs.org/oh-my-opencode-${{ matrix.platform }}/${VERSION}")
-          # Check oh-my-openagent
-          OA_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://registry.npmjs.org/oh-my-openagent-${{ matrix.platform }}/${VERSION}")
+          # Check oh-my-cybersecurity
+          OC_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://registry.npmjs.org/oh-my-cybersecurity-${{ matrix.platform }}/${VERSION}")
+          # Check oh-my-cybersecurity
+          OA_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://registry.npmjs.org/oh-my-cybersecurity-${{ matrix.platform }}/${VERSION}")
           
-          echo "oh-my-opencode-${{ matrix.platform }}@${VERSION}: ${OC_STATUS}"
-          echo "oh-my-openagent-${{ matrix.platform }}@${VERSION}: ${OA_STATUS}"
+          echo "oh-my-cybersecurity-${{ matrix.platform }}@${VERSION}: ${OC_STATUS}"
+          echo "oh-my-cybersecurity-${{ matrix.platform }}@${VERSION}: ${OA_STATUS}"
           
           if [ "$OC_STATUS" = "200" ]; then
             echo "skip_opencode=true" >> "$GITHUB_OUTPUT"
-            echo "✓ oh-my-opencode-${{ matrix.platform }}@${VERSION} already published"
+            echo "✓ oh-my-cybersecurity-${{ matrix.platform }}@${VERSION} already published"
           else
             echo "skip_opencode=false" >> "$GITHUB_OUTPUT"
-            echo "→ oh-my-opencode-${{ matrix.platform }}@${VERSION} needs publishing"
+            echo "→ oh-my-cybersecurity-${{ matrix.platform }}@${VERSION} needs publishing"
           fi
           
           if [ "$OA_STATUS" = "200" ]; then
             echo "skip_openagent=true" >> "$GITHUB_OUTPUT"
-            echo "✓ oh-my-openagent-${{ matrix.platform }}@${VERSION} already published"
+            echo "✓ oh-my-cybersecurity-${{ matrix.platform }}@${VERSION} already published"
           else
             echo "skip_openagent=false" >> "$GITHUB_OUTPUT"
-            echo "→ oh-my-openagent-${{ matrix.platform }}@${VERSION} needs publishing"
+            echo "→ oh-my-cybersecurity-${{ matrix.platform }}@${VERSION} needs publishing"
           fi
           
           # Skip build only if BOTH are already published
@@ -437,7 +437,7 @@ jobs:
         env:
           VERSION: ${{ steps.validate.outputs.version }}
         run: |
-          cd "packages/oh-my-opencode-${{ matrix.platform }}"
+          cd "packages/oh-my-cybersecurity-${{ matrix.platform }}"
           jq --arg v "$VERSION" '.version = $v' package.json > tmp.json && mv tmp.json package.json
 
       - name: Set root package version
@@ -457,16 +457,16 @@ jobs:
           shell: bash
           command: |
             PLATFORM="${{ matrix.platform }}"
-            PACKAGE_DIR="packages/oh-my-opencode-${PLATFORM}"
+            PACKAGE_DIR="packages/oh-my-cybersecurity-${PLATFORM}"
             bun run build:binaries
-            OUTPUT="${PACKAGE_DIR}/bin/oh-my-opencode.js"
+            OUTPUT="${PACKAGE_DIR}/bin/oh-my-cybersecurity.js"
             echo "Built launcher:"
             ls -lh "$OUTPUT"
 
       - name: Verify darwin launcher
         if: steps.check.outputs.skip != 'true' && startsWith(matrix.platform, 'darwin-')
         run: |
-          LAUNCHER="packages/oh-my-opencode-${{ matrix.platform }}/bin/oh-my-opencode.js"
+          LAUNCHER="packages/oh-my-cybersecurity-${{ matrix.platform }}/bin/oh-my-cybersecurity.js"
           file "$LAUNCHER"
           head -n 1 "$LAUNCHER" | grep -F "#!/usr/bin/env node"
 
@@ -475,24 +475,24 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ steps.validate.outputs.version }}
-          OMO_AI_VERSION: ${{ inputs.omo_ai_version }}
+          OMC_AI_VERSION: ${{ inputs.omc_ai_version }}
         run: |
           set -euo pipefail
-          if ! [[ "$OMO_AI_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z]+(\.[0-9A-Za-z]+)*)?$ ]]; then
-            echo "::error::Invalid omo_ai_version: $OMO_AI_VERSION"
+          if ! [[ "$OMC_AI_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z]+(\.[0-9A-Za-z]+)*)?$ ]]; then
+            echo "::error::Invalid omc_ai_version: $OMC_AI_VERSION"
             exit 1
           fi
 
           PLATFORM="${{ matrix.platform }}"
-          BINARY="omo-${PLATFORM}"
+          BINARY="omc-${PLATFORM}"
           if [[ "$PLATFORM" == windows-* ]]; then
-            BINARY="omo-${PLATFORM}.exe"
+            BINARY="omc-${PLATFORM}.exe"
           fi
           ENGINE_ASSET="$(bun script/release-desktop-engine-target.ts --target "$PLATFORM" | jq -r '.asset // empty')"
 
           # The binary lane has its own idempotency key: the release asset on
           # the GitHub release. An available target with a missing engine must
-          # rebuild even when its omo executable is already present.
+          # rebuild even when its omc executable is already present.
           if ASSET_NAMES="$(gh release view "v${VERSION}" --json assets --jq '.assets[].name' 2>/dev/null)"; then
             if grep -Fxq "$BINARY" <<<"$ASSET_NAMES" &&
                { [ -z "$ENGINE_ASSET" ] || grep -Fxq "$ENGINE_ASSET" <<<"$ASSET_NAMES"; }; then
@@ -540,7 +540,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: desktop-engine-${{ steps.desktop-engine-target.outputs.host }}
-          path: .omo/desktop-engine-assets
+          path: .omc/desktop-engine-assets
 
       - name: Resolve git job helper availability
         id: git-job-helper-target
@@ -564,9 +564,9 @@ jobs:
           HELPER_SOURCE: ${{ steps.git-job-helper-target.outputs.source }}
         run: |
           set -euo pipefail
-          test -f ".omo/desktop-engine-assets/$HELPER_ASSET"
+          test -f ".omc/desktop-engine-assets/$HELPER_ASSET"
           mkdir -p "$(dirname "$HELPER_SOURCE")"
-          cp ".omo/desktop-engine-assets/$HELPER_ASSET" "$HELPER_SOURCE"
+          cp ".omc/desktop-engine-assets/$HELPER_ASSET" "$HELPER_SOURCE"
           chmod +x "$HELPER_SOURCE"
 
       # The helper travels in the desktop-engine artifact downloaded above.
@@ -577,9 +577,9 @@ jobs:
           HELPER_SOURCE: ${{ steps.engine-trust-helper-target.outputs.source }}
         run: |
           set -euo pipefail
-          test -f ".omo/desktop-engine-assets/$HELPER_ASSET"
+          test -f ".omc/desktop-engine-assets/$HELPER_ASSET"
           mkdir -p "$(dirname "$HELPER_SOURCE")"
-          cp ".omo/desktop-engine-assets/$HELPER_ASSET" "$HELPER_SOURCE"
+          cp ".omc/desktop-engine-assets/$HELPER_ASSET" "$HELPER_SOURCE"
           chmod +x "$HELPER_SOURCE"
 
       - name: Stage target-specific Rust engine for compiled payload
@@ -589,9 +589,9 @@ jobs:
           ENGINE_SOURCE: ${{ steps.desktop-engine-target.outputs.source }}
         run: |
           set -euo pipefail
-          test -f ".omo/desktop-engine-assets/$ENGINE_ASSET"
+          test -f ".omc/desktop-engine-assets/$ENGINE_ASSET"
           mkdir -p "$(dirname "$ENGINE_SOURCE")"
-          cp ".omo/desktop-engine-assets/$ENGINE_ASSET" "$ENGINE_SOURCE"
+          cp ".omc/desktop-engine-assets/$ENGINE_ASSET" "$ENGINE_SOURCE"
           chmod +x "$ENGINE_SOURCE"
 
       - name: Download keychain helper
@@ -599,11 +599,11 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: keychain-helper
-          path: .omo/keychain-helper
+          path: .omc/keychain-helper
 
-      # build-omo-binary embeds packages/omo-native/bin/darwin/omo-keychain into every darwin binary (at
-      # the payload root, so execDir/omo-keychain) and fails without it; the platform package ships the
-      # same bytes as bin/omo-keychain.
+      # build-omc-binary embeds packages/omc-native/bin/darwin/omc-keychain into every darwin binary (at
+      # the payload root, so execDir/omc-keychain) and fails without it; the platform package ships the
+      # same bytes as bin/omc-keychain.
       - name: Stage keychain helper
         if: startsWith(matrix.platform, 'darwin-') && (steps.release-assets.outputs.binary_exists != 'true' || steps.check.outputs.skip != 'true')
         env:
@@ -611,26 +611,26 @@ jobs:
           PACKAGE_SKIP: ${{ steps.check.outputs.skip }}
         run: |
           set -euo pipefail
-          mkdir -p packages/omo-native/bin/darwin
-          tar -xzpf .omo/keychain-helper/omo-keychain.tar.gz -C packages/omo-native/bin/darwin
-          test -x packages/omo-native/bin/darwin/omo-keychain
+          mkdir -p packages/omc-native/bin/darwin
+          tar -xzpf .omc/keychain-helper/omc-keychain.tar.gz -C packages/omc-native/bin/darwin
+          test -x packages/omc-native/bin/darwin/omc-keychain
           if [ "$PACKAGE_SKIP" != "true" ]; then
-            mkdir -p "packages/oh-my-opencode-${PLATFORM}/bin"
-            install -m 0755 packages/omo-native/bin/darwin/omo-keychain "packages/oh-my-opencode-${PLATFORM}/bin/omo-keychain"
+            mkdir -p "packages/oh-my-cybersecurity-${PLATFORM}/bin"
+            install -m 0755 packages/omc-native/bin/darwin/omc-keychain "packages/oh-my-cybersecurity-${PLATFORM}/bin/omc-keychain"
           fi
 
       - name: Build release binary
         if: steps.release-assets.outputs.binary_exists != 'true'
         env:
-          OMO_VERSION: ${{ steps.validate.outputs.version }}
-          OMO_AI_VERSION: ${{ inputs.omo_ai_version }}
+          OMC_VERSION: ${{ steps.validate.outputs.version }}
+          OMC_AI_VERSION: ${{ inputs.omc_ai_version }}
         run: |
-          bun run script/build-omo-binary.ts \
+          bun run script/build-omc-binary.ts \
             --target "${{ matrix.platform }}" \
-            --omo-version "$OMO_VERSION" \
-            --omo-ai-version "$OMO_AI_VERSION"
+            --omc-version "$OMC_VERSION" \
+            --omc-ai-version "$OMC_AI_VERSION"
           echo "Built release binary:"
-          ls -lh .omo/release-binaries/
+          ls -lh .omc/release-binaries/
         timeout-minutes: 45
 
       - name: Sign and notarize Darwin release binary
@@ -643,20 +643,20 @@ jobs:
           APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
           APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
           MACOS_SIGNING_REQUIRED: ${{ vars.MACOS_SIGNING_REQUIRED }}
-          BINARY: omo-${{ matrix.platform }}
+          BINARY: omc-${{ matrix.platform }}
         run: |
           set -euo pipefail
           bash .github/scripts/macos-sign-and-notarize.sh \
             --identifier ai.sisyphuslabs.omo \
-            --entitlements .github/scripts/omo-bun-executable.entitlements \
-            ".omo/release-binaries/${BINARY}"
+            --entitlements .github/scripts/omc-bun-executable.entitlements \
+            ".omc/release-binaries/${BINARY}"
           # Signing rewrites the bytes the build step digested.
-          (cd .omo/release-binaries && shasum -a 256 "$BINARY" > SHA256SUMS)
+          (cd .omc/release-binaries && shasum -a 256 "$BINARY" > SHA256SUMS)
 
       - name: Smoke test release binary
         if: steps.release-assets.outputs.binary_exists != 'true'
         env:
-          OMO_AI_VERSION: ${{ inputs.omo_ai_version }}
+          OMC_AI_VERSION: ${{ inputs.omc_ai_version }}
         run: |
           set -euo pipefail
           TARGET="${{ matrix.platform }}"
@@ -664,13 +664,13 @@ jobs:
           if [[ "$TARGET" == windows-* ]]; then
             EXE_SUFFIX=".exe"
           fi
-          BIN=".omo/release-binaries/omo-${TARGET}${EXE_SUFFIX}"
-          ENGINE_PIN="$(jq -r '.dependencies["@code-yeongyu/senpi"]' packages/omo-native/package.json)"
+          BIN=".omc/release-binaries/omc-${TARGET}${EXE_SUFFIX}"
+          ENGINE_PIN="$(jq -r '.dependencies["@code-yeongyu/senpi"]' packages/omc-native/package.json)"
           # Stamped version line, compared as a prefix: a missing sibling package.json
           # silently stamps 0.0.0, so the version and the engine pin are both compared.
           # The line continues past the pin with the engine build stamp (`; scheme epoch`
           # or `; scheme nodef`), which varies per build and is not pinned here.
-          EXPECTED_VERSION_LINE="omo ${OMO_AI_VERSION} (engine: senpi ${ENGINE_PIN}"
+          EXPECTED_VERSION_LINE="omc ${OMC_AI_VERSION} (engine: senpi ${ENGINE_PIN}"
           test -f "$BIN"
 
           isolate() {
@@ -683,7 +683,7 @@ jobs:
             export XDG_DATA_HOME="${SMOKE_ROOT}/xdg/data"
             export XDG_STATE_HOME="${SMOKE_ROOT}/xdg/state"
             export XDG_CACHE_HOME="${SMOKE_ROOT}/xdg/cache"
-            export OMO_CODING_AGENT_DIR="${SMOKE_ROOT}/agent"
+            export OMC_CODING_AGENT_DIR="${SMOKE_ROOT}/agent"
             # Node's Windows os.homedir() follows USERPROFILE; HOME alone is
             # only the Git Bash shell view and does not control provisioning.
             if [[ "$TARGET" == windows-* ]]; then
@@ -704,7 +704,7 @@ jobs:
           }
 
           assert_first_run_provisioned() {
-            local provisioned="${HOME}/.omo/binary-runtime/${OMO_AI_VERSION}/omo${EXE_SUFFIX}"
+            local provisioned="${HOME}/.omc/binary-runtime/${OMC_AI_VERSION}/omc${EXE_SUFFIX}"
             if [ ! -f "$provisioned" ]; then
               echo "first-run provisioning did not materialize ${provisioned}"
               return 1
@@ -712,7 +712,7 @@ jobs:
           }
 
           assert_keychain_helper_provisioned() {
-            local helper="${HOME}/.omo/binary-runtime/${OMO_AI_VERSION}/omo-keychain"
+            local helper="${HOME}/.omc/binary-runtime/${OMC_AI_VERSION}/omc-keychain"
             if [ ! -x "$helper" ]; then
               echo "first-run provisioning did not materialize an executable ${helper}"
               return 1
@@ -731,29 +731,29 @@ jobs:
 
           oldstable_glibc_smoke() {
             # The binary must also run against a glibc older than the builder's.
-            docker run --rm -v "${PWD}:/work" -w /work -e HOME=/tmp/omo-smoke-home \
+            docker run --rm -v "${PWD}:/work" -w /work -e HOME=/tmp/omc-smoke-home \
               debian:oldstable sh -c "${BIN} --version" | grep -F "$EXPECTED_VERSION_LINE"
           }
 
           musl_smoke() {
             # musl binaries cannot run on the glibc runner: alpine container.
-            docker run --rm -v "${PWD}:/work" -w /work -e HOME=/tmp/omo-smoke-home \
+            docker run --rm -v "${PWD}:/work" -w /work -e HOME=/tmp/omc-smoke-home \
               alpine:3.21 sh -c "apk add --no-cache libstdc++ >/dev/null && ${BIN} --version" | grep -F "$EXPECTED_VERSION_LINE"
             # Mount the parent so the driver can rename the source checkout. --init gives the container a
             # PID 1 that reaps orphans; node as PID 1 leaves an exited host supervisor as a zombie.
             docker run --rm --init -v "${PWD}/..:/workspace" -w "/workspace/$(basename "$PWD")" \
-              alpine:3.21 sh -c "apk add --no-cache libstdc++ python3 nodejs procps >/dev/null && node script/qa/omo-native-eval-smoke.mjs ${BIN}"
+              alpine:3.21 sh -c "apk add --no-cache libstdc++ python3 nodejs procps >/dev/null && node script/qa/omc-native-eval-smoke.mjs ${BIN}"
           }
 
           verify_checksum_and_size_only() {
             # No arm64 Windows runner exists: verify digest and size budget
             # without executing the binary.
             if [[ "$TARGET" == darwin-* ]]; then
-              ( cd .omo/release-binaries && shasum -a 256 -c SHA256SUMS )
+              ( cd .omc/release-binaries && shasum -a 256 -c SHA256SUMS )
             else
-              ( cd .omo/release-binaries && sha256sum -c SHA256SUMS )
+              ( cd .omc/release-binaries && sha256sum -c SHA256SUMS )
             fi
-            # Same 200 MiB budget as MAX_BINARY_BYTES in script/build-omo-binary.ts: it bounds the
+            # Same 200 MiB budget as MAX_BINARY_BYTES in script/build-omc-binary.ts: it bounds the
             # download every install and update makes. Print the headroom; warn under 5 MiB.
             local size budget=209715200 warn=5242880
             size="$(wc -c < "$BIN")"
@@ -787,7 +787,7 @@ jobs:
               isolate
               assert_version_line
               assert_first_run_provisioned
-              bun script/qa/omo-native-eval-smoke.mjs "$BIN"
+              bun script/qa/omc-native-eval-smoke.mjs "$BIN"
               if [ "$TARGET" = "linux-x64" ]; then
                 pty_smoke
                 oldstable_glibc_smoke
@@ -811,7 +811,7 @@ jobs:
               # 3.2-9.5 s against a 10 s cell budget, and 0.25-0.4 s once warm (#10904). Import the stdlib
               # modules the kernel prelude loads before the smoke so its Python cell measures the kernel.
               bun script/qa/python-kernel-warmup.mjs
-              bun script/qa/omo-native-eval-smoke.mjs "$BIN"
+              bun script/qa/omc-native-eval-smoke.mjs "$BIN"
               ;;
             windows-arm64)
               # No arm64 Windows runner: digest and size budget only.
@@ -827,8 +827,8 @@ jobs:
       - name: Smoke eval registration in fresh binary
         if: steps.release-assets.outputs.binary_exists != 'true' && matrix.platform == 'darwin-arm64'
         run: |
-          bun script/qa/omo-native-eval-smoke.mjs \
-            --binary .omo/release-binaries/omo-darwin-arm64
+          bun script/qa/omc-native-eval-smoke.mjs \
+            --binary .omc/release-binaries/omc-darwin-arm64
         timeout-minutes: 5
 
       # The npm payload is uploaded only after this leg's release-binary smokes passed:
@@ -837,7 +837,7 @@ jobs:
         if: steps.check.outputs.skip != 'true'
         run: |
           PLATFORM="${{ matrix.platform }}"
-          PACKAGE_DIR="packages/oh-my-opencode-${PLATFORM}"
+          PACKAGE_DIR="packages/oh-my-cybersecurity-${PLATFORM}"
           cd "$PACKAGE_DIR"
           
           if [[ "$PLATFORM" == windows-* ]]; then
@@ -868,7 +868,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: release-binary-${{ matrix.platform }}
-          path: .omo/release-binaries/omo-*
+          path: .omc/release-binaries/omc-*
           retention-days: 1
           if-no-files-found: error
 
@@ -887,7 +887,7 @@ jobs:
 
   publish:
     needs: [build, smoke-linux-arm64]
-    if: always() && !cancelled() && github.repository == 'code-yeongyu/oh-my-openagent'
+    if: always() && !cancelled() && github.repository == 'code-yeongyu/oh-my-cybersecurity'
     # Pin until this release/deploy path is proven on Ubuntu 26.04: #9946.
     runs-on: ubuntu-24.04
     strategy:
@@ -945,19 +945,19 @@ jobs:
         env:
           VERSION: ${{ steps.validate.outputs.version }}
         run: |
-          OC_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://registry.npmjs.org/oh-my-opencode-${{ matrix.platform }}/${VERSION}")
-          OA_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://registry.npmjs.org/oh-my-openagent-${{ matrix.platform }}/${VERSION}")
+          OC_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://registry.npmjs.org/oh-my-cybersecurity-${{ matrix.platform }}/${VERSION}")
+          OA_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://registry.npmjs.org/oh-my-cybersecurity-${{ matrix.platform }}/${VERSION}")
           
           if [ "$OC_STATUS" = "200" ]; then
             echo "skip_opencode=true" >> "$GITHUB_OUTPUT"
-            echo "✓ oh-my-opencode-${{ matrix.platform }}@${VERSION} already published"
+            echo "✓ oh-my-cybersecurity-${{ matrix.platform }}@${VERSION} already published"
           else
             echo "skip_opencode=false" >> "$GITHUB_OUTPUT"
           fi
           
           if [ "$OA_STATUS" = "200" ]; then
             echo "skip_openagent=true" >> "$GITHUB_OUTPUT"
-            echo "✓ oh-my-openagent-${{ matrix.platform }}@${VERSION} already published"
+            echo "✓ oh-my-cybersecurity-${{ matrix.platform }}@${VERSION} already published"
           else
             echo "skip_openagent=false" >> "$GITHUB_OUTPUT"
           fi
@@ -995,7 +995,7 @@ jobs:
         if: steps.check.outputs.skip_all != 'true' && steps.download.outcome == 'success'
         run: |
           PLATFORM="${{ matrix.platform }}"
-          PACKAGE_DIR="packages/oh-my-opencode-${PLATFORM}"
+          PACKAGE_DIR="packages/oh-my-cybersecurity-${PLATFORM}"
           mkdir -p "$PACKAGE_DIR"
           
           if [[ "$PLATFORM" == windows-* ]]; then
@@ -1071,25 +1071,25 @@ jobs:
           exit $?
           HELPER
 
-      - name: Publish oh-my-opencode-${{ matrix.platform }}
+      - name: Publish oh-my-cybersecurity-${{ matrix.platform }}
         if: steps.check.outputs.skip_opencode != 'true' && steps.download.outcome == 'success'
         env:
           DIST_TAG: ${{ steps.validate.outputs.dist_tag }}
         run: |
-          cd "packages/oh-my-opencode-${{ matrix.platform }}"
+          cd "packages/oh-my-cybersecurity-${{ matrix.platform }}"
           bash "$RUNNER_TEMP/npm-publish.sh" "$DIST_TAG"
         timeout-minutes: 15
 
-      - name: Publish oh-my-openagent-${{ matrix.platform }}
+      - name: Publish oh-my-cybersecurity-${{ matrix.platform }}
         if: always() && steps.check.outputs.skip_openagent != 'true' && steps.download.outcome == 'success'
         env:
           DIST_TAG: ${{ steps.validate.outputs.dist_tag }}
         run: |
-          cd "packages/oh-my-opencode-${{ matrix.platform }}"
+          cd "packages/oh-my-cybersecurity-${{ matrix.platform }}"
 
-          # Rename package for oh-my-openagent
-          jq --arg name "oh-my-openagent-${{ matrix.platform }}" \
-             --arg desc "Platform-specific binary for oh-my-openagent (${{ matrix.platform }})" \
+          # Rename package for oh-my-cybersecurity
+          jq --arg name "oh-my-cybersecurity-${{ matrix.platform }}" \
+             --arg desc "Platform-specific binary for oh-my-cybersecurity (${{ matrix.platform }})" \
              '.name = $name | .description = $desc' \
              package.json > tmp.json && mv tmp.json package.json
 
@@ -1134,7 +1134,7 @@ jobs:
     needs: build
     # Runs even when an unrelated build leg failed, so a windows failure cannot block
     # the arm64 publishes; a failed arm64 build still fails here (its artifact is missing).
-    if: always() && !cancelled() && github.repository == 'code-yeongyu/oh-my-openagent'
+    if: always() && !cancelled() && github.repository == 'code-yeongyu/oh-my-cybersecurity'
     runs-on: ubuntu-24.04-arm
     defaults:
       run:
@@ -1158,14 +1158,14 @@ jobs:
         run: |
           for LEG in linux-arm64 linux-arm64-musl; do
             if ASSET_NAMES="$(gh release view "v${VERSION}" --json assets --jq '.assets[].name' 2>/dev/null)"; then
-              if grep -Fxq "omo-${LEG}" <<<"$ASSET_NAMES"; then
+              if grep -Fxq "omc-${LEG}" <<<"$ASSET_NAMES"; then
                 echo "${LEG//-/_}_exists=true" >> "$GITHUB_OUTPUT"
-                echo "✓ release asset omo-${LEG} already exists on v${VERSION}"
+                echo "✓ release asset omc-${LEG} already exists on v${VERSION}"
                 continue
               fi
             fi
             echo "${LEG//-/_}_exists=false" >> "$GITHUB_OUTPUT"
-            echo "→ release asset omo-${LEG} missing on v${VERSION}; smoking it"
+            echo "→ release asset omc-${LEG} missing on v${VERSION}; smoking it"
           done
 
       - name: Download linux-arm64 release binary artifact
@@ -1173,27 +1173,27 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: release-binary-linux-arm64
-          path: .omo/release-binaries
+          path: .omc/release-binaries
 
       - name: Download linux-arm64-musl release binary artifact
         if: steps.release-assets.outputs.linux_arm64_musl_exists != 'true'
         uses: actions/download-artifact@v8
         with:
           name: release-binary-linux-arm64-musl
-          path: .omo/release-binaries
+          path: .omc/release-binaries
 
       - name: Smoke linux-arm64 binaries
         if: steps.release-assets.outputs.linux_arm64_exists != 'true' || steps.release-assets.outputs.linux_arm64_musl_exists != 'true'
         env:
-          OMO_AI_VERSION: ${{ inputs.omo_ai_version }}
+          OMC_AI_VERSION: ${{ inputs.omc_ai_version }}
           GLIBC_EXISTS: ${{ steps.release-assets.outputs.linux_arm64_exists }}
           MUSL_EXISTS: ${{ steps.release-assets.outputs.linux_arm64_musl_exists }}
         run: |
           set -euo pipefail
-          ENGINE_PIN="$(jq -r '.dependencies["@code-yeongyu/senpi"]' packages/omo-native/package.json)"
+          ENGINE_PIN="$(jq -r '.dependencies["@code-yeongyu/senpi"]' packages/omc-native/package.json)"
           # Prefix through the engine pin; the line continues with the engine build
           # stamp (`; scheme epoch` or `; scheme nodef`), which varies per build.
-          EXPECTED_VERSION_LINE="omo ${OMO_AI_VERSION} (engine: senpi ${ENGINE_PIN}"
+          EXPECTED_VERSION_LINE="omc ${OMC_AI_VERSION} (engine: senpi ${ENGINE_PIN}"
 
           isolate() {
             SMOKE_ROOT="$(mktemp -d)"
@@ -1205,32 +1205,32 @@ jobs:
             export XDG_DATA_HOME="${SMOKE_ROOT}/xdg/data"
             export XDG_STATE_HOME="${SMOKE_ROOT}/xdg/state"
             export XDG_CACHE_HOME="${SMOKE_ROOT}/xdg/cache"
-            export OMO_CODING_AGENT_DIR="${SMOKE_ROOT}/agent"
+            export OMC_CODING_AGENT_DIR="${SMOKE_ROOT}/agent"
           }
 
           if [ "$GLIBC_EXISTS" != "true" ]; then
             # Native arm64 exec (glibc).
-            chmod +x .omo/release-binaries/omo-linux-arm64
+            chmod +x .omc/release-binaries/omc-linux-arm64
             isolate
-            actual="$(.omo/release-binaries/omo-linux-arm64 --version)"
+            actual="$(.omc/release-binaries/omc-linux-arm64 --version)"
             case "$actual" in
               "${EXPECTED_VERSION_LINE}"*")") ;;
               *)
-                echo "version mismatch for omo-linux-arm64: expected '${EXPECTED_VERSION_LINE}...)', got '${actual}'"
+                echo "version mismatch for omc-linux-arm64: expected '${EXPECTED_VERSION_LINE}...)', got '${actual}'"
                 exit 1
                 ;;
             esac
-            test -f "${HOME}/.omo/binary-runtime/${OMO_AI_VERSION}/omo"
-            bun script/qa/omo-native-eval-smoke.mjs .omo/release-binaries/omo-linux-arm64
+            test -f "${HOME}/.omc/binary-runtime/${OMC_AI_VERSION}/omc"
+            bun script/qa/omc-native-eval-smoke.mjs .omc/release-binaries/omc-linux-arm64
           fi
 
           if [ "$MUSL_EXISTS" != "true" ]; then
             # alpine container for the musl binary.
-            docker run --rm -v "${PWD}:/work" -w /work -e HOME=/tmp/omo-smoke-home \
-              alpine:3.21 sh -c "apk add --no-cache libstdc++ >/dev/null && chmod +x .omo/release-binaries/omo-linux-arm64-musl && .omo/release-binaries/omo-linux-arm64-musl --version" \
+            docker run --rm -v "${PWD}:/work" -w /work -e HOME=/tmp/omc-smoke-home \
+              alpine:3.21 sh -c "apk add --no-cache libstdc++ >/dev/null && chmod +x .omc/release-binaries/omc-linux-arm64-musl && .omc/release-binaries/omc-linux-arm64-musl --version" \
               | grep -F "$EXPECTED_VERSION_LINE"
             docker run --rm --init -v "${PWD}/..:/workspace" -w "/workspace/$(basename "$PWD")" \
-              alpine:3.21 sh -c "apk add --no-cache libstdc++ python3 nodejs procps >/dev/null && node script/qa/omo-native-eval-smoke.mjs .omo/release-binaries/omo-linux-arm64-musl"
+              alpine:3.21 sh -c "apk add --no-cache libstdc++ python3 nodejs procps >/dev/null && node script/qa/omc-native-eval-smoke.mjs .omc/release-binaries/omc-linux-arm64-musl"
           fi
 
       - name: Write job summary

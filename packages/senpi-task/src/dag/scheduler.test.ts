@@ -371,7 +371,7 @@ class FakeTaskManager implements TaskManager {
     })
   }
 
-  // Mirrors the real manager's self-resumed reopen (omo#9069): a settled child starts a run on its
+  // Mirrors the real manager's self-resumed reopen (omc#9069): a settled child starts a run on its
   // own, its record goes back to running under a new epoch, and the manager announces it.
   selfResume(nodeId: string): void {
     const taskId = this.#taskByNode(nodeId).record.task_id
@@ -689,7 +689,7 @@ describe("DAG scheduler execution mode dispatch", () => {
   })
 })
 
-describe("DAG scheduler self-resumed node child (omo#10487)", () => {
+describe("DAG scheduler self-resumed node child (omc#10487)", () => {
   test("#given a child resumes before the fold #when the run cancels after reattachment #then the resumed child is cancelled too", async () => {
     const admissionEntered = deferred<void>()
     const releaseAdmission = deferred<void>()
@@ -1552,7 +1552,7 @@ describe("DAG scheduler node spawn policy", () => {
   test("#given a policy that forces the prompt #when the node starts #then the child receives the forced prompt", async () => {
     // given
     const manager = new FakeTaskManager()
-    const canonical = "Review the work plan at .omo/plans/x.md for contradictions and blocking issues."
+    const canonical = "Review the work plan at .omc/plans/x.md for contradictions and blocking issues."
     const { scheduler } = schedulerFixture(
       definition([{ id: "review", prompt: "caller wording", subagent_type: "plan-reviewer" }]),
       manager,

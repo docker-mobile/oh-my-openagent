@@ -1,7 +1,7 @@
 // Space resolution (sync-design §3): pick this device's binding key for the project, then
-// honour the sticky `omo.sync.space` record. A recorded space id wins over a changed remote
+// honour the sticky `omc.sync.space` record. A recorded space id wins over a changed remote
 // URL, and the new canonical URL is an alias the caller adds to the space's manifest
-// (`aliasOfStoredSpace`). `omo.sync.binding` persists the minted `local:` binding of a
+// (`aliasOfStoredSpace`). `omc.sync.binding` persists the minted `local:` binding of a
 // remote-less project, so restarts keep one space. The git-backed store reads and writes
 // the memory repo's LOCAL config only.
 
@@ -10,8 +10,8 @@ import { AUTO_AGENT_VALUE } from "../../identity/resolve"
 import type { BindingKey, Remote } from "./binding"
 import { localBinding, mintLocalBinding, namedBinding, parseBinding, repoBinding, spaceIdForBinding } from "./binding"
 
-export const SYNC_BINDING_CONFIG_KEY = "omo.sync.binding"
-export const SYNC_SPACE_CONFIG_KEY = "omo.sync.space"
+export const SYNC_BINDING_CONFIG_KEY = "omc.sync.binding"
+export const SYNC_SPACE_CONFIG_KEY = "omc.sync.space"
 
 export interface SpaceConfigStore {
   get(key: string): string | null

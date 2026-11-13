@@ -4,7 +4,7 @@ import {
 	type EpochChanged,
 	type StopPathStatus,
 	UNKNOWN_AUDIT_VALUE,
-} from "@oh-my-opencode/senpi-desktop-protocol";
+} from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import type {
 	ActionReport,
 	AxCut,

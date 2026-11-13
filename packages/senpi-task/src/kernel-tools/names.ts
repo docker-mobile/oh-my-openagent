@@ -3,7 +3,7 @@ import { isTaskOrTeamFamilyTool } from "../runners/in-process/shared-tool-filter
 export const KERNEL_TOOL_NAME_MAX_LENGTH = 64
 
 /**
- * The senpi kernel bridge's own reserved identifiers plus the host names omo never lets a parent
+ * The senpi kernel bridge's own reserved identifiers plus the host names omc never lets a parent
  * closure shadow. The task/team family is covered by isTaskOrTeamFamilyTool, which already owns
  * that vocabulary for the child tool surface.
  */

@@ -1,10 +1,10 @@
-import { ELEMENT_METHODS, type EngineMethod, WINDOW_METHODS } from "@oh-my-opencode/senpi-desktop-protocol";
+import { ELEMENT_METHODS, type EngineMethod, WINDOW_METHODS } from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import type {
 	Delivery,
 	AxNode as SdkAxNode,
 	MenuItem as SdkMenuItem,
 	Window as SdkWindow,
-} from "@oh-my-opencode/senpi-desktop-sdk";
+} from "@oh-my-cybersecurity/senpi-desktop-sdk";
 import { isDesktopCapabilities } from "../service/parse";
 import { type FacadeMethod, facadeMethod, type ReplyGuard, type RunScope, viaSdk } from "./context";
 import {

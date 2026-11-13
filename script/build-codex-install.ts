@@ -5,8 +5,8 @@ import { basename, dirname, join, relative } from "node:path"
 import { fileURLToPath } from "node:url"
 
 const repositoryRoot = fileURLToPath(new URL("..", import.meta.url))
-const generatedEntrypoint = join(repositoryRoot, "packages", "omo-codex", "scripts", "install-dist", "install-local.mjs")
-const installerSourceRoot = join(repositoryRoot, "packages", "omo-codex", "src", "install")
+const generatedEntrypoint = join(repositoryRoot, "packages", "omc-codex", "scripts", "install-dist", "install-local.mjs")
+const installerSourceRoot = join(repositoryRoot, "packages", "omc-codex", "src", "install")
 const builtinModuleNames = new Set(builtinModules.filter((moduleName) => !moduleName.startsWith("node:")))
 
 export const generatedCodexInstallerPath = generatedEntrypoint
@@ -15,8 +15,8 @@ export const generatedCodexInstallerPath = generatedEntrypoint
 // Output bytes shift with the bundler version (CI pins a different Bun than a dev box), so a
 // byte comparison would fail on a perfectly current bundle. Source bytes do not shift, so this
 // flips only when someone edits installer source without regenerating the committed bundle.
-// Same reasoning as `// omo-senpi-build:` in packages/omo-senpi/plugin/scripts/build-extension.mjs.
-export const CODEX_INSTALL_BUILD_MARKER_PREFIX = "// omo-codex-install:"
+// Same reasoning as `// omc-senpi-build:` in packages/omc-senpi/plugin/scripts/build-extension.mjs.
+export const CODEX_INSTALL_BUILD_MARKER_PREFIX = "// omc-codex-install:"
 
 const BUILD_SETTINGS = JSON.stringify({ target: "node", format: "esm", minify: false, packages: "bundle" })
 
@@ -43,8 +43,8 @@ async function installerSourceFiles(): Promise<readonly string[]> {
 // The bundler emits one `// <repo-relative path>` banner per inlined module, so the artifact
 // itself names every file it was built from. Reading them back is what lets the freshness digest
 // cover WORKSPACE DEPENDENCIES the installer only imports transitively: installerSourceFiles()
-// alone left omo-config-core outside the digest, and omo#8620's harness rename went undetected
-// while the marker still claimed the bundle was current (omo#8633).
+// alone left omc-config-core outside the digest, and omc#8620's harness rename went undetected
+// while the marker still claimed the bundle was current (omc#8633).
 const BUNDLE_SOURCE_BANNER = /^\/\/ ((?:packages|script|scripts)\/[\w./@-]+\.(?:ts|tsx|mjs|js|json))$/gm
 
 export function bundledWorkspaceSources(bundleText: string): readonly string[] {
@@ -73,7 +73,7 @@ export function parseCodexInstallerArtifact(
   const lines = normalizeLineEndings(text).split("\n")
   const markerLine = lines[1]
   if (markerLine === undefined) return undefined
-  const match = /^\/\/ omo-codex-install:([a-f0-9]{64}):([a-f0-9]{64})$/.exec(markerLine)
+  const match = /^\/\/ omc-codex-install:([a-f0-9]{64}):([a-f0-9]{64})$/.exec(markerLine)
   if (match?.[1] === undefined || match[2] === undefined) return undefined
   return { sourceDigest: match[1], bodyDigest: match[2], body: lines.slice(2).join("\n") }
 }
@@ -85,7 +85,7 @@ export async function buildCodexInstaller(options: { readonly outputPath?: strin
   await mkdir(dirname(outputPath), { recursive: true })
 
   const buildResult = await Bun.build({
-    entrypoints: [join(repositoryRoot, "packages", "omo-codex", "src", "install", "install-local-cli.ts")],
+    entrypoints: [join(repositoryRoot, "packages", "omc-codex", "src", "install", "install-local-cli.ts")],
     outdir: dirname(outputPath),
     target: "node",
     format: "esm",

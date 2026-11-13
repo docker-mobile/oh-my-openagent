@@ -8,7 +8,7 @@ import {
 } from "./family-sweeper"
 import { enumerateProcesses } from "./exec"
 import {
-  OMO_LSP_DAEMON_VERSION_ENV,
+  OMC_LSP_DAEMON_VERSION_ENV,
   planStaleLspDaemonVersionSweep,
   resolveLspDaemonBaseDir,
   type LspDaemonBaseDirOptions,
@@ -120,6 +120,6 @@ export async function sweepStaleLspDaemonVersions(
 
 function resolveCurrentLspDaemonVersion(options: SweepStaleLspDaemonVersionsOptions): string | undefined {
   if (options.currentVersion !== undefined && options.currentVersion.trim().length > 0) return options.currentVersion
-  const fromEnv = (options.env ?? process.env)[OMO_LSP_DAEMON_VERSION_ENV]
+  const fromEnv = (options.env ?? process.env)[OMC_LSP_DAEMON_VERSION_ENV]
   return fromEnv !== undefined && fromEnv.trim().length > 0 ? fromEnv : undefined
 }

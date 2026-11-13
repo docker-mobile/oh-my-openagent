@@ -1,5 +1,5 @@
-import type { PermissionDeniedData } from "@oh-my-opencode/senpi-desktop-protocol";
-import type { DesktopLaunchContextError } from "@oh-my-opencode/senpi-desktop-service";
+import type { PermissionDeniedData } from "@oh-my-cybersecurity/senpi-desktop-protocol";
+import type { DesktopLaunchContextError } from "@oh-my-cybersecurity/senpi-desktop-service";
 
 // Engine error codes and run failures as gajae-code's `COMPUTER_*` codes, each with its recovery hint.
 const ENGINE_TO_COMPUTER: Readonly<Record<string, string>> = {

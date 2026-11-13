@@ -5,7 +5,7 @@ import {
   isHerdrPaneId, HERDR_TEAM_WORKSPACE_LABEL_PREFIX, buildHerdrPaneAuthEnv,
   defaultHerdrOpsDeps,
   type MultiplexerBackend, type TmuxCommandResult, type HerdrOpsDeps,
-} from "@oh-my-opencode/tmux-core"
+} from "@oh-my-cybersecurity/tmux-core"
 import { log } from "../logger"
 import { shellSingleQuote } from "../shell-quote"
 import { resolveCallerTmuxSession } from "./resolve-caller-tmux-session"
@@ -15,9 +15,9 @@ type TmuxSessionManager = {
   getServerUrl: () => string
   getCtxServerUrl?: () => string | undefined
 }
-const TEAM_PANE_TITLE_PREFIX = "omo-team-"
-const OMO_ATTACH_SERVER_URL_OPTION = "@omo_attach_server_url"
-const OMO_ATTACH_SESSION_ID_OPTION = "@omo_attach_session_id"
+const TEAM_PANE_TITLE_PREFIX = "omc-team-"
+const OMC_ATTACH_SERVER_URL_OPTION = "@omc_attach_server_url"
+const OMC_ATTACH_SESSION_ID_OPTION = "@omc_attach_session_id"
 
 export type TeamLayoutDeps = {
   runTmuxCommand: (tmuxPath: string, args: Array<string>, options?: { retry?: number; timeoutMs?: number }) => Promise<TmuxCommandResult>
@@ -115,8 +115,8 @@ async function createTeamLayoutInCallerWindow(
     teammatePanes = [...teammatePanes, paneId]
     panesByMember[member.name] = paneId
     await deps.runTmuxCommand(tmuxPath, ["select-pane", "-t", paneId, "-T", `${TEAM_PANE_TITLE_PREFIX}${member.name}`])
-    await deps.runTmuxCommand(tmuxPath, ["set-option", "-p", "-t", paneId, OMO_ATTACH_SERVER_URL_OPTION, serverUrl])
-    await deps.runTmuxCommand(tmuxPath, ["set-option", "-p", "-t", paneId, OMO_ATTACH_SESSION_ID_OPTION, member.sessionId])
+    await deps.runTmuxCommand(tmuxPath, ["set-option", "-p", "-t", paneId, OMC_ATTACH_SERVER_URL_OPTION, serverUrl])
+    await deps.runTmuxCommand(tmuxPath, ["set-option", "-p", "-t", paneId, OMC_ATTACH_SESSION_ID_OPTION, member.sessionId])
     await deps.runTmuxCommand(tmuxPath, ["send-keys", "-t", paneId, buildAttachCommand(member, serverUrl), "Enter"])
   }
 
@@ -216,7 +216,7 @@ export async function removeTeamLayout(
     if (!tmuxPath) return
 
     if (cleanupTarget?.ownedSession !== false) {
-      await resolvedDeps.runTmuxCommand(tmuxPath, ["kill-session", "-t", cleanupTarget?.targetSessionId ?? `omo-team-${teamRunId}`])
+      await resolvedDeps.runTmuxCommand(tmuxPath, ["kill-session", "-t", cleanupTarget?.targetSessionId ?? `omc-team-${teamRunId}`])
       return
     }
 

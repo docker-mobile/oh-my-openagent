@@ -1,6 +1,6 @@
 /**
  * Validate fallback model IDs against a live gateway catalog.
- * Addresses https://github.com/code-yeongyu/oh-my-openagent/issues/8449
+ * Addresses https://github.com/code-yeongyu/oh-my-cybersecurity/issues/8449
  */
 
 export type LiveCatalogValidation = {

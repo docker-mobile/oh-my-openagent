@@ -34,6 +34,6 @@ Receipts contain command, hashed machine identity, Bun/Node versions, exit statu
 
 All three audited provider modules fail to resolve in both classic and shared-session isolates. This is the expected provider RED.
 
-The audited dev launcher also omits `brand.changelog.version`. `/changelog` renders the shipped entries, but the engine suppresses startup what's-new even after seeding `changelogSeen.omo` to the previous shipped version. The receipt keeps `entriesMatchShipped: true`, `whatsNew: false`, and `pass: false`. Comparison deliberately fails that contract; no baseline exemption or production patch is hidden here.
+The audited dev launcher also omits `brand.changelog.version`. `/changelog` renders the shipped entries, but the engine suppresses startup what's-new even after seeding `changelogSeen.omc` to the previous shipped version. The receipt keeps `entriesMatchShipped: true`, `whatsNew: false`, and `pass: false`. Comparison deliberately fails that contract; no baseline exemption or production patch is hidden here.
 
 Bun's PTY API was verified on the test host before capture: `data(terminal, bytes)` received a `Terminal` and a `Buffer` (Uint8Array). PTY EOF status 0 was distinct from a deliberately nonzero child exit 7. The harness captures the real byte stream; it uses neither tmux nor a screenshot surrogate.

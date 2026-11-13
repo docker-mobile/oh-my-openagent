@@ -1,4 +1,4 @@
-import type { TeamSpec } from "@oh-my-opencode/team-core/types"
+import type { TeamSpec } from "@oh-my-cybersecurity/team-core/types"
 
 import { CURATED_READONLY_AGENT_NAMES, ULW_REVIEWER_AGENT_NAMES } from "../agents/builtin"
 import { canonicalAgentName } from "../agents/builtin/legacy-agent-names"

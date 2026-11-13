@@ -29,14 +29,14 @@ export async function HomeFooter({
         {onHome ? (
           <a className="brand" href="#top">
             {/* eslint-disable-next-line @next/next/no-img-element -- a static SVG mark */}
-            <img src="/brand/omo-mark.svg" alt="" width={24} height={24} />
-            OmO
+            <img src="/brand/omc-mark.svg" alt="" width={24} height={24} />
+            OmC
           </a>
         ) : (
           <Link className="brand" href="/">
             {/* eslint-disable-next-line @next/next/no-img-element -- a static SVG mark */}
-            <img src="/brand/omo-mark.svg" alt="" width={24} height={24} />
-            OmO
+            <img src="/brand/omc-mark.svg" alt="" width={24} height={24} />
+            OmC
           </Link>
         )}
         <nav aria-label={t("label")}>

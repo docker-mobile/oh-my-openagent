@@ -15,7 +15,7 @@ export type ChildResourceLoaderOptions = {
 
 // Use senpi's own loader as the single source of truth for builtin extensions, but suppress every
 // discovered path/resource. This matches a process child launched with --no-extensions while never
-// re-running the parent's agentDir/project extensions (including omo-senpi itself) in-process.
+// re-running the parent's agentDir/project extensions (including omc-senpi itself) in-process.
 export function createChildResourceLoader(options: ChildResourceLoaderOptions): ResourceLoader {
   const senpi = senpiBarrel()
   return new senpi.DefaultResourceLoader({

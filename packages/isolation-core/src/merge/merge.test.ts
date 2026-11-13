@@ -62,7 +62,7 @@ test("apply false retains artifacts without parent changes or task branch", asyn
     expect(await readFile(result.patch_path!, "utf8")).toContain("+new")
   }
   expect(await git(f.repoRoot, "status", "--porcelain")).toBe("")
-  expect(await git(f.repoRoot, "branch", "--list", "omo/task/*")).toBe("")
+  expect(await git(f.repoRoot, "branch", "--list", "omc/task/*")).toBe("")
 })
 test("empty delta writes no-changes summary", async () => {
   const f = await setup()
@@ -76,7 +76,7 @@ test("clean branch preserves two child commits, merges onto parent HEAD and dele
   await commit(f.isolationDir, "first")
   await commit(f.isolationDir, "second")
   const branch = await commitToBranch(f.isolationDir, f.repoRoot, f.id, f.baseline)
-  expect(branch.branchName).toBe("omo/task/test")
+  expect(branch.branchName).toBe("omc/task/test")
   expect(await git(f.repoRoot, "rev-list", "--count", `${branch.baseSha}..${branch.branchName}`)).toBe("2")
   await commit(f.repoRoot, "parent")
   const result = await mergeTaskBranch(f.repoRoot, branch)
@@ -119,10 +119,10 @@ test("branch conflict aborts entire range and keeps recoverable branch", async (
   expect(result.kind).toBe("branch-merge-failed")
   expect(result.changes_applied).toBe(false)
   expect(result.conflict).toBeTruthy()
-  expect(result.branch_name).toBe("omo/task/test")
+  expect(result.branch_name).toBe("omc/task/test")
   expect(await git(f.repoRoot, "rev-parse", "HEAD")).toBe(head)
   expect(await git(f.repoRoot, "status", "--porcelain")).toBe("")
-  expect(await git(f.repoRoot, "branch", "--list", result.branch_name!)).toContain("omo/task/test")
+  expect(await git(f.repoRoot, "branch", "--list", result.branch_name!)).toContain("omc/task/test")
 })
 test("stash restore collision reports warning and never drops user's stash", async () => {
   const f = await setup()
@@ -132,7 +132,7 @@ test("stash restore collision reports warning and never drops user's stash", asy
   expect(result.kind).toBe("branch-merged")
   expect(result.changes_applied).toBe(true)
   expect(result.warning).toContain("stash")
-  expect(await git(f.repoRoot, "stash", "list")).toContain("omo-task-merge")
+  expect(await git(f.repoRoot, "stash", "list")).toContain("omc-task-merge")
   expect(await git(f.repoRoot, "show", "stash@{0}:tracked")).toBe("parent WIP")
 })
 test("nested patches land after root and preserve staged nested WIP", async () => {
@@ -183,7 +183,7 @@ test("linked parent uses common git directory lock", async () => {
     if (event === "acquired") { lockPath = path; expect((await stat(path)).isFile()).toBe(true) }
   } })
   expect(result.kind).toBe("branch-merged")
-  expect(lockPath).toBe(join(await git(linked, "rev-parse", "--path-format=absolute", "--git-common-dir"), "omo-isolation-merge.lock"))
+  expect(lockPath).toBe(join(await git(linked, "rev-parse", "--path-format=absolute", "--git-common-dir"), "omc-isolation-merge.lock"))
   expect(await text(linked, "new")).toBe("new\n")
 })
 test.each(["patch", "branch"] as const)("concurrent %s merges serialize acquire/release without timing assertions", async (mode: "patch" | "branch") => {
@@ -228,7 +228,7 @@ test("dirty baseline overlapping commit fails with typed commit identity and ret
   expect(failure).toBeInstanceOf(IsolationCommitReplayError)
   expect((failure as IsolationCommitReplayError).commit).toBe(sha)
   expect(await text(f.repoRoot)).toBe("user WIP\n")
-  expect(await git(f.repoRoot, "branch", "--list", "omo/task/test")).toContain("omo/task/test")
+  expect(await git(f.repoRoot, "branch", "--list", "omc/task/test")).toContain("omc/task/test")
 })
 
 test("malformed patch reports not-applied without touching parent", async () => {

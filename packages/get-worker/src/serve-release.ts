@@ -67,7 +67,7 @@ export async function serveReleaseAsset(
     recordDownload(ctx.env, { kind, source, version, asset, country: requestCountry(request), qa: isQaInstall(request) })
   }
 
-  const cacheKey = new Request(`https://get.omo.dev/v/${version}/${asset}`, { method: "GET" })
+  const cacheKey = new Request(`https://get.omc.nga.hm/v/${version}/${asset}`, { method: "GET" })
   const ranged = request.headers.has("Range")
   const cached = await ctx.cache.match(ranged ? new Request(cacheKey, { headers: request.headers }) : cacheKey)
   if (cached !== undefined) {

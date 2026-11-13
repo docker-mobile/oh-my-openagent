@@ -3,7 +3,7 @@ import * as z from "zod"
 import { ToolsInputSchema, normalizeToolRules } from "./tools"
 import type { AgentDefinition, AgentDefinitionInput } from "./types"
 
-// Same effort levels omo-config-core enforces, so the markdown-frontmatter and overlay paths cannot
+// Same effort levels omc-config-core enforces, so the markdown-frontmatter and overlay paths cannot
 // accept a value asSenpiThinkingLevel would silently drop.
 const ReasoningEffortSchema = z.enum(["none", "minimal", "low", "medium", "high", "xhigh", "max"])
 

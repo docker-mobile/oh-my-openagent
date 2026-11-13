@@ -7,7 +7,7 @@ import { tryLockExclusive, tryLockShared } from "../locks/os-file-lock"
 import { GitError } from "./errors"
 import { isOnLocalFilesystem } from "./local-filesystem"
 
-// omo #10322: which memory-core git processes are alive in a memory repository is answered by the
+// omc #10322: which memory-core git processes are alive in a memory repository is answered by the
 // kernel, not by /proc (whose same-uid entries are unreadable on systemd desktops, sshd sessions
 // and hosted runners). Every memory-core git run holds a SHARED flock on the identity's
 // git-activity lock and hands the descriptor to git as fd 3, so git, its hooks and anything they
@@ -15,7 +15,7 @@ import { isOnLocalFilesystem } from "./local-filesystem"
 // exits. The stranded-lock sweep takes it EXCLUSIVELY: acquired means no such process is alive,
 // and holding it across the unlink keeps a new git run from starting in between.
 // Scope: it covers memory-core's own git only. A git started outside memory-core (a user's or an
-// IDE's, or an older omo build's) never holds it, so idle never proves such a process gone.
+// IDE's, or an older omc build's) never holds it, so idle never proves such a process gone.
 
 // Not `*.lock`: every scanner of the locks directory (doctor, the dead-owner sweep) reads a `*.lock` as
 // a JSON lock record, and this file is an empty flock target that must never be reported or removed.
@@ -76,7 +76,7 @@ async function openActivityLock(repoDir: string): Promise<FileHandle | null> {
 }
 
 // git cannot create a lock file on a read-only memory home, so nothing can strand there; a home this
-// user may not write (EACCES/EPERM) cannot strand one either (omo #10604 review LOW 3).
+// user may not write (EACCES/EPERM) cannot strand one either (omc #10604 review LOW 3).
 function cannotWriteMemoryHome(error: unknown): boolean {
   const code = errorCode(error)
   return code === "EROFS" || code === "EACCES" || code === "EPERM"

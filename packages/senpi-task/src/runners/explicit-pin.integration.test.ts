@@ -4,9 +4,9 @@ import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 
 import type { AgentSession } from "@code-yeongyu/senpi"
-import { OmoTaskSettingsSchema } from "@oh-my-opencode/omo-config-core"
+import { OmoTaskSettingsSchema } from "@oh-my-cybersecurity/omc-config-core"
 
-import { createTaskChildPlanner } from "../../../omo-senpi/src/components/task/planner"
+import { createTaskChildPlanner } from "../../../omc-senpi/src/components/task/planner"
 import { loadSenpiBarrel } from "../lazy/senpi-barrel"
 import { createTaskManager, type TaskManager } from "../manager"
 import { createParentRegistrySessionContext } from "../manager/parent-registry-context"
@@ -22,7 +22,7 @@ import { createBuiltinChildMachine, type BuiltinChildMachine } from "./in-proces
 // is a different model, so a substituted route is visible in the child's session log, the task
 // record's effective_model, and the started result.
 //
-// omo-senpi is imported by SOURCE path (senpi-task holds no dependency on the adapter): the
+// omc-senpi is imported by SOURCE path (senpi-task holds no dependency on the adapter): the
 // planner owns the explicit-pin parse, and this test drives the same composition the engine wires.
 
 const PROVIDER = "runtime-fallback-test"

@@ -16,7 +16,7 @@ import {
 
 export { unreadableFdDirMeansHeld } from "./proc-view"
 
-// omo #10199 (Linux defect): the stranded-git-lock sweep must answer "does any live process hold
+// omc #10199 (Linux defect): the stranded-git-lock sweep must answer "does any live process hold
 // this lock file open?" on every supported platform. The first cut asked lsof, but minimal Linux
 // installs and containers ship no lsof, the spawn error counted as "held", and crash recovery
 // silently stopped reclaiming anything there (the #10177 takeover tests failed in an lsof-less
@@ -44,7 +44,7 @@ interface LockIdentity {
 // symlink gives the target's (dev, ino). A process holds the lock when the path text equals the
 // lock's realpath OR the (dev, ino) pair matches - the text is the fast common case, and the
 // inode comparison is the authority for a holder in another mount namespace or behind a bind
-// mount, where the same file reads as a different path string. omo #10199 r5 LOW 5: only "the fd
+// mount, where the same file reads as a different path string. omc #10199 r5 LOW 5: only "the fd
 // closed meanwhile" (ENOENT) means "not this lock"; any other per-fd failure is indeterminate.
 async function fdVerdict(view: ProcView, pid: number, fdPath: string, lock: LockIdentity): Promise<EntryVerdict> {
   let target: string
@@ -95,7 +95,7 @@ export async function scanProcFdHolders(lockPath: string, view: ProcView): Promi
 // nonzero-abnormal exit, a signal, or a spawn error (lsof not installed) means the check failed,
 // and failed means indeterminate.
 //
-// omo #10199 r5 HIGH 2: a 5 s execFile timeout turned a slow but correct answer into
+// omc #10199 r5 HIGH 2: a 5 s execFile timeout turned a slow but correct answer into
 // "indeterminate" whenever the host was CPU- or process-starved (51 of 120 concurrent lookups on a
 // loaded macOS host, each killed at 5.0 s), which failed recovery and the suites intermittently.
 // The answer is lsof's own exit, awaited under a GENEROUS bound that only exists for a wedged lsof
@@ -140,7 +140,7 @@ export interface HolderLookupOptions {
   readonly lsofBoundMs?: number
 }
 
-// omo #10199 r5 delta MEDIUM: one deadline around the WHOLE /proc scan (a stat on a hung NFS or
+// omc #10199 r5 delta MEDIUM: one deadline around the WHOLE /proc scan (a stat on a hung NFS or
 // dead FUSE mount never returns, and the sweep holds the writer lock). Same generous bound as lsof;
 // an unanswered scan is indeterminate and lsof is not tried, since it reads the same /proc.
 function boundedScan(scan: Promise<ProcScan>, boundMs: number): Promise<ProcScan> {

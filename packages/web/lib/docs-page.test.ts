@@ -10,7 +10,7 @@ describe("splitDocPage", () => {
     const page = splitDocPage(DOC_SOURCES["guide/install.md"] ?? "")
 
     expect(page.lead).toContain("<h1 id=")
-    expect(page.lead).not.toContain("get.omo.dev/install.sh")
+    expect(page.lead).not.toContain("get.omc.nga.hm/install.sh")
     expect(page.afterWidget).not.toContain("<h2")
     expect(page.sections.map((section) => section.id)).toContain("fix-your-path")
     for (const section of page.sections)

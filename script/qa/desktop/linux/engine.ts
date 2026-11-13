@@ -1,6 +1,6 @@
 // A JSON-RPC client for one `senpi-desktop-engine --stdio` process. The driver is the host that
 // spawned it, so the host-only methods (`session.open`, `stopPath.*`) are available. Method names and
-// error codes are typed by `@oh-my-opencode/senpi-desktop-protocol`, so a protocol rename fails typecheck.
+// error codes are typed by `@oh-my-cybersecurity/senpi-desktop-protocol`, so a protocol rename fails typecheck.
 import { type ChildProcess, spawn } from "node:child_process";
 import { createInterface } from "node:readline";
 import {
@@ -8,7 +8,7 @@ import {
 	type EngineNotification,
 	ERROR_CODES,
 	type ErrorCode,
-} from "@oh-my-opencode/senpi-desktop-protocol";
+} from "@oh-my-cybersecurity/senpi-desktop-protocol";
 
 import { HANG_GUARD_MS } from "./procs.ts";
 

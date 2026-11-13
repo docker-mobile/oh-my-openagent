@@ -1,10 +1,10 @@
 import { rmSync } from "node:fs"
-import { TEARDOWN_FAILURE_PREFIX } from "../packages/omo-native/test/teardown.test-support"
+import { TEARDOWN_FAILURE_PREFIX } from "../packages/omc-native/test/teardown.test-support"
 
 /**
  * Remove a temp root we created ourselves. On win32 only, EBUSY is reported as a warning and the
  * directory is left for the OS to reclaim, the policy `teardownRoots` in
- * packages/omo-native/test/teardown.test-support.ts applies to the same class of residue.
+ * packages/omc-native/test/teardown.test-support.ts applies to the same class of residue.
  *
  * The holder is not ours. Both callers compile an executable into the root and run it, and every
  * child has exited before the removal. On windows-latest the hosted runner's provisioning daemon

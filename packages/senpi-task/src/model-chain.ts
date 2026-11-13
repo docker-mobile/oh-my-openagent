@@ -1,4 +1,4 @@
-import { transformModelForProvider, type DelegateFallbackEntry } from "@oh-my-opencode/delegate-core"
+import { transformModelForProvider, type DelegateFallbackEntry } from "@oh-my-cybersecurity/delegate-core"
 
 import type { ResolvedModelRecord, ResolvedModelSource } from "./state"
 

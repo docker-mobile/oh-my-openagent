@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 
-import { OmoTaskSettingsSchema, type OmoTaskSettings } from "@oh-my-opencode/omo-config-core"
+import { OmoTaskSettingsSchema, type OmoTaskSettings } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { DestroyCause } from "../../lifecycle"
 import type { ManagerStartSpec, StartResult } from "../../manager"
@@ -47,7 +47,7 @@ export type FakeTeamManagerOptions = {
   readonly behaviors?: readonly StartBehavior[]
   readonly defaultBehavior?: StartBehavior
   readonly beforeCancelReturn?: (taskId: string) => Promise<void>
-  // Mirrors the real engine releasing a finished resident on cancel (omo#9785): parks it and reports `released`.
+  // Mirrors the real engine releasing a finished resident on cancel (omc#9785): parks it and reports `released`.
   readonly releaseFinishedResidentOnCancel?: boolean
 }
 

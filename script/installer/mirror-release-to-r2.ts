@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// Mirror one published GitHub release into the omo-releases R2 bucket, then move its installer channel.
+// Mirror one published GitHub release into the omc-releases R2 bucket, then move its installer channel.
 // Order: download the published bytes -> verify against SHA256SUMS and GitHub digests -> signed upload
 // (R2 re-hashes on receipt) -> read every object back and re-hash -> write the .complete marker -> move the
 // channel pointer -> prune old betas. Any failure stops before the pointer moves, so installs keep using
@@ -16,7 +16,7 @@ import { withRetry } from "./mirror-retry"
 import { putVerified, type R2Credentials } from "./r2-signed-put"
 import { createR2Store, type R2Store } from "./r2-store"
 
-const REPO = "code-yeongyu/oh-my-openagent"
+const REPO = "code-yeongyu/oh-my-cybersecurity"
 const CHANNELS = new Set(["latest", "beta", "none"])
 const UPLOAD_CONCURRENCY = 3
 
@@ -89,12 +89,12 @@ async function main(): Promise<void> {
     accountId: required("R2_ACCOUNT_ID"),
     accessKeyId: required("R2_ACCESS_KEY_ID"),
     secretAccessKey: required("R2_SECRET_ACCESS_KEY"),
-    bucket: process.env.R2_BUCKET ?? "omo-releases",
+    bucket: process.env.R2_BUCKET ?? "omc-releases",
   }
   const prefix = dryRun ? `dry-run/${process.env.GITHUB_RUN_ID ?? Date.now()}/` : ""
   const store = createR2Store(credentials, prefix)
   const live = createR2Store(credentials, "")
-  const work = await mkdtemp(join(tmpdir(), "omo-r2-mirror-"))
+  const work = await mkdtemp(join(tmpdir(), "omc-r2-mirror-"))
   const log = (line: string) => console.log(`[mirror ${tag}${dryRun ? " dry-run" : ""}] ${line}`)
   try {
     const release = await withRetry(`read release ${tag}`, () => readRelease(tag))
@@ -146,7 +146,7 @@ async function main(): Promise<void> {
     if (channel !== "none") {
       const pointerKey = `channels/${channel}`
       const pointer = await mirrorChannel(store, live, pointerKey, version, dryRun, values["force-channel"] === true, log)
-      // What get.omo.dev must serve for this channel after the run, read back from the bucket (moved or kept).
+      // What get.omc.nga.hm must serve for this channel after the run, read back from the bucket (moved or kept).
       if (!dryRun && process.env.GITHUB_OUTPUT && pointer) await appendFile(process.env.GITHUB_OUTPUT, `pointer=${pointer}\n`)
     }
 

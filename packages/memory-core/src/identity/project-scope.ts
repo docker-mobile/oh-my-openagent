@@ -4,7 +4,7 @@
 // that has its own auto identity belongs to that identity's memory. Candidates are looked up only
 // inside the session's scope roots: the session's own root (never a candidate itself), plus the
 // real target of every directory symlink inside the session's tree that is not part of a git work
-// tree (a workspace linking its projects in, `projects/omo -> /Volumes/.../omo`). A touched path is
+// tree (a workspace linking its projects in, `projects/omc -> /Volumes/.../omc`). A touched path is
 // judged by where it really is, so the same project is found through the symlink or by its real
 // path. In `git` mode a linked worktree path is mapped onto its main checkout first, the same way
 // session binding maps it. Nothing is created: only identities whose repo already exists count.
@@ -28,7 +28,7 @@ export interface ProjectIdentity {
 
 export interface ProjectIdentityResolverOptions {
   readonly sessionCwd: string
-  /** The session's resolved absolute memory root: a relative `OMO_MEMORY_HOME` must not resolve per candidate directory. */
+  /** The session's resolved absolute memory root: a relative `OMC_MEMORY_HOME` must not resolve per candidate directory. */
   readonly memoryRoot?: string
   /** The `auto_identity` mode the session was bound with. */
   readonly autoIdentity?: AutoIdentityMode

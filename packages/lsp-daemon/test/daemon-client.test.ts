@@ -6,9 +6,9 @@ import { currentRequestContext } from "../src/daemon-client.js";
 describe("currentRequestContext", () => {
 	it("#given unrelated env #when building request context #then constructs exact typed Codex defaults without forwarded env", () => {
 		const context = currentRequestContext({
-			LSP_TOOLS_MCP_PROJECT_CONFIG: ".opencode/lsp.json:.omo/lsp.json",
-			LSP_TOOLS_MCP_USER_CONFIG: "~/.omo/lsp.json",
-			LSP_TOOLS_MCP_INSTALL_DECISIONS: "~/.omo/lsp-install-decisions.json",
+			LSP_TOOLS_MCP_PROJECT_CONFIG: ".opencode/lsp.json:.omc/lsp.json",
+			LSP_TOOLS_MCP_USER_CONFIG: "~/.omc/lsp.json",
+			LSP_TOOLS_MCP_INSTALL_DECISIONS: "~/.omc/lsp-install-decisions.json",
 			PATH: "/usr/bin",
 			HOME: "/home/me",
 		});

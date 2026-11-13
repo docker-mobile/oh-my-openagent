@@ -93,3 +93,13 @@ the remaining tail, then retain the original logical file size. No volume is
 formatted by the test. Save the test output with the Windows build and volume
 cluster size when recording a live validation. ProjFS remains intentionally
 excluded because its callbacks require a native host, not merely callable FFI.
+
+## REFRESH 2026-11-09
+- Guard coverage: isolation-core is in the harness-neutral core list
+  (`script/core-package-paths.ts`); `script/shared-core-extraction-guard.test.ts`
+  rejects adapter imports and raw `session.prompt(` calls here like every core package.
+- Package scripts verified: `test` is `bun test src/`, `typecheck` is
+  `tsgo --noEmit -p tsconfig.json` (`packages/isolation-core/package.json`).
+- Verified seams: process identity/liveness imports memory-core's native functions
+  (`src/process-identity.ts`); merge serialization takes the identity-bearing lock in
+  Git's common dir (`src/merge/shared.ts`).

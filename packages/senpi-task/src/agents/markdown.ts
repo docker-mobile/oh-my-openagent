@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs"
 import { basename } from "node:path"
-import { parseFrontmatter } from "@oh-my-opencode/utils"
+import { parseFrontmatter } from "@oh-my-cybersecurity/utils"
 
 import { RawAgentDefinitionSchema, normalizeAgentDefinition } from "./schema"
 import type { AgentDefinition, AgentLoaderDiagnostic } from "./types"

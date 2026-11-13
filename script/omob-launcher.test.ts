@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test"
-import { versionLines } from "../packages/omo-native/build-info"
+import { versionLines } from "../packages/omc-native/build-info"
 import { spawnSync } from "node:child_process"
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
@@ -19,7 +19,7 @@ describe("omob mainline launcher", () => {
 	})
 
 	test.skipIf(process.platform === "win32")("#given explicit feature refs #when building directly #then only explicit launcher installation rejects them", () => {
-		const args = ["--omo-ref", "origin/feature", "--senpi-ref", "origin/experiment"]
+		const args = ["--omc-ref", "origin/feature", "--senpi-ref", "origin/experiment"]
 		const feature = builder.parseOmobArgs([...args, "--name", "omob-feature"], "darwin", "arm64", "/home/dev")
 		expect(feature.omoRef).toBe("origin/feature")
 		expect(feature.cacheDir).toBe(resolve("/home/dev", ".cache", "omob-feature"))
@@ -43,7 +43,7 @@ describe("omob mainline launcher", () => {
 				const current = builder.isCurrentOmobBuild
 				expect(typeof current).toBe("function")
 				const binary = join(root, process.platform === "win32" ? "omob.exe" : "omob")
-				const info = { command: "omob", omo: { commit: "a".repeat(40), committedAt: "2026-09-09T00:00:00Z", branch: "dev" }, engine: { commit: "b".repeat(40), committedAt: "2026-09-09T00:00:00Z", branch: "main" } }
+				const info = { command: "omob", omc: { commit: "a".repeat(40), committedAt: "2026-09-09T00:00:00Z", branch: "dev" }, engine: { commit: "b".repeat(40), committedAt: "2026-09-09T00:00:00Z", branch: "main" } }
 				// The real `--version` text: isCurrentOmobBuild compares against versionLines(info), so a
 				// hand-copied format here would decide "changed" for a build that is the same.
 				writeTestExecutable(binary, `console.log(${JSON.stringify(versionLines(info).join("\n"))})`)

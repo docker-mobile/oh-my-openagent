@@ -38,27 +38,27 @@ describe("registerStoreIndex", () => {
     let now = 1_000
 
     // when
-    await registerStoreIndex({ indexPath: path, storeDir: "/p1/.omo/senpi-task", now: () => now })
+    await registerStoreIndex({ indexPath: path, storeDir: "/p1/.omc/senpi-task", now: () => now })
     now = 2_000
-    await registerStoreIndex({ indexPath: path, storeDir: "/p1/.omo/senpi-task", now: () => now })
+    await registerStoreIndex({ indexPath: path, storeDir: "/p1/.omc/senpi-task", now: () => now })
 
     // then
     expect(readTaskStoreIndex(path)).toEqual({
       version: 1,
-      stores: { [resolve("/p1/.omo/senpi-task")]: { first_seen: new Date(1_000).toISOString(), last_seen: new Date(1_000).toISOString() } },
+      stores: { [resolve("/p1/.omc/senpi-task")]: { first_seen: new Date(1_000).toISOString(), last_seen: new Date(1_000).toISOString() } },
     })
   })
 
   test("#given a store already in the index #when it is registered again #then the index file is not rewritten", async () => {
     // given - an mtime far in the past, so any rewrite (a new file renamed over it) shows
     const path = indexPath()
-    await registerStoreIndex({ indexPath: path, storeDir: "/p1/.omo/senpi-task", now: Date.now })
+    await registerStoreIndex({ indexPath: path, storeDir: "/p1/.omc/senpi-task", now: Date.now })
     const past = new Date(Date.now() - 3_600_000)
     utimesSync(path, past, past)
     const before = statSync(path)
 
     // when
-    await registerStoreIndex({ indexPath: path, storeDir: "/p1/.omo/senpi-task", now: Date.now })
+    await registerStoreIndex({ indexPath: path, storeDir: "/p1/.omc/senpi-task", now: Date.now })
 
     // then
     const after = statSync(path)
@@ -80,14 +80,14 @@ describe("registerStoreIndex", () => {
     )
 
     // when
-    await registerStoreIndex({ indexPath: path, storeDir: "/p1/.omo/senpi-task", now: Date.now }).then(() => {
+    await registerStoreIndex({ indexPath: path, storeDir: "/p1/.omc/senpi-task", now: Date.now }).then(() => {
       admissionSettled = true
     })
     await loopTurn
 
     // then
     expect(loopRanFirst).toBe(true)
-    expect(Object.keys(readTaskStoreIndex(path).stores)).toEqual([resolve("/p1/.omo/senpi-task")])
+    expect(Object.keys(readTaskStoreIndex(path).stores)).toEqual([resolve("/p1/.omc/senpi-task")])
   })
 
   posixHostRunnerTest("#given a same-process admission whose durable write outlasts the lock's holder budget #when a second store is admitted from this process #then it waits for the first and both land", async () => {
@@ -105,11 +105,11 @@ describe("registerStoreIndex", () => {
         await DURABLE_JSON_FS_ASYNC.write(target, text)
       },
     }
-    const first = registerStoreIndex({ indexPath: path, storeDir: "/p1/.omo/senpi-task", now: Date.now, fs: slowFs })
+    const first = registerStoreIndex({ indexPath: path, storeDir: "/p1/.omc/senpi-task", now: Date.now, fs: slowFs })
     await writeStarted.promise
 
     // when - the second admission starts while the first holds the lock, and the first outlasts the holder budget
-    const second = registerStoreIndex({ indexPath: path, storeDir: "/p2/.omo/senpi-task", now: Date.now }).then(
+    const second = registerStoreIndex({ indexPath: path, storeDir: "/p2/.omc/senpi-task", now: Date.now }).then(
       () => "admitted",
       (error: unknown) => error,
     )
@@ -119,7 +119,7 @@ describe("registerStoreIndex", () => {
 
     // then
     expect(await second).toBe("admitted")
-    expect(Object.keys(readTaskStoreIndex(path).stores).sort()).toEqual([resolve("/p1/.omo/senpi-task"), resolve("/p2/.omo/senpi-task")].sort())
+    expect(Object.keys(readTaskStoreIndex(path).stores).sort()).toEqual([resolve("/p1/.omc/senpi-task"), resolve("/p2/.omc/senpi-task")].sort())
   }, 30_000)
 
   test("#given a write whose read-back does not contain the store #when registering #then it is unavailable", async () => {
@@ -213,11 +213,11 @@ describe("registerStoreIndex", () => {
     await held
 
     // when
-    const registered = registerStoreIndex({ indexPath: path, storeDir: "/p2/.omo/senpi-task", now: Date.now })
+    const registered = registerStoreIndex({ indexPath: path, storeDir: "/p2/.omc/senpi-task", now: Date.now })
 
     // then
     await Promise.all([slowHolder, registered])
-    expect(Object.keys(readTaskStoreIndex(path).stores).sort()).toEqual([existingStore, resolve("/p2/.omo/senpi-task")].sort())
+    expect(Object.keys(readTaskStoreIndex(path).stores).sort()).toEqual([existingStore, resolve("/p2/.omc/senpi-task")].sort())
   })
 
   test("#given compiled launcher pruning #when one indexed store is missing #then the sync port removes only that entry", async () => {

@@ -12,19 +12,19 @@ import { PLATFORMS } from "./build-binaries"
 import { KEYCHAIN_HELPER_RELEASE_ASSET } from "./release-keychain-helper-target"
 import { runBlock } from "./release-workflow-test-steps"
 
-const CAPABILITIES = "omo-runtime-capabilities.json"
+const CAPABILITIES = "omc-runtime-capabilities.json"
 const CAPABILITIES_BYTES = '{"keychainHandoff":1}\n'
 const SPAWN_TIMEOUT_MS = 20_000
 const TEST_TIMEOUT_MS = 30_000
-const REAL_CAPABILITIES_MODULE = new URL("../packages/omo-opencode/src/cli/service-auth/keychain-helper/runtime-capabilities.ts", import.meta.url)
+const REAL_CAPABILITIES_MODULE = new URL("../packages/omc-opencode/src/cli/service-auth/keychain-helper/runtime-capabilities.ts", import.meta.url)
 
 const publishWorkflow = readFileSync(new URL("../.github/workflows/publish.yml", import.meta.url), "utf8").replace(/\r\n/g, "\n")
 const verifyStep = runBlock(publishWorkflow, "      - name: Verify uploaded assets\n", "      - name: Delete draft release\n")
 const uploadStep = runBlock(publishWorkflow, "      - name: Upload release assets\n", "      - name: Verify uploaded assets\n")
-const restoreStep = uploadStep.slice(0, uploadStep.indexOf("ls -la .omo/release-binaries/"))
+const restoreStep = uploadStep.slice(0, uploadStep.indexOf("ls -la .omc/release-binaries/"))
 
 const LAUNCHERS = [
-  ...PLATFORMS.map(({ platform }) => `omo-${platform}${platform.startsWith("windows-") ? ".exe" : ""}`),
+  ...PLATFORMS.map(({ platform }) => `omc-${platform}${platform.startsWith("windows-") ? ".exe" : ""}`),
   KEYCHAIN_HELPER_RELEASE_ASSET,
 ]
 const ENGINES = DESKTOP_ENGINE_RELEASE_HOSTS.map((host) => desktopEngineReleaseAssetName(host) ?? "")
@@ -39,7 +39,7 @@ function release(extra: Files = {}): Files {
   const files: Files = {}
   for (const name of [...LAUNCHERS, ...ENGINES]) files[name] = `bytes of ${name}\n`
   Object.assign(files, extra)
-  files.SHA256SUMS = checksums(files, Object.keys(files).filter((name) => name.startsWith("omo-")).sort())
+  files.SHA256SUMS = checksums(files, Object.keys(files).filter((name) => name.startsWith("omc-")).sort())
   files["senpi-desktop-engine-checksums.txt"] = checksums(files, ENGINES)
   return files
 }
@@ -65,9 +65,9 @@ function fakeGh(bin: string): void {
 
 type Run = { readonly status: number | null; readonly stdout: string; readonly stderr: string; readonly built: readonly string[] }
 
-/** Runs a real step with `released` as the GitHub release and `built` as this run's .omo/release-binaries (null: skip_platform). */
+/** Runs a real step with `released` as the GitHub release and `built` as this run's .omc/release-binaries (null: skip_platform). */
 function runStep(step: string, released: Files, built: Files | null, payloadDirs: readonly string[] = []): Run {
-  const root = mkdtempSync(join(tmpdir(), "omo-release-assets-"))
+  const root = mkdtempSync(join(tmpdir(), "omc-release-assets-"))
   try {
     const releaseDir = join(root, "release")
     mkdirSync(releaseDir)
@@ -75,11 +75,11 @@ function runStep(step: string, released: Files, built: Files | null, payloadDirs
     const checkout = join(root, "checkout")
     mkdirSync(checkout)
     if (built !== null) {
-      mkdirSync(join(checkout, ".omo", "release-binaries"), { recursive: true })
-      for (const [name, bytes] of Object.entries(built)) writeFileSync(join(checkout, ".omo", "release-binaries", name), bytes)
+      mkdirSync(join(checkout, ".omc", "release-binaries"), { recursive: true })
+      for (const [name, bytes] of Object.entries(built)) writeFileSync(join(checkout, ".omc", "release-binaries", name), bytes)
       for (const dir of payloadDirs) {
-        mkdirSync(join(checkout, ".omo", "release-binaries", dir))
-        writeFileSync(join(checkout, ".omo", "release-binaries", dir, "omo-engine-trust-helper"), "payload\n")
+        mkdirSync(join(checkout, ".omc", "release-binaries", dir))
+        writeFileSync(join(checkout, ".omc", "release-binaries", dir, "omc-engine-trust-helper"), "payload\n")
       }
     }
     const stepTemp = join(root, "tmp")
@@ -91,7 +91,7 @@ function runStep(step: string, released: Files, built: Files | null, payloadDirs
       encoding: "utf8",
       timeout: SPAWN_TIMEOUT_MS,
     })
-    const builtDir = join(checkout, ".omo", "release-binaries")
+    const builtDir = join(checkout, ".omc", "release-binaries")
     expect(readdirSync(stepTemp)).toEqual([])
     return { status: result.status, stdout: result.stdout, stderr: result.stderr, built: existsSync(builtDir) ? readdirSync(builtDir).sort() : [] }
   } finally {
@@ -146,7 +146,7 @@ describe("Verify uploaded assets compares the release with what the run built (R
     expect(runStep(verifyStep, { ...release(), [CAPABILITIES]: CAPABILITIES_BYTES }, null).status).not.toBe(0)
   }, TEST_TIMEOUT_MS)
 
-  test.skipIf(!existsSync(REAL_CAPABILITIES_MODULE))("the file build-omo-binary really writes is required once built", async () => {
+  test.skipIf(!existsSync(REAL_CAPABILITIES_MODULE))("the file build-omc-binary really writes is required once built", async () => {
     const real: unknown = await import(REAL_CAPABILITIES_MODULE.href)
     const name = Reflect.get(Object(real), "RUNTIME_CAPABILITIES_FILE")
     const text = Reflect.get(Object(real), "runtimeCapabilitiesText")
@@ -160,7 +160,7 @@ describe("Verify uploaded assets compares the release with what the run built (R
 
 describe("a rerun without a new darwin build keeps the capability file only through the restore (RULING-77)", () => {
   // The real restore step and the real verify step run back to back. SHA256SUMS stays in the built set because the upload
-  // step between them regenerates it over omo-* and it then equals the published one. Each runs in its own subshell, as each
+  // step between them regenerates it over omc-* and it then equals the published one. Each runs in its own subshell, as each
   // CI step runs in its own shell: one shell would let the verify step's EXIT trap replace the restore step's.
   const restoreThenVerify = `(\n${restoreStep}\n)\n(\n${verifyStep}\n)`
 
@@ -168,7 +168,7 @@ describe("a rerun without a new darwin build keeps the capability file only thro
     const published = withCapabilities()
     const built: Files = { ...published }
     delete built[CAPABILITIES]
-    delete built["omo-darwin-arm64"]
+    delete built["omc-darwin-arm64"]
     const run = runStep(restoreThenVerify, published, built)
     expect(run.status, run.stderr).toBe(0)
     expect(run.built).toContain(CAPABILITIES)
@@ -177,7 +177,7 @@ describe("a rerun without a new darwin build keeps the capability file only thro
   test("#given it is neither built nor on the earlier release #when the rerun verifies #then Verify fails on the missing capability file", () => {
     const published = release()
     const built: Files = { ...published }
-    delete built["omo-darwin-arm64"]
+    delete built["omc-darwin-arm64"]
     const run = runStep(restoreThenVerify, published, built)
     expect(run.status).not.toBe(0)
     expect(run.stdout + run.stderr).toContain(CAPABILITIES)
@@ -190,27 +190,27 @@ describe("partial-rerun restore uses what the earlier run published", () => {
     const published = withCapabilities()
     const built: Files = { ...published }
     delete built[CAPABILITIES]
-    delete built["omo-linux-x64"]
+    delete built["omc-linux-x64"]
     delete built.SHA256SUMS
     const run = runStep(restoreStep, published, built)
     expect(run.status, run.stderr).toBe(0)
     expect(run.built).toContain(CAPABILITIES)
-    expect(run.built).toContain("omo-linux-x64")
+    expect(run.built).toContain("omc-linux-x64")
   }, TEST_TIMEOUT_MS)
 
   test("a first run (no SHA256SUMS on the release yet) restores only canonical assets", () => {
     const published = release()
     delete published.SHA256SUMS
     const built: Files = { ...published }
-    delete built["omo-linux-x64"]
+    delete built["omc-linux-x64"]
     const run = runStep(restoreStep, published, built)
     expect(run.status, run.stderr).toBe(0)
-    expect(run.built).toContain("omo-linux-x64")
+    expect(run.built).toContain("omc-linux-x64")
     expect(run.built).not.toContain(CAPABILITIES)
   }, TEST_TIMEOUT_MS)
 })
 
 test("no step infers the release contents from source text", () => {
-  expect(publishWorkflow).not.toContain("script/build-omo-binary.ts;")
-  expect(publishWorkflow).not.toMatch(/grep -qF[^\n]*build-omo-binary/)
+  expect(publishWorkflow).not.toContain("script/build-omc-binary.ts;")
+  expect(publishWorkflow).not.toMatch(/grep -qF[^\n]*build-omc-binary/)
 })

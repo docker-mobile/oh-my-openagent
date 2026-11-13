@@ -44,7 +44,7 @@ describe("ensureVendoredLspDaemonBuilt", () => {
 
   it("#given two callers over one missing dist #when the first build is held and the second enters #then one build runs and both observe the output", async () => {
     // given
-    const root = await mkdtemp(join(tmpdir(), "omo-lsp-build-lock-"))
+    const root = await mkdtemp(join(tmpdir(), "omc-lsp-build-lock-"))
     temporaryRoots.push(root)
     const packageDir = join(root, "lsp-daemon")
     const outputPath = join(packageDir, "dist", "cli.js")
@@ -94,7 +94,7 @@ describe("ensureVendoredLspDaemonBuilt", () => {
 
   it("#given a waiter subscribed to a live owner #when the owner is killed #then the waiter reaps the lock and completes the build", async () => {
     // given
-    const root = await mkdtemp(join(tmpdir(), "omo-lsp-dead-owner-"))
+    const root = await mkdtemp(join(tmpdir(), "omc-lsp-dead-owner-"))
     temporaryRoots.push(root)
     const packageDir = join(root, "lsp-daemon")
     const outputPath = join(packageDir, "dist", "cli.js")
@@ -140,7 +140,7 @@ describe("ensureVendoredLspDaemonBuilt", () => {
 
   it("#given one operation deadline #when install consumes budget #then build receives only the remaining time", async () => {
     // given
-    const root = await mkdtemp(join(tmpdir(), "omo-lsp-deadline-"))
+    const root = await mkdtemp(join(tmpdir(), "omc-lsp-deadline-"))
     temporaryRoots.push(root)
     const packageDir = join(root, "lsp-daemon")
     const outputPath = join(packageDir, "dist", "cli.js")
@@ -180,7 +180,7 @@ describe("ensureVendoredLspDaemonBuilt", () => {
 
   it("#given npm ci fails #when the helper builds #then the failure rejects instead of continuing tests", async () => {
     // given
-    const root = await mkdtemp(join(tmpdir(), "omo-lsp-command-failure-"))
+    const root = await mkdtemp(join(tmpdir(), "omc-lsp-command-failure-"))
     temporaryRoots.push(root)
     const packageDir = join(root, "lsp-daemon")
     await mkdir(packageDir, { recursive: true })
@@ -199,7 +199,7 @@ describe("ensureVendoredLspDaemonBuilt", () => {
 
   it("#given install exhausts the operation deadline #when build would start #then the aggregate deadline rejects", async () => {
     // given
-    const root = await mkdtemp(join(tmpdir(), "omo-lsp-deadline-exhausted-"))
+    const root = await mkdtemp(join(tmpdir(), "omc-lsp-deadline-exhausted-"))
     temporaryRoots.push(root)
     const packageDir = join(root, "lsp-daemon")
     await mkdir(packageDir, { recursive: true })
@@ -230,7 +230,7 @@ describe("ensureVendoredLspDaemonBuilt", () => {
 
   it("#given npm spawn fails #when the helper builds #then the original spawn diagnostic is preserved", async () => {
     // given
-    const root = await mkdtemp(join(tmpdir(), "omo-lsp-spawn-error-"))
+    const root = await mkdtemp(join(tmpdir(), "omc-lsp-spawn-error-"))
     temporaryRoots.push(root)
     const packageDir = join(root, "lsp-daemon")
     await mkdir(packageDir, { recursive: true })
@@ -252,7 +252,7 @@ describe("ensureVendoredLspDaemonBuilt", () => {
 
   it("#given npm is terminated by a signal #when the helper builds #then the signal is reported", async () => {
     // given
-    const root = await mkdtemp(join(tmpdir(), "omo-lsp-signal-"))
+    const root = await mkdtemp(join(tmpdir(), "omc-lsp-signal-"))
     temporaryRoots.push(root)
     const packageDir = join(root, "lsp-daemon")
     await mkdir(packageDir, { recursive: true })

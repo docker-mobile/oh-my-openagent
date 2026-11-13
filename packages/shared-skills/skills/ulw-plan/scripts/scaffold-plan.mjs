@@ -4,7 +4,7 @@
 // Zero external dependencies (node:fs/path/process/url builtins only) so it runs
 // byte-identically under `node` and `bun` on macOS, Linux, and Windows with no uv
 // bootstrap, no npm/pip install, and no POSIX-shell or python3 precondition - the
-// two things genuinely not guaranteed on native Windows across the omo harnesses.
+// two things genuinely not guaranteed on native Windows across the omc harnesses.
 //
 // Usage:  node "<skill-root>/scripts/scaffold-plan.mjs" <slug> [--clear|--unclear] [--draft-only] [--review-required] [--reset [--force]]
 //
@@ -16,9 +16,9 @@
 //
 // WRITE BOUNDARY: the prometheus-md-only hook gates Write/Edit but NOT Bash, so
 // this node:fs script writes out of band of that hook. It self-guards THIS script's
-// own writes to resolve under .omo/ (it does not, and cannot, contain other Bash
-// commands; it only guarantees the mandated generator never escapes .omo). Mirrors
-// packages/omo-opencode/src/hooks/prometheus-md-only/path-policy.ts.
+// own writes to resolve under .omc/ (it does not, and cannot, contain other Bash
+// commands; it only guarantees the mandated generator never escapes .omc). Mirrors
+// packages/omc-opencode/src/hooks/prometheus-md-only/path-policy.ts.
 
 import { lstat, mkdir, writeFile, readFile, realpath } from "node:fs/promises";
 import { dirname, join, relative, resolve, isAbsolute } from "node:path";
@@ -56,7 +56,7 @@ export function parseArgs(argv) {
 	return { slug, intent, reset, force, draftOnly, reviewRequired };
 }
 
-// Resolve a project-relative path and confine it under .omo/ - the script's own
+// Resolve a project-relative path and confine it under .omc/ - the script's own
 // enforcement of the prometheus planner write boundary.
 export function resolveSafeOmoPath(cwd, relPath) {
 	const resolved = resolve(cwd, relPath);
@@ -64,8 +64,8 @@ export function resolveSafeOmoPath(cwd, relPath) {
 	if (rel.startsWith("..") || isAbsolute(rel)) {
 		throw new Error(`refused: path escapes the workspace root: ${relPath}`);
 	}
-	if (!/(^|[/\\])\.omo([/\\]|$)/i.test(rel)) {
-		throw new Error(`refused: ulw-plan may only write under .omo/: ${relPath}`);
+	if (!/(^|[/\\])\.omc([/\\]|$)/i.test(rel)) {
+		throw new Error(`refused: ulw-plan may only write under .omc/: ${relPath}`);
 	}
 	if (!resolved.toLowerCase().endsWith(".md")) {
 		throw new Error(`refused: ulw-plan may only write .md files: ${relPath}`);
@@ -106,15 +106,15 @@ async function mkdirWithoutSymlinks(dir, stopAt) {
 async function assertSafeWriteParent(cwd, target) {
 	const workspaceReal = await realpath(cwd);
 	const workspaceRoot = resolve(cwd);
-	const omoRoot = resolve(cwd, ".omo");
+	const omoRoot = resolve(cwd, ".omc");
 	const parent = dirname(target);
 	assertContainedPath(workspaceRoot, parent, `refused: path escapes the workspace root: ${target}`);
-	assertContainedPath(omoRoot, parent, `refused: ulw-plan may only write under .omo/: ${target}`);
+	assertContainedPath(omoRoot, parent, `refused: ulw-plan may only write under .omc/: ${target}`);
 	await mkdirWithoutSymlinks(parent, workspaceRoot);
 	const omoReal = await realpath(omoRoot);
 	const parentReal = await realpath(parent);
 	assertContainedPath(workspaceReal, parentReal, `refused: path escapes the workspace root through symlinks: ${target}`);
-	assertContainedPath(omoReal, parentReal, `refused: ulw-plan may only write under .omo/ through real paths: ${target}`);
+	assertContainedPath(omoReal, parentReal, `refused: ulw-plan may only write under .omc/ through real paths: ${target}`);
 }
 
 async function assertSafeWriteTarget(target) {
@@ -157,10 +157,10 @@ export async function writeGuarded(cwd, relPath, content, { reset = false, force
 }
 
 export async function scaffold(cwd, { slug, intent, reset = false, force = false, draftOnly = false, reviewRequired = false }) {
-	const draftRel = join(".omo", "drafts", `${slug}.md`);
+	const draftRel = join(".omc", "drafts", `${slug}.md`);
 	const draft = await writeGuarded(cwd, draftRel, buildDraft(slug, intent, { reviewRequired }), { reset, force });
 	if (draftOnly) return [draft];
-	const planRel = join(".omo", "plans", `${slug}.md`);
+	const planRel = join(".omc", "plans", `${slug}.md`);
 	const plan = await writeGuarded(cwd, planRel, buildPlanSkeleton(slug, intent), { reset, force });
 	return [draft, plan];
 }

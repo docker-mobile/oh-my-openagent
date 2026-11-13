@@ -1,4 +1,4 @@
-import type { IsolationBackendKind } from "@oh-my-opencode/omo-config-core"
+import type { IsolationBackendKind } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { TaskIsolationSpec } from "../state"
 import { writeBaseline } from "./baseline-store"

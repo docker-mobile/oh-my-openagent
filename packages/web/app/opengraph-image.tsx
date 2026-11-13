@@ -6,7 +6,7 @@ import type { OgCount } from "@/lib/og/live-count"
 import { getOgStars } from "@/lib/og/stars"
 
 export const alt =
-  "OmO. Your tool for real work. But it's an agent. The OmO cat, live GitHub stars and npm downloads."
+  "OmC. Your tool for real work. But it's an agent. The OmC cat, live GitHub stars and npm downloads."
 export const size = { width: 1200, height: 630 }
 export const contentType = "image/png"
 export const dynamic = "force-dynamic"

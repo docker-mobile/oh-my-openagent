@@ -1,4 +1,4 @@
-import { ERROR_CODES, type ErrorCode, STANDARD_RPC_ERRORS } from "@oh-my-opencode/senpi-desktop-protocol";
+import { ERROR_CODES, type ErrorCode, STANDARD_RPC_ERRORS } from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import type { Disposition, WindowSummary } from "./types";
 import { isRecord, parseDisposition, type Tier } from "./validate";
 

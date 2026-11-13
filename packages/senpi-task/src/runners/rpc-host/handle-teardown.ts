@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import type { TaskStatus } from "../../state"
 import { classifySessionExit, type SessionCloseIntent, type SessionExitClassification } from "./exit-mapping"

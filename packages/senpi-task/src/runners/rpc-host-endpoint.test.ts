@@ -147,7 +147,7 @@ describe("the agent-dir store index is an admission precondition", () => {
     const metaPath = join(shard.dir, `p-${shard.key}.meta.json`)
     writeFileSync(metaPath, JSON.stringify({ socket: shard.socket, kind: "p", root: shard.dir }))
     const indexPath = taskStoreIndexPath(agentDir)
-    const stores = ["/p1/.omo/senpi-task", "/tmp/x-store"]
+    const stores = ["/p1/.omc/senpi-task", "/tmp/x-store"]
     const seenAtEnsure: string[][] = []
     const opensAtEnsure: number[] = []
     const ensure = ensureRecorder((input) => {
@@ -181,7 +181,7 @@ describe("the agent-dir store index is an admission precondition", () => {
     const notices: string[] = []
     const runner = runnerOver(host, {
       agentDir,
-      storeDir: "/p1/.omo/senpi-task",
+      storeDir: "/p1/.omc/senpi-task",
       ensureDaemon: ensure.ensure,
       shardResolver: () => shard.resolution(),
       onNotice: (token) => notices.push(token),
@@ -213,7 +213,7 @@ describe("the agent-dir store index is an admission precondition", () => {
     const notices: string[] = []
     const runner = runnerOver(host, {
       agentDir,
-      storeDir: "/p1/.omo/senpi-task",
+      storeDir: "/p1/.omc/senpi-task",
       ensureDaemon: ensureRecorder().ensure,
       shardResolver: () => shard.resolution(),
       onNotice: (token) => notices.push(token),
@@ -226,7 +226,7 @@ describe("the agent-dir store index is an admission precondition", () => {
     // then
     expect(openCount(host.commands)).toBe(2)
     expect(notices).toEqual(["host_notice:store_register_failed"])
-    expect(Object.keys(readTaskStoreIndex(taskStoreIndexPath(agentDir)).stores)).toEqual(["/p1/.omo/senpi-task"])
+    expect(Object.keys(readTaskStoreIndex(taskStoreIndexPath(agentDir)).stores)).toEqual(["/p1/.omc/senpi-task"])
     chmodSync(shard.dir, 0o700)
     await first.terminate()
     await second.terminate()
@@ -321,7 +321,7 @@ describe("transport recovery reattaches ONLY on the recorded socket", () => {
     const runner = runnerOver(host, {
       ...NO_WAIT,
       agentDir,
-      storeDir: "/p1/.omo/senpi-task",
+      storeDir: "/p1/.omc/senpi-task",
       ensureDaemon: ensure.ensure,
       shardResolver: () => recorded.resolution(),
     })

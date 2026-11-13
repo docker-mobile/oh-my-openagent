@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 import type { TaskRecordStore } from "../store"
 import { parentKey, parseControlFileName } from "./control-paths"
 import type { ControlAck, ControlRegister } from "./control-schema"

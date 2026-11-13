@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url"
 import { bundledWorkspaceSources, digestCodexInstallerSources, parseCodexInstallerArtifact } from "./build-codex-install"
 
 const repositoryRoot = fileURLToPath(new URL("..", import.meta.url))
-const trackedBundlePath = "packages/omo-codex/scripts/install-dist/install-local.mjs"
+const trackedBundlePath = "packages/omc-codex/scripts/install-dist/install-local.mjs"
 
 // Read from the git index, not the working tree. `bun run test:codex` starts with
 // `bun run build:codex-install`, so a working-tree check would be rebuilt into agreement before

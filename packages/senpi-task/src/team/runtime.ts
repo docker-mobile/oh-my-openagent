@@ -1,12 +1,12 @@
 import { rm } from "node:fs/promises"
 
-import { log } from "@oh-my-opencode/utils"
-import type { RuntimeState, TeamSpec } from "@oh-my-opencode/team-core/types"
+import { log } from "@oh-my-cybersecurity/utils"
+import type { RuntimeState, TeamSpec } from "@oh-my-cybersecurity/team-core/types"
 import {
   createRuntimeState,
   loadRuntimeState,
   transitionRuntimeState,
-} from "@oh-my-opencode/team-core/team-state-store"
+} from "@oh-my-cybersecurity/team-core/team-state-store"
 
 import { readMemberTaskMap, writeMemberTaskMap, type MemberTaskMap } from "./member-map"
 import { resolveStateDir } from "../store"
@@ -240,7 +240,7 @@ async function cancelMemberTasks(teamRunId: string, runtimeDir: string, deps: De
       cancelled.push(taskId)
       continue
     }
-    // Cancel parked a finished resident member (omo#9785); team deletion still ends it for good.
+    // Cancel parked a finished resident member (omc#9785); team deletion still ends it for good.
     if (outcome.kind === "released") {
       await deps.destruction.destroyResidentTask(taskId, "cancel")
       continue

@@ -26,17 +26,17 @@ const CODEX_AGGREGATE_COMPONENTS = [
   "@code-yeongyu/codex-ulw-loop",
   "@code-yeongyu/lsp-daemon",
   "@code-yeongyu/lsp-tools-mcp",
-  "@oh-my-opencode/boulder-state",
-  "@oh-my-opencode/comment-checker-core",
-  "@oh-my-opencode/git-bash-mcp",
-  "@oh-my-opencode/prompts-core",
-  "@oh-my-opencode/rules-engine",
-  "@oh-my-opencode/shared-skills",
-  "@oh-my-opencode/telemetry-core",
-  "@oh-my-opencode/utils",
+  "@oh-my-cybersecurity/boulder-state",
+  "@oh-my-cybersecurity/comment-checker-core",
+  "@oh-my-cybersecurity/git-bash-mcp",
+  "@oh-my-cybersecurity/prompts-core",
+  "@oh-my-cybersecurity/rules-engine",
+  "@oh-my-cybersecurity/shared-skills",
+  "@oh-my-cybersecurity/telemetry-core",
+  "@oh-my-cybersecurity/utils",
   "@sisyphuslabs/codex-bootstrap",
   "@sisyphuslabs/codex-git-bash-hook",
-  "@sisyphuslabs/omo-codex-plugin",
+  "@sisyphuslabs/omc-codex-plugin",
   "Node.js runtime bootstrap payload",
   "pi-comment-checker",
   "pi-lsp-client",
@@ -47,7 +47,7 @@ const CODEX_AGGREGATE_COMPONENTS = [
 
 const ROOT_SHIP_REQUIRED_PATHS = [
   "THIRD-PARTY-NOTICES.md",
-  "packages/omo-codex/THIRD-PARTY-NOTICES.md",
+  "packages/omc-codex/THIRD-PARTY-NOTICES.md",
 ]
 
 const scopes = {
@@ -59,7 +59,7 @@ const scopes = {
     },
   },
   codex: {
-    noticePath: "packages/omo-codex/THIRD-PARTY-NOTICES.md",
+    noticePath: "packages/omc-codex/THIRD-PARTY-NOTICES.md",
     requiredComponents() {
       return [...readComponentPackageNames(), ...CODEX_AGGREGATE_COMPONENTS]
     },
@@ -85,10 +85,10 @@ function readJson(path) {
 }
 
 function readComponentPackageNames() {
-  const componentsPath = join(repoRoot, "packages/omo-codex/plugin/components")
+  const componentsPath = join(repoRoot, "packages/omc-codex/plugin/components")
   return readdirSync(componentsPath, { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
-    .map((entry) => join("packages/omo-codex/plugin/components", entry.name, "package.json"))
+    .map((entry) => join("packages/omc-codex/plugin/components", entry.name, "package.json"))
     .filter((packagePath) => existsSync(join(repoRoot, packagePath)))
     .map((packagePath) => JSON.parse(readFileSync(join(repoRoot, packagePath), "utf8")).name)
 }

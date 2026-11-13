@@ -1,4 +1,4 @@
-export const THEME_STORAGE_KEY = "omo-theme"
+export const THEME_STORAGE_KEY = "omc-theme"
 
 /**
  * Points every theme-color meta at the pinned theme's colour, or restores each one's own media colour for System.

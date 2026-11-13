@@ -4,7 +4,7 @@ import { getTranslations } from "next-intl/server"
 import { MassUlwGraph } from "@/components/landing/dag/mass-ulw-graph"
 
 /**
- * The current omo.dev workflow graph (components/landing/dag), with the labels its hero and mass ulw sections passed:
+ * The current omc.nga.hm workflow graph (components/landing/dag), with the labels its hero and mass ulw sections passed:
  * `panel` is the graph alone, `app` the whole desktop window with the graph open. It draws from the site tokens, which
  * carry the doriterm palette in both themes.
  */

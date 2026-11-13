@@ -18,7 +18,7 @@ import { removeTree } from "../../../../test-support/remove-tree"
 // test budget would cut a correct but slow answer short.
 setDefaultTimeout(90_000)
 
-// omo #10199, named regression for a field incident: a memory writer killed mid-commit right
+// omc #10199, named regression for a field incident: a memory writer killed mid-commit right
 // after updating HEAD left a 0-byte .git/HEAD.lock. Every later write staged its files, failed on
 // "cannot lock ref 'HEAD'" and surfaced only as "uncommitted changes", so nine writes were
 // stranded until the lock was moved aside by hand. A HEAD.lock from a writer proven dead must be
@@ -69,7 +69,7 @@ function strandedLockIn(error: unknown): StrandedGitLockError | undefined {
   return undefined
 }
 
-describe("a 0-byte HEAD.lock left by a memory writer killed mid-commit (omo #10199 field incident)", () => {
+describe("a 0-byte HEAD.lock left by a memory writer killed mid-commit (omc #10199 field incident)", () => {
   test.skipIf(process.platform === "win32")("#given the writer that left it is proven dead #when the next memory write runs #then the lock is reclaimed and the write commits", async () => {
     // #given
     const setup = await repoWithZeroByteHeadLock("dead writer")

@@ -1,13 +1,13 @@
-import { createProductIdentity } from "@oh-my-opencode/utils"
+import { createProductIdentity } from "@oh-my-cybersecurity/utils"
 
 const PRODUCT_IDENTITY = createProductIdentity({
-  pluginName: "oh-my-openagent",
+  pluginName: "oh-my-cybersecurity",
   legacyPluginName: "oh-my-opencode",
-  publishedPackageName: "oh-my-opencode",
-  configBasename: "oh-my-openagent",
+  publishedPackageName: "oh-my-cybersecurity",
+  configBasename: "oh-my-cybersecurity",
   legacyConfigBasename: "oh-my-opencode",
-  logFileName: "oh-my-opencode.log",
-  cacheDirName: "oh-my-opencode",
+  logFileName: "oh-my-cybersecurity.log",
+  cacheDirName: "oh-my-cybersecurity",
 })
 
 export const PLUGIN_NAME = PRODUCT_IDENTITY.pluginName

@@ -6,7 +6,7 @@ import { isInsideTmux } from "./environment"
 import { isServerRunning } from "./server-health"
 import { buildPaneAuthEnvironmentArgs, buildSubagentPaneTitle, buildTmuxPlaceholderCommand } from "./pane-command"
 
-const ISOLATED_SESSION_NAME_PREFIX = "omo-agents"
+const ISOLATED_SESSION_NAME_PREFIX = "omc-agents"
 
 export type SpawnTmuxSessionDeps = {
 	readonly log: (message: string, data?: unknown) => void

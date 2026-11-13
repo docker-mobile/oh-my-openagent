@@ -118,7 +118,7 @@ async function fetchPublishedPackage(target: PatchTarget): Promise<Scratch> {
   if (!tarballResponse.ok) {
     throw new Error(`tarball download failed for ${target.name}@${target.version}: HTTP ${tarballResponse.status}`)
   }
-  const scratchDir = mkdtempSync(join(tmpdir(), "omo-patch-hunks-"))
+  const scratchDir = mkdtempSync(join(tmpdir(), "omc-patch-hunks-"))
   const tgzPath = join(scratchDir, "package.tgz")
   await Bun.write(tgzPath, tarballResponse)
   const extract = Bun.spawnSync(["tar", "-xzf", tgzPath, "-C", scratchDir])

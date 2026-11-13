@@ -1,6 +1,6 @@
 // SyncRepo over the memory repo's git, through memory-core's own exec boundary. The sync commit
 // is built with plumbing so it never depends on a clean tree: the tree is HEAD plus exactly the
-// rendered paths, assembled in a private index; the commit is authored `OmO Sync`; HEAD moves by
+// rendered paths, assembled in a private index; the commit is authored `OmC Sync`; HEAD moves by
 // compare-and-swap (`update-ref <new> <old>`), so an agent commit landing meanwhile is kept and
 // the sync is rebuilt on top of it. Only the committed paths' index entries are then synced, by
 // `syncIndex` once the journal records the commit. A person's uncaptured edits elsewhere stay dirty
@@ -15,7 +15,7 @@ import { withStrandedGitLockRecovery } from "../../../git/repo-lock-sweep"
 import { STABLE_LOG_OUTPUT } from "../../../git/stable-log-output"
 import type { SyncRepo } from "../ports"
 
-const SYNC_AUTHOR = { name: "OmO Sync", email: "sync@omo.invalid" }
+const SYNC_AUTHOR = { name: "OmC Sync", email: "sync@omc.invalid" }
 const TIMEOUT_MS = 60_000
 const CAS_ATTEMPTS = 5
 /** Reconciliation looks for its trailer among recent history only. */

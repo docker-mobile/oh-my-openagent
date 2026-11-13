@@ -1,6 +1,6 @@
 /** Deterministic, fail-closed operations for the generated current release section. */
-const START = "<!-- omo:current-releases:start -->"
-const END = "<!-- omo:current-releases:end -->"
+const START = "<!-- omc:current-releases:start -->"
+const END = "<!-- omc:current-releases:end -->"
 
 export function stampCurrentSection(changelog: string, section: string): string {
   if (typeof changelog !== "string" || typeof section !== "string" || !section.trim()) throw new Error("changelog and section are required")

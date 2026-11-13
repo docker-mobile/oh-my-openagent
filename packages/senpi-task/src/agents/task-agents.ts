@@ -1,12 +1,12 @@
-import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
+import type { OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import { BUILTIN_AGENTS, CURATED_READONLY_AGENT_NAMES, ULW_REVIEWER_AGENT_NAMES } from "./builtin"
-import { mapOmoConfigAgents } from "./omo-config-agents"
+import { mapOmoConfigAgents } from "./omc-config-agents"
 import type { AgentDefinition } from "./types"
 
 /**
- * The agents a task spawn can address: the builtins overlaid with omo.json `agents`, the curated
- * read-only agents and the ulw reviewers pinned in-process. `omo doctor --models` reads the same set.
+ * The agents a task spawn can address: the builtins overlaid with omc.json `agents`, the curated
+ * read-only agents and the ulw reviewers pinned in-process. `omc doctor --models` reads the same set.
  */
 export function resolveTaskAgents(config: OmoConfig): Readonly<Record<string, AgentDefinition>> {
   const merged: Record<string, AgentDefinition> = { ...BUILTIN_AGENTS }

@@ -14,11 +14,11 @@ describe("createSkillSourceCopyFilter", () => {
   })
 
   test("#given an ignored directory name as an ANCESTOR of the skill root #when filtered #then files are still copied", () => {
-    // The regression this module exists to prevent: a checkout at ~/.omo/omob/omo/... or under
+    // The regression this module exists to prevent: a checkout at ~/.omc/omob/omc/... or under
     // any __pycache__-named ancestor must ship its skills. The ignore list targets the skill
     // tree's own cache directories, never where the repository happens to live.
     for (const ancestor of ignoredSkillSourceDirNames) {
-      const nestedRoot = join("/Users/me", ancestor, "cache", "omo", "packages", "shared-skills", "skills", "ast-grep")
+      const nestedRoot = join("/Users/me", ancestor, "cache", "omc", "packages", "shared-skills", "skills", "ast-grep")
       const shouldCopy = createSkillSourceCopyFilter(nestedRoot)
       expect(shouldCopy(join(nestedRoot, "SKILL.md"))).toBe(true)
       expect(shouldCopy(join(nestedRoot, "scripts", "run.mjs"))).toBe(true)

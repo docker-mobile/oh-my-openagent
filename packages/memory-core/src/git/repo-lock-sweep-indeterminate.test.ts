@@ -13,7 +13,7 @@ import { exitedWithin } from "../locks/process-liveness.test-support"
 import type { GitLockScans } from "./lock-scans"
 import { StrandedGitLockError, withStrandedGitLockRecovery } from "./repo-lock-sweep"
 
-// omo #10199 / #10322: on hosts where the holder and repository-user scans cannot answer (hosted CI
+// omc #10199 / #10322: on hosts where the holder and repository-user scans cannot answer (hosted CI
 // runners and systemd desktops whose same-uid processes cannot be inspected), a stranded lock from
 // a writer proven dead is still KEPT, and the refusal names it with the way out. The real scans
 // answer on the hosts that run this suite, so the unanswerable host is injected here.
@@ -50,7 +50,7 @@ async function failureUnder(scans: GitLockScans) {
   return { failure, lockPath }
 }
 
-describe("a stranded lock on a host whose scans cannot answer is kept (omo #10199, #10322)", () => {
+describe("a stranded lock on a host whose scans cannot answer is kept (omc #10199, #10322)", () => {
   test.skipIf(process.platform === "win32")("#given the repository-user scan cannot answer #when the dead writer's successor sweeps #then the lock is kept as possibly in use, with the way out", async () => {
     // #when
     const { failure, lockPath } = await failureUnder({ findHolders: async () => [], findRepoUsers: async () => null })

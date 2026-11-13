@@ -1,13 +1,13 @@
 // Vendored from code-yeongyu/senpi@c6317f5971 (senpi#3818, formatting only).
 // Source of truth: packages/coding-agent/src/core/extensions/builtin/mcp/env-grants-store.ts.
-// This copy stays: omo-opencode consumes it and has no senpi dependency.
+// This copy stays: omc-opencode consumes it and has no senpi dependency.
 // env-grants-store-drift.test.ts fails when it stops matching the pinned senpi store.
 /**
  * Shared native/legacy MCP environment grants, with no senpi-internal imports.
  *
  * File: resolveGrantsStorePath(configDir), where engines MUST pass their already
  * resolved agent/config directory. The standalone default is
- * $XDG_CONFIG_HOME/omo/mcp-env-grants.json (else ~/.config/omo/mcp-env-grants.json).
+ * $XDG_CONFIG_HOME/omc/mcp-env-grants.json (else ~/.config/omc/mcp-env-grants.json).
  * Schema: {version:1,generation:number,grants:{[sha256]:{
  *   label:{project:string,skill:string,server:string},names:string[]}}}.
  * Names are sorted and unique. Neither raw declarations nor environment values,
@@ -79,7 +79,7 @@ const namePattern = /^[^=\0]+$/;
 const digestPattern = /^[a-f0-9]{64}$/;
 
 export function resolveGrantsStorePath(configDir?: string): string {
-	return join(resolve(configDir ?? join(process.env.XDG_CONFIG_HOME ?? join(homedir(), ".config"), "omo")),
+	return join(resolve(configDir ?? join(process.env.XDG_CONFIG_HOME ?? join(homedir(), ".config"), "omc")),
 		"mcp-env-grants.json");
 }
 function record(value: unknown): value is Record<string, unknown> {

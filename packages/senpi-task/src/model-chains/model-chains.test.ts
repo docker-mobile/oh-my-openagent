@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 
-import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
+import type { OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import { describeModelChains, type ModelChainEntry } from "./index"
 
@@ -42,7 +42,7 @@ describe("describeModelChains", () => {
     })
   })
 
-  test("#given an omo.json override on a later rung #when described #then the earlier builtin rung is not reached and the later one is appended", () => {
+  test("#given an omc.json override on a later rung #when described #then the earlier builtin rung is not reached and the later one is appended", () => {
     // given
     const config: OmoConfig = { categories: { artistry: { model: "anthropic/claude-opus-5-5" } } }
 
@@ -52,7 +52,7 @@ describe("describeModelChains", () => {
     // then
     expect(artistry.runtime).toEqual(["anthropic/claude-opus-5-5", "kimi-for-coding/k3.1-pro"])
     expect(artistry.rungs).toEqual([
-      { model: "anthropic/claude-opus-5-5", source: "omo.json", state: "primary" },
+      { model: "anthropic/claude-opus-5-5", source: "omc.json", state: "primary" },
       { model: "anthropic/claude-fable-5-1", source: "built-in", state: "not-reached" },
       { model: "kimi-for-coding/k3.1-pro", source: "built-in", state: "fallback" },
     ])
@@ -114,7 +114,7 @@ describe("describeModelChains", () => {
     ])
   })
 
-  test("#given an omo.json agent and a disabled category #when described #then the agent's own rung is tagged omo.json and the category says disabled", () => {
+  test("#given an omc.json agent and a disabled category #when described #then the agent's own rung is tagged omc.json and the category says disabled", () => {
     // given
     const config: OmoConfig = { agents: { scout: { models: ["anthropic/claude-opus-5-5"] } }, categories: { artistry: { disable: true } } }
 
@@ -123,7 +123,7 @@ describe("describeModelChains", () => {
     const artistry = entry(config, "categories", "artistry")
 
     // then
-    expect(scout.rungs).toEqual([{ model: "anthropic/claude-opus-5-5", source: "omo.json", state: "primary" }])
+    expect(scout.rungs).toEqual([{ model: "anthropic/claude-opus-5-5", source: "omc.json", state: "primary" }])
     expect(artistry.status).toBe("disabled")
     expect(artistry.runtime).toEqual([])
   })

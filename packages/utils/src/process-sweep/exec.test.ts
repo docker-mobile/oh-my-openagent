@@ -37,7 +37,7 @@ function writeExecutable(path: string, body: string): void {
  * end-to-end tests driving them are skipped on win32 (see each test).
  */
 function makeFakeSystemRoot(): string {
-  const root = mkdtempSync(join(tmpdir(), "omo-sweep-systemroot-"))
+  const root = mkdtempSync(join(tmpdir(), "omc-sweep-systemroot-"))
   mkdirSync(join(root, "System32", "WindowsPowerShell", "v1.0"), { recursive: true })
   writeExecutable(
     join(root, "System32", "WindowsPowerShell", "v1.0", "powershell.exe"),

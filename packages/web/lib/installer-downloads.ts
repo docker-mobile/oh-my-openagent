@@ -1,8 +1,8 @@
-// get.omo.dev serves compiled binaries from its R2 mirror; those downloads never reach GitHub's
+// get.omc.nga.hm serves compiled binaries from its R2 mirror; those downloads never reach GitHub's
 // download_count. Its /stats/downloads rollup reports exactly that uncounted part (mirror-served
 // binaries plus signed corrections such as removed QA installs); installs it redirected to GitHub
 // are already inside the GitHub release total, so they are not added again.
-export const INSTALLER_STATS_URL = "https://get.omo.dev/stats/downloads"
+export const INSTALLER_STATS_URL = "https://get.omc.nga.hm/stats/downloads"
 const FRESH_MS = 60 * 60 * 1000
 const MAX_STALE_MS = 24 * 60 * 60 * 1000
 
@@ -18,7 +18,7 @@ function readUncounted(payload: unknown): number {
       ? Reflect.get(payload, "uncountedByGitHub")
       : undefined
   if (typeof value !== "number" || !Number.isSafeInteger(value) || value < 0) {
-    throw new Error("get.omo.dev download stats have no uncountedByGitHub count")
+    throw new Error("get.omc.nga.hm download stats have no uncountedByGitHub count")
   }
   return value
 }

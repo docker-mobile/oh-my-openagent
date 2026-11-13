@@ -10,7 +10,7 @@ import {
 	getDesktopEngineHost,
 	launchDesktopEngine,
 	locateDesktopEngine,
-} from "@oh-my-opencode/senpi-desktop-engine";
+} from "@oh-my-cybersecurity/senpi-desktop-engine";
 import { PermissionPreflight, probeFreshEngine } from "./permission-preflight";
 
 /**
@@ -42,7 +42,7 @@ export function engineChildFactory(enginePath?: string, env?: NodeJS.ProcessEnv)
 }
 
 export interface AcquiringEngineChildOptions {
-	/** The omo release whose GitHub assets carry this host's engine. */
+	/** The omc release whose GitHub assets carry this host's engine. */
 	readonly version: string;
 	readonly host?: string;
 	readonly env?: NodeJS.ProcessEnv;

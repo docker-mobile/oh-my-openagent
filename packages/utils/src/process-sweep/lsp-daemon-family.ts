@@ -15,7 +15,7 @@ import {
  * Stale old-version lsp-daemon family.
  *
  * BOUNDARY: packages/utils cannot import the vendored `@code-yeongyu/lsp-daemon`
- * package (and lsp-daemon cannot import omo packages), so its owner record and
+ * package (and lsp-daemon cannot import omc packages), so its owner record and
  * authenticated `daemon/ping` proof are mirrored locally. Generic argv matching
  * remains exported for legacy callers but never authorizes stale-version kills.
  * The base-dir, auth-token, owner-file, and ping layouts mirror
@@ -27,8 +27,8 @@ import {
  * ownership context.
  */
 
-export const OMO_LSP_DAEMON_DIR_ENV = "OMO_LSP_DAEMON_DIR"
-export const OMO_LSP_DAEMON_VERSION_ENV = "OMO_LSP_DAEMON_VERSION"
+export const OMC_LSP_DAEMON_DIR_ENV = "OMC_LSP_DAEMON_DIR"
+export const OMC_LSP_DAEMON_VERSION_ENV = "OMC_LSP_DAEMON_VERSION"
 
 export interface LspDaemonBaseDirOptions {
   readonly env?: Record<string, string | undefined>
@@ -41,10 +41,10 @@ export function resolveLspDaemonBaseDir(options: LspDaemonBaseDirOptions = {}): 
     return resolve(options.lspDaemonDir)
   }
   const env = options.env ?? process.env
-  const override = env[OMO_LSP_DAEMON_DIR_ENV]
+  const override = env[OMC_LSP_DAEMON_DIR_ENV]
   if (override !== undefined && override.trim().length > 0) return resolve(override)
   const homeDir = options.homeDir ?? env["HOME"] ?? env["USERPROFILE"] ?? homedir()
-  return join(homeDir, ".omo", "lsp-daemon")
+  return join(homeDir, ".omc", "lsp-daemon")
 }
 
 export interface LspDaemonVersionDir {

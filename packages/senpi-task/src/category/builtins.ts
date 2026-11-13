@@ -1,5 +1,5 @@
-import { transformModelForProvider, type DelegateFallbackEntry } from "@oh-my-opencode/delegate-core"
-import type { OmoCategoryConfig } from "@oh-my-opencode/omo-config-core"
+import { transformModelForProvider, type DelegateFallbackEntry } from "@oh-my-cybersecurity/delegate-core"
+import type { OmoCategoryConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import { ANTHROPIC_CATEGORIES } from "./anthropic-categories"
 import { GOOGLE_CATEGORIES } from "./google-categories"
@@ -8,7 +8,7 @@ import { OPENAI_CATEGORIES } from "./openai-categories"
 import { CATEGORY_FALLBACK_CHAINS } from "./fallback-chains"
 import type { BuiltinCategoryDefinition } from "./types"
 
-// Ported from packages/omo-opencode/src/tools/delegate-task/builtin-categories.ts.
+// Ported from packages/omc-opencode/src/tools/delegate-task/builtin-categories.ts.
 export const BUILTIN_CATEGORY_DEFAULTS: readonly BuiltinCategoryDefinition[] = [
   ...GOOGLE_CATEGORIES,
   ...OPENAI_CATEGORIES,
@@ -62,7 +62,7 @@ function categoryChainProviders(categoryName: string): readonly string[] {
   return chain.flatMap((rung) => rung.providers)
 }
 
-// `provider` serves `model` when the registry lists it under that provider, spelled as omo's routing
+// `provider` serves `model` when the registry lists it under that provider, spelled as omc's routing
 // tables spell it (claude-fable-5-1) or through the provider-specific id transform delegate-core
 // applies at resolution time (github-copilot: claude-fable-5.1, kimi-coding: k3). The provider is
 // part of the check: a gateway re-publishing the model (openrouter/anthropic/claude-opus-5.5) serves

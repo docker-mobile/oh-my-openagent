@@ -1,0 +1,203 @@
+import { describe, expect, test } from "bun:test"
+import { tmpdir } from "node:os"
+import { join } from "node:path"
+import { channelPackageSpec, releaseChannel, updateTarget } from "../bin/lib/package-paths.js"
+
+// updateTarget reads the version of the install it is pointed at and falls back to this package's own
+// manifest, so the expected spelling follows the package channel (`omc-ai` stable, `omc-ai@beta` prerelease).
+const SPEC = channelPackageSpec()
+import {
+  formatUpdateCommand,
+  formatVersionChange,
+  isPrintOnlyUpdate,
+  runSelfUpdate,
+} from "../bin/lib/self-update.js"
+
+// These cases cover the spawn mechanics on the registry-unreachable path, which keeps the unpinned
+// channel spec; the pinned path lives in self-update-pinned-target.test.ts.
+const offline = { fetchDistTags: () => null }
+function unconfirmedNotice(version: string): string {
+  return `omc: could not confirm the ${releaseChannel(version)} omc-ai version from the npm registry; installing the unpinned ${channelPackageSpec(version)}`
+}
+
+function bunRoot(path: string): string {
+  return path.replace(/\\/g, "/")
+}
+
+describe("updateTarget", () => {
+  describe("#given a Bun global install layout", () => {
+    test("#then the command is bun add -g and BUN_INSTALL is the prefix, not a --cwd into the package", () => {
+      const root = bunRoot("/tmp/custom-bun/install/global/node_modules/omc-ai")
+      expect(updateTarget(root)).toEqual({
+        manager: "bun",
+        command: `bun add -g ${SPEC}`,
+        argv: ["bun", "add", "-g", SPEC],
+        env: { BUN_INSTALL: "/tmp/custom-bun" },
+      })
+    })
+
+    test("#then a Windows-style Bun path still yields bun add -g with BUN_INSTALL at the bun root", () => {
+      const root = String.raw`C:\Users\omc user\.bun\install\global\node_modules\omc-ai`
+      expect(updateTarget(root, "win32")).toEqual({
+        manager: "bun",
+        command: `bun add -g ${SPEC}`,
+        argv: ["bun", "add", "-g", SPEC],
+        env: { BUN_INSTALL: "C:/Users/omc user/.bun" },
+      })
+    })
+
+    test("#then a path with shell metacharacters is carried in BUN_INSTALL, not quoted into the command", () => {
+      const root = "/tmp/custom $HOME's bun/install/global/node_modules/omc-ai"
+      const target = updateTarget(root)
+      expect(target.command).toBe(`bun add -g ${SPEC}`)
+      expect(target.env).toEqual({ BUN_INSTALL: "/tmp/custom $HOME's bun" })
+    })
+  })
+
+  describe("#given an npm or unknown layout", () => {
+    test("#then the command stays npm i -g with npm argv and no BUN_INSTALL overlay", () => {
+      expect(updateTarget("/tmp/prefix/lib/node_modules/omc-ai")).toEqual({
+        manager: "npm",
+        command: `npm i -g ${SPEC}`,
+        argv: ["npm", "i", "-g", SPEC],
+      })
+    })
+
+  })
+})
+
+describe("omc self-update", () => {
+  describe("#given a resolved update target", () => {
+    const bunUpdate = {
+      manager: "bun",
+      command: `bun add -g ${SPEC}`,
+      argv: ["bun", "add", "-g", SPEC],
+      env: { BUN_INSTALL: "/tmp/custom-bun" },
+    }
+    const npmUpdate = {
+      manager: "npm",
+      command: `npm i -g ${SPEC}`,
+      argv: ["npm", "i", "-g", SPEC],
+    }
+
+    describe("#when --dry-run or --print is requested", () => {
+      for (const args of [["update", "--dry-run"], ["update", "--print"], ["update", "--self", "--dry-run"]]) {
+        test(`#then ${args.join(" ")} prints the command and does not spawn`, async () => {
+          const spawned: unknown[] = []
+          const lines: string[] = []
+          const code = await runSelfUpdate(args, {
+            resolveUpdate: () => bunUpdate,
+            ...offline,
+            readInstalled: () => ({ omc: "5.0.0", engine: "2026.9.29" }),
+            run: async (...call: unknown[]) => {
+              spawned.push(call)
+              return { status: 0, signal: null }
+            },
+            log: (line) => lines.push(line),
+            error: (line) => lines.push(`err:${line}`),
+          })
+          expect(isPrintOnlyUpdate(args)).toBe(true)
+          expect(code).toBe(0)
+          expect(spawned).toEqual([])
+          expect(lines).toEqual([unconfirmedNotice("5.0.0"), formatUpdateCommand(bunUpdate)])
+        })
+      }
+    })
+
+    describe("#when omc update runs", () => {
+      test("#then it spawns the resolved argv, overlays BUN_INSTALL, and prints before/after versions", async () => {
+        const spawned: Array<{ command: string; args: string[]; env: NodeJS.ProcessEnv }> = []
+        const lines: string[] = []
+        let reads = 0
+        const code = await runSelfUpdate(["update"], {
+          resolveUpdate: () => bunUpdate,
+            ...offline,
+          env: { PATH: "/usr/bin", BUN_INSTALL: "/wrong" },
+          readInstalled: () => {
+            reads += 1
+            return reads === 1
+              ? { omc: "5.0.0-0.beta.88", engine: "2026.9.1" }
+              : { omc: "5.0.0-0.beta.89", engine: "2026.9.24" }
+          },
+          run: async (command, args, options = {}) => {
+            spawned.push({ command, args, env: options.env ?? {} })
+            return { status: 0, signal: null }
+          },
+          log: (line) => lines.push(line),
+          error: (line) => lines.push(`err:${line}`),
+        })
+        expect(code).toBe(0)
+        expect(spawned).toEqual([{
+          command: "bun",
+          args: ["add", "-g", SPEC],
+          env: { PATH: "/usr/bin", BUN_INSTALL: "/tmp/custom-bun" },
+        }])
+        expect(lines).toEqual([
+          unconfirmedNotice("5.0.0-0.beta.88"),
+          `omc is updated via bun: bun add -g ${SPEC}`,
+          "omc 5.0.0-0.beta.88 -> 5.0.0-0.beta.89 (engine: senpi 2026.9.24)",
+        ])
+        expect(formatVersionChange(
+          { omc: "5.0.0-0.beta.88", engine: "2026.9.1" },
+          { omc: "5.0.0-0.beta.89", engine: "2026.9.24" },
+        )).toBe("omc 5.0.0-0.beta.88 -> 5.0.0-0.beta.89 (engine: senpi 2026.9.24)")
+      })
+
+      test("#then an npm-managed install spawns npm i -g without a BUN_INSTALL overlay", async () => {
+        const spawned: Array<{ command: string; args: string[]; env: NodeJS.ProcessEnv }> = []
+        const code = await runSelfUpdate(["update"], {
+          resolveUpdate: () => npmUpdate,
+            ...offline,
+          env: { PATH: "/usr/bin" },
+          readInstalled: () => ({ omc: "1.0.0", engine: "1" }),
+          run: async (command, args, options = {}) => {
+            spawned.push({ command, args, env: options.env ?? {} })
+            return { status: 0, signal: null }
+          },
+          log: () => {},
+        })
+        expect(code).toBe(0)
+        expect(spawned).toHaveLength(1)
+        expect(spawned[0].command).toBe("npm")
+        expect(spawned[0].args).toEqual(["i", "-g", SPEC])
+        const { npm_config_logs_dir: logsDir, ...env } = spawned[0].env
+        expect(env).toEqual({ PATH: "/usr/bin" })
+        expect(logsDir?.startsWith(join(tmpdir(), "omc-npm-logs-"))).toBe(true)
+      })
+    })
+
+    describe("#when the package manager fails", () => {
+      test("#then a non-zero status exits non-zero with the manual command and skips the version line", async () => {
+        const lines: string[] = []
+        const errors: string[] = []
+        const code = await runSelfUpdate(["update"], {
+          resolveUpdate: () => bunUpdate,
+            ...offline,
+          readInstalled: () => ({ omc: "5.0.0-0.beta.88", engine: "x" }),
+          run: async () => ({ status: 7, signal: null }),
+          log: (line) => lines.push(line),
+          error: (line) => errors.push(line),
+        })
+        expect(code).toBe(7)
+        expect(lines).toEqual([unconfirmedNotice("5.0.0-0.beta.88"), `omc is updated via bun: bun add -g ${SPEC}`])
+        expect(errors).toEqual([`omc: update failed; retry with: bun add -g ${SPEC}`])
+      })
+
+      test("#then a spawn error exits 1 with the same retry command", async () => {
+        const errors: string[] = []
+        const code = await runSelfUpdate(["update"], {
+          resolveUpdate: () => npmUpdate,
+            ...offline,
+          readInstalled: () => ({ omc: "1.0.0", engine: "1" }),
+          run: async () => {
+            throw new Error("ENOENT")
+          },
+          log: () => {},
+          error: (line) => errors.push(line),
+        })
+        expect(code).toBe(1)
+        expect(errors).toEqual([`omc: update failed; retry with: npm i -g ${SPEC}`])
+      })
+    })
+  })
+})

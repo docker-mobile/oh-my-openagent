@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process";
 import { createInterface } from "node:readline";
-import { type DesktopCapabilities, ENGINE_ABI, PROTOCOL_VERSION } from "@oh-my-opencode/senpi-desktop-protocol";
+import { type DesktopCapabilities, ENGINE_ABI, PROTOCOL_VERSION } from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import { isDesktopCapabilities, isRecord, parseHello } from "./parse";
 
 /** Bounds the fresh engine's `engine.hello` + `capabilities`, the budget `computer-use-doctor` gives its probe. */

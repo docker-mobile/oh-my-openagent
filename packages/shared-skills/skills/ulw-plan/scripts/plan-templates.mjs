@@ -30,16 +30,16 @@ export function buildDraft(slug, intent, { reviewRequired = false } = {}) {
 			: "Record any default you adopt instead of asking, so the user can veto it at the gate.";
 	const reviewState = reviewRequired
 		? `review_required: true
-plan_path: .omo/plans/${slug}.md
+plan_path: .omc/plans/${slug}.md
 plan_sha256: null
 review_round_id: null
-pending-action: write and review .omo/plans/${slug}.md
+pending-action: write and review .omc/plans/${slug}.md
 review:
   momus:
     status: pending
     workspace_root: null
     runtime_home: null
-    target: .omo/plans/${slug}.md
+    target: .omc/plans/${slug}.md
     round_id: null
     plan_sha256: null
     launch_id: null
@@ -49,14 +49,14 @@ review:
     status: pending
     workspace_root: null
     runtime_home: null
-    target: .omo/plans/${slug}.md
+    target: .omc/plans/${slug}.md
     round_id: null
     plan_sha256: null
     launch_id: null
     session: null
     result: null`
 		: `review_required: false
-pending-action: write .omo/plans/${slug}.md`;
+pending-action: write .omc/plans/${slug}.md`;
 	return `---
 slug: ${slug}
 status: drafting
@@ -143,7 +143,7 @@ Your next move: <fill - e.g. approve, or run a high-accuracy review>. Full execu
 ## Verification strategy
 > Zero human intervention - all verification is agent-executed.
 - Test decision: <TDD | tests-after | none> + framework
-- Evidence: <attemptDir>/task-<N>-${slug}.<ext> (attemptDir = currentAttemptDir from the ulw-loop status operation - on Senpi the eval SDK import, const { agentToolkit } = await import(\`\${env("OMO_AGENT_TOOLKIT_SDK_ROOT")}/sdk.js\`) then agentToolkit.status(), on Codex the omo-agent-toolkit CLI, .omo/evidence/ulw/<session>/<goalId>/a<attempt>; outside ulw-loop use .omo/evidence/)
+- Evidence: <attemptDir>/task-<N>-${slug}.<ext> (attemptDir = currentAttemptDir from the ulw-loop status operation - on Senpi the eval SDK import, const { agentToolkit } = await import(\`\${env("OMC_AGENT_TOOLKIT_SDK_ROOT")}/sdk.js\`) then agentToolkit.status(), on Codex the omc-agent-toolkit CLI, .omc/evidence/ulw/<session>/<goalId>/a<attempt>; outside ulw-loop use .omc/evidence/)
 
 ## Execution strategy
 ### Parallel execution waves

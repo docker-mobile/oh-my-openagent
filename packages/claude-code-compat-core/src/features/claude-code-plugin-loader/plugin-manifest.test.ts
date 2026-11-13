@@ -20,7 +20,7 @@ describe("loadPluginManifest", () => {
 
   it("#given both manifest layouts #when loading a manifest directly #then the Claude plugin layout wins", async () => {
     //#given
-    const installPath = createTemporaryDirectory("omo-manifest-layout-")
+    const installPath = createTemporaryDirectory("omc-manifest-layout-")
     mkdirSync(join(installPath, ".claude-plugin"), { recursive: true })
     writeFileSync(
       join(installPath, ".claude-plugin", "plugin.json"),
@@ -44,7 +44,7 @@ describe("loadPluginManifest", () => {
 
   it("#given a plugin.json saved with a UTF-8 BOM #when loading the manifest #then it parses (#12731)", async () => {
     //#given
-    const installPath = createTemporaryDirectory("omo-manifest-bom-")
+    const installPath = createTemporaryDirectory("omc-manifest-bom-")
     mkdirSync(join(installPath, ".claude-plugin"), { recursive: true })
     writeFileSync(join(installPath, ".claude-plugin", "plugin.json"), `\uFEFF${JSON.stringify({ name: "bom-plugin", version: "1.2.3" })}`, "utf-8")
 

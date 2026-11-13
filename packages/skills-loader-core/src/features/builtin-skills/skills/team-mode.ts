@@ -16,7 +16,7 @@ Team mode gives Claude Code Agent Teams parity. It is off by default. Enable it 
 
 ## Declare a team
 
-Create a team at \`~/.omo/teams/{name}/config.json\`.
+Create a team at \`~/.omc/teams/{name}/config.json\`.
 
 You can also pass the same object directly to \`team_create({ inline_spec: ... })\`.
 
@@ -174,7 +174,7 @@ Teammates go idle after every turn: this is normal and expected. A teammate goin
 
 ## Discovering team members
 
-Members and the lead use \`team_status({ teamRunId })\` to see who is active, their session IDs, message backlog, and tmux pane assignments. The team config also lives at \`~/.omo/teams/{name}/config.json\` for declared teams. Always refer to teammates by their NAME (e.g., \`"lead"\`, \`"researcher"\`): never by raw session IDs.
+Members and the lead use \`team_status({ teamRunId })\` to see who is active, their session IDs, message backlog, and tmux pane assignments. The team config also lives at \`~/.omc/teams/{name}/config.json\` for declared teams. Always refer to teammates by their NAME (e.g., \`"lead"\`, \`"researcher"\`): never by raw session IDs.
 
 ## Task list coordination
 
@@ -232,6 +232,6 @@ Members should:
 ## Notes
 
 Team mode is a docs-only skill. The team_* tools are registered globally when \`team_mode.enabled=true\`.
-Use \`~/.omo/teams/{name}/config.json\` plus worktree or tmux visibility to understand how the team is laid out.
+Use \`~/.omc/teams/{name}/config.json\` plus worktree or tmux visibility to understand how the team is laid out.
 `,
 }

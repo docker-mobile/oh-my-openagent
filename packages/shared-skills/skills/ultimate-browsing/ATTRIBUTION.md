@@ -1,6 +1,6 @@
 # ATTRIBUTION / NOTICE
 
-This skill (`ultimate-browsing`, part of `@oh-my-opencode/shared-skills`) ships
+This skill (`ultimate-browsing`, part of `@oh-my-cybersecurity/shared-skills`) ships
 project-original content and one vendored-and-modified upstream engine.
 Each component's provenance, license, and required notices are reproduced below.
 
@@ -37,7 +37,7 @@ pinned, what a future re-vendor must preserve, and what it must not import — i
 
 ## 2. Project-original content (no third-party source vendored)
 
-The following are authored by the oh-my-openagent project and carry no third-party
+The following are authored by the oh-my-cybersecurity project and carry no third-party
 license obligation:
 
 - `references/insane-search/**` and `references/agent-reach/**` — the Tier-1 and

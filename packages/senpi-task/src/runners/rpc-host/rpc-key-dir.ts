@@ -1,7 +1,7 @@
 import { chmodSync, lstatSync, mkdirSync } from "node:fs"
 import { join } from "node:path"
 
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 // The key-record check (`socket-auth.ts`) refuses an agent dir's `rpc/` when it is
 // group- or world-writable (`mode & 0o022`), and the engine's host supervisor refuses

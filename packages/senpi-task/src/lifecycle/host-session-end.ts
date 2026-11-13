@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import type { TaskRecord } from "../state"
 import type { TaskRecordStore } from "../store"
@@ -8,7 +8,7 @@ import { closeHostSession, type HostSessionCloseOutcome } from "./host-session-c
 
 /**
  * THE one way the lifecycle decides whether a daemon-hosted child it holds no handle for has ended
- * (omo#11765). "Not listed on the recorded socket" is not an end: after a generation handoff the
+ * (omc#11765). "Not listed on the recorded socket" is not an end: after a generation handoff the
  * successor serves that socket while the draining predecessor may still run the child. An end is
  * confirmed only by a close the host answered, or - with a generation view - by the three-part proof
  * that the generation the record names is gone: a serving listing without the path, no handover-parked

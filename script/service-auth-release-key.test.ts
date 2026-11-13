@@ -69,13 +69,13 @@ describe("the release step refuses a service-auth bundle it cannot verify", () =
   })
 
   test("#given the committed service-auth bundle #when it is asserted #then it carries exactly the committed release key set", async () => {
-    const bundle = await Bun.file(join(import.meta.dir, "../packages/omo-native/bin/lib/service-auth.generated.js")).text()
+    const bundle = await Bun.file(join(import.meta.dir, "../packages/omc-native/bin/lib/service-auth.generated.js")).text()
 
     expect(assertReleaseKeySet(bundle)).toEqual(committedReleaseKey.public_keys_hex)
   })
 
   test("the generated native entry imports with structurally malformed compiled key documents", async () => {
-    const bundle = await Bun.file(join(import.meta.dir, "../packages/omo-native/bin/lib/service-auth.generated.js")).text()
+    const bundle = await Bun.file(join(import.meta.dir, "../packages/omc-native/bin/lib/service-auth.generated.js")).text()
     const documents = [...bundle.matchAll(/\{alg:"Ed25519",public_keys_hex:\[[^\]]*\]\}/g)]
     expect(documents).toHaveLength(1)
     const document = documents[0]?.[0]

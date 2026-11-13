@@ -1,13 +1,13 @@
 name: Git job helper
 
-# The memory-core git floor-job helper (omo#10391, design v4.2): the native contract rows N1..N10 plus the run-mode
+# The memory-core git floor-job helper (omc#10391, design v4.2): the native contract rows N1..N10 plus the run-mode
 # rows on real Windows, on both architectures. N2(b) is the release gate for any `win32-job-v1` claim. PRs stacked
 # on the helper PR's branch target it, so it is listed to give them this run.
 on:
   pull_request:
     branches: [master, dev, fix/10391-windows-job-helper-native]
     paths:
-      - "crates/omo-git-job-helper/**"
+      - "crates/omc-git-job-helper/**"
       - "Cargo.toml"
       - "Cargo.lock"
       - "rust-toolchain.toml"
@@ -15,7 +15,7 @@ on:
   push:
     branches: [master, dev]
     paths:
-      - "crates/omo-git-job-helper/**"
+      - "crates/omc-git-job-helper/**"
       - "Cargo.toml"
       - "Cargo.lock"
       - "rust-toolchain.toml"
@@ -61,19 +61,19 @@ jobs:
 
       - name: Clippy
         shell: bash
-        run: cargo clippy -p omo-git-job-helper --all-targets --locked -- -D warnings
+        run: cargo clippy -p omc-git-job-helper --all-targets --locked -- -D warnings
 
       # The testkit images (examples/) are the members, children and token launcher the rows spawn.
       - name: Build helper and testkit images
         shell: bash
-        run: cargo build -p omo-git-job-helper --bins --examples --locked
+        run: cargo build -p omc-git-job-helper --bins --examples --locked
 
       - name: Native contract rows N1-N10 and run mode
         shell: bash
         env:
           RUST_BACKTRACE: "1"
         run: |
-          cargo test -p omo-git-job-helper --locked --no-fail-fast \
+          cargo test -p omc-git-job-helper --locked --no-fail-fast \
             --test n1_control --test n2_kill_on_close --test n3_ordering --test n4_fresh_creation \
             --test n5_limits --test n6_handle_hygiene --test n7_classification --test n8_n9_tokens \
             --test n10_await_go --test run_mode --test join_verify_failure --test port_failure \
@@ -83,18 +83,18 @@ jobs:
         shell: bash
         env:
           RUST_BACKTRACE: "1"
-        run: cargo test -p omo-git-job-helper --locked --test n2b_in_flight_creation -- --nocapture
+        run: cargo test -p omc-git-job-helper --locked --test n2b_in_flight_creation -- --nocapture
 
       - name: Build release helper (static CRT)
         shell: bash
         env:
           RUSTFLAGS: -C target-feature=+crt-static
-        run: cargo build --release -p omo-git-job-helper --locked --target "${{ matrix.rust_target }}"
+        run: cargo build --release -p omc-git-job-helper --locked --target "${{ matrix.rust_target }}"
 
       - name: Release helper selftest
         shell: bash
         run: |
-          out=$("target/${{ matrix.rust_target }}/release/omo-git-job-helper.exe" selftest)
+          out=$("target/${{ matrix.rust_target }}/release/omc-git-job-helper.exe" selftest)
           echo "$out"
           [[ "$out" == "selftest ok "* ]]
 

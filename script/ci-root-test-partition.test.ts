@@ -69,17 +69,17 @@ describe("root test CI partition", () => {
     expect(matrix).not.toContain("parallel_args:")
   })
 
-  test("#given global zauc mocks #when Windows root tests are partitioned #then omo-opencode stays in one process", () => {
+  test("#given global zauc mocks #when Windows root tests are partitioned #then omc-opencode stays in one process", () => {
     const job = rootTestJob()
 
-    expect(job).toContain("bun test --timeout 20000 packages/omo-opencode packages/memory-core")
+    expect(job).toContain("bun test --timeout 20000 packages/omc-opencode packages/memory-core")
     expect(job).toContain(
       '-TestArguments @("--config=bunfig.win2.parallel.windows.toml", "test", "--parallel")',
     )
     expect(existsSync(win2ConfigPath)).toBe(true)
     expect(existsSync(win2ParallelConfigPath)).toBe(true)
     expect(existsSync(win2WindowsParallelConfigPath)).toBe(true)
-    expect(quotedPatterns(readFileSync(win2ConfigPath, "utf8"))).toContain("packages/omo-opencode/**")
+    expect(quotedPatterns(readFileSync(win2ConfigPath, "utf8"))).toContain("packages/omc-opencode/**")
     expect(quotedPatterns(readFileSync(win2ConfigPath, "utf8"))).toContain("packages/memory-core/**")
   })
 
@@ -137,12 +137,12 @@ describe("root test CI partition", () => {
     )
   })
 
-  test("#given the dedicated Senpi compatibility job #when root tests run #then omo-senpi is excluded on every OS", () => {
-    expect(quotedPatterns(rootConfig)).toContain("packages/omo-senpi/**")
+  test("#given the dedicated Senpi compatibility job #when root tests run #then omc-senpi is excluded on every OS", () => {
+    expect(quotedPatterns(rootConfig)).toContain("packages/omc-senpi/**")
     expect(quotedPatterns(readFileSync(win2ParallelConfigPath, "utf8"))).toContain(
-      "packages/omo-senpi/**",
+      "packages/omc-senpi/**",
     )
-    expect(quotedPatterns(readFileSync(win2ConfigPath, "utf8"))).toContain("packages/omo-senpi/**")
+    expect(quotedPatterns(readFileSync(win2ConfigPath, "utf8"))).toContain("packages/omc-senpi/**")
   })
 
   test("#given measured package groups #when the matrix command is rendered #then native file sharding is not used", () => {
@@ -244,7 +244,7 @@ describe("root test CI partition", () => {
     expect(windowsStep).toContain("shell: pwsh")
     expect(windowsStep).toContain("& .github/scripts/windows-ci-telemetry.ps1")
     expect(windowsStep).toContain('-Invocation "senpi-compatibility"')
-    expect(windowsStep).toContain('-TestArguments @("test", "packages/omo-senpi")')
+    expect(windowsStep).toContain('-TestArguments @("test", "packages/omc-senpi")')
     expect(windowsStep).toContain("exit $LASTEXITCODE")
     const stepBudget = Number(/^        timeout-minutes: (\d+)$/m.exec(windowsStep)?.[1])
     const jobBudget = Number(/^    timeout-minutes: (\d+)$/m.exec(job)?.[1])

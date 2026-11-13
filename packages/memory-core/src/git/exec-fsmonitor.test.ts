@@ -20,7 +20,7 @@ interface FsmonitorFixture {
 }
 
 function createFsmonitorFixture(): FsmonitorFixture {
-  const root = mkdtempSync(join(tmpdir(), "omo-git-fsmonitor-"))
+  const root = mkdtempSync(join(tmpdir(), "omc-git-fsmonitor-"))
   const globalConfig = join(root, "gitconfig")
   writeFileSync(globalConfig, "[core]\n\tfsmonitor = true\n")
   const env = { ...process.env, GIT_CONFIG_GLOBAL: globalConfig, GIT_CONFIG_NOSYSTEM: "1" }

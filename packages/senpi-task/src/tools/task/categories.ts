@@ -1,4 +1,4 @@
-import type { OmoCategoryConfig, OmoConfig } from "@oh-my-opencode/omo-config-core"
+import type { OmoCategoryConfig, OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { AgentDefinition } from "../../agents"
 import { CATEGORY_DESCRIPTIONS, DEFAULT_CATEGORIES, categoryGateModels } from "../../category"
@@ -8,7 +8,7 @@ function ownValue<TValue>(record: Readonly<Record<string, TValue>>, key: string)
   return Object.hasOwn(record, key) ? record[key] : undefined
 }
 
-// Dynamic category surface for the tool description: builtin categories merged with omo.json ones,
+// Dynamic category surface for the tool description: builtin categories merged with omc.json ones,
 // disabled categories dropped, user descriptions winning over the builtin default text.
 export function listTaskCategories(config: OmoConfig): readonly TaskCategoryInfo[] {
   const userCategories: Readonly<Record<string, OmoCategoryConfig>> = config.categories ?? {}

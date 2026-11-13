@@ -6,7 +6,7 @@ export function markChildStage(stage: string): void {
   const modules = Object.keys(require.cache).map(path => path.replaceAll("\\", "/"))
   const relevant = modules.filter(path => /\/(workpool|member-extension)\/|\/spawn-policy\./.test(path))
     .map(path => path.slice(path.lastIndexOf("/src/") + 5))
-  const module_paths = process.env.OMO_QA_MEMBER_BOOT_MODULES === "1" ? modules.map(path => {
+  const module_paths = process.env.OMC_QA_MEMBER_BOOT_MODULES === "1" ? modules.map(path => {
     if (/\/omp-item9-real-[^/]+\/provider\.ts$/.test(path)) return "<fixture>/provider.ts"
     const dependency = path.indexOf("/node_modules/")
     if (dependency >= 0) return path.slice(dependency + 1)

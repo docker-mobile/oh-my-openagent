@@ -1,6 +1,6 @@
 import { describe, expect, it, spyOn } from "bun:test"
 import { ErrorCode, McpError } from "@modelcontextprotocol/sdk/types.js"
-import type { ClaudeCodeMcpServer } from "@oh-my-opencode/claude-code-compat-core/claude-code-mcp-loader/types"
+import type { ClaudeCodeMcpServer } from "@oh-my-cybersecurity/claude-code-compat-core/claude-code-mcp-loader/types"
 import { unsafeTestValue } from "../../../../test-support/unsafe-test-value"
 import { SkillMcpManager, type SkillMcpClientOptions } from "./manager"
 import { buildRequestOptions, resolveRequestTimeoutMs } from "./request-options"

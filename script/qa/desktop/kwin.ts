@@ -12,7 +12,7 @@ import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
-import { helloDesktopEngine, locateDesktopEngine } from "@oh-my-opencode/senpi-desktop-engine";
+import { helloDesktopEngine, locateDesktopEngine } from "@oh-my-cybersecurity/senpi-desktop-engine";
 
 import { asObject, Engine, type Json, type JsonObject, outcome } from "./linux/engine.ts";
 import { failure, type Result, result } from "./linux/scenario.ts";

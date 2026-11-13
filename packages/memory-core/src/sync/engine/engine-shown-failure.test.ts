@@ -5,7 +5,7 @@ import { SyncNetworkError } from "./adapters/http-transport"
 import { GIT_TEST_TIMEOUT, makeDevice } from "./engine-harness.test-support"
 import { FakeSyncServer } from "./fake-server.test-support"
 
-test.each([1, 2])("a shown lock failure keeps its history across %i hidden offline cycles (omo #11053)", async (blips) => {
+test.each([1, 2])("a shown lock failure keeps its history across %i hidden offline cycles (omc #11053)", async (blips) => {
   // given
   let changes = 0
   const device = await makeDevice(new FakeSyncServer(), "b", undefined, { onStatusChange: () => (changes += 1) })

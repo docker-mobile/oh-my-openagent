@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url"
 import { shouldUseShellForCommand } from "./build-command.mjs"
 
 const packageRoot = join(dirname(fileURLToPath(import.meta.url)), "..")
-const distDir = process.env.OMO_LSP_DAEMON_DIST ?? join(packageRoot, "dist")
+const distDir = process.env.OMC_LSP_DAEMON_DIST ?? join(packageRoot, "dist")
 const tempParent = await mkdtemp(join(dirname(distDir), ".tmp-lsp-daemon-build-"))
 const tempDist = join(tempParent, "dist")
 const backupDist = `${distDir}.backup-${process.pid}`

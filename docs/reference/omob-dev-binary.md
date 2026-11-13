@@ -1,13 +1,13 @@
 # omob — dev binary from the latest commits
 
 `omob` builds a single-file Bun-compiled binary from the senpi engine `origin/main` and
-omo `origin/dev`. On macOS and Linux, the ordinary install places an auto-update
+omc `origin/dev`. On macOS and Linux, the ordinary install places an auto-update
 launcher at `~/.local/bin/omob` and its executable at `~/.cache/omob/bin/omob`.
 It tests the current mainline commit pair end-to-end without cutting a release.
 
 ```bash
 bun run omob                       # latest origin/main + origin/dev
-bun run omob --name omob-feature --senpi-ref origin/feat/x --omo-ref abc1234
+bun run omob --name omob-feature --senpi-ref origin/feat/x --omc-ref abc1234
 # Explicit feature builds use a separate name and require build-info support.
 bun run omob --skip-install        # build only, into ~/.cache/omob/out
 ```
@@ -15,13 +15,13 @@ bun run omob --skip-install        # build only, into ~/.cache/omob/out
 Behavior:
 
 - The binary is stamped with an `omoBuild` provenance block (full commit SHAs,
-  commit dates, branches). The TUI header shows `omo@<sha7> <date> ·
+  commit dates, branches). The TUI header shows `omc@<sha7> <date> ·
   senpi@<sha7> <date>` instead of a version; `omob --version` and `omob doctor`
   print the full SHAs, ISO commit dates, and branches.
 - Dev builds are namespaced by commit pair: runtime provisioning lives under
-  `~/.omo/binary-runtime/0.0.0-omob.<omo7>.<senpi7>/`, and older dev runtimes
+  `~/.omc/binary-runtime/0.0.0-omob.<omo7>.<senpi7>/`, and older dev runtimes
   are pruned (keep 2 by default, `--keep N`). Release runtimes are never touched.
-- `~/.omo` sessions/settings/auth are shared with a regular `omo` install on
+- `~/.omc` sessions/settings/auth are shared with a regular `omc` install on
   purpose: omob is the same product built from fresher commits.
 - Every managed launch visibly checks both canonical upstream refs before running.
   The same pair skips dependency installation and compilation, checking provenance
@@ -42,6 +42,6 @@ Behavior:
   `--launcher` explicitly requests the managed POSIX installation.
 
 A dev binary participates in the shared engine host like any other build: its
-build epoch gives it an ordinal, so `omo daemon run` from a newer `omob` hands off
+build epoch gives it an ordinal, so `omc daemon run` from a newer `omob` hands off
 from an older release and vice versa never happens on an uncomparable pair. See
-[omo daemon](./omo-daemon.md).
+[omc daemon](./omc-daemon.md).

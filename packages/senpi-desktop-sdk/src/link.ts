@@ -4,7 +4,7 @@ import type {
 	EngineNotificationParams,
 	JsonRpcNotification,
 	RpcPort,
-} from "@oh-my-opencode/senpi-desktop-protocol";
+} from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import { ComputerError, fromPortFailure, malformed } from "./errors";
 import { legacyReport, withVerdict } from "./report";
 import type { ActionReport, VerifyAfter } from "./types";

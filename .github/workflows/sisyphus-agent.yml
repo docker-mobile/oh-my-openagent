@@ -75,14 +75,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-bun-
 
-      # Build local oh-my-opencode
-      - name: Build oh-my-opencode
+      # Build local oh-my-cybersecurity
+      - name: Build oh-my-cybersecurity
         run: |
           bun install --frozen-lockfile
           bun run build
 
       # Install OpenCode + configure local plugin + auth in single step
-      - name: Setup OpenCode with oh-my-opencode
+      - name: Setup OpenCode with oh-my-cybersecurity
         env:
           OPENCODE_AUTH_JSON: ${{ secrets.OPENCODE_AUTH_JSON }}
           ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
@@ -108,14 +108,14 @@ jobs:
           fi
           opencode --version
 
-          # Run local oh-my-opencode install (uses built dist)
+          # Run local oh-my-cybersecurity install (uses built dist)
           bun run dist/cli/index.js install --no-tui --claude=max20 --openai=no --gemini=no --copilot=no
 
           # Override plugin to use local file reference
           OPENCODE_JSON=~/.config/opencode/opencode.json
           REPO_PATH=$(pwd)
-          jq --arg path "file://$REPO_PATH/packages/omo-opencode/src/index.ts" '
-            .plugin = [.plugin[] | select(. != "oh-my-opencode")] + [$path]
+          jq --arg path "file://$REPO_PATH/packages/omc-opencode/src/index.ts" '
+            .plugin = [.plugin[] | select(. != "oh-my-cybersecurity")] + [$path]
           ' "$OPENCODE_JSON" > /tmp/oc.json && mv /tmp/oc.json "$OPENCODE_JSON"
 
           OPENCODE_JSON=~/.config/opencode/opencode.json
@@ -326,10 +326,10 @@ jobs:
           - user.email: sisyphus-dev-ai@users.noreply.github.com
           PROMPT_EOF
           )
-          jq --arg append "$PROMPT_APPEND" '.agents.Sisyphus.prompt_append = $append' "$OMO_JSON" > /tmp/omo.json && mv /tmp/omo.json "$OMO_JSON"
+          jq --arg append "$PROMPT_APPEND" '.agents.Sisyphus.prompt_append = $append' "$OMC_JSON" > /tmp/omc.json && mv /tmp/omc.json "$OMC_JSON"
 
           # Add categories configuration for unspecified-low to use GLM 4.7
-          jq '.categories["unspecified-low"] = { "model": "zai-coding-plan/glm-4.7" }' "$OMO_JSON" > /tmp/omo.json && mv /tmp/omo.json "$OMO_JSON"
+          jq '.categories["unspecified-low"] = { "model": "zai-coding-plan/glm-4.7" }' "$OMC_JSON" > /tmp/omc.json && mv /tmp/omc.json "$OMC_JSON"
 
           mkdir -p ~/.local/share/opencode
           echo "$OPENCODE_AUTH_JSON" > ~/.local/share/opencode/auth.json
@@ -410,7 +410,7 @@ jobs:
               --add-label "sisyphus: working" || true
           fi
 
-      - name: Run oh-my-opencode
+      - name: Run oh-my-cybersecurity
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           USER_COMMENT: ${{ steps.context.outputs.comment }}
@@ -562,8 +562,8 @@ jobs:
           JOB_SUMMARY_TITLE: Sisyphus agent run
           JOB_SUMMARY_STATUS: ${{ job.status }}
           JOB_SUMMARY_DETAILS: |
-            - Builds local oh-my-opencode.
+            - Builds local oh-my-cybersecurity.
             - Configures OpenCode and runs the Sisyphus agent against the issue or PR context.
             - Pushes agent changes when the working branch is safe to push.
-          JOB_SUMMARY_NEXT: Check setup/auth first, then the `Run oh-my-opencode` step and pushed branch output.
+          JOB_SUMMARY_NEXT: Check setup/auth first, then the `Run oh-my-cybersecurity` step and pushed branch output.
         run: GITHUB_STEP_SUMMARY="$GITHUB_STEP_SUMMARY" bash .github/scripts/write-job-summary.sh

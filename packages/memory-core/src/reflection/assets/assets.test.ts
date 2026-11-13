@@ -14,7 +14,7 @@ describe("dream persona asset", () => {
     // when
     const loaded = loadDreamPersona().markdown
     const packaged = readFileSync(
-      join(here, "..", "..", "..", "..", "omo-senpi", "plugin", "extensions", "dream-persona.md"),
+      join(here, "..", "..", "..", "..", "omc-senpi", "plugin", "extensions", "dream-persona.md"),
       "utf8",
     )
 
@@ -52,7 +52,7 @@ describe("reflection persona asset", () => {
     // when
     const loaded = loadReflectionPersona().markdown
     const packaged = readFileSync(
-      join(here, "..", "..", "..", "..", "omo-senpi", "plugin", "extensions", "reflection-persona.md"),
+      join(here, "..", "..", "..", "..", "omc-senpi", "plugin", "extensions", "reflection-persona.md"),
       "utf8",
     )
 

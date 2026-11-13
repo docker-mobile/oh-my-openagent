@@ -6,7 +6,7 @@ import { homedir, tmpdir } from "node:os"
 import { join } from "node:path"
 import { markTestInfrastructureDir, runTestTempRootTeardown } from "./test-temp-root"
 
-const AGENT_DIR_ENV_NAMES = ["OMO_CODING_AGENT_DIR", "SENPI_CODING_AGENT_DIR", "PI_CODING_AGENT_DIR"] as const
+const AGENT_DIR_ENV_NAMES = ["OMC_CODING_AGENT_DIR", "SENPI_CODING_AGENT_DIR", "PI_CODING_AGENT_DIR"] as const
 
 export interface HermeticHome {
   readonly home: string
@@ -17,16 +17,16 @@ export interface HermeticHome {
 // engine's agent-dir lookup (these variables first, os.homedir() otherwise) would still land in the
 // user's real agent dir: a test that starts a session or a task host then writes there (#9578).
 // Every reader takes the first set name in OMO > SENPI > PI order. The two that a run inherited from
-// a live omo session are dropped and only the LAST is pinned to the hermetic home, so a test that sets
-// OMO_ or SENPI_CODING_AGENT_DIR for itself or a child still wins exactly as it did before.
+// a live omc session are dropped and only the LAST is pinned to the hermetic home, so a test that sets
+// OMC_ or SENPI_CODING_AGENT_DIR for itself or a child still wins exactly as it did before.
 export function installHermeticHome(): HermeticHome {
-  const home = mkdtempSync(join(tmpdir(), "omo-test-home-"))
+  const home = mkdtempSync(join(tmpdir(), "omc-test-home-"))
   markTestInfrastructureDir(home)
   process.env.HOME = home
   process.env.USERPROFILE = home
   // Both root and package-local preloads must override os.homedir()'s retained host memory root.
-  process.env.OMO_MEMORY_HOME = join(home, ".omo", "memory")
-  const agentDir = join(home, ".omo", "agent")
+  process.env.OMC_MEMORY_HOME = join(home, ".omc", "memory")
+  const agentDir = join(home, ".omc", "agent")
   for (const name of AGENT_DIR_ENV_NAMES) delete process.env[name]
   process.env.PI_CODING_AGENT_DIR = agentDir
   // The user skill roots follow these too: the OpenCode config dir falls back to os.homedir()/.config,
@@ -60,7 +60,7 @@ export function installHermeticHome(): HermeticHome {
 }
 
 // The OS credential store ignores HOME: a test that reads sign-in state (memory sync reads the
-// `omo login` credentials on every session bind) would see the developer's real credentials and
+// `omc login` credentials on every session bind) would see the developer's real credentials and
 // could reach the live service. Each test process gets its own empty in-memory store instead.
 function installHermeticSecrets(): void {
   const values = new Map<string, string>()
@@ -74,7 +74,7 @@ function installHermeticSecrets(): void {
       delete: async (key: { readonly service: string; readonly name: string }) => values.delete(keyOf(key)),
       // Marked as injected: on darwin an unmarked stand-in counts as the real store and reaches the signed helper and
       // the login Keychain (store-binding.ts, #11262).
-      [Symbol.for("omo.test.injectedSecrets")]: true,
+      [Symbol.for("omc.test.injectedSecrets")]: true,
     },
   })
 }
@@ -303,7 +303,7 @@ function preloadTaskHostEngine(): Promise<TaskHostEngine> {
   return engine
 }
 
-const REAL_AGENT_DIRS = [join(homedir(), ".omo", "agent"), join(homedir(), ".senpi", "agent"), join(homedir(), ".omo")]
+const REAL_AGENT_DIRS = [join(homedir(), ".omc", "agent"), join(homedir(), ".senpi", "agent"), join(homedir(), ".omc")]
 
 // A host shard registered under a real agent dir by THIS test process is a leak. The shard meta
 // records its creator, so a live session's own shards on the same machine are never counted.

@@ -8,7 +8,7 @@ import { isAbsolute, join, resolve } from "node:path"
  * a linked worktree; worktrees share the hooks of the common git directory.
  *
  * This lives in `git/` rather than `memfs/hooks.ts` so both the git command
- * boundary (`exec.ts`, omo #12367) and the hook installer can use it:
+ * boundary (`exec.ts`, omc #12367) and the hook installer can use it:
  * `memfs/hooks.ts` reaches `git/` through `sync/mirror`, so importing the
  * resolver from there would cycle back into this package's git barrel.
  */

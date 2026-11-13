@@ -1,4 +1,4 @@
-import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
+import type { OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import type { AgentDefinition, SkillInvocationState } from "../../agents"
 import type { IsolationDetails, IsolationStartedDetails } from "../../isolation/details"

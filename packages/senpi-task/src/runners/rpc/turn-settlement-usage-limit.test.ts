@@ -5,7 +5,7 @@ import { createTurnSettlement, type TurnSettlementProbe } from "./turn-settlemen
 import { createTurnWakeSources } from "./turn-wake-sources"
 import { createManualSettlementScheduler, flushSettlement } from "./turn-settlement.test-support"
 
-// senpi's own rewrite of a limit whose body names no model (omo#9711, omo#11383).
+// senpi's own rewrite of a limit whose body names no model (omc#9711, omc#11383).
 const ACCOUNT_LIMIT =
   "The anthropic account usage limit has been reached (resets at 2026-10-27T11:03:15Z). Switch to another provider with /model, or configure another provider in retry.fallbackChains."
 const PROVIDER_TIMEOUT = "Provider stream start timed out after 300000ms"
@@ -41,7 +41,7 @@ function createFixture(options: { readonly monitorLive: boolean }) {
   return { settlement, scheduler, settled }
 }
 
-describe("a usage-limit error settles within one confirmation interval (omo#9711)", () => {
+describe("a usage-limit error settles within one confirmation interval (omc#9711)", () => {
   test.each([
     { type: "auto_retry_start", delayMs: 45_000 },
     { type: "agent_end", delayMs: 45_000 },

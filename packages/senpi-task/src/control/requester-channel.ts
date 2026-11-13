@@ -113,7 +113,7 @@ export function createRequesterChannel(options: RequesterChannelOptions) {
     const last = lastAck(record.task_id, record.parent_session_id)
     const reason = last?.state === "refused" && last.reason === "handle_gone" ? "handle_gone" : cannotApply(record)
     if (reason !== undefined) return `owner cannot apply: ${reason} (pid ${pid})`
-    return `running in another omo process (pid ${pid}); this run's Stop/Resume is carried there; its completion is reported to that process's session`
+    return `running in another omc process (pid ${pid}); this run's Stop/Resume is carried there; its completion is reported to that process's session`
   }
 
   return { ownedElsewhere, ownerStatus, cannotApply, assertDesired, acceptedAck, lastAck, channel: options.channel, control, requester }

@@ -24,9 +24,9 @@ async function tempPath(name: string): Promise<{ readonly dir: string; readonly 
 describe("downloadAssetFile", () => {
   test("succeeds when a fake server returns 500 a few times, then 200", async () => {
     const server = fakeServer((count) => (count <= 2 ? new Response("boom", { status: 500 }) : new Response("asset-bytes", { status: 200 })))
-    const { dir, path } = await tempPath("omo-linux-x64")
+    const { dir, path } = await tempPath("omc-linux-x64")
     try {
-      const result = await downloadAssetFile(server.url, "omo-linux-x64", path, FAST)
+      const result = await downloadAssetFile(server.url, "omc-linux-x64", path, FAST)
       expect(result.attempts).toBe(3)
       expect(result.status).toBe(200)
       expect(server.requests()).toBe(3)
@@ -39,9 +39,9 @@ describe("downloadAssetFile", () => {
 
   test("fails fast on 404 without retrying", async () => {
     const server = fakeServer(() => new Response("missing", { status: 404 }))
-    const { dir, path } = await tempPath("omo-linux-x64")
+    const { dir, path } = await tempPath("omc-linux-x64")
     try {
-      const failure = await downloadAssetFile(server.url, "omo-linux-x64", path, FAST).catch((error: unknown) => error)
+      const failure = await downloadAssetFile(server.url, "omc-linux-x64", path, FAST).catch((error: unknown) => error)
       expect(failure).toBeInstanceOf(AssetDownloadError)
       expect((failure as AssetDownloadError).status).toBe(404)
       expect((failure as AssetDownloadError).attempts).toBe(1)
@@ -54,18 +54,18 @@ describe("downloadAssetFile", () => {
 
   test("gives up inside the bounded window on persistent 500 and names the asset and last status", async () => {
     const server = fakeServer(() => new Response("boom", { status: 500 }))
-    const { dir, path } = await tempPath("omo-linux-x64-musl")
+    const { dir, path } = await tempPath("omc-linux-x64-musl")
     try {
-      const failure = await downloadAssetFile(server.url, "omo-linux-x64-musl", path, { baseDelayMs: 5, maxDelayMs: 10, maxElapsedMs: 30 }).catch(
+      const failure = await downloadAssetFile(server.url, "omc-linux-x64-musl", path, { baseDelayMs: 5, maxDelayMs: 10, maxElapsedMs: 30 }).catch(
         (error: unknown) => error,
       )
       expect(failure).toBeInstanceOf(AssetDownloadError)
       const downloadError = failure as AssetDownloadError
       expect(downloadError.status).toBe(500)
       expect(downloadError.attempts).toBeGreaterThan(1)
-      expect(downloadError.message).toContain("omo-linux-x64-musl")
+      expect(downloadError.message).toContain("omc-linux-x64-musl")
       expect(downloadError.message).toContain("HTTP 500")
-      expect(formatDownloadFailureSummary(downloadError)).toContain("omo-linux-x64-musl")
+      expect(formatDownloadFailureSummary(downloadError)).toContain("omc-linux-x64-musl")
       expect(formatDownloadFailureSummary(downloadError)).toContain("HTTP 500")
       expect(server.requests()).toBe(downloadError.attempts)
     } finally {
@@ -75,7 +75,7 @@ describe("downloadAssetFile", () => {
   })
 
   test("retries a network error and then succeeds", async () => {
-    const { dir, path } = await tempPath("omo-darwin-arm64")
+    const { dir, path } = await tempPath("omc-darwin-arm64")
     let calls = 0
     const fetchFn = (async () => {
       calls++
@@ -83,7 +83,7 @@ describe("downloadAssetFile", () => {
       return new Response("asset-bytes", { status: 200 })
     }) as unknown as typeof fetch
     try {
-      const result = await downloadAssetFile("http://127.0.0.1/asset", "omo-darwin-arm64", path, { ...FAST, fetchFn })
+      const result = await downloadAssetFile("http://127.0.0.1/asset", "omc-darwin-arm64", path, { ...FAST, fetchFn })
       expect(result.attempts).toBe(2)
       expect(calls).toBe(2)
       expect(await Bun.file(path).text()).toBe("asset-bytes")

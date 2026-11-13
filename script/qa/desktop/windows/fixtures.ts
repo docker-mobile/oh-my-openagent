@@ -62,7 +62,7 @@ async function waitForWindow(engine: Engine, matches: (window: QaWindow) => bool
 }
 
 export class QaWorkspace {
-  readonly dir = mkdtempSync(join(tmpdir(), "omo-desktop-qa-"))
+  readonly dir = mkdtempSync(join(tmpdir(), "omc-desktop-qa-"))
   readonly receipts: string[] = []
   /** Tracked pid -> the image it ran when tracked; a recycled pid is never killed or counted. */
   private readonly pids = new Map<number, string>()
@@ -83,8 +83,8 @@ export class QaWorkspace {
   }
 
   async notepad(engine: Engine, tag: string): Promise<Notepad> {
-    const path = join(this.dir, `omo-qa-${tag}.txt`)
-    const content = `omo qa ${tag}`
+    const path = join(this.dir, `omc-qa-${tag}.txt`)
+    const content = `omc qa ${tag}`
     writeFileSync(path, content)
     this.track(spawn("notepad.exe", [path], { stdio: "ignore" }), "notepad.exe")
     const name = basename(path)
@@ -95,14 +95,14 @@ export class QaWorkspace {
   }
 
   async wpfWindow(engine: Engine, tag: string): Promise<QaWindow> {
-    return this.hostWindow(engine, WPF_HOST_SCRIPT, ["-Title", `omo-qa-wpf-${tag}`], "WPF window")
+    return this.hostWindow(engine, WPF_HOST_SCRIPT, ["-Title", `omc-qa-wpf-${tag}`], "WPF window")
   }
 
   /** A WinForms window whose multi-line EDIT shows `SCROLL_DOCUMENT` from its middle. */
   async scrollWindow(engine: Engine, tag: string): Promise<ScrollWindow> {
-    const eventLog = join(this.dir, `omo-qa-scroll-${tag}.log`)
+    const eventLog = join(this.dir, `omc-qa-scroll-${tag}.log`)
     writeFileSync(eventLog, "")
-    const args = ["-Title", `omo-qa-scroll-${tag}`, "-EventLog", eventLog, "-Lines", String(SCROLL_DOCUMENT.lines)]
+    const args = ["-Title", `omc-qa-scroll-${tag}`, "-EventLog", eventLog, "-Lines", String(SCROLL_DOCUMENT.lines)]
     args.push("-FirstVisibleLine", String(SCROLL_DOCUMENT.firstVisibleLine))
     return { ...(await this.hostWindow(engine, SCROLL_HOST_SCRIPT, args, "scroll window")), eventLog }
   }

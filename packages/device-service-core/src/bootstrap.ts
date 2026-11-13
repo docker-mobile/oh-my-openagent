@@ -22,10 +22,10 @@ export type BootstrapOutcome =
   | { readonly kind: "stopped"; readonly state: BootstrapStopState; readonly notice: string; readonly exitCode: typeof BOOTSTRAP_STOPPED_EXIT }
 
 export type BootstrapDependencies = {
-  /** `omo account show`; nothing else runs unless it reports signed in. */
+  /** `omc account show`; nothing else runs unless it reports signed in. */
   readonly accountShow: () => Promise<AccountShowResult>
   readonly stateDir: string
-  /** The device service version this omo build pins; an older running service is replaced. */
+  /** The device service version this omc build pins; an older running service is replaced. */
   readonly pinVersion: string
   readonly install: () => Promise<InstallOutcome>
   readonly connect: () => Promise<DeviceService>
@@ -56,8 +56,8 @@ const isServiceStopped = (error: unknown, platform: NodeJS.Platform = process.pl
 
 const failureNotice = (error: unknown): string =>
   error instanceof LocalApiError
-    ? (error.action ?? `The OmO device service did not answer as expected (${error.reason}). Try again; if it keeps failing, report it with /bug.`)
-    : "The OmO device service could not be reached. Try again; if it keeps failing, report it with /bug."
+    ? (error.action ?? `The OmC device service did not answer as expected (${error.reason}). Try again; if it keeps failing, report it with /bug.`)
+    : "The OmC device service could not be reached. Try again; if it keeps failing, report it with /bug."
 
 // A running service at the pin or newer, "absent" when none runs (or an older one does, which install replaces), or the
 // outcome that stops the bootstrap, such as a service that cannot prove the per-boot token.
@@ -95,7 +95,7 @@ const connectInstalled = async (deps: BootstrapDependencies): Promise<DeviceServ
 }
 
 /**
- * The device service bootstrap of every omo start: `omo account show` first; only when signed in, ensure the pinned
+ * The device service bootstrap of every omc start: `omc account show` first; only when signed in, ensure the pinned
  * service is installed, connect (mutual proof), register the refresher, register this agent dir, and read the status.
  * It reads no credential and adopts nothing (design D r9 section 3): device keys reach the service only from a
  * credential a client already holds in memory for its own work (a fresh sign-in, or the memory device session).

@@ -9,13 +9,13 @@ import { parseNpmPackPaths } from "./npm-pack-paths.mjs"
 
 const FORBIDDEN_RULES = [
   { name: "nested node_modules", matches: (path) => path.includes("node_modules/") },
-  { name: "senpi payload", matches: (path) => path.startsWith("packages/omo-senpi/") },
+  { name: "senpi payload", matches: (path) => path.startsWith("packages/omc-senpi/") },
   { name: "retired workflow-selector component", matches: (path) => path.includes("components/workflow-selector/") },
 ]
 
 const MAX_REPORTED_OFFENDERS = 50
 
-// The omo-codex plugin's install-time scripts import @oh-my-opencode/shared-skills subpaths, and
+// The omc-codex plugin's install-time scripts import @oh-my-cybersecurity/shared-skills subpaths, and
 // the lazycodex-ai publish step curates its own `files` list in the workflow. Every export target
 // of the shared-skills package must therefore be in the payload, or a registry install dies at
 // `npm run sync:skills` (lazycodex-ai@5.0.0-beta.43 shipped without skill-source-filter.mjs).

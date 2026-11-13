@@ -12,7 +12,7 @@ import { createHash } from "node:crypto"
 import { readFile } from "../../fs/resilient"
 
 export function deviceFingerprint(machineId: string, stateDir: string): string {
-  return createHash("sha256").update(`omo-item-device:${machineId}\0${stateDir}`).digest("hex")
+  return createHash("sha256").update(`omc-item-device:${machineId}\0${stateDir}`).digest("hex")
 }
 
 let cached: Promise<string> | null = null

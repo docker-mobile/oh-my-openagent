@@ -7,7 +7,7 @@ import { listFakeHostSessions } from "./rpc-host/__fixtures__/fake-host-probe"
 import { startHostWorld, type HostWorld, type ParentSession } from "./rpc-host/__fixtures__/host-world"
 
 /**
- * Two omo parents, one machine-wide daemon, 32 children: the integration contract of the daemon
+ * Two omc parents, one machine-wide daemon, 32 children: the integration contract of the daemon
  * runner. Nothing here reaches the network, a provider or a real engine - the daemon is a fake host
  * on a private unix socket, and every wait is recorded instead of slept.
  */
@@ -287,7 +287,7 @@ describe("cold revival of a daemon-hosted child", () => {
     expect(result.opens).toBe(2)
     expect(result.peakAttachments).toBe(1)
     expect(result.transcriptRetained).toBe(true)
-    // omo#10778: the park still loaded on the host carries the finished status, set while attached
+    // omc#10778: the park still loaded on the host carries the finished status, set while attached
     // (the host refuses a patch from a connection that does not hold the session), so a successor
     // drops it; the revival flips it back to running before its message is delivered.
     expect(result.parkedTaskStatus).toBe("completed")

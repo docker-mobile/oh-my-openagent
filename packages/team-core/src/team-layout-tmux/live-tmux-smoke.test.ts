@@ -7,7 +7,7 @@ import path from "node:path"
 import { afterEach, beforeEach, describe, expect, test } from "bun:test"
 import { spawn } from "bun"
 
-const LIVE = process.env.OMO_LIVE_TMUX === "1"
+const LIVE = process.env.OMC_LIVE_TMUX === "1"
 const HOSTNAME = "127.0.0.1"
 const layoutSpecifier = import.meta.resolve("./layout")
 
@@ -222,9 +222,9 @@ describe("team-mode live tmux smoke", () => {
 			return
 		}
 
-		const callerSessionName = `omo-smoke-${Date.now()}`
+		const callerSessionName = `omc-smoke-${Date.now()}`
 		const { callerSessionId, callerPaneId, socketPath } = await createCallerSession(callerSessionName)
-		const tempRoot = path.join("/tmp", `omo-live-tmux-${randomUUID()}`)
+		const tempRoot = path.join("/tmp", `omc-live-tmux-${randomUUID()}`)
 		await mkdir(path.join(tempRoot, "lead"), { recursive: true })
 		await mkdir(path.join(tempRoot, "member-two"), { recursive: true })
 

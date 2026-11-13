@@ -8,7 +8,7 @@ import { runMcpStdioServer } from "./mcp";
 // #createTransportConnection + reconnect.ts configureMcpReconnect). That is the
 // evidence gate for arming the idle timeout here: an idle exit costs one
 // backoff-delayed respawn, not a broken session.
-const IDLE_ENV_KEY = "OMO_AST_GREP_IDLE_TIMEOUT_MS";
+const IDLE_ENV_KEY = "OMC_AST_GREP_IDLE_TIMEOUT_MS";
 
 describe("ast_grep MCP idle timeout", () => {
   it("#given an explicit idle timeout and a live parent that abandons stdin #when the timeout elapses #then the server settles", async () => {
@@ -27,10 +27,10 @@ describe("ast_grep MCP idle timeout", () => {
     expect(outcome).toBe("settled");
   });
 
-  it("#given OMO_AST_GREP_IDLE_TIMEOUT_MS in the environment and no explicit option #when the timeout elapses #then the server settles", async () => {
+  it("#given OMC_AST_GREP_IDLE_TIMEOUT_MS in the environment and no explicit option #when the timeout elapses #then the server settles", async () => {
     // given — the senpi component has no per-server option channel; env is the
     // only lever the host can set on the spawned CLI, mirroring
-    // OMO_AST_GREP_PROJECT_CWD.
+    // OMC_AST_GREP_PROJECT_CWD.
     const previous = process.env[IDLE_ENV_KEY];
     process.env[IDLE_ENV_KEY] = "25";
     try {

@@ -28,7 +28,7 @@ export class DesktopLaunchContextError extends Error {
 			code: "COMPUTER_LAUNCH_CONTEXT_REQUIRED",
 			message: `Computer use cannot start safely from this host's current macOS launch context.${detail}`,
 			action:
-				"Restart this host from a local terminal and keep that terminal app running, or use the OmO desktop app (Settings > Restart engine)." +
+				"Restart this host from a local terminal and keep that terminal app running, or use the OmC desktop app (Settings > Restart engine)." +
 				" Opening a new terminal or reconnecting to this same host does not repair its launch context.",
 		} as const;
 		super(`${userFacing.code}: ${userFacing.message} ${userFacing.action}`);

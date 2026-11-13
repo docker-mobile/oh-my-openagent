@@ -168,7 +168,7 @@ export class TaskConcurrency {
   }
 
   // Every lease a task holds or has parked, at any epoch: a task that can never run again (cancelled)
-  // owns no lane slot, whichever run took it (omo#9403).
+  // owns no lane slot, whichever run took it (omc#9403).
   releaseTask(taskId: string): void {
     const owned = [...this.#leases.values()].filter((lease) => lease.taskId === taskId)
     for (const lease of owned) this.#dropLease(lease)

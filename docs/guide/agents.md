@@ -1,16 +1,16 @@
 # Agents
 
-When OmO takes on a bigger job, the main agent in your thread can hand parts of it to other agents. These helpers work in the background, each on one piece, and report back to the main agent when they finish. You keep talking to the main agent the whole time.
+When OmC takes on a bigger job, the main agent in your thread can hand parts of it to other agents. These helpers work in the background, each on one piece, and report back to the main agent when they finish. You keep talking to the main agent the whole time.
 
-## Get OmO to delegate
+## Get OmC to delegate
 
-Put `ulw` in your message to let OmO plan the job and hand out work where that helps:
+Put `ulw` in your message to let OmC plan the job and hand out work where that helps:
 
 ```text
 ulw add dark mode to the settings page
 ```
 
-You can also just ask in plain words, like "split this up and research each option in parallel". OmO decides how many agents a job needs; small jobs often need none.
+You can also just ask in plain words, like "split this up and research each option in parallel". OmC decides how many agents a job needs; small jobs often need none.
 
 ## Kinds of delegated work
 
@@ -18,7 +18,7 @@ You can also just ask in plain words, like "split this up and research each opti
 - **Team**: a few agents work on related parts and can message each other while they work.
 - **Workflow**: a large job split into many tasks that run in waves. See [Workflows](workflows.md).
 
-## The Agents panel in OmO Desktop
+## The Agents panel in OmC Desktop
 
 Every agent your thread starts shows up in the Agents panel with:
 

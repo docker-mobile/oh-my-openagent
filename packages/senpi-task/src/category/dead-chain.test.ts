@@ -22,7 +22,7 @@ function registry(models: readonly FakeModel[]) {
 
 // A registry whose only providers serve none of the quick chain rungs; claude-opus-5-5 keeps
 // visual-engineering/unspecified-high alive so the gated list is not simply empty.
-const OPUS_ONLY = registry([model("omo-mock", "mock-parent"), model("anthropic", "claude-opus-5-5")])
+const OPUS_ONLY = registry([model("omc-mock", "mock-parent"), model("anthropic", "claude-opus-5-5")])
 
 describe("dead-chain category disabling", () => {
   describe("#given a builtin category whose chain has no resolvable rung", () => {
@@ -169,12 +169,12 @@ describe("dead-chain category disabling", () => {
   describe("#given a user-configured category with an explicit model", () => {
     test("#when the builtin chain is dead #then the category is never gated and still resolves", () => {
       // given
-      const models = registry([model("omo-mock", "mock-parent")])
+      const models = registry([model("omc-mock", "mock-parent")])
 
       // when
       const result = resolveCategory(
         "quick",
-        { categories: { quick: { model: "omo-mock/mock-parent" } } },
+        { categories: { quick: { model: "omc-mock/mock-parent" } } },
         models,
       )
 
@@ -185,12 +185,12 @@ describe("dead-chain category disabling", () => {
 
     test("#when the explicit model is missing #then the failure is a plain miss without chain details", () => {
       // given
-      const models = registry([model("omo-mock", "mock-parent")])
+      const models = registry([model("omc-mock", "mock-parent")])
 
       // when
       const result = resolveCategory(
         "quick",
-        { categories: { quick: { model: "omo-mock/absent" } } },
+        { categories: { quick: { model: "omc-mock/absent" } } },
         models,
       )
 

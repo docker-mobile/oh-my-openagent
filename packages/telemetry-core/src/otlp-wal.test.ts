@@ -33,9 +33,9 @@ describe("write-ahead spool", () => {
     expect(frames[0]?.[1]).toBe(1)
     const request = readSpoolRequest(active)
     expect(request.kind === "ok" && logRecordsOf(decodeLogs(request.body)).map((r) => r.eventName)).toEqual([
-      "omo.feature_used",
-      "omo.feature_used",
-      "omo.feature_used",
+      "omc.feature_used",
+      "omc.feature_used",
+      "omc.feature_used",
     ])
   })
 
@@ -86,7 +86,7 @@ describe("write-ahead spool", () => {
     expect(request.records).toBe(1)
   })
 
-  test("#given an event with event_id and $session_id #then the record carries log.record.uid, session.id and omo.<bare> keys only", async () => {
+  test("#given an event with event_id and $session_id #then the record carries log.record.uid, session.id and omc.<bare> keys only", async () => {
     // given
     const dir = root()
     const { calls, fetch } = recordingFetch()
@@ -106,7 +106,7 @@ describe("write-ahead spool", () => {
     // then
     const record = logRecordsOf(decodeLogs(calls[0]?.body ?? new Uint8Array()))[0]
     const keys = (record?.attributes ?? []).map((kv) => kv.key).sort()
-    expect(keys).toEqual(["log.record.uid", "omo.feature", "session.id"])
+    expect(keys).toEqual(["log.record.uid", "omc.feature", "session.id"])
     expect(record?.body).toBeUndefined()
   })
 })

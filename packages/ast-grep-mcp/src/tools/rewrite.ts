@@ -369,7 +369,7 @@ export async function executeRewrite(
     );
   }
 
-  const workdir = input.workdir ?? process.env.OMO_AST_GREP_PROJECT_CWD ?? process.cwd();
+  const workdir = input.workdir ?? process.env.OMC_AST_GREP_PROJECT_CWD ?? process.cwd();
 
   // Preflight. Unbound and cardinality rejections are always-reject inside
   // validateRewriteHints, so `force` can never reach the spawn with them.

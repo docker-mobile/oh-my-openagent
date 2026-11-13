@@ -1,4 +1,4 @@
-import type { ComputerSessionSnapshot } from "@oh-my-opencode/senpi-desktop-protocol";
+import type { ComputerSessionSnapshot } from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
 import { ComputerRunError, type ComputerRunErrorReason } from "../src/run/context";

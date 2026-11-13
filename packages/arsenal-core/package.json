@@ -1,0 +1,27 @@
+{
+  "name": "@oh-my-cybersecurity/arsenal-core",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "description": "Absorbed offensive binary-abuse corpus: GTFOBins and LOLBAS primitives as typed, disk-loaded JSON with a frozen query contract.",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./src/index.ts"
+    },
+    "./types": {
+      "types": "./types.d.ts",
+      "import": "./src/types.ts"
+    },
+    "./loader": {
+      "types": "./loader.d.ts",
+      "import": "./src/loader.ts"
+    }
+  },
+  "types": "./index.d.ts",
+  "scripts": {
+    "typecheck": "tsgo --noEmit -p tsconfig.json",
+    "test": "bun test src"
+  },
+  "dependencies": {}
+}

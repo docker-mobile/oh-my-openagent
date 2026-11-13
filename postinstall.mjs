@@ -16,17 +16,17 @@ const require = createRequire(import.meta.url);
 
 const MIN_OPENCODE_VERSION = "1.4.0";
 const OPENCODE_VERSION_PROBE_TIMEOUT_MS = 3_000;
-const OPENCODE_PLUGIN_PACKAGES = ["oh-my-opencode", "oh-my-openagent"];
+const OPENCODE_PLUGIN_PACKAGES = ["oh-my-cybersecurity", "oh-my-openagent", "oh-my-opencode"];
 const RENAME_NOTICE =
-  "oh-my-openagent: the 'omo' command is now 'omo-agent-toolkit' (the old name was removed in this major release).";
+  "oh-my-cybersecurity: the 'omc' command is now 'omc-agent-toolkit' (the old name was removed in this major release).";
 /**
- * The OmO Native install line on this package's channel: a prerelease build points at
- * `omo-ai@beta`, a stable build at the bare `omo-ai` that resolves to latest.
+ * The OmC Native install line on this package's channel: a prerelease build points at
+ * `omc-ai@beta`, a stable build at the bare `omc-ai` that resolves to latest.
  * @param {string | null} version
  */
 export function nativeNotice(version) {
-  const spec = typeof version === "string" && version.includes("-") ? "omo-ai@beta" : "omo-ai";
-  return `oh-my-openagent: OmO Native is the same omo as one 'omo' command, with no OpenCode host: bun add -g ${spec}`;
+  const spec = typeof version === "string" && version.includes("-") ? "omc-ai@beta" : "omc-ai";
+  return `oh-my-cybersecurity: OmC Native is the same omc as one 'omc' command, with no OpenCode host: bun add -g ${spec}`;
 }
 
 /**
@@ -108,7 +108,7 @@ function readMainPackageJson() {
 
 function getPackageBaseName() {
   const packageJson = readMainPackageJson();
-  return resolvePlatformPackageBaseName(packageJson?.name || "oh-my-opencode");
+  return resolvePlatformPackageBaseName(packageJson?.name || "oh-my-cybersecurity");
 }
 
 function getMainPackageVersion() {
@@ -159,7 +159,7 @@ function main() {
   // Check opencode version requirement
   const versionCheck = checkOpenCodeVersion();
   if (versionCheck.version && !versionCheck.ok) {
-    console.warn(`⚠ oh-my-opencode requires OpenCode >= ${MIN_OPENCODE_VERSION}`);
+    console.warn(`⚠ oh-my-cybersecurity requires OpenCode >= ${MIN_OPENCODE_VERSION}`);
     console.warn(`  Detected: ${versionCheck.version}`);
     console.warn(`  Please update OpenCode to avoid compatibility issues.`);
   }
@@ -193,16 +193,16 @@ function main() {
       platformPackage: resolvedPackage,
     });
     if (mismatch) {
-      console.warn(`⚠ oh-my-opencode platform binary version mismatch detected`);
+      console.warn(`⚠ oh-my-cybersecurity platform binary version mismatch detected`);
       console.warn(`  ${packageBaseName}: ${mismatch.mainVersion}`);
       console.warn(`  ${mismatch.platformPackage}: ${mismatch.platformVersion}`);
       console.warn(`  The startup banner may show the stale version until the platform binary is updated.`);
       console.warn(`  Fix: npm install -g ${packageBaseName}@${mismatch.mainVersion} ${mismatch.platformPackage}@${mismatch.mainVersion}`);
     }
 
-    console.log(`✓ oh-my-opencode binary installed for ${platform}-${arch} (${resolvedPackage})`);
+    console.log(`✓ oh-my-cybersecurity binary installed for ${platform}-${arch} (${resolvedPackage})`);
   } catch (error) {
-    console.warn(`⚠ oh-my-opencode: ${error.message}`);
+    console.warn(`⚠ oh-my-cybersecurity: ${error.message}`);
     console.warn(`  The CLI may not work on this platform.`);
     // Don't fail installation - let user try anyway
   }

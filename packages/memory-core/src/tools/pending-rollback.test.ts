@@ -12,7 +12,7 @@ import { runMemoryApplyPatch } from "./memory-apply-patch"
 import { runMemoryTool, type MemoryToolLock } from "./memory"
 import { removeTree } from "../../../../test-support/remove-tree"
 
-// omo #10199: a write that failed with its change staged behind a locked index leaves a pending
+// omc #10199: a write that failed with its change staged behind a locked index leaves a pending
 // rollback. Every write entry point must settle it first, and settling must only undo the index:
 // a file edited after the failure keeps its contents and is reported.
 
@@ -44,7 +44,7 @@ async function git(dir: string, argv: readonly string[]): Promise<void> {
 // A repository whose last memory write (the given command) failed with its change staged while
 // index.lock was held, and whose lock the user then removed with /memory unlock.
 async function afterStagedFailure(params: Parameters<typeof runMemoryTool>[0]["params"], seeded?: string) {
-  const root = realpathSync.native(await mkdtemp(join(tmpdir(), "omo-memory-pending-rollback-")))
+  const root = realpathSync.native(await mkdtemp(join(tmpdir(), "omc-memory-pending-rollback-")))
   roots.push(root)
   const repo = new GitMemoryRepo({ dir: join(root, "repo"), agentId: AUTHOR.agentId })
   await repo.init({ authorName: AUTHOR.authorName })
@@ -75,7 +75,7 @@ async function writeOther(repo: GitMemoryRepo): Promise<void> {
   await writeFile(join(repo.dir, "system/other.md"), renderMemoryFile({ description: "Other" }, "other fact\n"), "utf8")
 }
 
-describe("a pending rollback after a staged failure (omo #10199)", () => {
+describe("a pending rollback after a staged failure (omc #10199)", () => {
   it("#given a pending rollback #when the next write is memory_apply_patch #then it is settled first and the patch commits", async () => {
     // #given
     const repo = await afterStagedFailure(CREATE_NEW)

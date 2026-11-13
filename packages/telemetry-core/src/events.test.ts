@@ -13,15 +13,15 @@ import type {
 } from "./index"
 
 const PRODUCT = {
-  cacheDirName: "omo-native",
+  cacheDirName: "omc-native",
   defaultApiKey: "default-key",
   defaultHost: "https://posthog.test",
   eventName: "legacy_event",
-  packageName: "@oh-my-opencode/omo-native",
+  packageName: "@oh-my-cybersecurity/omc-native",
   packageVersion: "5.0.0",
-  platform: "omo-senpi",
-  productEnvPrefix: "OMO_SENPI",
-  productName: "omo-native",
+  platform: "omc-senpi",
+  productEnvPrefix: "OMC_SENPI",
+  productName: "omc-native",
 } satisfies TelemetryProductConfig
 
 const ALLOWLIST = {
@@ -225,8 +225,8 @@ describe("event telemetry client", () => {
         count: 3,
         label: "x".repeat(64),
         package_version: "5.0.0",
-        platform: "omo-senpi",
-        product_name: "omo-native",
+        platform: "omc-senpi",
+        product_name: "omc-native",
         schema_version: 1,
       },
     }])
@@ -279,8 +279,8 @@ describe("event telemetry client", () => {
     // then: attribution rides along; fixed identity keys cannot be overridden by the product
     expect(recorder.messages[0]?.properties).toMatchObject({
       install_id: "a".repeat(64),
-      platform: "omo-senpi",
-      product_name: "omo-native",
+      platform: "omc-senpi",
+      product_name: "omc-native",
       schema_version: 3,
       surface: "desktop",
     })
@@ -337,8 +337,8 @@ describe("event telemetry client", () => {
       $process_person_profile: false,
       $session_id: "session-hash",
       package_version: "5.0.0",
-      platform: "omo-senpi",
-      product_name: "omo-native",
+      platform: "omc-senpi",
+      product_name: "omc-native",
       reason: "startup",
       schema_version: 2,
     })
@@ -461,8 +461,8 @@ describe("event telemetry client", () => {
       event_id: expect.stringMatching(UUID_V7),
       $process_person_profile: false,
       package_version: "5.0.0",
-      platform: "omo-senpi",
-      product_name: "omo-native",
+      platform: "omc-senpi",
+      product_name: "omc-native",
       schema_version: 1,
     })
     expect(diagnostics).toHaveLength(5)

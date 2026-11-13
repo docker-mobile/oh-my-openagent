@@ -1,7 +1,7 @@
-// The service's revoke freeze (omo-service sync-design section 7; trigger sync_freeze_on_revoke,
+// The service's revoke freeze (omc-service sync-design section 7; trigger sync_freeze_on_revoke,
 // pushGate, the rotation admission rule), shared by both in-process wire servers so a test drives
 // one model. A revoke reaches it the way clients reach the service's revokeDevice: through
-// `DELETE /v1/devices/:id` (`omo logout`, the Devices page) or `POST /v1/session/sign-out` (the
+// `DELETE /v1/devices/:id` (`omc logout`, the Devices page) or `POST /v1/session/sign-out` (the
 // desktop sign-out). A revoked member sets `rotation_pending`; while it is set every push is refused
 // `stale_base`; the revoked device's every request is refused with the on-contract
 // `401 device_revoked` envelope; a rotation that keeps a revoked key is refused `forbidden`.

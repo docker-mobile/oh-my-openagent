@@ -19,7 +19,7 @@ import {
 	ELEMENT_METHODS,
 	type EngineMethod,
 	WINDOW_METHODS,
-} from "@oh-my-opencode/senpi-desktop-protocol";
+} from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import { ComputerRunError, type ConfirmControl, type MethodTiers, type RunOutput, type RunScope } from "../context";
 import { createDesktopFacade } from "../facade";
 import { ElementHandle, WindowHandle } from "../handles";

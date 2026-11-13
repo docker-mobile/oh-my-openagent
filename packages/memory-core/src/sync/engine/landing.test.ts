@@ -18,7 +18,7 @@ function releaseBlockedReader(fifo: string): void {
 }
 
 const GIT_WINDOWS_MAX_PATH_CHARS = 260
-const GIT_WINDOWS_ROOT = "C:\\Users\\ann\\AppData\\Roaming\\omo\\memory"
+const GIT_WINDOWS_ROOT = "C:\\Users\\ann\\AppData\\Roaming\\omc\\memory"
 
 function grammarValidKeyOfLength(length: number): string {
   const segment = "a".repeat(200)
@@ -49,8 +49,8 @@ test("win32 refuses a key inside the grammar whose working path git cannot open"
 
 test("POSIX leaves the decision to its own path probe, so the Windows limit never bites there", () => {
   const key = grammarValidKeyOfLength(300)
-  expect(commitPathProblem("/home/ann/.omo/memory", key, "linux")).toBeNull()
-  expect(commitPathProblem("/Users/ann/.omo/memory", key, "darwin")).toBeNull()
+  expect(commitPathProblem("/home/ann/.omc/memory", key, "linux")).toBeNull()
+  expect(commitPathProblem("/Users/ann/.omc/memory", key, "darwin")).toBeNull()
 })
 
 test("a landing follows this platform's git capacity", async () => {

@@ -1,9 +1,9 @@
 {
-  "name": "@oh-my-opencode/claude-code-compat-core",
+  "name": "@oh-my-cybersecurity/claude-code-compat-core",
   "version": "0.1.0",
   "type": "module",
   "private": true,
-  "description": "Claude Code compatibility loaders shared by oh-my-opencode harness adapters.",
+  "description": "Claude Code compatibility loaders shared by oh-my-cybersecurity harness adapters.",
   "exports": {
     ".": {
       "types": "./src/index.ts",
@@ -48,7 +48,7 @@
     "test": "bun test src/*.test.ts src/**/*.test.ts"
   },
   "dependencies": {
-    "@oh-my-opencode/model-core": "workspace:*",
-    "@oh-my-opencode/utils": "workspace:*"
+    "@oh-my-cybersecurity/model-core": "workspace:*",
+    "@oh-my-cybersecurity/utils": "workspace:*"
   }
 }

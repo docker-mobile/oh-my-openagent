@@ -4,9 +4,9 @@
 
 ## OVERVIEW
 
-Project-scope skills + slash commands under the new `.agents/` directory name. During the `oh-my-opencode` → `oh-my-openagent` rename transition, this directory is the **target** of the migration from `.opencode/`. It is a strict SUPERSET of `.opencode/` (4 -> 13 skills; 5 commands).
+Project-scope skills + slash commands under the new `.agents/` directory name. During the `oh-my-cybersecurity` → `oh-my-cybersecurity` rename transition, this directory is the **target** of the migration from `.opencode/`. It is a strict SUPERSET of `.opencode/` (4 -> 13 skills; 5 commands).
 
-Loaded alongside `.opencode/` by [`packages/omo-opencode/src/features/opencode-skill-loader/`](../packages/omo-opencode/src/features/opencode-skill-loader/). When both directories declare the same skill or command name, the higher-priority scope wins per the loader's deduplication rules.
+Loaded alongside `.opencode/` by [`packages/omc-opencode/src/features/opencode-skill-loader/`](../packages/omc-opencode/src/features/opencode-skill-loader/). When both directories declare the same skill or command name, the higher-priority scope wins per the loader's deduplication rules.
 
 ## SKILLS (13, superset of `.opencode/`)
 
@@ -23,7 +23,7 @@ Loaded alongside `.opencode/` by [`packages/omo-opencode/src/features/opencode-s
 | `security-research/` | NEW | Team Mode security research audit: 3 vulnerability hunters + 2 PoC engineers |
 | `codex-qa/` | no | Isolated Codex Light QA: real `codex app-server` against an isolated `CODEX_HOME` + local mock model, hook-fired assertions; helper scripts each ship `--self-test` |
 | `opencode-qa/` | no | opencode CLI/TUI/event-stream QA: hook-fired assertions via SSE, session DB inspection, tmux TUI smoke; helper scripts each ship `--self-test` |
-| `senpi-qa/` | no | Live Senpi adapter + task-engine QA against the real `senpi` binary in an isolated `SENPI_CODING_AGENT_DIR`; `scripts/resolve-evidence-dir.mjs` pins every artifact to the gitignored `.omo/evidence/omo-senpi-adapter/<slug>/` (local only; the PR body carries the summary) |
+| `senpi-qa/` | no | Live Senpi adapter + task-engine QA against the real `senpi` binary in an isolated `SENPI_CODING_AGENT_DIR`; `scripts/resolve-evidence-dir.mjs` pins every artifact to the gitignored `.omc/evidence/omc-senpi-adapter/<slug>/` (local only; the PR body carries the summary) |
 | `tech-debt-audit/` | no | Technical-debt audit across 9 dimensions via AST-grep/grep; emits `TECH_DEBT_AUDIT.md` |
 
 The 5 "NEW" skills here are skill-format equivalents of slash commands that exist in BOTH `.opencode/command/` and `.agents/command/`. They allow the same instructions to be triggered either by an explicit `/command` invocation OR by skill auto-loading on matching prompts. The `codex-qa`, `opencode-qa`, `senpi-qa`, and `tech-debt-audit` skills are `.agents/`-only with no `.opencode/` counterpart and are not command-forms.

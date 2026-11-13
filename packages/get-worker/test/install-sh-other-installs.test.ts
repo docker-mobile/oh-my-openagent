@@ -16,30 +16,30 @@ function file(path: string, content: string, executable = false): void {
 }
 
 function fixture(failingRemoval = false): Fixture {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), "omo-installer-other-")))
+  const root = realpathSync(mkdtempSync(join(tmpdir(), "omc-installer-other-")))
   roots.push(root)
   const home = join(root, "home")
   const work = join(root, "work")
   const bunRoot = join(root, "bun")
   const bunBin = join(bunRoot, "bin")
-  const packageDir = join(bunRoot, "install", "global", "node_modules", "omo-ai")
-  const entry = join(packageDir, "bin", "omo")
-  file(join(packageDir, "package.json"), JSON.stringify({ name: "omo-ai", version: "4.0.0", bin: { omo: "bin/omo" } }))
-  file(entry, "#!/bin/sh\necho 'omo 4.0.0'\n", true)
+  const packageDir = join(bunRoot, "install", "global", "node_modules", "omc-ai")
+  const entry = join(packageDir, "bin", "omc")
+  file(join(packageDir, "package.json"), JSON.stringify({ name: "omc-ai", version: "4.0.0", bin: { omc: "bin/omc" } }))
+  file(entry, "#!/bin/sh\necho 'omc 4.0.0'\n", true)
   mkdirSync(bunBin, { recursive: true })
-  symlinkSync(relative(bunBin, entry), join(bunBin, "omo"))
-  const newOmo = join(root, "new-bin", "omo")
-  file(newOmo, "#!/bin/sh\necho 'omo 5.0.0'\n", true)
+  symlinkSync(relative(bunBin, entry), join(bunBin, "omc"))
+  const newOmo = join(root, "new-bin", "omc")
+  file(newOmo, "#!/bin/sh\necho 'omc 5.0.0'\n", true)
   const tools = join(root, "tools")
   file(join(tools, "bun"), failingRemoval
     ? "#!/bin/sh\nexit 1\n"
-    : "#!/bin/sh\nrm -rf \"$BUN_INSTALL/install/global/node_modules/omo-ai\"\nrm -f \"$BUN_INSTALL/bin/omo\"\n", true)
+    : "#!/bin/sh\nrm -rf \"$BUN_INSTALL/install/global/node_modules/omc-ai\"\nrm -f \"$BUN_INSTALL/bin/omc\"\n", true)
   const unrelated = join(packageDir, "..", "unrelated-package", "keep.txt")
   file(unrelated, "keep\n")
   mkdirSync(work)
   return {
-    root, home, work, newOmo, oldOmo: join(bunBin, "omo"), packageDir, unrelated,
-    env: { HOME: home, PATH: `${dirname(newOmo)}:${bunBin}:${tools}:/usr/bin:/bin`, OMO_INSTALL_SOURCE_ONLY: "1" },
+    root, home, work, newOmo, oldOmo: join(bunBin, "omc"), packageDir, unrelated,
+    env: { HOME: home, PATH: `${dirname(newOmo)}:${bunBin}:${tools}:/usr/bin:/bin`, OMC_INSTALL_SOURCE_ONLY: "1" },
   }
 }
 
@@ -54,13 +54,13 @@ afterEach(() => {
 })
 
 describe("install.sh other-install handling", () => {
-  test("accepting the interactive prompt removes the bun-global install and leaves one omo on PATH", () => {
+  test("accepting the interactive prompt removes the bun-global install and leaves one omc on PATH", () => {
     const f = fixture()
-    const result = report(f, `is_interactive() { return 0; }\nreport_other_installs ${JSON.stringify(f.newOmo)} 0 ${JSON.stringify(f.work)}\ntype -ap omo`, "yes\n")
+    const result = report(f, `is_interactive() { return 0; }\nreport_other_installs ${JSON.stringify(f.newOmo)} 0 ${JSON.stringify(f.work)}\ntype -ap omc`, "yes\n")
 
     expect(result.status).toBe(0)
-    expect(result.stderr).toContain(`Remove the other omo install at ${f.oldOmo}? [y/N]`)
-    expect(result.stderr).toContain(`Removed the other omo install at ${f.oldOmo}.`)
+    expect(result.stderr).toContain(`Remove the other omc install at ${f.oldOmo}? [y/N]`)
+    expect(result.stderr).toContain(`Removed the other omc install at ${f.oldOmo}.`)
     expect(result.stdout.trim().split("\n")).toEqual([f.newOmo])
     expect(existsSync(f.packageDir)).toBe(false)
     expect(readFileSync(f.unrelated, "utf8")).toBe("keep\n")
@@ -72,13 +72,13 @@ describe("install.sh other-install handling", () => {
 
     expect(result.status).toBe(0)
     expect(result.stderr).toContain("Nothing was removed in this non-interactive run. Re-run with --remove-other-installs")
-    expect(readFileSync(join(f.packageDir, "package.json"), "utf8")).toContain('"name":"omo-ai"')
+    expect(readFileSync(join(f.packageDir, "package.json"), "utf8")).toContain('"name":"omc-ai"')
     expect(readFileSync(f.unrelated, "utf8")).toBe("keep\n")
   })
 
-  test("the explicit flag removes only the verified omo package and shim", () => {
+  test("the explicit flag removes only the verified omc package and shim", () => {
     const f = fixture()
-    const lookalike = join(dirname(f.oldOmo), "omo-helper")
+    const lookalike = join(dirname(f.oldOmo), "omc-helper")
     file(lookalike, "unrelated\n")
     const result = report(f, `report_other_installs ${JSON.stringify(f.newOmo)} 1 ${JSON.stringify(f.work)}`)
 
@@ -105,16 +105,16 @@ describe("install.sh other-install handling", () => {
     const result = report(f, `report_other_installs ${JSON.stringify(f.newOmo)} 1 ${JSON.stringify(f.work)}\n${JSON.stringify(f.newOmo)} --version`)
 
     expect(result.status).toBe(0)
-    expect(result.stdout).toContain("omo 5.0.0")
+    expect(result.stdout).toContain("omc 5.0.0")
     expect(result.stderr).toContain("the new install still works")
-    expect(result.stderr).toContain(`BUN_INSTALL=${f.root}/bun bun remove -g omo-ai`)
-    expect(readFileSync(join(f.packageDir, "package.json"), "utf8")).toContain('"name":"omo-ai"')
+    expect(result.stderr).toContain(`BUN_INSTALL=${f.root}/bun bun remove -g omc-ai`)
+    expect(readFileSync(join(f.packageDir, "package.json"), "utf8")).toContain('"name":"omc-ai"')
   })
 
-  test("an unverified look-alike omo is never removed", () => {
+  test("an unverified look-alike omc is never removed", () => {
     const f = fixture()
     rmSync(f.oldOmo)
-    const foreign = join(dirname(f.oldOmo), "omo")
+    const foreign = join(dirname(f.oldOmo), "omc")
     file(foreign, "#!/bin/sh\necho look-alike\n", true)
     const result = report(f, `report_other_installs ${JSON.stringify(f.newOmo)} 1 ${JSON.stringify(f.work)}`)
 
@@ -127,9 +127,9 @@ describe("install.sh other-install handling", () => {
   test("a prior standalone receipt permits removing only that old launcher", () => {
     const f = fixture()
     rmSync(f.oldOmo)
-    const oldStandalone = join(dirname(f.oldOmo), "omo")
-    file(oldStandalone, "#!/bin/sh\necho 'omo 3.0.0'\n", true)
-    file(join(f.home, ".omo", "install.json"), JSON.stringify({ method: "standalone", binPath: oldStandalone }))
+    const oldStandalone = join(dirname(f.oldOmo), "omc")
+    file(oldStandalone, "#!/bin/sh\necho 'omc 3.0.0'\n", true)
+    file(join(f.home, ".omc", "install.json"), JSON.stringify({ method: "standalone", binPath: oldStandalone }))
     const neighbor = join(dirname(oldStandalone), "keep")
     file(neighbor, "keep\n")
     const result = report(f, `report_other_installs ${JSON.stringify(f.newOmo)} 1 ${JSON.stringify(f.work)}`)

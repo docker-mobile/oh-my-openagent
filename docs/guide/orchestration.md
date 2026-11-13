@@ -1,8 +1,8 @@
-<!-- sources: packages/senpi-task/src/tools/task/description.ts, packages/senpi-task/src/agents/builtin/index.ts, packages/senpi-task/src/category/builtins.ts, packages/omo-senpi/skills/ulw-plan/SKILL.md, packages/shared-skills/skills/ulw-execute/SKILL.md, packages/omo-senpi/skills/mass-ulw/SKILL.md, packages/omo-senpi/skills/ulw-loop/SKILL.md, packages/omo-senpi/skills/hyperplan/SKILL.md, packages/omo-senpi/skills/ultrawork/SKILL.md, packages/omo-senpi/src/components/ulw-execute-continuation/index.ts, packages/omo-senpi/src/components/ulw-execute-continuation/boulder-eligibility.ts, packages/omo-senpi/src/components/memory/AGENTS.md, packages/omo-config-core/src/schema/agent.ts -->
+<!-- sources: packages/senpi-task/src/tools/task/description.ts, packages/senpi-task/src/agents/builtin/index.ts, packages/senpi-task/src/category/builtins.ts, packages/omc-senpi/skills/ulw-plan/SKILL.md, packages/shared-skills/skills/ulw-execute/SKILL.md, packages/omc-senpi/skills/mass-ulw/SKILL.md, packages/omc-senpi/skills/ulw-loop/SKILL.md, packages/omc-senpi/skills/hyperplan/SKILL.md, packages/omc-senpi/skills/ultrawork/SKILL.md, packages/omc-senpi/src/components/ulw-execute-continuation/index.ts, packages/omc-senpi/src/components/ulw-execute-continuation/boulder-eligibility.ts, packages/omc-senpi/src/components/memory/AGENTS.md, packages/omc-config-core/src/schema/agent.ts -->
 
 # Orchestration System Guide
 
-omo-senpi turns one coding session into a coordinated team by separating planning from execution. The main agent (the session you're typing into) does the thinking and the orchestration; everything else is delegated through the `task` tool.
+omc-senpi turns one coding session into a coordinated team by separating planning from execution. The main agent (the session you're typing into) does the thinking and the orchestration; everything else is delegated through the `task` tool.
 
 ---
 
@@ -12,7 +12,7 @@ omo-senpi turns one coding session into a coordinated team by separating plannin
 | --- | --- | --- |
 | Quick fix, single file | Just prompt | The main agent does it directly. |
 | Complex, and explaining the context is tedious | Type `ulw` (or `ultrawork`) | The main agent enters ultrawork mode: explores, plans in a notepad, delegates, verifies with evidence. |
-| Complex, and you want a written, reviewed plan first | `/ulw-plan`, then `/ulw-execute` | The Ultrawork Planner interviews you and writes `.omo/plans/<slug>.md`. `/ulw-execute` then runs that plan in the same session. |
+| Complex, and you want a written, reviewed plan first | `/ulw-plan`, then `/ulw-execute` | The Ultrawork Planner interviews you and writes `.omc/plans/<slug>.md`. `/ulw-execute` then runs that plan in the same session. |
 | Many tasks where some must wait on others | `mass-ulw` | The main agent defines a dependency graph and drives it through the `workflow` tool, one run per phase. |
 | Several lanes that touch the same module and need to talk mid-flight | Team mode (`team_create`) | The main agent leads background member children. See [Team Mode](./team-mode.md). |
 
@@ -44,7 +44,7 @@ flowchart TB
     subgraph Delegation["task tool"]
         Worker["Category worker<br/>task(category=...)"]
         Curated["Curated read-only agents<br/>explore / librarian /<br/>plan-consultant / plan-reviewer"]
-        Reviewers["ulw-loop reviewers<br/>omo-native-code-reviewer /<br/>omo-native-qa-executor /<br/>omo-native-gate-reviewer"]
+        Reviewers["ulw-loop reviewers<br/>omc-native-code-reviewer /<br/>omc-native-qa-executor /<br/>omc-native-gate-reviewer"]
     end
 
     Kibitzer["Kibitzer<br/>(memory recall nudges)"]
@@ -67,10 +67,10 @@ The main agent is whatever model your session is using. It carries the ultrawork
 
 Every spawn provides exactly one of `category` or `subagent_type`:
 
-- `task(category="...")` routes to **the category worker**: a fresh worker session configured by the category's model and skills. This is how implementation, tests, and QA get done. A category-routed task always takes its model from `omo.json` (`categories.<name>.models`); passing `model` alongside `category` is rejected.
+- `task(category="...")` routes to **the category worker**: a fresh worker session configured by the category's model and skills. This is how implementation, tests, and QA get done. A category-routed task always takes its model from `omc.json` (`categories.<name>.models`); passing `model` alongside `category` is rejected.
 - `task(subagent_type="...")` invokes a named agent directly. The builtin roster is:
-  - Curated read-only agents (in-process, cannot write files): `explore` (codebase grep: "where is X?"), `librarian` (remote repos, official docs, OSS examples), `plan-consultant` (pre-planning gap analysis), `plan-reviewer` (plan review). `plan-consultant` and `plan-reviewer` are **plan-gated**: spawnable only after you explicitly asked for the ulw-plan workflow, a `.omo/plans/*.md` file was touched this session, and `/ulw-execute` hasn't run.
-  - ulw-loop reviewers (they write report artifacts, so they aren't in the read-only set): `omo-native-code-reviewer` (diff, tests, risk), `omo-native-qa-executor` (runs real scenarios, records surface evidence), `omo-native-gate-reviewer` (approves unless it can cite a failed success criterion). The pre-rename `omo-senpi-*` spellings still resolve.
+  - Curated read-only agents (in-process, cannot write files): `explore` (codebase grep: "where is X?"), `librarian` (remote repos, official docs, OSS examples), `plan-consultant` (pre-planning gap analysis), `plan-reviewer` (plan review). `plan-consultant` and `plan-reviewer` are **plan-gated**: spawnable only after you explicitly asked for the ulw-plan workflow, a `.omc/plans/*.md` file was touched this session, and `/ulw-execute` hasn't run.
+  - ulw-loop reviewers (they write report artifacts, so they aren't in the read-only set): `omc-native-code-reviewer` (diff, tests, risk), `omc-native-qa-executor` (runs real scenarios, records surface evidence), `omc-native-gate-reviewer` (approves unless it can cite a failed success criterion). The pre-rename `omc-senpi-*` spellings still resolve.
 
 Useful spawn options: `run_in_background: true` for parallel waves (the default posture), `load_skills` to prepend skills to the child's prompt, `name` for a stable handle, `task_summary` for the one-line footer label. Continue a child with `task_send`, peek with `task_output`, end it with `task_cancel`; `/tasks` lists what this session spawned. `plan-reviewer` is one-shot: `task_send` to it is always refused.
 
@@ -108,7 +108,7 @@ stateDiagram-v2
     Defaults --> Brief
     Brief --> Approval: user says okay
     Approval --> GapAnalysis: plan-consultant
-    GapAnalysis --> WritePlan: .omo/plans/{slug}.md
+    GapAnalysis --> WritePlan: .omc/plans/{slug}.md
     WritePlan --> Review: plan-reviewer round
     Review --> WritePlan: REJECT - fix cited issues
     Review --> Done: APPROVE
@@ -131,21 +131,21 @@ High-accuracy review is the default for every plan `/ulw-plan` produces; the onl
 
 An approval whose remaining items are notes counts as approval. On a rejection the planner fixes every cited issue and resubmits. Review keeps going while each round finds something new that matters or confirms an earlier blocker fixed, and stops to ask you when a round does neither but still does not approve. A round that approves with only notes left ends the review.
 
-The spawn is contract-driven: the harness replaces the `plan-reviewer` prompt with the canonical review contract (one `.omo/plans/*.md` path), so anything else in the prompt is discarded.
+The spawn is contract-driven: the harness replaces the `plan-reviewer` prompt with the canonical review contract (one `.omc/plans/*.md` path), so anything else in the prompt is discarded.
 
 ### Plan-gate rules
 
-- `plan-consultant` and `plan-reviewer` open only when you explicitly requested the ulw-plan workflow, a plan artifact under `.omo/plans/` was touched this session, and `/ulw-execute` hasn't been invoked.
+- `plan-consultant` and `plan-reviewer` open only when you explicitly requested the ulw-plan workflow, a plan artifact under `.omc/plans/` was touched this session, and `/ulw-execute` hasn't been invoked.
 - A bare `ulw` run never gets them, however big the work feels. It records a self-review in its notepad instead.
 - When `/ulw-execute` finds no plan and bootstraps `/ulw-plan` itself, the gate stays locked: that bootstrap plan is written without gap analysis or review, and the planner says so.
 
 ### Plan artifacts
 
-The planner runs `scaffold-plan.mjs` rather than hand-building files. A draft lives at `.omo/drafts/<slug>.md` (the compaction-safe resume point, carrying `intent`, `review_required`, decisions, and the approval gate); after your okay the plan lands at `.omo/plans/<slug>.md`. Every executable item is a column-zero `- [ ] N. <title>` row with references, acceptance criteria, QA scenarios, and a `Recommended task executor category:` line.
+The planner runs `scaffold-plan.mjs` rather than hand-building files. A draft lives at `.omc/drafts/<slug>.md` (the compaction-safe resume point, carrying `intent`, `review_required`, decisions, and the approval gate); after your okay the plan lands at `.omc/plans/<slug>.md`. Every executable item is a column-zero `- [ ] N. <title>` row with references, acceptance criteria, QA scenarios, and a `Recommended task executor category:` line.
 
 ### Adversarial alternative: `/hyperplan`
 
-When one planner isn't enough rigor, `/hyperplan` stands up a hostile team that cross-critiques the plan before it's formalized. The result is still a `.omo/plans/*.md` file you hand to `/ulw-execute`.
+When one planner isn't enough rigor, `/hyperplan` stands up a hostile team that cross-critiques the plan before it's formalized. The result is still a `.omc/plans/*.md` file you hand to `/ulw-execute`.
 
 ---
 
@@ -155,32 +155,32 @@ When one planner isn't enough rigor, `/hyperplan` stands up a hostile team that 
 /ulw-execute [plan-name] [--worktree <absolute-path>] [--make-pr] [--ship]
 ```
 
-- `plan-name` (optional): a full or partial file stem under `.omo/plans/`.
+- `plan-name` (optional): a full or partial file stem under `.omc/plans/`.
 - `--worktree`: reuse an existing task-owned worktree for the first phase instead of creating one.
 - `--make-pr`: deliver each phase's worktree as a pull request and hand off with the URL; merge only if you ask.
 - `--ship`: implies `--make-pr`; stay on the job until the PR is merged, fixing CI and review feedback from the worktree.
 
-The main agent executes the approved work plan in the same session. It doesn't become a different agent; it picks up the execution skill and the orchestrator rule that comes with it: **it never writes product code itself**. Every implementation, test, QA, and review unit is delegated to a spawned worker. The main agent's hands touch plan selection, `.omo/` state, decomposition, dispatch, verdicts, and evidence.
+The main agent executes the approved work plan in the same session. It doesn't become a different agent; it picks up the execution skill and the orchestrator rule that comes with it: **it never writes product code itself**. Every implementation, test, QA, and review unit is delegated to a spawned worker. The main agent's hands touch plan selection, `.omc/` state, decomposition, dispatch, verdicts, and evidence.
 
 ### What happens when you run it
 
-1. **Select the plan.** Read `.omo/boulder.json`; if this session has one active or paused work, resume it. Otherwise match `plan-name`, auto-select a lone plan, or ask one focused question when several remain. With no selectable plan at all, it bootstraps `/ulw-plan` first.
+1. **Select the plan.** Read `.omc/boulder.json`; if this session has one active or paused work, resume it. Otherwise match `plan-name`, auto-select a lone plan, or ask one focused question when several remain. With no selectable plan at all, it bootstraps `/ulw-plan` first.
 2. **Register the goal and todos.** One registered goal for the session (via `create_goal` when the tool exists), one todo per column-zero checkbox, all up front.
-3. **Write boulder state.** `.omo/boulder.json` is a multi-work registry (`works` + `active_work_id`). Each work records `active_plan`, `plan_name`, `session_ids` (prefixed `senpi:<session_id>`), `status`, and `worktree_path`.
+3. **Write boulder state.** `.omc/boulder.json` is a multi-work registry (`works` + `active_work_id`). Each work records `active_plan`, `plan_name`, `session_ids` (prefixed `senpi:<session_id>`), `status`, and `worktree_path`.
 4. **Execute the next checkbox.** Classify it LIGHT or HEAVY, decompose it into worker-sized sub-tasks, and dispatch every independent sub-task in one parallel burst, routed by the plan's `Recommended task executor category:` line or the delegation router below.
-5. **Verify and record.** Five gates per checkbox: plan reread, automated verification, a Manual-QA artifact, adversarial QA, cleanup receipts. Evidence goes to `.omo/ulw-execute/ledger.jsonl`. A worker's done claim is verified by an independent reviewer (the gate reviewer or a fresh reviewer worker) before the checkbox flips to `- [x]`.
-6. **Finish.** When every top-level checkbox is checked, run the plan's final verification, sync `.omo/` state back, complete the PR lifecycle if requested, and print an `ORCHESTRATION COMPLETE` block.
+5. **Verify and record.** Five gates per checkbox: plan reread, automated verification, a Manual-QA artifact, adversarial QA, cleanup receipts. Evidence goes to `.omc/ulw-execute/ledger.jsonl`. A worker's done claim is verified by an independent reviewer (the gate reviewer or a fresh reviewer worker) before the checkbox flips to `- [x]`.
+6. **Finish.** When every top-level checkbox is checked, run the plan's final verification, sync `.omc/` state back, complete the PR lifecycle if requested, and print an `ORCHESTRATION COMPLETE` block.
 
 Each plan wave runs in its own task-owned worktree and lands on the integration base once its checkboxes are verified. Only the orchestrator merges.
 
 ### Continuation across sessions
 
-The `ulw-execute-continuation` component watches `.omo/boulder.json`. While the current session's work is `active` or `paused` and the plan still has unchecked top-level boxes, every user prompt gets a steering reminder appended (read the boulder state and the plan, continue with evidence-bound execution, don't start unrelated work), and an idle turn is re-injected automatically, up to 8 consecutive continuations. Nothing is lost when a session dies mid-plan: run `/ulw-execute` again and the same work resumes from the plan checkboxes and the ledger.
+The `ulw-execute-continuation` component watches `.omc/boulder.json`. While the current session's work is `active` or `paused` and the plan still has unchecked top-level boxes, every user prompt gets a steering reminder appended (read the boulder state and the plan, continue with evidence-bound execution, don't start unrelated work), and an idle turn is re-injected automatically, up to 8 consecutive continuations. Nothing is lost when a session dies mid-plan: run `/ulw-execute` again and the same work resumes from the plan checkboxes and the ledger.
 
 ```
 Monday 9:00 AM
   |- /ulw-plan "Build user authentication"
-  |- Ultrawork Planner interviews, writes .omo/plans/user-auth.md, plan-reviewer approves
+  |- Ultrawork Planner interviews, writes .omc/plans/user-auth.md, plan-reviewer approves
   |- /ulw-execute
   |- boulder.json created, tasks 1-2 land
   |- [session ends]
@@ -224,7 +224,7 @@ The delegation router used by `/ulw-execute`:
 
 Splittable work splits into a swarm of `quick`/`unspecified-low` workers in one burst. Cohesive hard work stays whole and goes to `deep` or `ultrabrain` as one delegation.
 
-Some categories gate on a model being present in your registry (`ultrabrain` and `deep` need a GPT flagship, for example); an unavailable category is reported as such rather than silently routed to a different family. Projects and users can add categories in `omo.json`.
+Some categories gate on a model being present in your registry (`ultrabrain` and `deep` need a GPT flagship, for example); an unavailable category is reported as such rather than silently routed to a different family. Projects and users can add categories in `omc.json`.
 
 ### Skills
 
@@ -258,11 +258,11 @@ Baseline for a memory-pressure investigation: `background_task.defaultConcurrenc
 - Prefer one foreground implementation lane plus background `explore`/`librarian` lanes; avoid launching multiple build/test/dev-server workers from an IDE terminal.
 - Treat repeated stale-task interruptions, disappeared sessions, or host memory-pressure warnings as a stop condition. Collect the useful output, cancel disposable lanes individually, and restart from a smaller plan slice.
 - Keep `tmux_visualization` off while diagnosing host memory pressure. Turn it back on only after the same workload is stable without pane rendering.
-- For leak investigations, run outside the IDE terminal when possible and capture host process memory alongside `oh-my-opencode.log`; this separates OMO orchestration pressure from editor/runtime leaks.
+- For leak investigations, run outside the IDE terminal when possible and capture host process memory alongside `oh-my-cybersecurity.log`; this separates OMO orchestration pressure from editor/runtime leaks.
 
 ## Configuration
 
-`omo.json` controls the delegation surfaces. Agent overrides use the agent id as the key; category overrides use the category name.
+`omc.json` controls the delegation surfaces. Agent overrides use the agent id as the key; category overrides use the category name.
 
 ```jsonc
 {
@@ -289,7 +289,7 @@ Baseline for a memory-pressure investigation: `background_task.defaultConcurrenc
 }
 ```
 
-Agent entries accept `model`, `models` (ordered fallback chain), `reasoning`, `tools`, `allowed_subagents`, `disallowed_tools`, `max_turns`, `temperature`, and `disable`. Category entries carry the `models` chain the category worker is built from. The full schema is in the [omo.json reference](../reference/omo-json.md).
+Agent entries accept `model`, `models` (ordered fallback chain), `reasoning`, `tools`, `allowed_subagents`, `disallowed_tools`, `max_turns`, `temperature`, and `disable`. Category entries carry the `models` chain the category worker is built from. The full schema is in the [omc.json reference](../reference/omc-json.md).
 
 ---
 
@@ -301,13 +301,13 @@ That's the design. The Ultrawork Planner explores first, tells you whether it re
 
 ### "/ulw-execute says no plan was found"
 
-- With no plans under `.omo/plans/`, `/ulw-execute` bootstraps `/ulw-plan` and generates one (without gap analysis or review, since the plan gate is locked on that path). Run `/ulw-plan` yourself first if you want the reviewed version.
+- With no plans under `.omc/plans/`, `/ulw-execute` bootstraps `/ulw-plan` and generates one (without gap analysis or review, since the plan gate is locked on that path). Run `/ulw-plan` yourself first if you want the reviewed version.
 - With several plans and no active work, pass the stem: `/ulw-execute user-auth`.
-- Don't reach for deleting `.omo/boulder.json` first. Works recorded for other sessions are ignored; the session id is part of the match.
+- Don't reach for deleting `.omc/boulder.json` first. Works recorded for other sessions are ignored; the session id is part of the match.
 
 ### "The planner refuses to spawn plan-reviewer"
 
-Both `plan-consultant` and `plan-reviewer` are plan-gated. The gate opens only after an explicit ulw-plan request, a touched `.omo/plans/*.md` file in this session, and no `/ulw-execute` yet. A bare `ulw` run, however large, self-reviews in its notepad instead. If you want the review, start with `/ulw-plan`.
+Both `plan-consultant` and `plan-reviewer` are plan-gated. The gate opens only after an explicit ulw-plan request, a touched `.omc/plans/*.md` file in this session, and no `/ulw-execute` yet. A bare `ulw` run, however large, self-reviews in its notepad instead. If you want the review, start with `/ulw-plan`.
 
 ### "Should I type ulw or write a plan?"
 

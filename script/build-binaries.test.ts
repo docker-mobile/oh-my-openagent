@@ -62,11 +62,11 @@ describe("build-binaries", () => {
 
       // then
       expect(packageDirs).toEqual(packageNames);
-      expect(packageDirs).toContain("oh-my-opencode-linux-x64-baseline");
-      expect(packageDirs).toContain("oh-my-opencode-linux-x64-musl-baseline");
-      expect(packageDirs).toContain("oh-my-opencode-darwin-x64-baseline");
-      expect(packageDirs).toContain("oh-my-opencode-windows-x64-baseline");
-      expect(packageDirs).toContain("oh-my-opencode-windows-arm64");
+      expect(packageDirs).toContain("oh-my-cybersecurity-linux-x64-baseline");
+      expect(packageDirs).toContain("oh-my-cybersecurity-linux-x64-musl-baseline");
+      expect(packageDirs).toContain("oh-my-cybersecurity-darwin-x64-baseline");
+      expect(packageDirs).toContain("oh-my-cybersecurity-windows-x64-baseline");
+      expect(packageDirs).toContain("oh-my-cybersecurity-windows-arm64");
     });
 
     it("includes a windows-arm64 entry for Windows-on-ARM hosts", async () => {
@@ -78,8 +78,8 @@ describe("build-binaries", () => {
       const windowsArm64 = platforms.find((p) => p.platform === "windows-arm64");
 
       // then
-      expect(windowsArm64?.packageName).toBe("oh-my-opencode-windows-arm64");
-      expect(windowsArm64?.packageDir).toBe("oh-my-opencode-windows-arm64");
+      expect(windowsArm64?.packageName).toBe("oh-my-cybersecurity-windows-arm64");
+      expect(windowsArm64?.packageDir).toBe("oh-my-cybersecurity-windows-arm64");
     });
 
     it("uses JavaScript launcher names for baseline platforms", async () => {
@@ -92,8 +92,8 @@ describe("build-binaries", () => {
       const linuxBaseline = platforms.find((p) => p.target === "bun-linux-x64-baseline");
 
       // then
-      expect(windowsBaseline?.binary).toBe("oh-my-opencode.js");
-      expect(linuxBaseline?.binary).toBe("oh-my-opencode.js");
+      expect(windowsBaseline?.binary).toBe("oh-my-cybersecurity.js");
+      expect(linuxBaseline?.binary).toBe("oh-my-cybersecurity.js");
     });
 
     it("launcher can print lazycodex help when Bun is unavailable", async () => {
@@ -102,7 +102,7 @@ describe("build-binaries", () => {
       const createPlatformLauncherSource = module.createPlatformLauncherSource;
       const root = fileURLToPath(new URL("..", import.meta.url));
       const tempDir = await mkdtemp(join(tmpdir(), "lazycodex-launcher-"));
-      const launcherPath = join(tempDir, "oh-my-opencode.js");
+      const launcherPath = join(tempDir, "oh-my-cybersecurity.js");
       await writeFile(launcherPath, createPlatformLauncherSource());
       await chmod(launcherPath, 0o755);
 
@@ -112,8 +112,8 @@ describe("build-binaries", () => {
         env: {
           ...process.env,
           BUN_BINARY: join(tempDir, "missing-bun"),
-          OMO_INVOCATION_NAME: "lazycodex-ai",
-          OMO_WRAPPER_PACKAGE_ROOT: root,
+          OMC_INVOCATION_NAME: "lazycodex-ai",
+          OMC_WRAPPER_PACKAGE_ROOT: root,
         },
       });
 
@@ -123,14 +123,14 @@ describe("build-binaries", () => {
       expect(result.stderr).not.toContain("failed to execute Bun");
     });
 
-    it("launcher routes omo codex-only install through the Node installer before requiring Bun", async () => {
+    it("launcher routes omc codex-only install through the Node installer before requiring Bun", async () => {
       // given
       const module = await import("./build-binaries.ts");
       const createPlatformLauncherSource = module.createPlatformLauncherSource;
-      const tempDir = await mkdtemp(join(tmpdir(), "omo-codex-only-launcher-"));
-      const launcherPath = join(tempDir, "oh-my-opencode.js");
-      const installerPath = join(tempDir, "packages", "omo-codex", "scripts", "install-local.mjs");
-      await mkdir(join(tempDir, "packages", "omo-codex", "scripts"), { recursive: true });
+      const tempDir = await mkdtemp(join(tmpdir(), "omc-codex-only-launcher-"));
+      const launcherPath = join(tempDir, "oh-my-cybersecurity.js");
+      const installerPath = join(tempDir, "packages", "omc-codex", "scripts", "install-local.mjs");
+      await mkdir(join(tempDir, "packages", "omc-codex", "scripts"), { recursive: true });
       await writeFile(launcherPath, createPlatformLauncherSource());
       await chmod(launcherPath, 0o755);
       await writeFile(
@@ -149,8 +149,8 @@ describe("build-binaries", () => {
         env: {
           ...process.env,
           BUN_BINARY: join(tempDir, "missing-bun"),
-          OMO_INVOCATION_NAME: "omo-agent-toolkit",
-          OMO_WRAPPER_PACKAGE_ROOT: tempDir,
+          OMC_INVOCATION_NAME: "omc-agent-toolkit",
+          OMC_WRAPPER_PACKAGE_ROOT: tempDir,
         },
       });
 
@@ -165,9 +165,9 @@ describe("build-binaries", () => {
       const module = await import("./build-binaries.ts");
       const createPlatformLauncherSource = module.createPlatformLauncherSource;
       const tempDir = await mkdtemp(join(tmpdir(), "lazycodex-both-launcher-"));
-      const launcherPath = join(tempDir, "oh-my-opencode.js");
-      const installerPath = join(tempDir, "packages", "omo-codex", "scripts", "install-local.mjs");
-      await mkdir(join(tempDir, "packages", "omo-codex", "scripts"), { recursive: true });
+      const launcherPath = join(tempDir, "oh-my-cybersecurity.js");
+      const installerPath = join(tempDir, "packages", "omc-codex", "scripts", "install-local.mjs");
+      await mkdir(join(tempDir, "packages", "omc-codex", "scripts"), { recursive: true });
       await writeFile(launcherPath, createPlatformLauncherSource());
       await chmod(launcherPath, 0o755);
       await writeFakeCli(tempDir);
@@ -180,8 +180,8 @@ describe("build-binaries", () => {
         env: {
           ...process.env,
           BUN_BINARY: process.execPath,
-          OMO_INVOCATION_NAME: "lazycodex-ai",
-          OMO_WRAPPER_PACKAGE_ROOT: tempDir,
+          OMC_INVOCATION_NAME: "lazycodex-ai",
+          OMC_WRAPPER_PACKAGE_ROOT: tempDir,
         },
       });
 
@@ -197,7 +197,7 @@ describe("build-binaries", () => {
       const module = await import("./build-binaries.ts");
       const createPlatformLauncherSource = module.createPlatformLauncherSource;
       const tempDir = await mkdtemp(join(tmpdir(), "lazycodex-ulw-loop-launcher-"));
-      const launcherPath = join(tempDir, "oh-my-opencode.js");
+      const launcherPath = join(tempDir, "oh-my-cybersecurity.js");
       await writeFile(launcherPath, createPlatformLauncherSource());
       await chmod(launcherPath, 0o755);
       await writeFakeCli(tempDir);
@@ -208,8 +208,8 @@ describe("build-binaries", () => {
         env: {
           ...process.env,
           BUN_BINARY: process.execPath,
-          OMO_INVOCATION_NAME: "lazycodex-ai",
-          OMO_WRAPPER_PACKAGE_ROOT: tempDir,
+          OMC_INVOCATION_NAME: "lazycodex-ai",
+          OMC_WRAPPER_PACKAGE_ROOT: tempDir,
         },
       });
 
@@ -238,7 +238,7 @@ describe("build-binaries", () => {
       // given
       const packagesDir = new URL("../packages/", import.meta.url);
       const platformPackageNames = readdirSync(packagesDir)
-        .filter((entry) => entry.startsWith("oh-my-opencode-"))
+        .filter((entry) => entry.startsWith("oh-my-cybersecurity-"))
         .sort();
 
       // when

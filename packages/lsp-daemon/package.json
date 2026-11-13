@@ -16,7 +16,7 @@
 		}
 	},
 	"bin": {
-		"omo-lsp-daemon": "./dist/cli.js"
+		"omc-lsp-daemon": "./dist/cli.js"
 	},
 	"files": [
 		"dist",
@@ -37,8 +37,8 @@
 	"devDependencies": {
 		"@vitest/coverage-v8": "5.0.1",
 		"@biomejs/biome": "2.5.14",
-		"@oh-my-opencode/lsp-core": "file:../lsp-core",
-		"@oh-my-opencode/mcp-stdio-core": "file:../mcp-stdio-core",
+		"@oh-my-cybersecurity/lsp-core": "file:../lsp-core",
+		"@oh-my-cybersecurity/mcp-stdio-core": "file:../mcp-stdio-core",
 		"@types/node": "^26.6.2",
 		"typescript": "^6.0.3",
 		"vitest": "5.0.1"

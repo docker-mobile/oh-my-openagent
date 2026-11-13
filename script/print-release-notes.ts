@@ -2,9 +2,9 @@
 /** Release step: print the GitHub release body for <version>, fail-closed. */
 import { composeReleaseBody, extractReleaseNotes } from "./changelog-release-notes"
 
-/** The install line for the released channel: bare `omo-ai` for a stable version, `omo-ai@beta` for a prerelease. */
+/** The install line for the released channel: bare `omc-ai` for a stable version, `omc-ai@beta` for a prerelease. */
 export function installFooter(version: string): string {
-  const spec = version.includes("-") ? "omo-ai@beta" : "omo-ai"
+  const spec = version.includes("-") ? "omc-ai@beta" : "omc-ai"
   return ["\`\`\`bash", `bun add -g ${spec}`, "\`\`\`"].join("\n")
 }
 

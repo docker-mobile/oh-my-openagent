@@ -24,9 +24,9 @@ export async function captureTargetBytes(runtime: Runtime) {
   await mkdir(assets)
   const rows = []
   for (const target of Object.keys(targetFixture.prebuilds.senpi_pty.targets).sort()) {
-    const binaryName = `omo-${target}${target.startsWith("windows-") ? ".exe" : ""}`
+    const binaryName = `omc-${target}${target.startsWith("windows-") ? ".exe" : ""}`
     // Release asset acquisition is the sole public-network exception; no credentials enter the audited process.
-    const result = await run(["gh", "release", "download", "v5.0.0-beta.62", "--repo", "code-yeongyu/oh-my-openagent", "--pattern", binaryName, "--dir", assets],
+    const result = await run(["gh", "release", "download", "v5.0.0-beta.62", "--repo", "code-yeongyu/oh-my-cybersecurity", "--pattern", binaryName, "--dir", assets],
       { cwd: runtime.cwd, env: { PATH: process.env.PATH ?? "", HOME: process.env.HOME ?? "" }, timeoutMs: 180000 })
     runtime.commands.push(result)
     if (result.exitCode !== 0) {

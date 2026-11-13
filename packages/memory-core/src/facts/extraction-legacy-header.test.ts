@@ -57,7 +57,7 @@ describe("facts writer and the commit hook share one header rule (lead decision 
     const memory = await hookedRepo()
     // An older build wrote this note; seeding it bypasses the hooks, and normalization's own commit runs through them.
     await writeFile(join(memory.dir, "reference/legacy.md"), `---\ndescription: Run the chain: verify, merge\nprovenance: ${LEGACY}\n---\n\nnote body\n`)
-    await Bun.$`git -C ${memory.dir} add reference/legacy.md && git -C ${memory.dir} -c user.name=seed -c user.email=seed@omo.local commit --no-verify -q -m seed`.quiet()
+    await Bun.$`git -C ${memory.dir} add reference/legacy.md && git -C ${memory.dir} -c user.name=seed -c user.email=seed@omc.local commit --no-verify -q -m seed`.quiet()
 
     const result = await normalizeMemoryFrontmatter(memory, AUTHOR)
 

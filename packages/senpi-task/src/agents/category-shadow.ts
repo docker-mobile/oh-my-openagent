@@ -1,4 +1,4 @@
-import { displayConfigIdentifier, type OmoConfig } from "@oh-my-opencode/omo-config-core"
+import { displayConfigIdentifier, type OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import { BUILTIN_AGENT_NAMES } from "./builtin/names"
 
@@ -12,7 +12,7 @@ export function categoryShadowedAgentNames(config: OmoConfig, agentNames: Iterab
   const agents = new Set([...BUILTIN_AGENT_NAMES, ...Object.keys(config.agents ?? {}), ...agentNames])
   // An agent that already sets its own chain is configured correctly; the category key is not shadowing
   // anything it relies on, so it gets no warning (and never a snippet that would overwrite that chain).
-  // Only the agent's own key counts: omo.json agents are mapped by their key as written, so a chain
+  // Only the agent's own key counts: omc.json agents are mapped by their key as written, so a chain
   // under a retired alias key never reaches the canonical agent and must not silence this warning.
   const ownsChain = (name: string): boolean => {
     const agent = config.agents?.[name]
@@ -26,7 +26,7 @@ export function categoryShadowMessage(config: OmoConfig, name: string): string {
   const chain = category?.models ?? (category?.model === undefined ? undefined : [category.model])
   if (chain?.some((entry) => typeof entry !== "string" && Object.keys(entry).some((key) => key !== "model"))) {
     const models = chain.map((entry) => displayConfigIdentifier(typeof entry === "string" ? entry : entry.model)).join(", ")
-    return `categories."${name}" is not read for subagent_type "${name}" spawns (models: ${models}). Move the complete categories."${name}" configuration to agents."${name}", including every model entry and its tuning/options; inspect omo.json for the full values. If you also use task(category: "${name}"), keep the category configuration too`
+    return `categories."${name}" is not read for subagent_type "${name}" spawns (models: ${models}). Move the complete categories."${name}" configuration to agents."${name}", including every model entry and its tuning/options; inspect omc.json for the full values. If you also use task(category: "${name}"), keep the category configuration too`
   }
   const value = chain === undefined ? "[...]" : JSON.stringify(chain.map((entry) =>
     typeof entry === "string" ? displayConfigIdentifier(entry) : { model: displayConfigIdentifier(entry.model) },

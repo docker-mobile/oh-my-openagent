@@ -3,7 +3,7 @@ import { BroadcastChannel, parentPort, threadId, type Worker } from "node:worker
 import { z } from "zod"
 
 const Registration = z.object({
-  kind: z.literal("omo-team-lock-register-v1"),
+  kind: z.literal("omc-team-lock-register-v1"),
   incarnation: z.string(),
   challenge: z.string(),
 })
@@ -32,7 +32,7 @@ declare global {
 }
 
 function createState(): LifetimeState {
-  const channel = new BroadcastChannel(`omo-team-lock-lifetime-v1-${process.pid}`)
+  const channel = new BroadcastChannel(`omc-team-lock-lifetime-v1-${process.pid}`)
   channel.unref()
   const state: LifetimeState = {
     incarnation: randomUUID(),
@@ -62,7 +62,7 @@ function createState(): LifetimeState {
       case "register":
         if (message.threadId === threadId) {
           parentPort?.postMessage({
-            kind: "omo-team-lock-register-v1",
+            kind: "omc-team-lock-register-v1",
             incarnation: state.incarnation,
             challenge: message.challenge,
           })

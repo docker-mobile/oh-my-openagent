@@ -32,7 +32,7 @@ export function clearSuspensionReason(context: LifecycleContext, taskId: string)
 }
 
 /**
- * The owning session was resumed, yet its reconcile deferred this child (omo#9498): record why, so
+ * The owning session was resumed, yet its reconcile deferred this child (omc#9498): record why, so
  * task_send and task_output state the deferral instead of promising a resume that already happened.
  * A more specific reason a revival path already recorded (a parked host, a draining generation) wins.
  * A stale `session_quit` marker is superseded instead: the resume that feeds this deferral IS the

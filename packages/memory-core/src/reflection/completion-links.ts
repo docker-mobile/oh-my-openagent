@@ -80,7 +80,7 @@ export async function applyLinkRepair(
   } else {
     for (const [path, content] of writes) await writeFile(join(dir, path), content, "utf8")
     await must(run, ["add", "--", ...writes.keys()])
-    const [name = "reflection", email = "reflection@omo.local"] =
+    const [name = "reflection", email = "reflection@omc.local"] =
       (await must(run, [...STABLE_LOG_OUTPUT, "log", "-1", "--format=%an%n%ae", runTip])).split("\n")
     await must(run, [
       "-c", `user.name=${name}`, "-c", `user.email=${email}`,

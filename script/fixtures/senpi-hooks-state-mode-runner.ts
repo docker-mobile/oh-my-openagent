@@ -3,7 +3,7 @@ import { tmpdir } from "node:os"
 import { dirname, join } from "node:path"
 import { FileHookStateStorage } from "../../node_modules/@code-yeongyu/senpi/dist/core/extensions/builtin/hooks/trust-storage.js"
 
-const root = mkdtempSync(join(tmpdir(), "omo-hooks-mode-"))
+const root = mkdtempSync(join(tmpdir(), "omc-hooks-mode-"))
 const cwd = join(root, "project")
 const agentDir = join(root, "agent")
 const statePath = join(cwd, ".senpi", "hooks-state.json")

@@ -23,15 +23,15 @@ import type {
 } from "./index"
 
 const PRODUCT = {
-  cacheDirName: "omo-codex",
+  cacheDirName: "omc-codex",
   defaultApiKey: DEFAULT_POSTHOG_API_KEY,
   defaultHost: DEFAULT_POSTHOG_HOST,
-  eventName: "omo_codex_daily_active",
-  packageName: "@oh-my-opencode/omo-codex",
+  eventName: "omc_codex_daily_active",
+  packageName: "@oh-my-cybersecurity/omc-codex",
   packageVersion: "4.9.2",
-  platform: "omo-codex",
-  productName: "omo-codex",
-  productEnvPrefix: "OMO_CODEX",
+  platform: "omc-codex",
+  productName: "omc-codex",
+  productEnvPrefix: "OMC_CODEX",
 } satisfies TelemetryProductConfig
 
 const OS_PROVIDER = {
@@ -91,7 +91,7 @@ async function captureCodexDailyActive(
 }
 
 describe("posthog telemetry client", () => {
-  test("#given the unconfigured OmO Native placeholder and clean env #when clients are created #then telemetry fails closed without constructing transports", () => {
+  test("#given the unconfigured OmC Native placeholder and clean env #when clients are created #then telemetry fails closed without constructing transports", () => {
     let transportsCreated = 0
     const input = {
       env: {},
@@ -99,7 +99,7 @@ describe("posthog telemetry client", () => {
       product: {
         ...PRODUCT,
         defaultApiKey: UNCONFIGURED_POSTHOG_API_KEY,
-        productEnvPrefix: "OMO_SENPI",
+        productEnvPrefix: "OMC_SENPI",
       },
       source: "plugin",
       transportFactory: () => {
@@ -124,7 +124,7 @@ describe("posthog telemetry client", () => {
       env: { POSTHOG_API_KEY: "phc_test" },
       product: {
         defaultApiKey: UNCONFIGURED_POSTHOG_API_KEY,
-        productEnvPrefix: "OMO_SENPI",
+        productEnvPrefix: "OMC_SENPI",
       },
     })).toBe(true)
   })
@@ -136,12 +136,12 @@ describe("posthog telemetry client", () => {
     })).toBe(true)
   })
 
-  test("#given a real OmO Native default replaces the placeholder #when enabled state is checked #then telemetry activates without another flag", () => {
+  test("#given a real OmC Native default replaces the placeholder #when enabled state is checked #then telemetry activates without another flag", () => {
     expect(isTelemetryClientEnabled({
       env: {},
       product: {
         defaultApiKey: "phc_omo_native_project_key",
-        productEnvPrefix: "OMO_SENPI",
+        productEnvPrefix: "OMC_SENPI",
       },
     })).toBe(true)
   })
@@ -157,11 +157,11 @@ describe("posthog telemetry client", () => {
     expect(capturedMessages).toHaveLength(1)
     expect(capturedMessages[0]).toEqual({
       distinctId: "a".repeat(64),
-      event: "omo_codex_daily_active",
+      event: "omc_codex_daily_active",
       properties: {
-        platform: "omo-codex",
-        product_name: "omo-codex",
-        package_name: "@oh-my-opencode/omo-codex",
+        platform: "omc-codex",
+        product_name: "omc-codex",
+        package_name: "@oh-my-cybersecurity/omc-codex",
         package_version: "4.9.2",
         runtime: "bun",
         runtime_version: process.versions.bun ?? process.version,
@@ -323,10 +323,10 @@ describe("posthog telemetry client", () => {
   // Privacy-notice contract (#11583): while any opt-out is set, nothing is sent and no install id file is created.
   test.each([
     ["DO_NOT_TRACK", { DO_NOT_TRACK: "1" }],
-    ["OMO_DISABLE_TELEMETRY", { OMO_DISABLE_TELEMETRY: "1" }],
-    ["OMO_DISABLE_POSTHOG", { OMO_DISABLE_POSTHOG: "1" }],
-    ["OMO_SEND_ANONYMOUS_TELEMETRY=0", { OMO_SEND_ANONYMOUS_TELEMETRY: "0" }],
-    ["OMO_CODEX_DISABLE_POSTHOG", { OMO_CODEX_DISABLE_POSTHOG: "1" }],
+    ["OMC_DISABLE_TELEMETRY", { OMC_DISABLE_TELEMETRY: "1" }],
+    ["OMC_DISABLE_POSTHOG", { OMC_DISABLE_POSTHOG: "1" }],
+    ["OMC_SEND_ANONYMOUS_TELEMETRY=0", { OMC_SEND_ANONYMOUS_TELEMETRY: "0" }],
+    ["OMC_CODEX_DISABLE_POSTHOG", { OMC_CODEX_DISABLE_POSTHOG: "1" }],
   ] as const)("#given telemetry is disabled by %s #when daily active records #then no dedup state or install id file is written", async (_name, optOut) => {
     // given
     const capturedMessages: TelemetryCaptureMessage[] = []

@@ -9,12 +9,12 @@ import { join } from "node:path"
 // The scripts only format omowright's reports, so a stub omowright (found through OMOWRIGHT_ROOT) that returns a
 // fixed report drives every branch. The report shapes follow the omowright version pinned in the root package.json.
 const scriptsDir = join(import.meta.dir, "skills", "browser", "scripts")
-const stubRoot = mkdtempSync(join(tmpdir(), "omo-browser-scripts-"))
+const stubRoot = mkdtempSync(join(tmpdir(), "omc-browser-scripts-"))
 writeFileSync(
   join(stubRoot, "index.js"),
   [
     'import { readFileSync } from "node:fs"',
-    "const report = () => JSON.parse(readFileSync(process.env.OMO_TEST_BSK_REPORT, \"utf8\"))",
+    "const report = () => JSON.parse(readFileSync(process.env.OMC_TEST_BSK_REPORT, \"utf8\"))",
     "export async function bskDoctor() { return report() }",
     "export async function bskOnboard() { return report() }",
   ].join("\n"),
@@ -27,8 +27,8 @@ let reportCount = 0
 function runScript(script: string, report: Report, args: string[] = []) {
   const reportFile = join(stubRoot, `report-${reportCount++}.json`)
   writeFileSync(reportFile, JSON.stringify(report))
-  const env: Record<string, string | undefined> = { ...process.env, OMOWRIGHT_ROOT: stubRoot, OMO_TEST_BSK_REPORT: reportFile }
-  delete env.OMO_BROWSER_ENGINE
+  const env: Record<string, string | undefined> = { ...process.env, OMOWRIGHT_ROOT: stubRoot, OMC_TEST_BSK_REPORT: reportFile }
+  delete env.OMC_BROWSER_ENGINE
   const run = spawnSync(process.execPath, [join(scriptsDir, script), ...args], { env, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] })
   return { status: run.status, stdout: run.stdout, stderr: run.stderr }
 }

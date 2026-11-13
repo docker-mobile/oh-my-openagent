@@ -36,7 +36,7 @@ async function twoMembers(name: string) {
   cleanup.push(() => server.stop())
 
   const device = async (label: string, who: Device) => {
-    const base = await mkdtemp(join(tmpdir(), `omo-account-${label}-`))
+    const base = await mkdtemp(join(tmpdir(), `omc-account-${label}-`))
     cleanup.push(() => rm(base, { recursive: true, force: true }))
     const repo = join(base, "repo")
     await mkdir(repo, { recursive: true })

@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import type { ManagedChildHandle } from "../manager/child-handle"
 import { getLifecycleDetachedRevival } from "../lifecycle/port"

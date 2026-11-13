@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 import { createRunStatsTracker, type RunStatsTracker } from "../run-stats"
 import type { ChildExtensionEvent } from "../runners/child-extension-events"
 import { currentRunStartEpoch, nextRunEpoch, type TaskRecord } from "../state"

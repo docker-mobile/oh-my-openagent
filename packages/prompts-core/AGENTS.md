@@ -4,7 +4,7 @@
 
 ## OVERVIEW
 
-Owns static mode and planning-role markdown prompt content (`prompts/` tree), bundles it at build time via Bun's `.md` text loader (never read from disk at runtime), and exports it as `VariantTable` records plus typed `loadPrompt`/`loadPromptSync` (frontmatter parse + runtime placeholder injection) and `resolveVariant` (model → variant). Harness-neutral: zero OpenCode SDK coupling, enforced by an audit test. Package: `@oh-my-opencode/prompts-core`.
+Owns static mode and planning-role markdown prompt content (`prompts/` tree), bundles it at build time via Bun's `.md` text loader (never read from disk at runtime), and exports it as `VariantTable` records plus typed `loadPrompt`/`loadPromptSync` (frontmatter parse + runtime placeholder injection) and `resolveVariant` (model → variant). Harness-neutral: zero OpenCode SDK coupling, enforced by an audit test. Package: `@oh-my-cybersecurity/prompts-core`.
 
 ## PROMPT TREE (`prompts/`)
 
@@ -23,8 +23,8 @@ Owns static mode and planning-role markdown prompt content (`prompts/` tree), bu
 
 ## DEPENDENCIES & CONSUMERS
 
-- **Peer deps:** `@oh-my-opencode/model-core` (`isGptModel`, `isGeminiModel`, `isKimiK2Model`, …), `@oh-my-opencode/utils` (`parseFrontmatter`).
-- **Consumers:** `omo-opencode/src/hooks/keyword-detector/{ultrawork,hyperplan,team}/*.ts` (thin re-export shims), `agents/atlas/agent.ts`, `agents/prometheus/system-prompt.ts`; `omo-codex` resolves `prompts-core/prompts/ultrawork/codex.md` directly (secondary export path).
+- **Peer deps:** `@oh-my-cybersecurity/model-core` (`isGptModel`, `isGeminiModel`, `isKimiK2Model`, …), `@oh-my-cybersecurity/utils` (`parseFrontmatter`).
+- **Consumers:** `omc-opencode/src/hooks/keyword-detector/{ultrawork,hyperplan,team}/*.ts` (thin re-export shims), `agents/atlas/agent.ts`, `agents/prometheus/system-prompt.ts`; `omc-codex` resolves `prompts-core/prompts/ultrawork/codex.md` directly (secondary export path).
 
 ## NOTES
 
@@ -39,3 +39,11 @@ Per-model system prompts are not owned here. OpenCode imports Senpi's public
 `./prompt-presets` builders through its native-model-prompt adapter. Atlas
 markdown retains the existing OpenCode orchestration role and its variants.
 `resolveVariant` keeps its original table-order behavior for roles and mode overlays.
+
+## Harness-neutral guard
+
+prompts-core is in the core package list (`script/core-package-paths.ts`);
+`script/shared-core-extraction-guard.test.ts` rejects adapter imports here in
+addition to the package's own `test/opencode-coupling-audit.test.ts`. Prompt
+bodies are bundled at build time, so a body edit needs a rebuild of every
+consumer (`bun run build` in the adapters).

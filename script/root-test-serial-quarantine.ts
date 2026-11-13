@@ -28,7 +28,7 @@ export const ROOT_TEST_SERIAL_QUARANTINE: readonly SerialQuarantineEntry[] = [
     reason: "a saturation benchmark whose timings degrade once workers compete for the same cores",
   },
   {
-    path: "packages/omo-codex/src/install/install-codex-legacy-agent-purge.test.ts",
+    path: "packages/omc-codex/src/install/install-codex-legacy-agent-purge.test.ts",
     reason: "purges legacy agent state from a shared installer root",
   },
   {
@@ -40,7 +40,7 @@ export const ROOT_TEST_SERIAL_QUARANTINE: readonly SerialQuarantineEntry[] = [
     reason: "walks the whole shared-skills tree and is starved by concurrent filesystem load",
   },
   {
-    path: "packages/omo-codex/src/install/install-codex-mcp-manifest.test.ts",
+    path: "packages/omc-codex/src/install/install-codex-mcp-manifest.test.ts",
     reason: "hit its timeout under real --parallel on the manifest cache path (run 32053350172)",
   },
   {
@@ -48,12 +48,12 @@ export const ROOT_TEST_SERIAL_QUARANTINE: readonly SerialQuarantineEntry[] = [
     reason: "wave-ordering assertions are timing sensitive under a saturated scheduler",
   },
   {
-    path: "packages/omo-native/test/payload.test.ts",
-    reason: "runs a real omo-native plugin build that mutates shared plugin build inputs",
+    path: "packages/omc-native/test/payload.test.ts",
+    reason: "runs a real omc-native plugin build that mutates shared plugin build inputs",
   },
   {
-    path: "script/build-omo-binary.test.ts",
-    reason: "runs a real omo-native plugin staging build against the same shared plugin tree",
+    path: "script/build-omc-binary.test.ts",
+    reason: "runs a real omc-native plugin staging build against the same shared plugin tree",
   },
   {
     path: "packages/senpi-task/src/team/member-extension/residency.test.ts",

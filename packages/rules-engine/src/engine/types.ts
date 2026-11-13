@@ -2,7 +2,7 @@
  * Public types for pi-rules.
  *
  * These types are stable contracts between modules. The frontmatter type
- * mirrors omo's `RuleMetadata` plus Claude (`paths`) and Copilot (`applyTo`)
+ * mirrors omc's `RuleMetadata` plus Claude (`paths`) and Copilot (`applyTo`)
  * aliases that are normalized into `globs` internally.
  */
 
@@ -76,14 +76,14 @@ export interface LoadedRule extends RuleCandidate {
  * Source identifier for rule files. Used for deterministic ordering and display.
  */
 export type RuleSource =
-	| ".omo/rules"
+	| ".omc/rules"
 	| ".claude/rules"
 	| ".cursor/rules"
 	| ".github/instructions"
 	| ".github/copilot-instructions.md"
 	| "CONTEXT.md"
 	| "plugin-bundled"
-	| "~/.omo/rules"
+	| "~/.omc/rules"
 	| "~/.opencode/rules"
 	| "~/.claude/rules";
 

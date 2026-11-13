@@ -3,7 +3,7 @@ import type { RequestContext } from "./env"
 import { type Channel, channelPointerKey, isReleaseVersion, releaseVersionOfNpmVersion } from "./release-names"
 
 const POINTER_TTL_SECONDS = 60
-const NPM_DIST_TAGS = "https://registry.npmjs.org/-/package/omo-ai/dist-tags"
+const NPM_DIST_TAGS = "https://registry.npmjs.org/-/package/omc-ai/dist-tags"
 
 type Resolved = { readonly version: string; readonly source: "r2" | "npm" }
 
@@ -39,7 +39,7 @@ async function resolveChannel(ctx: RequestContext, channel: Channel): Promise<Re
 }
 
 export async function serveChannel(request: Request, ctx: RequestContext, channel: Channel): Promise<Response> {
-  const cacheKey = new Request(`https://get.omo.dev/channels/${channel}`, { method: "GET" })
+  const cacheKey = new Request(`https://get.omc.nga.hm/channels/${channel}`, { method: "GET" })
   const cached = await ctx.cache.match(cacheKey)
   const response =
     cached ??

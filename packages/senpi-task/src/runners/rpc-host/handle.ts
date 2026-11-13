@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import type { RunnerOutcome } from "../in-process/child-handle"
 import { exitTurnOutcome, promptFailureOutcome } from "../rpc/turn-outcome"
@@ -58,7 +58,7 @@ export function createHostSessionHandle(options: HostSessionHandleOptions): Host
   let turnOutcome: RunnerOutcome | undefined
   let terminalAssistantMessage: RpcTerminalAssistantMessage | undefined
   let abortedByUser = false
-  // The host answered this child's end of its session; a released port never sets it (omo#11765).
+  // The host answered this child's end of its session; a released port never sets it (omc#11765).
   let hostEndAnswered = false
   const markHostEndAnswered = (): void => { hostEndAnswered = true }
   let lastSeenAt: number | undefined
@@ -104,7 +104,7 @@ export function createHostSessionHandle(options: HostSessionHandleOptions): Host
   const onSessionEvent = (event: Parameters<ChildEventListener>[0]): void => {
     heartbeat.activity()
     // A run the child starts on its own after its turn settled (a monitor or background job woke it)
-    // is a new turn: the next outcome is that run's, never the settled one again (omo#9069).
+    // is a new turn: the next outcome is that run's, never the settled one again (omc#9069).
     if (event.type === "agent_start" && (continuationState === "awaiting_start" || turnOutcome !== undefined) && outcome === undefined) {
       beginTurn()
       if (!claims.consume()) listeners.emitSelfResumed()
@@ -174,7 +174,7 @@ export function createHostSessionHandle(options: HostSessionHandleOptions): Host
   // A parked session is NOT an exit: the child keeps its status and its transcript, and the manager
   // parks the record (`rpc_detached`) until a later turn reopens the session from its JSONL.
   const park = (event: HostSessionParked): void => {
-    // A parked session is idle on the host: an outcome held for `agent_idle` is final (omo#9069).
+    // A parked session is idle on the host: an outcome held for `agent_idle` is final (omc#9069).
     const held = settlement.pending()
     if (turnOutcome === undefined && held !== undefined) settleTurn(held)
     parked = true

@@ -22,7 +22,7 @@ function fixture() {
   }
   const ids: string[] = []
   const policy = new EnvironmentGrantPolicy(store, (message) => {
-    const id = message.match(/\/omo-mcp-env-grant ([a-f0-9]+)/)?.[1]
+    const id = message.match(/\/omc-mcp-env-grant ([a-f0-9]+)/)?.[1]
     if (!id) throw new Error("Notice omitted its grant handle")
     ids.push(id)
   })

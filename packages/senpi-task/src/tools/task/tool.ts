@@ -11,7 +11,7 @@ import type { TaskToolDeps, TaskToolDetails } from "./types"
 export const TASK_TOOL_NAME = "task"
 
 // Assembles the senpi ToolDefinition: a TypeBox param schema, a description whose category and agent
-// lists are injected dynamically from omo.json + the loader, prompt-surface hints, the spawn/continue
+// lists are injected dynamically from omc.json + the loader, prompt-surface hints, the spawn/continue
 // execute logic, and compact call/result renderers. The literal is returned unwrapped: senpi's
 // defineTool is an identity helper that exists for type inference only (pinned by the senpi API
 // tripwire), and calling it here would statically bind this module to the engine barrel.

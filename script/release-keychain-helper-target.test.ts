@@ -5,12 +5,12 @@ import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, st
 import { tmpdir } from "node:os"
 import { dirname, join } from "node:path"
 
-import { buildRuntimeManifest, RELEASE_BINARY_TARGETS, resolveExpectedSidecarRelPaths, stageSidecarPayload } from "./build-omo-binary"
+import { buildRuntimeManifest, RELEASE_BINARY_TARGETS, resolveExpectedSidecarRelPaths, stageSidecarPayload } from "./build-omc-binary"
 import { KEYCHAIN_HELPER_PAYLOAD, KEYCHAIN_HELPER_SOURCE, keychainHelperPayload, stageKeychainHelper } from "./release-keychain-helper-target"
 
 function withRoot(body: (root: string) => void | Promise<void>): () => Promise<void> {
   return async () => {
-    const root = mkdtempSync(join(tmpdir(), "omo-keychain-target-"))
+    const root = mkdtempSync(join(tmpdir(), "omc-keychain-target-"))
     try {
       await body(root)
     } finally {
@@ -20,8 +20,8 @@ function withRoot(body: (root: string) => void | Promise<void>): () => Promise<v
 }
 
 describe("keychain helper in the compiled release payload (#11262)", () => {
-  test("every darwin target and no other target embeds the helper beside the runtime (execDir/omo-keychain, RULING-74)", () => {
-    expect(KEYCHAIN_HELPER_PAYLOAD).toBe("omo-keychain")
+  test("every darwin target and no other target embeds the helper beside the runtime (execDir/omc-keychain, RULING-74)", () => {
+    expect(KEYCHAIN_HELPER_PAYLOAD).toBe("omc-keychain")
     for (const target of RELEASE_BINARY_TARGETS) {
       const darwin = target.target.startsWith("darwin-")
       expect(keychainHelperPayload(target.target), target.target).toBe(darwin ? KEYCHAIN_HELPER_PAYLOAD : null)

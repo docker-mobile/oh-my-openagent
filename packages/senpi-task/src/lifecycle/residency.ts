@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto"
 
 import type { TaskRecord } from "../state"
 import { withHostClaim } from "../state/host-claim"
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import { acquireSessionAdmissionLease, type AdmissionLeaseTiming } from "./admission-lease"
 import { isRevivalCandidate, isUnboundedResidency, residentsOf, selectRevivalBatch } from "./revival-selection"
@@ -67,7 +67,7 @@ export async function reclaimIdleResidents(context: LifecycleContext): Promise<r
       Date.parse(record.updated_at) <= cutoff &&
       !blocksFinishedTeardown(context, record.task_id),
   )
-  // Each resident is reclaimed on its own (omo#9785): one child that is slow to stop never delays the
+  // Each resident is reclaimed on its own (omc#9785): one child that is slow to stop never delays the
   // others, and every teardown step is bounded, so the sweep always settles and the next one runs.
   const outcomes = await Promise.all(candidates.map((candidate) => reclaimIdleResident(context, candidate, cutoff)))
   return outcomes.filter((taskId): taskId is string => taskId !== undefined)

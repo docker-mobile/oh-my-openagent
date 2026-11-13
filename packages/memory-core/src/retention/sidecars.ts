@@ -1,4 +1,4 @@
-// Kibitzer sidecar retention (moved from omo-senpi kibitzer/observe-prune.ts, design 2.4): a sidecar
+// Kibitzer sidecar retention (moved from omc-senpi kibitzer/observe-prune.ts, design 2.4): a sidecar
 // directory idle for the retention window is removed - never while a session owns it. Ownership is
 // an ordinary memory-core lock (`locks/recall-sidecar.<encoded-session>.lock`) held from sidecar
 // creation to session shutdown, so a sweep from another process sees a live owner (contention) and

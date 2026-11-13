@@ -1,4 +1,4 @@
-import type { RuntimeState, Task } from "@oh-my-opencode/team-core/types"
+import type { RuntimeState, Task } from "@oh-my-cybersecurity/team-core/types"
 
 import type { CreateTeamResult, DeleteTeamResult, SendTeamMessageInput, SendTeamMessageResult } from "../../team"
 

@@ -1,5 +1,5 @@
 // #12280 R-B6: a memory repository's journal can hold a batch sealed by a previous principal of this
-// machine (its keys were discarded by `omo account forget`, then a new principal re-joined). The
+// machine (its keys were discarded by `omc account forget`, then a new principal re-joined). The
 // service refuses a batch whose record signature is not the caller's own, so that batch is re-sealed
 // under the new principal, never sent as it is.
 
@@ -95,7 +95,7 @@ test("#given a journaled batch sealed by the machine's previous principal #when 
     await expect(resent.engine.runCycle()).rejects.toThrow("the connection dropped")
     await resent.close()
     expect(logs.filter((line) => line.includes("re-sealing"))).toEqual([])
-    // `omo account forget`: the first principal's keys are discarded and its pin retired; no revoke.
+    // `omc account forget`: the first principal's keys are discarded and its pin retired; no revoke.
     await forgetTrustAnchor(pinDir, ACCOUNT)
 
     const second = await deviceKeyring(21)

@@ -12,7 +12,7 @@ import { removeTreeSync } from "../../../../test-support/remove-tree"
 const TIMEOUT_MS = 60_000
 
 function scratchRoot(): string {
-  const root = realpathSync.native(mkdtempSync(join(tmpdir(), "omo-git-exec-env-")))
+  const root = realpathSync.native(mkdtempSync(join(tmpdir(), "omc-git-exec-env-")))
   onTestFinished(() => removeTreeSync(root, { maxRetries: 10, retryDelay: 200 }))
   return root
 }

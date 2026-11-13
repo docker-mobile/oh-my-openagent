@@ -4,7 +4,7 @@ import { FakeRunner, baseSpec, cleanupProjects, flush, makeManager, settings } f
 
 afterEach(cleanupProjects)
 
-// oh-my-openagent#8973. Suspending a running child (parent session shutdown, daemon loss) forgets
+// oh-my-cybersecurity#8973. Suspending a running child (parent session shutdown, daemon loss) forgets
 // its handle, and the outcome tracker then refuses to settle a handle it no longer owns, so the
 // lane lease of the suspended run was never released. Every suspension leaked one slot until the
 // parent's lane was full and every revival and task_send answered `lane_capacity`.

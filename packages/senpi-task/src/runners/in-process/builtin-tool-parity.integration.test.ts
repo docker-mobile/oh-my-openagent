@@ -20,7 +20,7 @@ afterEach(() => {
 
 describe("in-process child builtin tool parity", () => {
   test("#given the process child loader policy #when the in-process loader reloads #then builtin tool names match with web_search available", async () => {
-    const root = mkdtempSync(join(tmpdir(), "omo-child-tools-parity-"))
+    const root = mkdtempSync(join(tmpdir(), "omc-child-tools-parity-"))
     roots.push(root)
     const agentDir = join(root, "agent")
     const cwd = join(root, "work")

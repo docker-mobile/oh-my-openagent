@@ -1,6 +1,6 @@
 # Codex Light Telemetry
 
-Codex Light, installed through `lazycodex-ai`, sends anonymous daily-active telemetry for the Codex adapter only. The public package alias is `lazycodex-ai`; the Codex marketplace identity remains `sisyphuslabs` / `omo`.
+Codex Light, installed through `lazycodex-ai`, sends anonymous daily-active telemetry for the Codex adapter only. The public package alias is `lazycodex-ai`; the Codex marketplace identity remains `sisyphuslabs` / `omc`.
 
 ## Event
 
@@ -8,9 +8,9 @@ The Codex adapter emits one PostHog event:
 
 | Field | Value |
 | ----- | ----- |
-| Event name | `omo_codex_daily_active` |
-| Product platform | `omo-codex` |
-| Distinct ID | The device hash, `sha256("omo:device:v1\0" + the OS machine id)`; `sha256(install id)` when the OS exposes no machine id or `OMO_TELEMETRY_DEVICE_ID=off` |
+| Event name | `omc_codex_daily_active` |
+| Product platform | `omc-codex` |
+| Distinct ID | The device hash, `sha256("omc:device:v1\0" + the OS machine id)`; `sha256(install id)` when the OS exposes no machine id or `OMC_TELEMETRY_DEVICE_ID=off` |
 | Daily limit | At most once per UTC day per machine |
 | Person profiles | Disabled with `$process_person_profile: false` |
 
@@ -22,10 +22,10 @@ Two paths can attempt to send the same daily event. They share the same daily de
 
 | Source | Reason | Trigger |
 | ------ | ------ | ------- |
-| `install` | `install_completed` | `bunx lazycodex-ai install`, `omo-agent-toolkit install --platform=codex`, or `omo-agent-toolkit install --platform=both` finishes |
+| `install` | `install_completed` | `bunx lazycodex-ai install`, `omc-agent-toolkit install --platform=codex`, or `omc-agent-toolkit install --platform=both` finishes |
 | `plugin` | `session_start` | The Codex plugin `SessionStart` hook runs at the start of a Codex session |
 
-The installer path is implemented in `packages/omo-codex/src/telemetry/`. The runtime plugin path is implemented in `packages/omo-codex/plugin/components/telemetry/`, which is copied into the `code-yeongyu/lazycodex` marketplace repository under `plugins/omo/components/telemetry/`.
+The installer path is implemented in `packages/omc-codex/src/telemetry/`. The runtime plugin path is implemented in `packages/omc-codex/plugin/components/telemetry/`, which is copied into the `code-yeongyu/lazycodex` marketplace repository under `plugins/omc/components/telemetry/`.
 
 ## Properties
 
@@ -46,13 +46,13 @@ Telemetry does not send prompt contents, chat transcripts, source files, reposit
 Daily deduplication state is stored locally at:
 
 ```text
-$XDG_DATA_HOME/omo-codex/posthog-activity.json
+$XDG_DATA_HOME/omc-codex/posthog-activity.json
 ```
 
 When `XDG_DATA_HOME` is unset, the default path is:
 
 ```text
-~/.local/share/omo-codex/posthog-activity.json
+~/.local/share/omc-codex/posthog-activity.json
 ```
 
 The file contains the last UTC day captured for the machine, for example:
@@ -70,15 +70,15 @@ Set one of these environment variables before running the installer or launching
 Codex-only opt-out:
 
 ```bash
-export OMO_CODEX_DISABLE_POSTHOG=1
-export OMO_CODEX_SEND_ANONYMOUS_TELEMETRY=0
+export OMC_CODEX_DISABLE_POSTHOG=1
+export OMC_CODEX_SEND_ANONYMOUS_TELEMETRY=0
 ```
 
-Global opt-out, covering both oh-my-openagent and omo-codex telemetry:
+Global opt-out, covering both oh-my-cybersecurity and omc-codex telemetry:
 
 ```bash
-export OMO_DISABLE_POSTHOG=1
-export OMO_SEND_ANONYMOUS_TELEMETRY=0
+export OMC_DISABLE_POSTHOG=1
+export OMC_SEND_ANONYMOUS_TELEMETRY=0
 ```
 
 When telemetry is disabled, the PostHog client is a no-op and no telemetry network call is made.

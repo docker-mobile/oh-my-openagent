@@ -20,7 +20,7 @@ const roots: string[] = []
 const path = "reference/note.md"
 const body = "\n# Durable note\r\n\r\nBody stays byte-identical.  \r\n"
 const oversized = `${"summary ".repeat(139)}ending`
-const author = { agentId: "agent-one", authorName: "Reflection Agent", authorEmail: "reflection@omo.local" }
+const author = { agentId: "agent-one", authorName: "Reflection Agent", authorEmail: "reflection@omc.local" }
 
 async function fixture(content: string, existing = true, baseContent = renderMemoryFile({ description: "a".repeat(937) }, body)) {
   const root = realpathSync.native(await mkdtemp(join(tmpdir(), "description-preflight-")))

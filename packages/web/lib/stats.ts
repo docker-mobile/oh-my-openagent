@@ -9,7 +9,7 @@ import { fetchAllTimeDownloads, sumLineageDownloads } from "./npm-downloads"
 const CACHE_TTL_MS = 60 * 60 * 1000
 
 export const FALLBACK_DESCRIPTION =
-  'OmO: Just type "mass ulw" keyword with your prompt. Now you are the master of graph engineering.'
+  'OmC: Just type "mass ulw" keyword with your prompt. Now you are the master of graph engineering.'
 
 export const FALLBACK_STATS_DATA: StatsData = {
   stars: 69_000,
@@ -30,7 +30,7 @@ interface StatsCache {
 export interface StatsData {
   stars: number
   description: string
-  /** npm lineage plus the compiled binaries downloaded from GitHub releases and the get.omo.dev mirror. */
+  /** npm lineage plus the compiled binaries downloaded from GitHub releases and the get.omc.nga.hm mirror. */
   totalDownloads: number
   npmTotalDownloads: number
   nativeDownloads: number
@@ -61,7 +61,7 @@ export interface StatsStore {
 }
 
 /** A Cache API key is a URL; this one is never fetched from the network. */
-const LAST_KNOWN_GOOD_KEY = "https://omo.dev/__stats/last-known-good/v1"
+const LAST_KNOWN_GOOD_KEY = "https://omc.nga.hm/__stats/last-known-good/v1"
 const LAST_KNOWN_GOOD_TTL_S = 7 * 24 * 60 * 60
 
 function isStatsData(value: unknown): value is StatsData {

@@ -17,7 +17,7 @@ impl StopLatch {
     pub(crate) fn open() -> io::Result<Self> {
         #[cfg(not(test))]
         let directory =
-            account::home()?.join("Library/Application Support/OmO/ComputerControl/xpc-v1");
+            account::home()?.join("Library/Application Support/OmC/ComputerControl/xpc-v1");
         #[cfg(test)]
         let directory = crate::xpc_test_harness::state_dir();
         Ok(Self::load(directory))

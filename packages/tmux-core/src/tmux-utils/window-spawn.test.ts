@@ -80,7 +80,7 @@ describe("spawnTmuxWindow runner integration", () => {
 	it("#given healthy tmux environment #when spawnTmuxWindow called #then delegates new-window and select-pane to shared runner", async () => {
 		// given
 		const harness = createHarness()
-		const directory = "/tmp/omo-project/(window)"
+		const directory = "/tmp/omc-project/(window)"
 
 		// when
 		const result = await spawnTmuxWindow("session-1", "worker", enabledTmuxConfig, "http://127.0.0.1:1234", directory, harness.deps)
@@ -89,8 +89,8 @@ describe("spawnTmuxWindow runner integration", () => {
 		const firstCall = harness.getRunTmuxCommandCall(0)
 		const secondCall = harness.getRunTmuxCommandCall(1)
 		expect(result).toEqual({ success: true, paneId: "%42" })
-		expect(firstCall[1].slice(0, 7)).toEqual(["new-window", "-d", "-n", "omo-agents", "-P", "-F", "#{pane_id}"])
-		expect(secondCall[1]).toEqual(["select-pane", "-t", "%42", "-T", "omo-subagent-worker"])
+		expect(firstCall[1].slice(0, 7)).toEqual(["new-window", "-d", "-n", "omc-agents", "-P", "-F", "#{pane_id}"])
+		expect(secondCall[1]).toEqual(["select-pane", "-t", "%42", "-T", "omc-subagent-worker"])
 		expect(harness.getNewWindowCommand()).toContain("Focus this pane to attach.")
 		expect(harness.getNewWindowCommand()).toContain("while :; do sleep 86400; done")
 		expect(harness.getNewWindowCommand()).not.toContain("opencode attach")
@@ -99,7 +99,7 @@ describe("spawnTmuxWindow runner integration", () => {
 	it("#given a description holding tmux format syntax #when the pane title is set #then # is doubled so tmux keeps it literal and runs nothing (#10228)", async () => {
 		// given
 		const harness = createHarness()
-		const directory = "/tmp/omo-project/(window)"
+		const directory = "/tmp/omc-project/(window)"
 
 		// when
 		const result = await spawnTmuxWindow("session-1", "#(touch x)#{pane_id} and more", enabledTmuxConfig, "http://127.0.0.1:1234", directory, harness.deps)
@@ -108,8 +108,8 @@ describe("spawnTmuxWindow runner integration", () => {
 		const firstCall = harness.getRunTmuxCommandCall(0)
 		const secondCall = harness.getRunTmuxCommandCall(1)
 		expect(result).toEqual({ success: true, paneId: "%42" })
-		expect(firstCall[1].slice(0, 7)).toEqual(["new-window", "-d", "-n", "omo-agents", "-P", "-F", "#{pane_id}"])
-		expect(secondCall[1]).toEqual(["select-pane", "-t", "%42", "-T", "omo-subagent-##(touch x)##{pane_id}"])
+		expect(firstCall[1].slice(0, 7)).toEqual(["new-window", "-d", "-n", "omc-agents", "-P", "-F", "#{pane_id}"])
+		expect(secondCall[1]).toEqual(["select-pane", "-t", "%42", "-T", "omc-subagent-##(touch x)##{pane_id}"])
 		expect(harness.getNewWindowCommand()).toContain("Focus this pane to attach.")
 		expect(harness.getNewWindowCommand()).toContain("while :; do sleep 86400; done")
 		expect(harness.getNewWindowCommand()).not.toContain("opencode attach")

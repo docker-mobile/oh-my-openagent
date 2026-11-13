@@ -4,7 +4,7 @@
 
 ## OVERVIEW
 
-Harness-neutral logic for walking a file path UP its directory tree, discovering nearby `AGENTS.md` files, truncating their content, and formatting them as a `[Directory Context: ...]` block for injection into the session. Discovery itself is delegated to [`rules-engine`](../rules-engine/AGENTS.md) (`findAgentsMdUp`, `AgentsMdCache`); this package owns path resolution, formatting, and the per-session injected-paths cache. Package: `@oh-my-opencode/agents-md-core`.
+Harness-neutral logic for walking a file path UP its directory tree, discovering nearby `AGENTS.md` files, truncating their content, and formatting them as a `[Directory Context: ...]` block for injection into the session. Discovery itself is delegated to [`rules-engine`](../rules-engine/AGENTS.md) (`findAgentsMdUp`, `AgentsMdCache`); this package owns path resolution, formatting, and the per-session injected-paths cache. Package: `@oh-my-cybersecurity/agents-md-core`.
 
 ## PUBLIC API (`src/index.ts`)
 
@@ -18,21 +18,22 @@ Harness-neutral logic for walking a file path UP its directory tree, discovering
 
 ## DEPENDENCIES & CONSUMERS
 
-- **Depends on:** `@oh-my-opencode/rules-engine` only.
-- **Consumed by** (OpenCode edition only; no Codex consumer): `omo-opencode/src/hooks/directory-agents-injector/{finder,injector}.ts` (re-export) and `hooks/hephaestus-agents-md-injector/hook.ts` (`formatAgentsMdContextBlock`).
+- **Depends on:** `@oh-my-cybersecurity/rules-engine` only.
+- **Consumed by** (OpenCode edition only; no Codex consumer): `omc-opencode/src/hooks/directory-agents-injector/{finder,injector}.ts` (re-export) and `hooks/hephaestus-agents-md-injector/hook.ts` (`formatAgentsMdContextBlock`).
 
 ## NOTES
 
 - **Path-traversal guard is a security invariant.** `resolveFilePath` canonicalizes via `realpathSync` and returns `null` when the resolved path is outside `rootDirectory`.
 - **Truncator + storage are injected** (`AgentsMdTruncator`, `AgentsMdInjectedPathsStorage`) — this package never implements truncation strategy or persistence itself.
 - **Formatting deviates from repo default:** this package uses semicolons where the rest of the repo is no-semicolon — match the file you are editing, do not reformat.
+- **Harness-neutral guard:** zero adapter imports, enforced by `script/shared-core-extraction-guard.test.ts` (package list: `script/core-package-paths.ts`).
 
 - Parent: [`packages/AGENTS.md`](../AGENTS.md).
 
 ## QA
 
 ```bash
-bun test packages/agents-md-core/src/
+cd packages/agents-md-core
+bun run typecheck   # tsgo --noEmit -p tsconfig.json
+bun run test        # bun test src/*.test.ts
 ```
-
-(No package-local scripts; repo-standard Bun invocation.)

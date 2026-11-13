@@ -14,41 +14,41 @@
         "@clack/prompts": "^1.8.1",
         "@code-yeongyu/senpi": "2026.11.9-2",
         "@modelcontextprotocol/sdk": "^1.30.0",
-        "@oh-my-opencode/agents-md-core": "workspace:*",
-        "@oh-my-opencode/ast-grep-mcp": "workspace:*",
-        "@oh-my-opencode/boulder-state": "workspace:*",
-        "@oh-my-opencode/claude-code-compat-core": "workspace:*",
-        "@oh-my-opencode/comment-checker-core": "workspace:*",
-        "@oh-my-opencode/delegate-core": "workspace:*",
-        "@oh-my-opencode/device-service-core": "workspace:*",
-        "@oh-my-opencode/git-bash-mcp": "workspace:*",
-        "@oh-my-opencode/hashline-core": "workspace:*",
-        "@oh-my-opencode/isolation-core": "workspace:*",
-        "@oh-my-opencode/lsp-core": "workspace:*",
-        "@oh-my-opencode/mcp-client-core": "workspace:*",
-        "@oh-my-opencode/mcp-stdio-core": "workspace:*",
-        "@oh-my-opencode/memory-core": "workspace:*",
-        "@oh-my-opencode/model-core": "workspace:*",
-        "@oh-my-opencode/omo-codex": "workspace:*",
-        "@oh-my-opencode/omo-config-core": "workspace:*",
-        "@oh-my-opencode/omo-opencode": "workspace:*",
-        "@oh-my-opencode/omo-senpi": "workspace:*",
-        "@oh-my-opencode/openclaw-core": "workspace:*",
-        "@oh-my-opencode/prompts-core": "workspace:*",
-        "@oh-my-opencode/rules-engine": "workspace:*",
-        "@oh-my-opencode/senpi-desktop-engine": "workspace:*",
-        "@oh-my-opencode/senpi-desktop-prelude": "workspace:*",
-        "@oh-my-opencode/senpi-desktop-protocol": "workspace:*",
-        "@oh-my-opencode/senpi-desktop-sdk": "workspace:*",
-        "@oh-my-opencode/senpi-desktop-service": "workspace:*",
-        "@oh-my-opencode/senpi-desktop-tool": "workspace:*",
-        "@oh-my-opencode/senpi-task": "workspace:*",
-        "@oh-my-opencode/shared-skills": "workspace:*",
-        "@oh-my-opencode/skills-loader-core": "workspace:*",
-        "@oh-my-opencode/team-core": "workspace:*",
-        "@oh-my-opencode/telemetry-core": "workspace:*",
-        "@oh-my-opencode/tmux-core": "workspace:*",
-        "@oh-my-opencode/utils": "workspace:*",
+        "@oh-my-cybersecurity/agents-md-core": "workspace:*",
+        "@oh-my-cybersecurity/ast-grep-mcp": "workspace:*",
+        "@oh-my-cybersecurity/boulder-state": "workspace:*",
+        "@oh-my-cybersecurity/claude-code-compat-core": "workspace:*",
+        "@oh-my-cybersecurity/comment-checker-core": "workspace:*",
+        "@oh-my-cybersecurity/delegate-core": "workspace:*",
+        "@oh-my-cybersecurity/device-service-core": "workspace:*",
+        "@oh-my-cybersecurity/git-bash-mcp": "workspace:*",
+        "@oh-my-cybersecurity/hashline-core": "workspace:*",
+        "@oh-my-cybersecurity/isolation-core": "workspace:*",
+        "@oh-my-cybersecurity/lsp-core": "workspace:*",
+        "@oh-my-cybersecurity/mcp-client-core": "workspace:*",
+        "@oh-my-cybersecurity/mcp-stdio-core": "workspace:*",
+        "@oh-my-cybersecurity/memory-core": "workspace:*",
+        "@oh-my-cybersecurity/model-core": "workspace:*",
+        "@oh-my-cybersecurity/omc-codex": "workspace:*",
+        "@oh-my-cybersecurity/omc-config-core": "workspace:*",
+        "@oh-my-cybersecurity/omc-opencode": "workspace:*",
+        "@oh-my-cybersecurity/omc-senpi": "workspace:*",
+        "@oh-my-cybersecurity/openclaw-core": "workspace:*",
+        "@oh-my-cybersecurity/prompts-core": "workspace:*",
+        "@oh-my-cybersecurity/rules-engine": "workspace:*",
+        "@oh-my-cybersecurity/senpi-desktop-engine": "workspace:*",
+        "@oh-my-cybersecurity/senpi-desktop-prelude": "workspace:*",
+        "@oh-my-cybersecurity/senpi-desktop-protocol": "workspace:*",
+        "@oh-my-cybersecurity/senpi-desktop-sdk": "workspace:*",
+        "@oh-my-cybersecurity/senpi-desktop-service": "workspace:*",
+        "@oh-my-cybersecurity/senpi-desktop-tool": "workspace:*",
+        "@oh-my-cybersecurity/senpi-task": "workspace:*",
+        "@oh-my-cybersecurity/shared-skills": "workspace:*",
+        "@oh-my-cybersecurity/skills-loader-core": "workspace:*",
+        "@oh-my-cybersecurity/team-core": "workspace:*",
+        "@oh-my-cybersecurity/telemetry-core": "workspace:*",
+        "@oh-my-cybersecurity/tmux-core": "workspace:*",
+        "@oh-my-cybersecurity/utils": "workspace:*",
         "@opencode-ai/plugin": "1.18.31",
         "@opencode-ai/sdk": "1.18.31",
         "@opentui/core": "^0.5.11",
@@ -77,113 +77,128 @@
         "typescript": "^7.0.2",
       },
       "optionalDependencies": {
-        "oh-my-opencode-darwin-arm64": "5.1.65",
-        "oh-my-opencode-darwin-x64": "5.1.65",
-        "oh-my-opencode-darwin-x64-baseline": "5.1.65",
-        "oh-my-opencode-linux-arm64": "5.1.65",
-        "oh-my-opencode-linux-arm64-musl": "5.1.65",
-        "oh-my-opencode-linux-x64": "5.1.65",
-        "oh-my-opencode-linux-x64-baseline": "5.1.65",
-        "oh-my-opencode-linux-x64-musl": "5.1.65",
-        "oh-my-opencode-linux-x64-musl-baseline": "5.1.65",
-        "oh-my-opencode-windows-arm64": "5.1.65",
-        "oh-my-opencode-windows-x64": "5.1.65",
-        "oh-my-opencode-windows-x64-baseline": "5.1.65",
+        "oh-my-cybersecurity-darwin-arm64": "5.1.65",
+        "oh-my-cybersecurity-darwin-x64": "5.1.65",
+        "oh-my-cybersecurity-darwin-x64-baseline": "5.1.65",
+        "oh-my-cybersecurity-linux-arm64": "5.1.65",
+        "oh-my-cybersecurity-linux-arm64-musl": "5.1.65",
+        "oh-my-cybersecurity-linux-x64": "5.1.65",
+        "oh-my-cybersecurity-linux-x64-baseline": "5.1.65",
+        "oh-my-cybersecurity-linux-x64-musl": "5.1.65",
+        "oh-my-cybersecurity-linux-x64-musl-baseline": "5.1.65",
+        "oh-my-cybersecurity-windows-arm64": "5.1.65",
+        "oh-my-cybersecurity-windows-x64": "5.1.65",
+        "oh-my-cybersecurity-windows-x64-baseline": "5.1.65",
       },
     },
     "packages/agents-md-core": {
-      "name": "@oh-my-opencode/agents-md-core",
+      "name": "@oh-my-cybersecurity/agents-md-core",
       "version": "0.1.0",
       "dependencies": {
-        "@oh-my-opencode/rules-engine": "workspace:*",
+        "@oh-my-cybersecurity/rules-engine": "workspace:*",
       },
     },
+    "packages/arsenal-core": {
+      "name": "@oh-my-cybersecurity/arsenal-core",
+      "version": "0.1.0",
+    },
     "packages/ast-grep-mcp": {
-      "name": "@oh-my-opencode/ast-grep-mcp",
+      "name": "@oh-my-cybersecurity/ast-grep-mcp",
       "version": "0.1.0",
       "bin": {
-        "omo-ast-grep": "dist/cli.js",
+        "omc-ast-grep": "dist/cli.js",
       },
       "dependencies": {
-        "@oh-my-opencode/mcp-stdio-core": "workspace:*",
-        "@oh-my-opencode/utils": "workspace:*",
+        "@oh-my-cybersecurity/mcp-stdio-core": "workspace:*",
+        "@oh-my-cybersecurity/utils": "workspace:*",
       },
       "devDependencies": {
         "bun-types": "1.4.4",
       },
     },
+    "packages/attack-playbook-core": {
+      "name": "@oh-my-cybersecurity/attack-playbook-core",
+      "version": "0.1.0",
+    },
     "packages/boulder-state": {
-      "name": "@oh-my-opencode/boulder-state",
+      "name": "@oh-my-cybersecurity/boulder-state",
       "version": "0.1.0",
     },
     "packages/claude-code-compat-core": {
-      "name": "@oh-my-opencode/claude-code-compat-core",
+      "name": "@oh-my-cybersecurity/claude-code-compat-core",
       "version": "0.1.0",
       "dependencies": {
-        "@oh-my-opencode/model-core": "workspace:*",
-        "@oh-my-opencode/utils": "workspace:*",
+        "@oh-my-cybersecurity/model-core": "workspace:*",
+        "@oh-my-cybersecurity/utils": "workspace:*",
       },
     },
     "packages/comment-checker-core": {
-      "name": "@oh-my-opencode/comment-checker-core",
+      "name": "@oh-my-cybersecurity/comment-checker-core",
       "version": "0.1.0",
       "dependencies": {
-        "@oh-my-opencode/utils": "workspace:*",
+        "@oh-my-cybersecurity/utils": "workspace:*",
       },
     },
     "packages/delegate-core": {
-      "name": "@oh-my-opencode/delegate-core",
+      "name": "@oh-my-cybersecurity/delegate-core",
       "version": "0.1.0",
       "dependencies": {
-        "@oh-my-opencode/model-core": "workspace:*",
+        "@oh-my-cybersecurity/model-core": "workspace:*",
       },
     },
     "packages/device-service-core": {
-      "name": "@oh-my-opencode/device-service-core",
+      "name": "@oh-my-cybersecurity/device-service-core",
       "version": "0.1.0",
     },
+    "packages/engagement-core": {
+      "name": "@oh-my-cybersecurity/engagement-core",
+      "version": "0.1.0",
+      "dependencies": {
+        "@oh-my-cybersecurity/utils": "workspace:*",
+      },
+    },
     "packages/git-bash-mcp": {
-      "name": "@oh-my-opencode/git-bash-mcp",
+      "name": "@oh-my-cybersecurity/git-bash-mcp",
       "version": "0.0.0",
       "bin": {
         "omo-git-bash": "dist/cli.js",
       },
       "dependencies": {
-        "@oh-my-opencode/mcp-stdio-core": "workspace:*",
-        "@oh-my-opencode/utils": "workspace:*",
+        "@oh-my-cybersecurity/mcp-stdio-core": "workspace:*",
+        "@oh-my-cybersecurity/utils": "workspace:*",
       },
       "devDependencies": {
         "bun-types": "1.4.4",
       },
     },
     "packages/hashline-core": {
-      "name": "@oh-my-opencode/hashline-core",
+      "name": "@oh-my-cybersecurity/hashline-core",
       "version": "0.1.0",
       "dependencies": {
         "diff": "^9.0.0",
       },
     },
     "packages/isolation-core": {
-      "name": "@oh-my-opencode/isolation-core",
+      "name": "@oh-my-cybersecurity/isolation-core",
       "version": "0.1.0",
       "dependencies": {
-        "@oh-my-opencode/memory-core": "workspace:*",
+        "@oh-my-cybersecurity/memory-core": "workspace:*",
       },
     },
     "packages/lsp-core": {
-      "name": "@oh-my-opencode/lsp-core",
+      "name": "@oh-my-cybersecurity/lsp-core",
       "version": "0.1.0",
       "dependencies": {
-        "@oh-my-opencode/mcp-stdio-core": "workspace:*",
+        "@oh-my-cybersecurity/mcp-stdio-core": "workspace:*",
       },
     },
     "packages/mcp-client-core": {
-      "name": "@oh-my-opencode/mcp-client-core",
+      "name": "@oh-my-cybersecurity/mcp-client-core",
       "version": "0.1.0",
       "dependencies": {
         "@modelcontextprotocol/sdk": "^1.30.0",
-        "@oh-my-opencode/claude-code-compat-core": "workspace:*",
-        "@oh-my-opencode/utils": "workspace:*",
+        "@oh-my-cybersecurity/claude-code-compat-core": "workspace:*",
+        "@oh-my-cybersecurity/utils": "workspace:*",
         "proper-lockfile": "4.1.2",
         "zod": "^4.6.5",
       },
@@ -193,14 +208,14 @@
       },
     },
     "packages/mcp-stdio-core": {
-      "name": "@oh-my-opencode/mcp-stdio-core",
+      "name": "@oh-my-cybersecurity/mcp-stdio-core",
       "version": "0.1.0",
       "devDependencies": {
         "bun-types": "1.4.4",
       },
     },
     "packages/memory-core": {
-      "name": "@oh-my-opencode/memory-core",
+      "name": "@oh-my-cybersecurity/memory-core",
       "version": "0.1.0",
       "dependencies": {
         "loro-crdt": "1.16.4",
@@ -209,66 +224,76 @@
       },
     },
     "packages/model-core": {
-      "name": "@oh-my-opencode/model-core",
+      "name": "@oh-my-cybersecurity/model-core",
       "version": "0.1.0",
     },
-    "packages/omo-codex": {
-      "name": "@oh-my-opencode/omo-codex",
+    "packages/omc-codex": {
+      "name": "@oh-my-cybersecurity/omc-codex",
       "version": "5.1.65",
       "dependencies": {
-        "@oh-my-opencode/model-core": "workspace:*",
-        "@oh-my-opencode/shared-skills": "workspace:*",
-        "@oh-my-opencode/utils": "workspace:*",
+        "@oh-my-cybersecurity/model-core": "workspace:*",
+        "@oh-my-cybersecurity/shared-skills": "workspace:*",
+        "@oh-my-cybersecurity/utils": "workspace:*",
       },
       "devDependencies": {
         "bun-types": "1.4.4",
       },
     },
-    "packages/omo-config-core": {
-      "name": "@oh-my-opencode/omo-config-core",
+    "packages/omc-config-core": {
+      "name": "@oh-my-cybersecurity/omc-config-core",
       "version": "0.1.0",
       "dependencies": {
         "jsonc-parser": "^3.3.1",
         "zod": "^4.6.5",
       },
     },
-    "packages/omo-native": {
-      "name": "omo-ai",
+    "packages/omc-console-core": {
+      "name": "@oh-my-cybersecurity/omc-console-core",
+      "version": "0.1.0",
+      "dependencies": {
+        "@oh-my-cybersecurity/arsenal-core": "workspace:*",
+        "@oh-my-cybersecurity/engagement-core": "workspace:*",
+      },
+    },
+    "packages/omc-native": {
+      "name": "omc-ai",
       "version": "5.1.65",
       "bin": {
-        "omo": "bin/omo.js",
+        "omc": "bin/omc.js",
       },
       "dependencies": {
         "@code-yeongyu/senpi": "2026.11.9-2",
       },
     },
-    "packages/omo-opencode": {
-      "name": "@oh-my-opencode/omo-opencode",
+    "packages/omc-opencode": {
+      "name": "@oh-my-cybersecurity/omc-opencode",
       "version": "0.1.0",
       "dependencies": {
         "@clack/prompts": "^1.8.1",
         "@code-yeongyu/senpi": "2026.11.9-2",
         "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.9-2",
         "@modelcontextprotocol/sdk": "^1.30.0",
-        "@oh-my-opencode/agents-md-core": "workspace:*",
-        "@oh-my-opencode/boulder-state": "workspace:*",
-        "@oh-my-opencode/claude-code-compat-core": "workspace:*",
-        "@oh-my-opencode/comment-checker-core": "workspace:*",
-        "@oh-my-opencode/delegate-core": "workspace:*",
-        "@oh-my-opencode/hashline-core": "workspace:*",
-        "@oh-my-opencode/mcp-client-core": "workspace:*",
-        "@oh-my-opencode/model-core": "workspace:*",
-        "@oh-my-opencode/omo-codex": "workspace:*",
-        "@oh-my-opencode/omo-config-core": "workspace:*",
-        "@oh-my-opencode/openclaw-core": "workspace:*",
-        "@oh-my-opencode/prompts-core": "workspace:*",
-        "@oh-my-opencode/rules-engine": "workspace:*",
-        "@oh-my-opencode/shared-skills": "workspace:*",
-        "@oh-my-opencode/skills-loader-core": "workspace:*",
-        "@oh-my-opencode/team-core": "workspace:*",
-        "@oh-my-opencode/telemetry-core": "workspace:*",
-        "@oh-my-opencode/tmux-core": "workspace:*",
-        "@oh-my-opencode/utils": "workspace:*",
+        "@oh-my-cybersecurity/agents-md-core": "workspace:*",
+        "@oh-my-cybersecurity/arsenal-core": "workspace:*",
+        "@oh-my-cybersecurity/boulder-state": "workspace:*",
+        "@oh-my-cybersecurity/claude-code-compat-core": "workspace:*",
+        "@oh-my-cybersecurity/comment-checker-core": "workspace:*",
+        "@oh-my-cybersecurity/delegate-core": "workspace:*",
+        "@oh-my-cybersecurity/hashline-core": "workspace:*",
+        "@oh-my-cybersecurity/mcp-client-core": "workspace:*",
+        "@oh-my-cybersecurity/model-core": "workspace:*",
+        "@oh-my-cybersecurity/omc-codex": "workspace:*",
+        "@oh-my-cybersecurity/omc-config-core": "workspace:*",
+        "@oh-my-cybersecurity/omc-console-core": "workspace:*",
+        "@oh-my-cybersecurity/openclaw-core": "workspace:*",
+        "@oh-my-cybersecurity/prompts-core": "workspace:*",
+        "@oh-my-cybersecurity/rules-engine": "workspace:*",
+        "@oh-my-cybersecurity/shared-skills": "workspace:*",
+        "@oh-my-cybersecurity/skills-loader-core": "workspace:*",
+        "@oh-my-cybersecurity/team-core": "workspace:*",
+        "@oh-my-cybersecurity/telemetry-core": "workspace:*",
+        "@oh-my-cybersecurity/tmux-core": "workspace:*",
+        "@oh-my-cybersecurity/utils": "workspace:*",
         "@opencode-ai/plugin": "1.18.31",
         "@opencode-ai/sdk": "1.18.31",
         "commander": "^15.0.0",
@@ -277,32 +302,32 @@
         "zod": "^4.6.5",
       },
     },
-    "packages/omo-senpi": {
-      "name": "@oh-my-opencode/omo-senpi",
+    "packages/omc-senpi": {
+      "name": "@oh-my-cybersecurity/omc-senpi",
       "version": "5.1.65",
       "dependencies": {
         "@code-yeongyu/lsp-daemon": "file:../lsp-daemon",
         "@earendil-works/pi-tui": "npm:@code-yeongyu/senpi-tui@2026.11.9-2",
-        "@oh-my-opencode/ast-grep-mcp": "workspace:*",
-        "@oh-my-opencode/boulder-state": "workspace:*",
-        "@oh-my-opencode/comment-checker-core": "workspace:*",
-        "@oh-my-opencode/delegate-core": "workspace:*",
-        "@oh-my-opencode/device-service-core": "workspace:*",
-        "@oh-my-opencode/lsp-core": "workspace:*",
-        "@oh-my-opencode/model-core": "workspace:*",
-        "@oh-my-opencode/omo-config-core": "workspace:*",
-        "@oh-my-opencode/omo-opencode": "workspace:*",
-        "@oh-my-opencode/prompts-core": "workspace:*",
-        "@oh-my-opencode/senpi-desktop-engine": "workspace:*",
-        "@oh-my-opencode/senpi-desktop-sdk": "workspace:*",
-        "@oh-my-opencode/senpi-desktop-service": "workspace:*",
-        "@oh-my-opencode/senpi-desktop-tool": "workspace:*",
-        "@oh-my-opencode/senpi-task": "workspace:*",
-        "@oh-my-opencode/shared-skills": "workspace:*",
-        "@oh-my-opencode/skills-loader-core": "workspace:*",
-        "@oh-my-opencode/team-core": "workspace:*",
-        "@oh-my-opencode/telemetry-core": "workspace:*",
-        "@oh-my-opencode/utils": "workspace:*",
+        "@oh-my-cybersecurity/ast-grep-mcp": "workspace:*",
+        "@oh-my-cybersecurity/boulder-state": "workspace:*",
+        "@oh-my-cybersecurity/comment-checker-core": "workspace:*",
+        "@oh-my-cybersecurity/delegate-core": "workspace:*",
+        "@oh-my-cybersecurity/device-service-core": "workspace:*",
+        "@oh-my-cybersecurity/lsp-core": "workspace:*",
+        "@oh-my-cybersecurity/model-core": "workspace:*",
+        "@oh-my-cybersecurity/omc-config-core": "workspace:*",
+        "@oh-my-cybersecurity/omc-opencode": "workspace:*",
+        "@oh-my-cybersecurity/prompts-core": "workspace:*",
+        "@oh-my-cybersecurity/senpi-desktop-engine": "workspace:*",
+        "@oh-my-cybersecurity/senpi-desktop-sdk": "workspace:*",
+        "@oh-my-cybersecurity/senpi-desktop-service": "workspace:*",
+        "@oh-my-cybersecurity/senpi-desktop-tool": "workspace:*",
+        "@oh-my-cybersecurity/senpi-task": "workspace:*",
+        "@oh-my-cybersecurity/shared-skills": "workspace:*",
+        "@oh-my-cybersecurity/skills-loader-core": "workspace:*",
+        "@oh-my-cybersecurity/team-core": "workspace:*",
+        "@oh-my-cybersecurity/telemetry-core": "workspace:*",
+        "@oh-my-cybersecurity/utils": "workspace:*",
         "@sinclair/typebox": "0.34.52",
         "typebox": "1.3.34",
       },
@@ -322,34 +347,38 @@
       ],
     },
     "packages/openclaw-core": {
-      "name": "@oh-my-opencode/openclaw-core",
+      "name": "@oh-my-cybersecurity/openclaw-core",
       "version": "0.1.0",
       "dependencies": {
-        "@oh-my-opencode/tmux-core": "workspace:*",
-        "@oh-my-opencode/utils": "workspace:*",
+        "@oh-my-cybersecurity/tmux-core": "workspace:*",
+        "@oh-my-cybersecurity/utils": "workspace:*",
       },
     },
+    "packages/payload-forge-core": {
+      "name": "@oh-my-cybersecurity/payload-forge-core",
+      "version": "0.1.0",
+    },
     "packages/prompts-core": {
-      "name": "@oh-my-opencode/prompts-core",
+      "name": "@oh-my-cybersecurity/prompts-core",
       "version": "0.1.0",
       "peerDependencies": {
-        "@oh-my-opencode/model-core": "workspace:*",
-        "@oh-my-opencode/utils": "workspace:*",
+        "@oh-my-cybersecurity/model-core": "workspace:*",
+        "@oh-my-cybersecurity/utils": "workspace:*",
       },
     },
     "packages/rules-engine": {
-      "name": "@oh-my-opencode/rules-engine",
+      "name": "@oh-my-cybersecurity/rules-engine",
       "version": "0.1.0",
       "dependencies": {
-        "@oh-my-opencode/utils": "workspace:*",
+        "@oh-my-cybersecurity/utils": "workspace:*",
         "picomatch": "^4.0.7",
       },
     },
     "packages/senpi-desktop-engine": {
-      "name": "@oh-my-opencode/senpi-desktop-engine",
+      "name": "@oh-my-cybersecurity/senpi-desktop-engine",
       "version": "0.1.0",
       "dependencies": {
-        "@oh-my-opencode/senpi-desktop-protocol": "workspace:*",
+        "@oh-my-cybersecurity/senpi-desktop-protocol": "workspace:*",
       },
       "devDependencies": {
         "@types/node": "26.6.2",
@@ -358,7 +387,7 @@
       },
     },
     "packages/senpi-desktop-prelude": {
-      "name": "@oh-my-opencode/senpi-desktop-prelude",
+      "name": "@oh-my-cybersecurity/senpi-desktop-prelude",
       "version": "0.1.0",
       "devDependencies": {
         "@types/node": "26.6.2",
@@ -366,7 +395,7 @@
       },
     },
     "packages/senpi-desktop-protocol": {
-      "name": "@oh-my-opencode/senpi-desktop-protocol",
+      "name": "@oh-my-cybersecurity/senpi-desktop-protocol",
       "version": "0.1.0",
       "devDependencies": {
         "@types/node": "26.6.2",
@@ -374,10 +403,10 @@
       },
     },
     "packages/senpi-desktop-sdk": {
-      "name": "@oh-my-opencode/senpi-desktop-sdk",
+      "name": "@oh-my-cybersecurity/senpi-desktop-sdk",
       "version": "0.1.0",
       "dependencies": {
-        "@oh-my-opencode/senpi-desktop-protocol": "workspace:*",
+        "@oh-my-cybersecurity/senpi-desktop-protocol": "workspace:*",
       },
       "devDependencies": {
         "@types/node": "26.6.2",
@@ -385,12 +414,12 @@
       },
     },
     "packages/senpi-desktop-service": {
-      "name": "@oh-my-opencode/senpi-desktop-service",
+      "name": "@oh-my-cybersecurity/senpi-desktop-service",
       "version": "0.1.0",
       "dependencies": {
-        "@oh-my-opencode/senpi-desktop-engine": "workspace:*",
-        "@oh-my-opencode/senpi-desktop-protocol": "workspace:*",
-        "@oh-my-opencode/senpi-desktop-sdk": "workspace:*",
+        "@oh-my-cybersecurity/senpi-desktop-engine": "workspace:*",
+        "@oh-my-cybersecurity/senpi-desktop-protocol": "workspace:*",
+        "@oh-my-cybersecurity/senpi-desktop-sdk": "workspace:*",
         "quickjs-wasi": "3.6.2",
       },
       "devDependencies": {
@@ -399,12 +428,12 @@
       },
     },
     "packages/senpi-desktop-tool": {
-      "name": "@oh-my-opencode/senpi-desktop-tool",
+      "name": "@oh-my-cybersecurity/senpi-desktop-tool",
       "version": "0.1.0",
       "dependencies": {
-        "@oh-my-opencode/senpi-desktop-prelude": "workspace:*",
-        "@oh-my-opencode/senpi-desktop-protocol": "workspace:*",
-        "@oh-my-opencode/senpi-desktop-service": "workspace:*",
+        "@oh-my-cybersecurity/senpi-desktop-prelude": "workspace:*",
+        "@oh-my-cybersecurity/senpi-desktop-protocol": "workspace:*",
+        "@oh-my-cybersecurity/senpi-desktop-service": "workspace:*",
         "typebox": "1.3.34",
       },
       "devDependencies": {
@@ -413,16 +442,16 @@
       },
     },
     "packages/senpi-task": {
-      "name": "@oh-my-opencode/senpi-task",
+      "name": "@oh-my-cybersecurity/senpi-task",
       "version": "0.1.0",
       "dependencies": {
-        "@oh-my-opencode/delegate-core": "workspace:*",
-        "@oh-my-opencode/isolation-core": "workspace:*",
-        "@oh-my-opencode/model-core": "workspace:*",
-        "@oh-my-opencode/omo-config-core": "workspace:*",
-        "@oh-my-opencode/skills-loader-core": "workspace:*",
-        "@oh-my-opencode/team-core": "workspace:*",
-        "@oh-my-opencode/utils": "workspace:*",
+        "@oh-my-cybersecurity/delegate-core": "workspace:*",
+        "@oh-my-cybersecurity/isolation-core": "workspace:*",
+        "@oh-my-cybersecurity/model-core": "workspace:*",
+        "@oh-my-cybersecurity/omc-config-core": "workspace:*",
+        "@oh-my-cybersecurity/skills-loader-core": "workspace:*",
+        "@oh-my-cybersecurity/team-core": "workspace:*",
+        "@oh-my-cybersecurity/utils": "workspace:*",
         "typebox": "1.3.34",
       },
       "devDependencies": {
@@ -442,38 +471,38 @@
       ],
     },
     "packages/shared-skills": {
-      "name": "@oh-my-opencode/shared-skills",
+      "name": "@oh-my-cybersecurity/shared-skills",
       "version": "0.1.0",
     },
     "packages/skills-loader-core": {
-      "name": "@oh-my-opencode/skills-loader-core",
+      "name": "@oh-my-cybersecurity/skills-loader-core",
       "version": "0.1.0",
       "dependencies": {
-        "@oh-my-opencode/claude-code-compat-core": "workspace:*",
-        "@oh-my-opencode/model-core": "workspace:*",
-        "@oh-my-opencode/shared-skills": "workspace:*",
-        "@oh-my-opencode/utils": "workspace:*",
+        "@oh-my-cybersecurity/claude-code-compat-core": "workspace:*",
+        "@oh-my-cybersecurity/model-core": "workspace:*",
+        "@oh-my-cybersecurity/shared-skills": "workspace:*",
+        "@oh-my-cybersecurity/utils": "workspace:*",
         "js-yaml": "^5.4.2",
         "picomatch": "^4.0.7",
         "zod": "^4.6.5",
       },
     },
     "packages/team-core": {
-      "name": "@oh-my-opencode/team-core",
+      "name": "@oh-my-cybersecurity/team-core",
       "version": "0.1.0",
       "dependencies": {
-        "@oh-my-opencode/memory-core": "workspace:*",
-        "@oh-my-opencode/tmux-core": "workspace:*",
-        "@oh-my-opencode/utils": "workspace:*",
+        "@oh-my-cybersecurity/memory-core": "workspace:*",
+        "@oh-my-cybersecurity/tmux-core": "workspace:*",
+        "@oh-my-cybersecurity/utils": "workspace:*",
         "zod": "^4.6.5",
       },
     },
     "packages/telemetry-core": {
-      "name": "@oh-my-opencode/telemetry-core",
+      "name": "@oh-my-cybersecurity/telemetry-core",
       "version": "0.1.0",
       "dependencies": {
         "@bufbuild/protobuf": "2.16.0",
-        "@oh-my-opencode/utils": "workspace:*",
+        "@oh-my-cybersecurity/utils": "workspace:*",
         "@opentelemetry/api": "1.9.1",
         "@opentelemetry/api-logs": "0.223.0",
         "@opentelemetry/context-async-hooks": "2.12.0",
@@ -482,18 +511,18 @@
       },
     },
     "packages/tmux-core": {
-      "name": "@oh-my-opencode/tmux-core",
+      "name": "@oh-my-cybersecurity/tmux-core",
       "version": "0.1.0",
       "dependencies": {
-        "@oh-my-opencode/utils": "workspace:*",
+        "@oh-my-cybersecurity/utils": "workspace:*",
       },
     },
     "packages/utils": {
-      "name": "@oh-my-opencode/utils",
+      "name": "@oh-my-cybersecurity/utils",
       "version": "0.1.0",
       "dependencies": {
-        "@oh-my-opencode/model-core": "workspace:*",
-        "@oh-my-opencode/omo-config-core": "workspace:*",
+        "@oh-my-cybersecurity/model-core": "workspace:*",
+        "@oh-my-cybersecurity/omc-config-core": "workspace:*",
         "js-yaml": "^5.4.2",
         "jsonc-parser": "^3.3.1",
       },
@@ -766,75 +795,85 @@
 
     "@napi-rs/wasm-runtime": ["@napi-rs/wasm-runtime@1.2.7", "", { "dependencies": { "@tybys/wasm-util": "^0.10.3" }, "peerDependencies": { "@emnapi/core": "^1.7.1 || 2.0.0-beta.2 || 2.0.0-beta.3", "@emnapi/runtime": "^1.7.1 || 2.0.0-beta.2 || 2.0.0-beta.3" } }, "sha512-zJccwplOAbgfZju95IUHazLnx9RAPtPN2YGJXI6UbrgeaR9QfPjGrQL6ERkSAtnVCA4Q+83ApGyaX5zdpCaKkQ=="],
 
-    "@oh-my-opencode/agents-md-core": ["@oh-my-opencode/agents-md-core@workspace:packages/agents-md-core"],
+    "@oh-my-cybersecurity/agents-md-core": ["@oh-my-cybersecurity/agents-md-core@workspace:packages/agents-md-core"],
 
-    "@oh-my-opencode/ast-grep-mcp": ["@oh-my-opencode/ast-grep-mcp@workspace:packages/ast-grep-mcp"],
+    "@oh-my-cybersecurity/arsenal-core": ["@oh-my-cybersecurity/arsenal-core@workspace:packages/arsenal-core"],
 
-    "@oh-my-opencode/boulder-state": ["@oh-my-opencode/boulder-state@workspace:packages/boulder-state"],
+    "@oh-my-cybersecurity/ast-grep-mcp": ["@oh-my-cybersecurity/ast-grep-mcp@workspace:packages/ast-grep-mcp"],
 
-    "@oh-my-opencode/claude-code-compat-core": ["@oh-my-opencode/claude-code-compat-core@workspace:packages/claude-code-compat-core"],
+    "@oh-my-cybersecurity/attack-playbook-core": ["@oh-my-cybersecurity/attack-playbook-core@workspace:packages/attack-playbook-core"],
 
-    "@oh-my-opencode/comment-checker-core": ["@oh-my-opencode/comment-checker-core@workspace:packages/comment-checker-core"],
+    "@oh-my-cybersecurity/boulder-state": ["@oh-my-cybersecurity/boulder-state@workspace:packages/boulder-state"],
 
-    "@oh-my-opencode/delegate-core": ["@oh-my-opencode/delegate-core@workspace:packages/delegate-core"],
+    "@oh-my-cybersecurity/claude-code-compat-core": ["@oh-my-cybersecurity/claude-code-compat-core@workspace:packages/claude-code-compat-core"],
 
-    "@oh-my-opencode/device-service-core": ["@oh-my-opencode/device-service-core@workspace:packages/device-service-core"],
+    "@oh-my-cybersecurity/comment-checker-core": ["@oh-my-cybersecurity/comment-checker-core@workspace:packages/comment-checker-core"],
 
-    "@oh-my-opencode/git-bash-mcp": ["@oh-my-opencode/git-bash-mcp@workspace:packages/git-bash-mcp"],
+    "@oh-my-cybersecurity/delegate-core": ["@oh-my-cybersecurity/delegate-core@workspace:packages/delegate-core"],
 
-    "@oh-my-opencode/hashline-core": ["@oh-my-opencode/hashline-core@workspace:packages/hashline-core"],
+    "@oh-my-cybersecurity/device-service-core": ["@oh-my-cybersecurity/device-service-core@workspace:packages/device-service-core"],
 
-    "@oh-my-opencode/isolation-core": ["@oh-my-opencode/isolation-core@workspace:packages/isolation-core"],
+    "@oh-my-cybersecurity/engagement-core": ["@oh-my-cybersecurity/engagement-core@workspace:packages/engagement-core"],
 
-    "@oh-my-opencode/lsp-core": ["@oh-my-opencode/lsp-core@workspace:packages/lsp-core"],
+    "@oh-my-cybersecurity/git-bash-mcp": ["@oh-my-cybersecurity/git-bash-mcp@workspace:packages/git-bash-mcp"],
 
-    "@oh-my-opencode/mcp-client-core": ["@oh-my-opencode/mcp-client-core@workspace:packages/mcp-client-core"],
+    "@oh-my-cybersecurity/hashline-core": ["@oh-my-cybersecurity/hashline-core@workspace:packages/hashline-core"],
 
-    "@oh-my-opencode/mcp-stdio-core": ["@oh-my-opencode/mcp-stdio-core@workspace:packages/mcp-stdio-core"],
+    "@oh-my-cybersecurity/isolation-core": ["@oh-my-cybersecurity/isolation-core@workspace:packages/isolation-core"],
 
-    "@oh-my-opencode/memory-core": ["@oh-my-opencode/memory-core@workspace:packages/memory-core"],
+    "@oh-my-cybersecurity/lsp-core": ["@oh-my-cybersecurity/lsp-core@workspace:packages/lsp-core"],
 
-    "@oh-my-opencode/model-core": ["@oh-my-opencode/model-core@workspace:packages/model-core"],
+    "@oh-my-cybersecurity/mcp-client-core": ["@oh-my-cybersecurity/mcp-client-core@workspace:packages/mcp-client-core"],
 
-    "@oh-my-opencode/omo-codex": ["@oh-my-opencode/omo-codex@workspace:packages/omo-codex"],
+    "@oh-my-cybersecurity/mcp-stdio-core": ["@oh-my-cybersecurity/mcp-stdio-core@workspace:packages/mcp-stdio-core"],
 
-    "@oh-my-opencode/omo-config-core": ["@oh-my-opencode/omo-config-core@workspace:packages/omo-config-core"],
+    "@oh-my-cybersecurity/memory-core": ["@oh-my-cybersecurity/memory-core@workspace:packages/memory-core"],
 
-    "@oh-my-opencode/omo-opencode": ["@oh-my-opencode/omo-opencode@workspace:packages/omo-opencode"],
+    "@oh-my-cybersecurity/model-core": ["@oh-my-cybersecurity/model-core@workspace:packages/model-core"],
 
-    "@oh-my-opencode/omo-senpi": ["@oh-my-opencode/omo-senpi@workspace:packages/omo-senpi"],
+    "@oh-my-cybersecurity/omc-codex": ["@oh-my-cybersecurity/omc-codex@workspace:packages/omc-codex"],
 
-    "@oh-my-opencode/openclaw-core": ["@oh-my-opencode/openclaw-core@workspace:packages/openclaw-core"],
+    "@oh-my-cybersecurity/omc-config-core": ["@oh-my-cybersecurity/omc-config-core@workspace:packages/omc-config-core"],
 
-    "@oh-my-opencode/prompts-core": ["@oh-my-opencode/prompts-core@workspace:packages/prompts-core"],
+    "@oh-my-cybersecurity/omc-console-core": ["@oh-my-cybersecurity/omc-console-core@workspace:packages/omc-console-core"],
 
-    "@oh-my-opencode/rules-engine": ["@oh-my-opencode/rules-engine@workspace:packages/rules-engine"],
+    "@oh-my-cybersecurity/omc-opencode": ["@oh-my-cybersecurity/omc-opencode@workspace:packages/omc-opencode"],
 
-    "@oh-my-opencode/senpi-desktop-engine": ["@oh-my-opencode/senpi-desktop-engine@workspace:packages/senpi-desktop-engine"],
+    "@oh-my-cybersecurity/omc-senpi": ["@oh-my-cybersecurity/omc-senpi@workspace:packages/omc-senpi"],
 
-    "@oh-my-opencode/senpi-desktop-prelude": ["@oh-my-opencode/senpi-desktop-prelude@workspace:packages/senpi-desktop-prelude"],
+    "@oh-my-cybersecurity/openclaw-core": ["@oh-my-cybersecurity/openclaw-core@workspace:packages/openclaw-core"],
 
-    "@oh-my-opencode/senpi-desktop-protocol": ["@oh-my-opencode/senpi-desktop-protocol@workspace:packages/senpi-desktop-protocol"],
+    "@oh-my-cybersecurity/payload-forge-core": ["@oh-my-cybersecurity/payload-forge-core@workspace:packages/payload-forge-core"],
 
-    "@oh-my-opencode/senpi-desktop-sdk": ["@oh-my-opencode/senpi-desktop-sdk@workspace:packages/senpi-desktop-sdk"],
+    "@oh-my-cybersecurity/prompts-core": ["@oh-my-cybersecurity/prompts-core@workspace:packages/prompts-core"],
 
-    "@oh-my-opencode/senpi-desktop-service": ["@oh-my-opencode/senpi-desktop-service@workspace:packages/senpi-desktop-service"],
+    "@oh-my-cybersecurity/rules-engine": ["@oh-my-cybersecurity/rules-engine@workspace:packages/rules-engine"],
 
-    "@oh-my-opencode/senpi-desktop-tool": ["@oh-my-opencode/senpi-desktop-tool@workspace:packages/senpi-desktop-tool"],
+    "@oh-my-cybersecurity/senpi-desktop-engine": ["@oh-my-cybersecurity/senpi-desktop-engine@workspace:packages/senpi-desktop-engine"],
 
-    "@oh-my-opencode/senpi-task": ["@oh-my-opencode/senpi-task@workspace:packages/senpi-task"],
+    "@oh-my-cybersecurity/senpi-desktop-prelude": ["@oh-my-cybersecurity/senpi-desktop-prelude@workspace:packages/senpi-desktop-prelude"],
 
-    "@oh-my-opencode/shared-skills": ["@oh-my-opencode/shared-skills@workspace:packages/shared-skills"],
+    "@oh-my-cybersecurity/senpi-desktop-protocol": ["@oh-my-cybersecurity/senpi-desktop-protocol@workspace:packages/senpi-desktop-protocol"],
 
-    "@oh-my-opencode/skills-loader-core": ["@oh-my-opencode/skills-loader-core@workspace:packages/skills-loader-core"],
+    "@oh-my-cybersecurity/senpi-desktop-sdk": ["@oh-my-cybersecurity/senpi-desktop-sdk@workspace:packages/senpi-desktop-sdk"],
 
-    "@oh-my-opencode/team-core": ["@oh-my-opencode/team-core@workspace:packages/team-core"],
+    "@oh-my-cybersecurity/senpi-desktop-service": ["@oh-my-cybersecurity/senpi-desktop-service@workspace:packages/senpi-desktop-service"],
 
-    "@oh-my-opencode/telemetry-core": ["@oh-my-opencode/telemetry-core@workspace:packages/telemetry-core"],
+    "@oh-my-cybersecurity/senpi-desktop-tool": ["@oh-my-cybersecurity/senpi-desktop-tool@workspace:packages/senpi-desktop-tool"],
 
-    "@oh-my-opencode/tmux-core": ["@oh-my-opencode/tmux-core@workspace:packages/tmux-core"],
+    "@oh-my-cybersecurity/senpi-task": ["@oh-my-cybersecurity/senpi-task@workspace:packages/senpi-task"],
 
-    "@oh-my-opencode/utils": ["@oh-my-opencode/utils@workspace:packages/utils"],
+    "@oh-my-cybersecurity/shared-skills": ["@oh-my-cybersecurity/shared-skills@workspace:packages/shared-skills"],
+
+    "@oh-my-cybersecurity/skills-loader-core": ["@oh-my-cybersecurity/skills-loader-core@workspace:packages/skills-loader-core"],
+
+    "@oh-my-cybersecurity/team-core": ["@oh-my-cybersecurity/team-core@workspace:packages/team-core"],
+
+    "@oh-my-cybersecurity/telemetry-core": ["@oh-my-cybersecurity/telemetry-core@workspace:packages/telemetry-core"],
+
+    "@oh-my-cybersecurity/tmux-core": ["@oh-my-cybersecurity/tmux-core@workspace:packages/tmux-core"],
+
+    "@oh-my-cybersecurity/utils": ["@oh-my-cybersecurity/utils@workspace:packages/utils"],
 
     "@opencode-ai/plugin": ["@opencode-ai/plugin@1.18.31", "", { "dependencies": { "@ai-sdk/provider": "3.0.8", "@opencode-ai/sdk": "1.18.31", "effect": "4.0.0-beta.83", "zod": "4.1.8" }, "peerDependencies": { "@opentui/core": ">=0.4.5", "@opentui/keymap": ">=0.4.5", "@opentui/solid": ">=0.4.5" }, "optionalPeers": ["@opentui/core", "@opentui/keymap", "@opentui/solid"] }, "sha512-Rdc1bPK06PByaGyGd0kf7JUZ4pTkexz2OOUNlqZWLpHOiMEZ+/rFGjt46ypZ3QwA697gNdWwwwQbHbKG5NMwGA=="],
 
@@ -1548,31 +1587,7 @@
 
     "obug": ["obug@2.2.1", "", {}, "sha512-XrsrhT5sybtKI6wakr2SPOlGZWWYbUXZ7a0jT8/QOeAPau+1X/bSegNe5YR75oJmEZQbKningirmGOEJCIk61Q=="],
 
-    "oh-my-opencode-darwin-arm64": ["oh-my-opencode-darwin-arm64@5.1.65", "", { "os": "darwin", "cpu": "arm64" }, "sha512-wDSvRREx6gIt8kvAvpOGcU0KTQ5Plp2Uoh8eZBv5AaPsYxB7nFoBqlAiQPaodxl4On1sNgx7z6zoY+t+2M6Paw=="],
-
-    "oh-my-opencode-darwin-x64": ["oh-my-opencode-darwin-x64@5.1.65", "", { "os": "darwin", "cpu": "x64" }, "sha512-1nMT5betIC/93sZTxFM4uVOHLTS7xPdoyt7JokGNRS5Ng5Fv6LVW9lR9nGU16F9d4c2gF1ZLkxb7UlJHde2izQ=="],
-
-    "oh-my-opencode-darwin-x64-baseline": ["oh-my-opencode-darwin-x64-baseline@5.1.65", "", { "os": "darwin", "cpu": "x64" }, "sha512-qsr7+WpY88+TyrwQwMJ76TapFEyCV4h+ZU/Sfqai5aAetcXvkL6xH8tRhebJkghHWL+FdKqABs128nF8MSiMUg=="],
-
-    "oh-my-opencode-linux-arm64": ["oh-my-opencode-linux-arm64@5.1.65", "", { "os": "linux", "cpu": "arm64" }, "sha512-V3w8WFiqBsA4eFy1k8iZl/2Vq+IMAZlE8H3SIfY1kHUH51lExgvUwDJUdaVeXIkeD1ty+Dvln1Q7SD6HJgRmkQ=="],
-
-    "oh-my-opencode-linux-arm64-musl": ["oh-my-opencode-linux-arm64-musl@5.1.65", "", { "os": "linux", "cpu": "arm64" }, "sha512-vPol3fkUnx2144YgNIVA/sSRl6Scdai5lqykyUaU6s83Lq4Et8orwOvzbi1EC6Wiy3BgS7jgo44q4xdGVozKoA=="],
-
-    "oh-my-opencode-linux-x64": ["oh-my-opencode-linux-x64@5.1.65", "", { "os": "linux", "cpu": "x64" }, "sha512-4CZdpOQoBa7NUWzgAJJZbErvHo/u60w4tCZYiFMr+2Et6utT7x8N3e4A98uxnjX52lmorCI7pOeTTCYjpUtHsw=="],
-
-    "oh-my-opencode-linux-x64-baseline": ["oh-my-opencode-linux-x64-baseline@5.1.65", "", { "os": "linux", "cpu": "x64" }, "sha512-/JTbJHuADbc0brKBuoPD6N0ulpB2gwnr77WzPhtNSqn3i2nKL/dU2Srd4MreNWuIS/UQf58mrCvHJm0EaBwF5Q=="],
-
-    "oh-my-opencode-linux-x64-musl": ["oh-my-opencode-linux-x64-musl@5.1.65", "", { "os": "linux", "cpu": "x64" }, "sha512-aaScVzSEznFzTDPtMpTkDDFtBOipeTwP7TAT06bQkIy3RCkXG7qtayQzrkWwC6FlZlblNMSoJlquvjP2sDqsVg=="],
-
-    "oh-my-opencode-linux-x64-musl-baseline": ["oh-my-opencode-linux-x64-musl-baseline@5.1.65", "", { "os": "linux", "cpu": "x64" }, "sha512-JrUsBKThGfewA4/5QXCSSTarLWyMsVwP2ypm3FxAAJMk6/d5eIlCTOkJwz7xsJHe09eDWa8kXGQYhY26dlZOkA=="],
-
-    "oh-my-opencode-windows-arm64": ["oh-my-opencode-windows-arm64@5.1.65", "", { "os": "win32", "cpu": "arm64" }, "sha512-wASG1zurPST1rI/iRP5aH26h0VuuP5iGHbv7upQYH32CJAkJUViHtjogxyLQhKE12zryP41LmRZDx7FPuKUYFA=="],
-
-    "oh-my-opencode-windows-x64": ["oh-my-opencode-windows-x64@5.1.65", "", { "os": "win32", "cpu": "x64" }, "sha512-AB/HtB6q6UNjnP9jc+7GhrPCNNQ+MqDkJ+Izhr9a3fAPMJRlkVIPCO90HsNtEt8aAQExnd9WbfpYCRNPFWFsOQ=="],
-
-    "oh-my-opencode-windows-x64-baseline": ["oh-my-opencode-windows-x64-baseline@5.1.65", "", { "os": "win32", "cpu": "x64" }, "sha512-/WTGBhsypz2XunL457Z0Nw+bpb+q0da8TagN19miTKnIG5hpj/vi9QD+sN3cosThC68VK0H83wtaSqZWObaR1w=="],
-
-    "omo-ai": ["omo-ai@workspace:packages/omo-native"],
+    "omc-ai": ["omc-ai@workspace:packages/omc-native"],
 
     "omowright": ["omowright@0.3.0", "", { "dependencies": { "ws": "^8.18.3", "zod": "^4.1.5" }, "bin": { "omowright-cloak": "dist/bin/omowright-cloak.js" } }, "sha512-hiIJVqxZyN8QG4Jou3IKzdHKbuv1fgF+BBjXDAaj7UKNxKca8RGB1ltBFKmJU8bqGE7k9YtWTo8VvyYCZi71mw=="],
 
@@ -1866,9 +1881,9 @@
 
     "@earendil-works/pi-ai/@bufbuild/protobuf": ["@bufbuild/protobuf@2.15.0", "", {}, "sha512-DAheWUkVr/SJTWCc+lg9dhY0eN4SaWlf4+bG1KzHeXbnqt0AfB/NX0Z+VunGlM1ki1B4zVvye27MpKh/svySUA=="],
 
-    "@oh-my-opencode/omo-senpi/@code-yeongyu/lsp-daemon": ["@code-yeongyu/lsp-daemon@file:packages/lsp-daemon", { "devDependencies": { "@biomejs/biome": "2.5.14", "@oh-my-opencode/lsp-core": "file:../lsp-core", "@oh-my-opencode/mcp-stdio-core": "file:../mcp-stdio-core", "@types/node": "^26.6.2", "@vitest/coverage-v8": "5.0.1", "typescript": "^6.0.3", "vitest": "5.0.1" }, "bin": { "omo-lsp-daemon": "./dist/cli.js" } }],
+    "@oh-my-cybersecurity/omc-senpi/@code-yeongyu/lsp-daemon": ["@code-yeongyu/lsp-daemon@file:packages/lsp-daemon", { "devDependencies": { "@biomejs/biome": "2.5.14", "@oh-my-cybersecurity/lsp-core": "file:../lsp-core", "@oh-my-cybersecurity/mcp-stdio-core": "file:../mcp-stdio-core", "@types/node": "^26.6.2", "@vitest/coverage-v8": "5.0.1", "typescript": "^6.0.3", "vitest": "5.0.1" }, "bin": { "omc-lsp-daemon": "./dist/cli.js" } }],
 
-    "@oh-my-opencode/senpi-desktop-engine/zod": ["zod@4.6.5", "", {}, "sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q=="],
+    "@oh-my-cybersecurity/senpi-desktop-engine/zod": ["zod@4.6.5", "", {}, "sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q=="],
 
     "@opencode-ai/plugin/zod": ["zod@4.1.8", "", {}, "sha512-5R1P+WwQqmmMIEACyzSvo4JXHY5WiAFHRMg+zBZKgKS+Q1viRa0C1hmUKtHltoIFKtIdki3pRxkmpP74jnNYHQ=="],
 
@@ -1938,11 +1953,11 @@
 
     "@code-yeongyu/senpi/@modelcontextprotocol/sdk/zod": ["zod@4.6.7", "", {}, "sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg=="],
 
-    "@oh-my-opencode/omo-senpi/@code-yeongyu/lsp-daemon/@oh-my-opencode/lsp-core": ["@oh-my-opencode/lsp-core@file:packages/lsp-core", {}],
+    "@oh-my-cybersecurity/omc-senpi/@code-yeongyu/lsp-daemon/@oh-my-cybersecurity/lsp-core": ["@oh-my-cybersecurity/lsp-core@file:packages/lsp-core", {}],
 
-    "@oh-my-opencode/omo-senpi/@code-yeongyu/lsp-daemon/@oh-my-opencode/mcp-stdio-core": ["@oh-my-opencode/mcp-stdio-core@file:packages/mcp-stdio-core", {}],
+    "@oh-my-cybersecurity/omc-senpi/@code-yeongyu/lsp-daemon/@oh-my-cybersecurity/mcp-stdio-core": ["@oh-my-cybersecurity/mcp-stdio-core@file:packages/mcp-stdio-core", {}],
 
-    "@oh-my-opencode/omo-senpi/@code-yeongyu/lsp-daemon/typescript": ["typescript@6.0.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw=="],
+    "@oh-my-cybersecurity/omc-senpi/@code-yeongyu/lsp-daemon/typescript": ["typescript@6.0.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw=="],
 
     "gaxios/https-proxy-agent/agent-base": ["agent-base@7.1.4", "", {}, "sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ=="],
 

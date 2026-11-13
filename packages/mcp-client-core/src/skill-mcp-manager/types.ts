@@ -1,6 +1,6 @@
 import type { Client } from "@modelcontextprotocol/sdk/client/index.js"
 import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js"
-import type { ClaudeCodeMcpServer } from "@oh-my-opencode/claude-code-compat-core/claude-code-mcp-loader/types"
+import type { ClaudeCodeMcpServer } from "@oh-my-cybersecurity/claude-code-compat-core/claude-code-mcp-loader/types"
 import type { McpOAuthProvider } from "../mcp-oauth/provider"
 import type { EnvironmentGrantPolicy } from "./environment-grant-policy"
 

@@ -2,7 +2,7 @@
 
 ## OVERVIEW
 
-`@oh-my-opencode/memory-core` owns the shared memory domain used by harness
+`@oh-my-cybersecurity/memory-core` owns the shared memory domain used by harness
 adapters: a git-backed markdown MemFS, atomic memory tools, prompt compilation,
 reflection scheduling, transcript search, synchronization, and seed content.
 The public API is the barrel at `src/index.ts`.
@@ -12,7 +12,7 @@ The public API is the barrel at `src/index.ts`.
 | Directory | Responsibility |
 |-----------|----------------|
 | `src/git/` | Git command boundary, clean-tree checks, commits, merges, remotes, and typed git errors. A stranded git lock is reclaimed only with proven-dead ownership (`repo-lock-sweep.ts`); a kept one surfaces `StrandedGitLockError` with the way out, `inspectStrandedGitLock` / `unlockStrandedGitLock` (`repo-lock-unlock.ts`: refuse on any visible live holder, remove one confirmed lock after a fresh re-check). |
-| `src/identity/` | Memory identity resolution and the `OMO_MEMORY_HOME` directory layout. `resolveAutoIdentity(cwd, env, mode, probe?)` is the one entry point for the auto identity; its opt-in `"git"` mode (`git-layout.ts`) maps a linked worktree's cwd onto the main working tree by reading the `.git` pointer, `commondir`, the admin `gitdir` back-pointer and `core.worktree`/`core.bare` (no `git` spawn), and any unreadable, forged or ambiguous layout keeps the path-derived id. |
+| `src/identity/` | Memory identity resolution and the `OMC_MEMORY_HOME` directory layout. `resolveAutoIdentity(cwd, env, mode, probe?)` is the one entry point for the auto identity; its opt-in `"git"` mode (`git-layout.ts`) maps a linked worktree's cwd onto the main working tree by reading the `.git` pointer, `commondir`, the admin `gitdir` back-pointer and `core.worktree`/`core.bare` (no `git` spawn), and any unreadable, forged or ambiguous layout keeps the path-derived id. |
 | `src/locks/` | Cross-process locks for memory writes, reflection scheduling, and transcript state, plus the machine-wide `recall-wake` counting lease (`recall-wake.slot-<n>.lock` per slot, FIFO `recall-wake.tickets/`, default 2 slots, proof-based stale recovery for slots and tickets alike, bounded wait ending in `RecallWakeBusyError`). |
 | `src/memfs/` | Memory-path validation, markdown frontmatter parsing, and hook-script installation. |
 | `src/tools/` | `memory` and `memory_apply_patch` operations, patch parsing, typed tool errors, and auto-commit behavior. `leaked-arguments.ts` splits an argument that leaked into its sibling (`summary</description>\n<parameter name="file_text">body`) back apart before `runMemoryTool` validates. |
@@ -105,7 +105,7 @@ The public API is the barrel at `src/index.ts`.
 ## CONSUMERS
 
 Harness adapters provide identity, lifecycle events, tool registration, and
-sync orchestration; the Senpi adapter lives in `packages/omo-senpi/src/components/memory/`.
+sync orchestration; the Senpi adapter lives in `packages/omc-senpi/src/components/memory/`.
 Keep adapter-specific behavior there, never imported back into this package.
 
 ## QA
@@ -128,3 +128,20 @@ bounded timeouts; never add fixed sleeps or retry loops.
 - Mutating `read_only` blocks or accepting non-UTF-8 memory files.
 - Swallowing git, lock, merge, or reflection failures.
 - Testing cross-process behavior with timing luck.
+
+## REFRESH 2026-11-09
+
+Corrections only; curated content above is unchanged.
+
+- `src/sync/` row understates the subtree: it is 350 files, 41% of the
+  package, with 7 subdirs (account, crypto, engine, genesis, item, recovery,
+  space). Details now in [`src/sync/AGENTS.md`](src/sync/AGENTS.md):
+  `mirror.ts` config key `omc.memoryRepository.url`, `redact.ts`
+  `SecretPatternClass` with `MASK = "***"`, `publication.ts`
+  `publishSyncRename` spanning the credential-writer lock, 3-line barrel
+  `index.ts` (keyring-port, mirror, redact).
+- `src/facts/` row: the pipeline is 46 files (~6.5k LOC), not 33; `src/sync/`
+  is the largest subsystem, facts is second.
+- Per-directory knowledge bases added 2026-11-09: `src/sync/`, `src/git/`,
+  `src/recall/`, `src/locks/`, `src/tools/`, `src/compile/`,
+  `src/reflection/` (each an AGENTS.md in that directory).

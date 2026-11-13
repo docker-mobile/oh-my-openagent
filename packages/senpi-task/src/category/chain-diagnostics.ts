@@ -1,5 +1,5 @@
-import { resolveModelForDelegateTask, type DelegateFallbackEntry } from "@oh-my-opencode/delegate-core"
-import { canonicalCategoryName } from "@oh-my-opencode/omo-config-core"
+import { resolveModelForDelegateTask, type DelegateFallbackEntry } from "@oh-my-cybersecurity/delegate-core"
+import { canonicalCategoryName } from "@oh-my-cybersecurity/omc-config-core"
 
 import { availableChainCandidates, type ModelChainCandidate } from "../model-chain"
 import { CATEGORY_FALLBACK_CHAINS } from "./fallback-chains"

@@ -55,7 +55,7 @@ describe("hermetic-home teardown signals only the task hosts this run started (#
 
   beforeAll(async () => {
     registry = await PlantedProcesses.listen()
-    dir = mkdtempSync(join(tmpdir(), "omo-hermetic-teardown-"))
+    dir = mkdtempSync(join(tmpdir(), "omc-hermetic-teardown-"))
     const cwd = join(dir, "run")
     mkdirSync(cwd)
     writeFileSync(join(cwd, "planting.test.ts"), PLANTING_TEST)

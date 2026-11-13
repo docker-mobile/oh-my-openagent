@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 
-import { mapOmoConfigAgents } from "./omo-config-agents"
+import { mapOmoConfigAgents } from "./omc-config-agents"
 import { resolveAgent } from "./resolve-agent"
 import type { AgentDefinition } from "./types"
 
@@ -27,7 +27,7 @@ function expectResolved(result: ReturnType<typeof resolveAgent>) {
 }
 
 describe("agent model entries carrying effort", () => {
-  test("#given an omo agent whose models carry effort #when bridged #then the entry objects survive onto the definition", () => {
+  test("#given an omc agent whose models carry effort #when bridged #then the entry objects survive onto the definition", () => {
     // given
     const config = {
       agents: {
@@ -47,7 +47,7 @@ describe("agent model entries carrying effort", () => {
     expect(entry.reasoningEffort).toBe("minimal")
   })
 
-  test("#given an omo agent whose model entries carry canonical reasoning #when bridged #then the entry reasoning is preserved on the candidate", () => {
+  test("#given an omc agent whose model entries carry canonical reasoning #when bridged #then the entry reasoning is preserved on the candidate", () => {
     // given a canonicalized agent entry (the schema rewrites reasoningEffort to reasoning)
     const config = {
       agents: {
@@ -66,7 +66,7 @@ describe("agent model entries carrying effort", () => {
     expect(entry.reasoning).toBe("high")
   })
 
-  test("#given an omo agent with plain string models #when bridged #then the legacy strings are preserved verbatim", () => {
+  test("#given an omc agent with plain string models #when bridged #then the legacy strings are preserved verbatim", () => {
     // given
     const config = { agents: { explore: { models: ["openai/a", "openai/b"] } } }
 

@@ -14,7 +14,7 @@ import { cleanupProjects, seedRecord, tempStore } from "./__fixtures__/lifecycle
 afterEach(cleanupProjects)
 
 /**
- * omo#11765, senpi#3114: after a generation handoff the recorded socket is served by the SUCCESSOR,
+ * omc#11765, senpi#3114: after a generation handoff the recorded socket is served by the SUCCESSOR,
  * which does not list a child the draining PREDECESSOR still runs. "Not listed on the recorded socket"
  * is therefore not an end: a cancel, a pending-cancel finish and a TTL expunge must each wait for a
  * confirmed end instead of recording the child destroyed while its turn keeps running.

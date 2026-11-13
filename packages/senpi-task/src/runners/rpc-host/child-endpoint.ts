@@ -1,4 +1,4 @@
-import { log } from "@oh-my-opencode/utils"
+import { log } from "@oh-my-cybersecurity/utils"
 
 import type { HostEnginePolicy, SenpiHostProtocolInfo } from "../../lazy/senpi-barrel"
 import { RunnerError } from "../in-process/runner-error"

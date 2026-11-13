@@ -1,5 +1,5 @@
 import type { CreateAgentSessionOptions } from "@code-yeongyu/senpi"
-import { excludedModelPattern } from "@oh-my-opencode/omo-config-core"
+import { excludedModelPattern } from "@oh-my-cybersecurity/omc-config-core"
 
 import { asSenpiThinkingLevel } from "../senpi/thinking-level"
 import { splitModelDecorators } from "../senpi/explicit-pin"
@@ -67,7 +67,7 @@ export function createParentRegistrySessionContext(
       if (excludedBy !== undefined) {
         throw new RunnerError({
           kind: "model_unavailable",
-          message: `model "${spec.model}" is kept out by exclude_models in omo.json ("${excludedBy}"); refusing it`,
+          message: `model "${spec.model}" is kept out by exclude_models in omc.json ("${excludedBy}"); refusing it`,
         })
       }
       // A record written before #9722 may still carry a `:level` in its model id; resolve it by its

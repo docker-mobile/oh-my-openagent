@@ -1,4 +1,4 @@
-import type { EngineNotification, RpcPort } from "@oh-my-opencode/senpi-desktop-protocol";
+import type { EngineNotification, RpcPort } from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import { LinkedComputer } from "./computer";
 import type { ConfirmControl } from "./control";
 import { refusal } from "./errors";
@@ -13,7 +13,7 @@ export type { SpawnLaunch, SpawnSettings, SpawnTransport } from "./transport/spa
 /**
  * How the SDK reaches an engine session. `inProcess` wraps a port the host already owns (the desktop service, a
  * test fake); `close()` then detaches the SDK and leaves the port to its owner. `spawn` starts an engine child
- * through an injected `launch` outside an omo session; the SDK owns that port and `close()` ends it. `attach`
+ * through an injected `launch` outside an omc session; the SDK owns that port and `close()` ends it. `attach`
  * connects to a running `--serve` daemon's unix socket and joins its shared session; `close()` then ends that
  * connection.
  */

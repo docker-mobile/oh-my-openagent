@@ -5,8 +5,8 @@ import { routing } from "./i18n/routing"
 import { desktopDownloadEnabled } from "./lib/desktop-download"
 
 const handleI18nRouting = createMiddleware(routing)
-const oldHosts = new Set(["www.omo.dev"])
-const primaryHost = "omo.dev"
+const oldHosts = new Set(["www.omc.nga.hm"])
+const primaryHost = "omc.nga.hm"
 const installationPaths = new Set([
   "installation",
   "installation.md",
@@ -14,7 +14,7 @@ const installationPaths = new Set([
   "docs/installation.md",
 ])
 
-// get.omo.dev sent browsers here before /docs/install existed.
+// get.omc.nga.hm sent browsers here before /docs/install existed.
 const installGuidePaths = new Set([
   "docs/guide/installation",
   "docs/guide/install",
@@ -23,10 +23,10 @@ const installGuidePaths = new Set([
 
 const desktopPaths = new Set(["desktop"])
 
-// Shipped desktop builds link https://omo.dev/download (reinstall screen, deb update pill). While this
+// Shipped desktop builds link https://omc.nga.hm/download (reinstall screen, deb update pill). While this
 // site's own download page is off, that path goes to the public beta download page instead of a 404.
 // Temporary (307), not permanent: a browser must not keep skipping this site's page once it is enabled.
-const PUBLIC_DESKTOP_DOWNLOAD_PAGE = "https://get.omo.dev/desktop/beta/"
+const PUBLIC_DESKTOP_DOWNLOAD_PAGE = "https://get.omc.nga.hm/desktop/beta/"
 
 function getLocaleSegment(segment: string | undefined): Locale | null {
   if (!segment) return null

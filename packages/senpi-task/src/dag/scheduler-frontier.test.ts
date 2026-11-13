@@ -1,7 +1,7 @@
 // Regression for the dag_530ad299 starvation class: admission is dependency-frontier, so a node
 // whose dependsOn are all completed must start while an UNRELATED sibling that shares its wave
 // keeps running. Adapted (event-driven, no wall-clock waits) from the failing-first repro at
-// .omo/evidence/20260825-dag-dep-frontier/baseline-repro/dag-stall-repro.test.ts (R2), which
+// .omc/evidence/20260825-dag-dep-frontier/baseline-repro/dag-stall-repro.test.ts (R2), which
 // timed out RED on origin/dev: the strict wave barrier held lane-b behind lane-c for as long as
 // lane-c ran (production: hours).
 import { afterEach, describe, expect, setDefaultTimeout, test } from "bun:test"

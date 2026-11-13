@@ -5,7 +5,7 @@ const packageDir = join(import.meta.dir, "..")
 const tsgo = join(dirname(Bun.resolveSync("@typescript/native-preview/package.json", packageDir)), "bin", "tsgo")
 
 describe("the root types entry declares every diagnostic the runtime emits", () => {
-  test("#given a consumer importing @oh-my-opencode/telemetry-core #when it narrows to the spool purge diagnostics and reads errorCode and entryKind #then it type-checks against the root index.d.ts", () => {
+  test("#given a consumer importing @oh-my-cybersecurity/telemetry-core #when it narrows to the spool purge diagnostics and reads errorCode and entryKind #then it type-checks against the root index.d.ts", () => {
     // given
     const project = join(packageDir, "test-fixtures", "root-types", "tsconfig.json")
 

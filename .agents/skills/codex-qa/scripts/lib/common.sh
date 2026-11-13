@@ -70,7 +70,7 @@ cqa_assert_real_home_unchanged() {
 
 # Create an isolated CODEX_HOME and project dir, export the env that keeps the
 # run hermetic, and register the temp root for cleanup. Sets globals
-# CQA_HOME_ROOT / CODEX_HOME / OMO_CODEX_PROJECT / QA_CWD.
+# CQA_HOME_ROOT / CODEX_HOME / OMC_CODEX_PROJECT / QA_CWD.
 #
 # IMPORTANT: call this DIRECTLY, never via $(...). A subshell would discard the
 # exports and the cleanup registration.
@@ -81,14 +81,14 @@ cqa_mk_isolated_home() {
   mkdir -p "$root/codex" "$root/proj"
   export CQA_HOME_ROOT="$root"
   export CODEX_HOME="$root/codex"
-  export OMO_CODEX_PROJECT="$root/proj"
+  export OMC_CODEX_PROJECT="$root/proj"
   export QA_CWD="$root/proj"
   # never leak install bins or telemetry out of the sandbox
   export CODEX_LOCAL_BIN_DIR="$root/codex/bin"
-  export OMO_DISABLE_POSTHOG=1
-  export OMO_CODEX_DISABLE_POSTHOG=1
+  export OMC_DISABLE_POSTHOG=1
+  export OMC_CODEX_DISABLE_POSTHOG=1
   # QA must keep the checkout build, not replace it from the registry mid-turn.
-  export OMO_CODEX_AUTO_UPDATE_DISABLED=1
+  export OMC_CODEX_AUTO_UPDATE_DISABLED=1
 }
 
 # Start the local mock model server. Sets CQA_MOCK_PID + exports MOCK_PORT.
@@ -109,14 +109,14 @@ cqa_start_mock() {
   export MOCK_PORT="$port"
 }
 
-# Install THIS repo's local omo build into the isolated CODEX_HOME. Requires
+# Install THIS repo's local omc build into the isolated CODEX_HOME. Requires
 # cqa_mk_isolated_home first. REPO_ROOT defaults to the repo containing this skill.
 cqa_install_local_omo() {
   local repo="${REPO_ROOT:-}"
   if [ -z "$repo" ]; then
     repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../../.." && pwd)"
   fi
-  local installer="$repo/packages/omo-codex/scripts/install-local.mjs"
+  local installer="$repo/packages/omc-codex/scripts/install-local.mjs"
   [ -f "$installer" ] || { cqa_fail "installer not found: $installer"; return 1; }
   node "$installer" install >"$CQA_HOME_ROOT/install.log" 2>&1
 }

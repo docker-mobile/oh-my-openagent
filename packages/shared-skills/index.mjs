@@ -6,11 +6,11 @@ import { fileURLToPath } from "node:url";
 //   dist/index.js            -> dist/skills            (sibling)
 //   dist/cli/index.js        -> dist/skills            (parent)
 //   dist/cli-node/index.js   -> dist/skills            (parent)
-//   plugins/omo/dist/cli/    -> plugins/omo/skills     (grandparent; the Codex marketplace
+//   plugins/omc/dist/cli/    -> plugins/omc/skills     (grandparent; the Codex marketplace
 //                                                       layout, where `plugin/` is copied to
-//                                                       `plugins/omo/` and the root CLI
+//                                                       `plugins/omc/` and the root CLI
 //                                                       runtimes are bundled into
-//                                                       `plugins/omo/dist/cli`)
+//                                                       `plugins/omc/dist/cli`)
 // Probes run nearest-first so a closer skills directory always wins, and the sibling path is
 // returned unchanged when nothing matches, keeping the previous not-found behavior.
 const SKILLS_PROBE_SPECIFIERS = ["./skills/", "../skills/", "../../skills/"];

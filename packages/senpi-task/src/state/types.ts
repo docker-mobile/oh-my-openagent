@@ -1,6 +1,6 @@
-import type { IsolationBackendKind } from "@oh-my-opencode/omo-config-core"
+import type { IsolationBackendKind } from "@oh-my-cybersecurity/omc-config-core"
 
-export type { IsolationBackendKind } from "@oh-my-opencode/omo-config-core"
+export type { IsolationBackendKind } from "@oh-my-cybersecurity/omc-config-core"
 
 export type TaskIsolationSpec = {
   readonly backend: IsolationBackendKind
@@ -77,7 +77,7 @@ export type EffectiveModelSource = (typeof EFFECTIVE_MODEL_SOURCES)[number]
 
 // The record's effective_model: a resolved-model record whose source also names live model
 // events (F12) - a set/cycle by any client, a restore, a fallback hop or its revert - with
-// switched_by_operator marking a set/cycle switch omo did not mint itself.
+// switched_by_operator marking a set/cycle switch omc did not mint itself.
 export type EffectiveModelRecord = Omit<ResolvedModelRecord, "source"> & {
   readonly source: EffectiveModelSource
   readonly switched_by_operator?: boolean
@@ -111,7 +111,7 @@ export const SUSPENSION_REASONS = [
   "idle_evicted",
   "own_host_unreachable",
   // The session that owns the child was resumed, but its reconcile could not revive the child yet;
-  // `revival_deferred_reason` names the reconcile's deferral (omo#9498).
+  // `revival_deferred_reason` names the reconcile's deferral (omc#9498).
   "revival_deferred",
   // The owning session QUIT while the child was parked: it stays "running" on purpose and nothing
   // revives it until that session resumes (senpi#3493).

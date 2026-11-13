@@ -163,7 +163,7 @@ describe("InProcessRunner prompt envelope", () => {
     // then
     expect(fake.promptTexts).toHaveLength(1)
     const prompt = fake.promptTexts[0] ?? ""
-    expect(prompt).toContain("You are running as an omo senpi-task child")
+    expect(prompt).toContain("You are running as an omc senpi-task child")
     expect(prompt).toContain("Task id: task-1")
     expect(prompt).toContain("Task:\ndo the work")
   })
@@ -180,7 +180,7 @@ describe("InProcessRunner prompt envelope", () => {
 
     // then
     const prompt = fake.promptTexts[0] ?? ""
-    expect(prompt).toContain("You are running as an omo senpi-task child")
+    expect(prompt).toContain("You are running as an omc senpi-task child")
     expect(prompt).toContain("Task:\ndo the work")
   })
 })

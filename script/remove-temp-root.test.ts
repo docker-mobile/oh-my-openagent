@@ -1,5 +1,5 @@
 import { describe, expect, spyOn, test } from "bun:test"
-import { TEARDOWN_FAILURE_PREFIX } from "../packages/omo-native/test/teardown.test-support"
+import { TEARDOWN_FAILURE_PREFIX } from "../packages/omc-native/test/teardown.test-support"
 import { removeTempRoot } from "./remove-temp-root"
 
 function failing(code: string): (path: string) => void {

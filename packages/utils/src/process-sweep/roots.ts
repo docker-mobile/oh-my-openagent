@@ -19,7 +19,7 @@ export function discoverOmoOwnedRoots(options: OmoOwnedRootsOptions = {}): strin
   const env = options.env ?? process.env
   const homeDir = options.homeDir ?? env["HOME"] ?? env["USERPROFILE"] ?? homedir()
   const roots = new Set<string>()
-  addRoot(roots, join(homeDir, ".claude", "omo"))
+  addRoot(roots, join(homeDir, ".claude", "omc"))
   addRoot(roots, options.pluginRoot)
   for (const root of options.extraRoots ?? []) addRoot(roots, root)
   for (const root of readCodexPluginCacheRoots(options.codexHome ?? env["CODEX_HOME"] ?? join(homeDir, ".codex"))) {
@@ -33,8 +33,8 @@ function readCodexPluginCacheRoots(codexHome: string): string[] {
   if (!existsSync(cacheRoot)) return []
   const roots: string[] = []
   for (const publisher of safeReadDir(cacheRoot)) {
-    if (!OMO_CODEX_PLUGIN_CACHE_PUBLISHERS.has(publisher)) continue
-    const omoRoot = join(cacheRoot, publisher, "omo")
+    if (!OMC_CODEX_PLUGIN_CACHE_PUBLISHERS.has(publisher)) continue
+    const omoRoot = join(cacheRoot, publisher, "omc")
     if (!existsSync(omoRoot)) continue
     for (const version of safeReadDir(omoRoot)) roots.push(join(omoRoot, version))
   }
@@ -73,4 +73,4 @@ function isNonFatalFsError(error: unknown): error is Error {
   const code = typeof error === "object" && error !== null && "code" in error ? error.code : undefined
   return typeof code === "string" && ["EACCES", "ENOENT", "ENOTDIR", "EPERM"].includes(code)
 }
-const OMO_CODEX_PLUGIN_CACHE_PUBLISHERS = new Set(["sisyphuslabs"])
+const OMC_CODEX_PLUGIN_CACHE_PUBLISHERS = new Set(["sisyphuslabs"])

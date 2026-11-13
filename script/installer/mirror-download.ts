@@ -1,6 +1,6 @@
 // Release-asset downloads for the installer mirror, with retry for transient GitHub failures.
 // GitHub returns HTTP 5xx (and drops connections) often enough that 3 quick attempts lose a whole
-// release to one blip (see #9221: omo 5.1.3 stalled on the previous version until a manual re-run).
+// release to one blip (see #9221: omc 5.1.3 stalled on the previous version until a manual re-run).
 // Policy: 5xx and network errors retry with exponential backoff inside a bounded window of about
 // 10 minutes per asset; any other non-2xx status (404, 403, ...) fails on the first attempt, because
 // retrying cannot fix it. The final failure is an AssetDownloadError naming the asset and the last

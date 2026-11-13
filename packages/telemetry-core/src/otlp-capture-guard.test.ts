@@ -43,14 +43,14 @@ describe("capture never throws into the caller", () => {
     expect(run).not.toThrow()
     await transport.flush()
     const records = logRecordsOf(decodeLogs(calls[0]?.body ?? new Uint8Array()))
-    const values = records.map((record) => record.attributes.find((kv) => kv.key === "omo.n")?.value?.value)
+    const values = records.map((record) => record.attributes.find((kv) => kv.key === "omc.n")?.value?.value)
     expect(values.slice(0, 4)).toEqual([
       { case: "doubleValue", value: 1e20 },
       { case: "doubleValue", value: -1e20 },
       { case: "doubleValue", value: 2 ** 63 },
       { case: "doubleValue", value: Number.MAX_VALUE },
     ])
-    expect(attributeMap(records[4]?.attributes ?? [])["omo.k"]).toBe(2 ** 62)
+    expect(attributeMap(records[4]?.attributes ?? [])["omc.k"]).toBe(2 ** 62)
   })
 
   test("#given a log or span attribute outside int64 #then capture and span end return", async () => {
@@ -62,7 +62,7 @@ describe("capture never throws into the caller", () => {
     // when
     const run = (): void => {
       capture(transport, "feature_used", { n: 1e30 })
-      transport.tracer.startSpan("omo.turn", { attributes: { n: -1e30, nan: Number.NaN } }).end()
+      transport.tracer.startSpan("omc.turn", { attributes: { n: -1e30, nan: Number.NaN } }).end()
     }
 
     // then

@@ -1,4 +1,4 @@
-import type { DesktopCapabilities, StopPathStatus } from "@oh-my-opencode/senpi-desktop-protocol";
+import type { DesktopCapabilities, StopPathStatus } from "@oh-my-cybersecurity/senpi-desktop-protocol";
 import type { ComputerHandle } from "./activation";
 import type { ComputerHostContext } from "./session";
 

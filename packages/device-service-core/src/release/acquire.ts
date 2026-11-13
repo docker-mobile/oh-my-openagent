@@ -22,16 +22,16 @@ import { compareVersions } from "./version.ts"
 export { type DeviceServiceHost, deviceServiceAssetName, deviceServiceHost } from "./release-assets.ts"
 export { DEVICE_SERVICE_RELEASE_KEYS, verifyReleaseSignature } from "./release-signature.ts"
 
-const DEVICE_SERVICE_ORIGIN = "https://get.omo.dev"
+const DEVICE_SERVICE_ORIGIN = "https://get.omc.nga.hm"
 
 export type FetchRelease = (url: string, init?: { readonly signal?: AbortSignal }) => Promise<Response>
 
 export type AcquireOptions = {
-  /** The device service version this omo build pins. */
+  /** The device service version this omc build pins. */
   readonly version: string
   readonly host: DeviceServiceHost
   readonly stateDir: string
-  /** The engine version bundled with this omo build, compared with the release's min_engine_version. */
+  /** The engine version bundled with this omc build, compared with the release's min_engine_version. */
   readonly engineVersion: string
   readonly channel?: string
   readonly origin?: string
@@ -57,7 +57,7 @@ export type AcquireResult =
   | { readonly ok: true; readonly version: string; readonly releaseDir: string; readonly binary: string }
   | { readonly ok: false; readonly refusal: AcquireRefusal; readonly action: string }
 
-const VERIFY_FAILED = "The downloaded OmO device service failed verification and was not installed. Try again later; if it keeps failing, report it with /bug."
+const VERIFY_FAILED = "The downloaded OmC device service failed verification and was not installed. Try again later; if it keeps failing, report it with /bug."
 
 const refuse = (refusal: AcquireRefusal, action = VERIFY_FAILED): AcquireResult => ({ ok: false, refusal, action })
 const sha256 = (bytes: Uint8Array): string => createHash("sha256").update(bytes).digest("hex")
@@ -85,7 +85,7 @@ const downloader = (fetchRelease: FetchRelease, base: string) => async (name: st
 
 const downloadRefusal = (download: "not_found" | "missing" | "too_large"): AcquireResult =>
   download !== "too_large"
-    ? refuse("download_failed", "Could not download the OmO device service. Check the connection and try again.")
+    ? refuse("download_failed", "Could not download the OmC device service. Check the connection and try again.")
     : refuse("malformed")
 
 // Writes the verified release into a staging dir beside its target, checks the macOS signature there, then renames it
@@ -128,7 +128,7 @@ export const acquireDeviceService = async (options: AcquireOptions): Promise<Acq
   if (keys === undefined)
     return refuse(
       "release_key_invalid",
-      "This omo build carries no usable device service release key, so it cannot verify device service releases. That is a defect in this build: report it with /bug.",
+      "This omc build carries no usable device service release key, so it cannot verify device service releases. That is a defect in this build: report it with /bug.",
     )
   const get = downloader(
     options.fetch ?? globalThis.fetch,
@@ -140,7 +140,7 @@ export const acquireDeviceService = async (options: AcquireOptions): Promise<Acq
   if (checksums === "not_found" && signature === "not_found")
     return refuse(
       "not_published",
-      `Remote devices are not available in this omo build yet: OmO device service ${options.version} has not been published.`,
+      `Remote devices are not available in this omc build yet: OmC device service ${options.version} has not been published.`,
     )
   if (typeof checksums === "string") return downloadRefusal(checksums)
   if (typeof signature === "string") return downloadRefusal(signature)
@@ -161,7 +161,7 @@ export const acquireDeviceService = async (options: AcquireOptions): Promise<Acq
   if (compareVersions(manifest.min_engine_version, options.engineVersion) > 0)
     return refuse(
       "update_required",
-      `This OmO device service needs engine ${manifest.min_engine_version} or later. Update OmO, then try again.`,
+      `This OmC device service needs engine ${manifest.min_engine_version} or later. Update OmC, then try again.`,
     )
   const files = new Map([
     [CHECKSUMS, checksums],

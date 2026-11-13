@@ -1,4 +1,4 @@
-import { canonicalCategoryName } from "@oh-my-opencode/omo-config-core"
+import { canonicalCategoryName } from "@oh-my-cybersecurity/omc-config-core"
 import type { RetainTranscriptMark } from "../../state"
 
 import type { ResolvedSpawnItem } from "./types"
@@ -81,7 +81,7 @@ export type RunInBackgroundResolution =
 const BOTH_TARGETS_MESSAGE = "Provide EITHER category OR subagent_type, not both. Remove one and retry."
 
 const CATEGORY_WITH_MODEL_MESSAGE =
-  "Provide EITHER category OR model, never both. A category-routed task always takes its model from the omo.json category config; a call-site model override would silently bypass that routing. Remove model and retry, or use subagent_type for an explicit-model spawn, or configure categories.<name>.models in omo.json."
+  "Provide EITHER category OR model, never both. A category-routed task always takes its model from the omc.json category config; a call-site model override would silently bypass that routing. Remove model and retry, or use subagent_type for an explicit-model spawn, or configure categories.<name>.models in omc.json."
 
 const NO_TARGET_MESSAGE =
   'You MUST provide EITHER category OR subagent_type. Omitting BOTH will FAIL. Example: task(category="quick", prompt="...") or task(subagent_type="plan-reviewer", prompt="...").'
@@ -137,7 +137,7 @@ export function isolationFieldsViolation(
   return undefined
 }
 
-// category XOR subagent_type: both or neither is a typed tool error. Wording ports the omo
+// category XOR subagent_type: both or neither is a typed tool error. Wording ports the omc
 // delegate-task tool-description contract so the model sees the same guidance it does in OpenCode.
 export function validateTaskTarget(params: TargetInput): TaskTargetSelection {
   const hasCategory = present(params.category)

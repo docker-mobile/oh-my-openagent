@@ -14,7 +14,7 @@ import { writeBoulderState } from "./write-state"
 
 /** A ulw-execute session that dies abnormally never completes its work, so activity decides. */
 export const DEFAULT_STALE_WORK_THRESHOLD_MS = 6 * 60 * 60 * 1000
-export const STALE_WORK_THRESHOLD_ENV_KEY = "OMO_BOULDER_STALE_WORK_THRESHOLD_MS"
+export const STALE_WORK_THRESHOLD_ENV_KEY = "OMC_BOULDER_STALE_WORK_THRESHOLD_MS"
 
 const SESSION_TRANSCRIPT_SUFFIX = ".jsonl"
 const NO_CHANGES: StaleWorkReconcileResult = { demoted: [], written: false }

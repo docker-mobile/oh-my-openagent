@@ -1,4 +1,4 @@
-import { computerPreludeAssets } from "@oh-my-opencode/senpi-desktop-prelude";
+import { computerPreludeAssets } from "@oh-my-cybersecurity/senpi-desktop-prelude";
 import { ComputerParams } from "./params";
 
 export const COMPUTER_TOOL_NAME = "computer";

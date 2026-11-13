@@ -24,7 +24,7 @@ function spawnTracked(input: Parameters<typeof spawnSgRunner>[0]): ReturnType<ty
 }
 
 function fixtureRunner(): { directory: string; executable: string; fixture: string } {
-  const directory = mkdtempSync(join(tmpdir(), "omo-sg-runner-"));
+  const directory = mkdtempSync(join(tmpdir(), "omc-sg-runner-"));
   directories.push(directory);
   const fixture = join(directory, "fake-sg.js");
   writeFileSync(fixture, `const fs = require("node:fs");

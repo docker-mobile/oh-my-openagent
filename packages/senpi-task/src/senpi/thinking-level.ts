@@ -10,7 +10,7 @@ function isSenpiThinkingLevelName(value: string): value is SenpiThinkingLevelNam
   return (SENPI_THINKING_LEVEL_NAMES as readonly string[]).includes(value)
 }
 
-// omo.json reasoning spells the disabled level "none" where senpi spells it "off".
+// omc.json reasoning spells the disabled level "none" where senpi spells it "off".
 // Unknown non-level tokens are dropped so a child keeps the harness default instead of failing CLI
 // or session-option validation on a value senpi never heard of.
 export function asSenpiThinkingLevel(reasoning: string | undefined): SenpiThinkingLevel | undefined {

@@ -23,7 +23,7 @@ fn real_directory() -> PathBuf {
     // SAFETY: a successful getpwuid_r with a non-null result initialized the record.
     let home = unsafe { CStr::from_ptr(record.assume_init().pw_dir) };
     PathBuf::from(OsStr::from_bytes(home.to_bytes()))
-        .join("Library/Application Support/OmO/ComputerControl/xpc-v1")
+        .join("Library/Application Support/OmC/ComputerControl/xpc-v1")
 }
 
 /// The only way these tests build a latch: never in the real per-user directory.

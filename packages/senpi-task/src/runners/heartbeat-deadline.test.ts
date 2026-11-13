@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import type { AgentSessionEvent } from "@code-yeongyu/senpi"
-import { createLogger } from "@oh-my-opencode/utils"
+import { createLogger } from "@oh-my-cybersecurity/utils"
 import { adaptRpcHandle } from "../manager/child-handle"
 import { createOutcomeTracker } from "../manager/manager-outcome"
 import { createTaskRecordStore } from "../store"

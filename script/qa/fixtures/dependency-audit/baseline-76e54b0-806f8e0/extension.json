@@ -34,7 +34,7 @@
         "engine": true
       },
       "label": "audit-identity-classic",
-      "agentDir": "$SANDBOX/home/.omo/agent",
+      "agentDir": "$SANDBOX/home/.omc/agent",
       "packageDir": "$PAYLOAD"
     },
     {
@@ -49,14 +49,14 @@
         "engine": true
       },
       "label": "audit-identity-multi",
-      "agentDir": "$SANDBOX/home/.omo/agent",
+      "agentDir": "$SANDBOX/home/.omc/agent",
       "packageDir": "$PAYLOAD"
     }
   ],
   "commands": [
     {
       "command": [
-        "$SANDBOX/omo",
+        "$SANDBOX/omc",
         "--version"
       ],
       "exitCode": 0,

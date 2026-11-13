@@ -33,7 +33,7 @@ function textBytes(documents: readonly RecallDocument[]): number {
 }
 
 // The memory report (senpi#2564) reads these figures on demand to attribute a session's heap to the
-// recall corpus (oh-my-openagent#9442). A shared corpus counts once however many sessions hold it.
+// recall corpus (oh-my-cybersecurity#9442). A shared corpus counts once however many sessions hold it.
 describe("recallMemoryFigures", () => {
   it("#given two shared caches over one repository #when a report reads the figures #then the corpus counts once", async () => {
     // given

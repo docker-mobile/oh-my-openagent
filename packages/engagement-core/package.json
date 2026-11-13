@@ -1,0 +1,53 @@
+{
+  "name": "@oh-my-cybersecurity/engagement-core",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "description": "Offensive engagement fact graph: typed fact/intent nodes, structural readiness, durable per-node storage, and a crash-safe loot ledger. Absorbed from sapper-v2 (MIT).",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./src/index.ts"
+    },
+    "./store": {
+      "types": "./store.d.ts",
+      "import": "./src/store.ts"
+    },
+    "./exec": {
+      "types": "./exec.d.ts",
+      "import": "./src/exec.ts"
+    },
+    "./json-extract": {
+      "types": "./json-extract.d.ts",
+      "import": "./src/json-extract.ts"
+    },
+    "./contracts": {
+      "types": "./contracts.d.ts",
+      "import": "./src/contracts.ts"
+    },
+    "./prompt-assembly": {
+      "types": "./prompt-assembly.d.ts",
+      "import": "./src/prompt-assembly.ts"
+    },
+    "./plan-delta": {
+      "types": "./plan-delta.d.ts",
+      "import": "./src/plan-delta.ts"
+    },
+    "./model-catalog": {
+      "types": "./model-catalog.d.ts",
+      "import": "./src/model-catalog.ts"
+    },
+    "./toolcall-guard": {
+      "types": "./toolcall-guard.d.ts",
+      "import": "./src/toolcall-guard.ts"
+    }
+  },
+  "types": "./index.d.ts",
+  "scripts": {
+    "typecheck": "tsgo --noEmit -p tsconfig.json",
+    "test": "bun test src/*.test.ts src/**/*.test.ts"
+  },
+  "dependencies": {
+    "@oh-my-cybersecurity/utils": "workspace:*"
+  }
+}

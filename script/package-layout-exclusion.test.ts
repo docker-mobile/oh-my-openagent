@@ -117,7 +117,7 @@ function writePackageFixture(): void {
 
 describe("published package layout exclusions", () => {
   beforeAll(() => {
-    fixtureRoot = mkdtempSync(join(tmpdir(), "omo-package-layout-exclusion-"))
+    fixtureRoot = mkdtempSync(join(tmpdir(), "omc-package-layout-exclusion-"))
     writePackageFixture()
   })
 

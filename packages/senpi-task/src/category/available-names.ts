@@ -1,4 +1,4 @@
-import type { OmoConfig } from "@oh-my-opencode/omo-config-core"
+import type { OmoConfig } from "@oh-my-cybersecurity/omc-config-core"
 
 import { DEFAULT_CATEGORIES, isCategoryChainViable, isCategoryGateSatisfied } from "./builtins"
 import { withoutExcludedModels } from "../model-exclusion"

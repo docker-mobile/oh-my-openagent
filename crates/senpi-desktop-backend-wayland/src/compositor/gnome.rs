@@ -26,8 +26,8 @@ pub const DESKTOP_ENV: &str = "XDG_CURRENT_DESKTOP";
 /// The extension runs inside GNOME Shell and exports on the shell's own
 /// connection, so only the shell can answer at this name.
 pub const SHELL_SERVICE: &str = "org.gnome.Shell";
-pub const RECTS_PATH: &str = "/dev/omo/SenpiDesktop/WindowRects";
-pub const RECTS_IFACE: &str = "dev.omo.SenpiDesktop.WindowRects";
+pub const RECTS_PATH: &str = "/dev/omc/SenpiDesktop/WindowRects";
+pub const RECTS_IFACE: &str = "dev.omc.SenpiDesktop.WindowRects";
 /// Bound on each bus call, so a stuck shell cannot hang capabilities or input.
 const CALL_TIMEOUT: Duration = Duration::from_secs(2);
 /// Bound on one reply; an entry is ~150 bytes per window.

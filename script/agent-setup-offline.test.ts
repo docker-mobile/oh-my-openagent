@@ -33,7 +33,7 @@ function writeExecutable(path: string, body: string): void {
 type SetupFixture = { readonly repo: string; readonly fakeBin: string; readonly bunLog: string }
 
 function createSetupFixture(options: { readonly built?: boolean; readonly withNode?: boolean } = {}): SetupFixture {
-  const repo = mkdtempSync(join(tmpdir(), "omo-setup-test-"))
+  const repo = mkdtempSync(join(tmpdir(), "omc-setup-test-"))
   const agentDir = join(repo, "script", "agent")
   const fakeBin = join(repo, "fake-bin")
   const bunLog = join(repo, "bun-calls.log")

@@ -11,7 +11,7 @@ import {
   type CreateAgentSessionOptions,
   type ToolDefinition,
 } from "@code-yeongyu/senpi"
-import { OmoTaskSettingsSchema } from "@oh-my-opencode/omo-config-core"
+import { OmoTaskSettingsSchema } from "@oh-my-cybersecurity/omc-config-core"
 
 import { createTaskManager } from "../manager/manager"
 import type { ManagedChildHandle } from "../manager/child-handle"
@@ -637,9 +637,9 @@ describe("DAG failure, crash, and policy end to end", () => {
     expect(names.some((name) => name.startsWith("task_") || name.startsWith("team_"))).toBe(false)
   })
 
-  test("#given inherited rpc extensions #when DAG and non-DAG children spawn #then only the DAG child omits the leading omo-senpi entry", async () => {
+  test("#given inherited rpc extensions #when DAG and non-DAG children spawn #then only the DAG child omits the leading omc-senpi entry", async () => {
     // given
-    const inheritedExtensions = ["/extensions/omo-senpi.js", "/extensions/provider.js"]
+    const inheritedExtensions = ["/extensions/omc-senpi.js", "/extensions/provider.js"]
     const spawnedArgs: { readonly taskId: string; readonly args: readonly string[] }[] = []
     const rpcRunner = createRpcManagedRunner({
       async start(spec: RpcRunnerSpec) {

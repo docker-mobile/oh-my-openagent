@@ -1,6 +1,6 @@
 // The one seam through which a machine retires a memory-sync trust pin (#12280): called exactly when,
 // and immediately before, the private keys of the principal that earned the pin are discarded (a
-// sign-in ended, `omo logout`, `omo account forget`, a re-login or adopt that replaces the device, the
+// sign-in ended, `omc logout`, `omc account forget`, a re-login or adopt that replaces the device, the
 // desktop discarding its sealed session). Retiring renames the pin directory aside, idempotent on a
 // missing pin; only a ceremony pins again. It owns the pin's directory layout with trust-pin.ts, and
 // imports nothing from the crypto layer, so the service-auth callers can reach it.

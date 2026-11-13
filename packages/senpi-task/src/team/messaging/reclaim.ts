@@ -1,4 +1,4 @@
-import { reclaimStaleReservations } from "@oh-my-opencode/team-core/team-mailbox"
+import { reclaimStaleReservations } from "@oh-my-cybersecurity/team-core/team-mailbox"
 
 import type { TeamCoreConfig } from "../runtime-config"
 

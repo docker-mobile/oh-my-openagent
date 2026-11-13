@@ -1,9 +1,9 @@
 import { readdir, readFile } from "node:fs/promises"
 import { join } from "node:path"
 
-import { ackMessages, commitDeliveryReservation, isMessageConsumed, listUnreadMessages, releaseDeliveryReservation, reserveMessageForDelivery, withInboxConsumerLease } from "@oh-my-opencode/team-core/team-mailbox"
-import { getInboxDir, resolveBaseDir } from "@oh-my-opencode/team-core/team-registry"
-import { MessageSchema, type Message } from "@oh-my-opencode/team-core/types"
+import { ackMessages, commitDeliveryReservation, isMessageConsumed, listUnreadMessages, releaseDeliveryReservation, reserveMessageForDelivery, withInboxConsumerLease } from "@oh-my-cybersecurity/team-core/team-mailbox"
+import { getInboxDir, resolveBaseDir } from "@oh-my-cybersecurity/team-core/team-registry"
+import { MessageSchema, type Message } from "@oh-my-cybersecurity/team-core/types"
 
 import { TEAM_LEAD_SENTINEL } from "../normalize"
 import { appendDeliveredEvent } from "./delivery-events"

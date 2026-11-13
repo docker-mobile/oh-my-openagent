@@ -214,7 +214,7 @@ describe("reapStaleDaemonVersions", () => {
 
 describe("attestDaemonCliProcess", () => {
 	it("#given a linux cmdline of node cli.js daemon #when attesting #then ownership is proven", async () => {
-		const cmdline = Buffer.from("/usr/bin/node\u0000/opt/omo/dist/cli.js\u0000daemon\u0000");
+		const cmdline = Buffer.from("/usr/bin/node\u0000/opt/omc/dist/cli.js\u0000daemon\u0000");
 		const result = await attestDaemonCliProcess(4242, "linux", {
 			readProcFile: () => Promise.resolve(cmdline),
 		});
@@ -231,7 +231,7 @@ describe("attestDaemonCliProcess", () => {
 
 	it("#given a darwin ps line of node cli.js daemon #when attesting #then ownership is proven", async () => {
 		const result = await attestDaemonCliProcess(4242, "darwin", {
-			executeForStdout: () => Promise.resolve("node /opt/omo/dist/cli.js daemon\n"),
+			executeForStdout: () => Promise.resolve("node /opt/omc/dist/cli.js daemon\n"),
 		});
 		expect(result).toBe(true);
 	});

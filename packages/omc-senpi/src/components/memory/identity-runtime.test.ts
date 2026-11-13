@@ -1,0 +1,661 @@
+import { afterEach, describe, expect, spyOn, test } from "bun:test"
+import { existsSync, realpathSync, statSync } from "node:fs"
+import { chmod, mkdir, mkdtemp, rm, writeFile } from "node:fs/promises"
+import { tmpdir } from "node:os"
+import { join } from "node:path"
+
+import { buildIdentityPaths } from "@oh-my-cybersecurity/memory-core"
+
+import { resolveAgentHome } from "../agent-home/resolve-agent-home"
+import { createMemoryIdentityContext } from "./context"
+import { createIdentityRuntime } from "./identity-runtime"
+import { currentLaunchScope, withLaunchScope, type LaunchScope } from "./launch-facts"
+import { componentContext, loadedMemoryConfig, memorySettings } from "./memory.test-support"
+import type { ReflectionSandbox, ReflectionSpawnArgs } from "./worker"
+
+const roots: string[] = []
+afterEach(async () => Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true, force: true }))))
+
+describe("memory identity runtime", () => {
+  test.each(["manual", "different", "aborted", "shared", "success", "failure"] as const)("#given overlapping identity observers (%s) #when the owner settles #then cancellation belongs to each caller", async (kind) => {
+    const root = await mkdtemp(join(tmpdir(), "omc-reconcile-flight-"))
+    roots.push(root)
+    const identity = createMemoryIdentityContext({
+      identity: "agent-test", identityPaths: buildIdentityPaths(root, "agent-test"),
+      binding: { identity: "agent-test", repoPathHash: "hash", boundAt: 1 },
+    })
+    const runtime = createIdentityRuntime(identity, {
+      loadConfig: () => loadedMemoryConfig(memorySettings()), cwd: () => root,
+      resolveModelRegistry: () => undefined,
+    })
+    const state = await runtime.store.readState()
+    const readState = runtime.store.readState.bind(runtime.store)
+    const entered = Promise.withResolvers<void>()
+    const release = Promise.withResolvers<typeof state>()
+    const probe = spyOn(runtime.store, "readState").mockImplementationOnce(() => {
+      entered.resolve()
+      return release.promise
+    }).mockImplementation(readState)
+    const controller = new AbortController()
+    const joiner = new AbortController()
+    const reason = new DOMException("Settle observer budget exhausted", "TimeoutError")
+    const ownReason = new Error("joining observer retired")
+    const failure = new Error("reservation read failed")
+    const first = runtime.reconcile(controller.signal).catch((error: unknown) => error)
+    const second = runtime.reconcile(kind === "manual" ? undefined : kind === "shared" ? controller.signal : joiner.signal).catch((error: unknown) => error)
+    try {
+      await entered.promise
+      expect(probe).toHaveBeenCalledTimes(1)
+      if (kind === "aborted") joiner.abort(ownReason)
+      if (kind !== "success") controller.abort(reason)
+      if (kind === "failure") release.reject(failure)
+      else release.resolve(state)
+      expect(await first).toBe(kind === "success" ? undefined : kind === "failure" ? failure : reason)
+      expect(await second).toBe(kind === "shared" ? reason : kind === "aborted" ? ownReason : kind === "failure" ? failure : undefined)
+      expect(probe).toHaveBeenCalledTimes(kind === "manual" || kind === "different" ? 3 : kind === "success" ? 2 : 1)
+      probe.mockRestore()
+      await runtime.reconcile()
+    } finally {
+      release.resolve(state)
+      await Promise.all([first, second])
+      probe.mockRestore()
+    }
+  })
+
+  test.skipIf(process.platform !== "darwin" && process.platform !== "linux")(
+    "#given an unresolved reflection child command #when the real lazy sandbox is constructed #then the unsandboxed escape reaches the injected logger",
+    async () => {
+      // given
+      const root = await mkdtemp(join(tmpdir(), "omc-memory-identity-runtime-"))
+      roots.push(root)
+      const paths = buildIdentityPaths(root, "agent-test")
+      await Promise.all([
+        paths.repo,
+        paths.transcripts,
+        paths.reflection,
+        paths.reflectionSessions,
+        paths.worktrees,
+      ].map((path) => mkdir(path, { recursive: true })))
+      const binDir = join(root, "bin")
+      await mkdir(binDir)
+      const sandboxExecutable = join(binDir, process.platform === "darwin" ? "sandbox-exec" : "bwrap")
+      await writeFile(sandboxExecutable, "#!/bin/sh\nexit 0\n")
+      await chmod(sandboxExecutable, 0o755)
+      const identity = createMemoryIdentityContext({
+        identity: "agent-test",
+        identityPaths: paths,
+        binding: { identity: "agent-test", repoPathHash: "hash", boundAt: 1 },
+      })
+      const ctx = componentContext()
+      const previousPath = process.env.PATH
+      const previousAgentDir = process.env.SENPI_CODING_AGENT_DIR
+      process.env.PATH = `${binDir}${process.platform === "win32" ? ";" : ":"}${previousPath ?? ""}`
+      process.env.SENPI_CODING_AGENT_DIR = paths.runtime
+
+      try {
+        const runtime = createIdentityRuntime(identity, {
+          loadConfig: () => loadedMemoryConfig(memorySettings()),
+          cwd: () => root,
+          resolveModelRegistry: () => undefined,
+          logger: ctx.logger,
+        })
+        const sandbox = (runtime.runner as unknown as { options: { sandbox: ReflectionSandbox } }).options.sandbox
+        const spawnArgs: ReflectionSpawnArgs = {
+          runId: "reflection-run-visible",
+          attempt: 1,
+          hardDeadlineAt: Date.now() + 10_000,
+          category: "quick",
+          conversationIds: ["conversation-a"],
+          model: "fixture/model",
+          command: "missing-senpi",
+          args: [],
+          cwd: paths.worktrees,
+          env: { PATH: "" },
+          detached: true,
+          paths: {
+            sessionDir: paths.reflectionSessions,
+            worktree: paths.worktrees,
+            gitCommonDir: paths.repo,
+            transcript: join(paths.transcripts, "transcript.json"),
+            persona: join(paths.reflectionSessions, "persona.md"),
+            prompt: join(paths.reflectionSessions, "prompt.md"),
+          },
+        }
+
+        // when
+        await sandbox(spawnArgs)
+
+        // then
+        expect(ctx.logs).toContainEqual({
+          level: "warn",
+          message: "memory reflection sandbox degraded",
+          details: {
+            identity: "agent-test",
+            runId: "reflection-run-visible",
+            warning: 'reflection sandbox unavailable: inner command "missing-senpi" is not absolute and could not be resolved; running unsandboxed',
+          },
+        })
+      } finally {
+        if (previousPath === undefined) delete process.env.PATH
+        else process.env.PATH = previousPath
+        if (previousAgentDir === undefined) delete process.env.SENPI_CODING_AGENT_DIR
+        else process.env.SENPI_CODING_AGENT_DIR = previousAgentDir
+      }
+    },
+    30_000,
+  )
+
+  // The deferred bwrap probe on Linux, driven through the real runtime: a fake `bwrap` on PATH answers the smoke
+  // as `smoke` says (it gets the fixture root, so it can count its own runs), and `spawns` reflection spawns go
+  // through the lazy sandbox in order. Returns each spawn's command and the sandbox-state log lines.
+  async function deferredSandboxRuns(prefix: string, smoke: (root: string) => string, spawns: number) {
+    const root = await mkdtemp(join(tmpdir(), prefix))
+    roots.push(root)
+    const paths = buildIdentityPaths(root, "agent-test")
+    await Promise.all([
+      paths.repo,
+      paths.transcripts,
+      paths.reflection,
+      paths.reflectionSessions,
+      paths.worktrees,
+    ].map((path) => mkdir(path, { recursive: true })))
+    const binDir = join(root, "bin")
+    await mkdir(binDir)
+    const bwrap = join(binDir, "bwrap")
+    await writeFile(bwrap, `#!/bin/sh\n${smoke(root)}`)
+    await chmod(bwrap, 0o755)
+    const innerCommand = join(binDir, "senpi-fake")
+    await writeFile(innerCommand, "#!/bin/sh\nexit 0\n")
+    await chmod(innerCommand, 0o755)
+    const identity = createMemoryIdentityContext({
+      identity: "agent-test",
+      identityPaths: paths,
+      binding: { identity: "agent-test", repoPathHash: "hash", boundAt: 1 },
+    })
+    const ctx = componentContext()
+    const previousPath = process.env.PATH
+    const previousAgentDir = process.env.SENPI_CODING_AGENT_DIR
+    process.env.PATH = `${binDir}:${previousPath ?? ""}`
+    process.env.SENPI_CODING_AGENT_DIR = paths.runtime
+
+    try {
+      const runtime = createIdentityRuntime(identity, {
+        loadConfig: () => loadedMemoryConfig(memorySettings()),
+        cwd: () => root,
+        resolveModelRegistry: () => undefined,
+        logger: ctx.logger,
+      })
+      const sandbox = (runtime.runner as unknown as { options: { sandbox: ReflectionSandbox } }).options.sandbox
+      const spawnArgs = (runId: string): ReflectionSpawnArgs => ({
+        runId,
+        attempt: 1,
+        hardDeadlineAt: Date.now() + 10_000,
+        category: "quick",
+        conversationIds: ["conversation-a"],
+        model: "fixture/model",
+        command: innerCommand,
+        args: [],
+        cwd: paths.worktrees,
+        env: { PATH: binDir },
+        detached: true,
+        paths: {
+          sessionDir: paths.reflectionSessions,
+          worktree: paths.worktrees,
+          gitCommonDir: paths.repo,
+          transcript: join(paths.transcripts, "transcript.json"),
+          persona: join(paths.reflectionSessions, "persona.md"),
+          prompt: join(paths.reflectionSessions, "prompt.md"),
+        },
+      })
+      const commands: string[] = []
+      for (let run = 1; run <= spawns; run += 1) commands.push((await sandbox(spawnArgs(`reflection-run-${run}`))).command)
+      const transitions = ctx.logs.filter((entry) =>
+        entry.message === "memory reflection sandbox degraded" || entry.message === "memory reflection sandbox restored")
+      return { commands, transitions, bwrap, innerCommand }
+    } finally {
+      if (previousPath === undefined) delete process.env.PATH
+      else process.env.PATH = previousPath
+      if (previousAgentDir === undefined) delete process.env.SENPI_CODING_AGENT_DIR
+      else process.env.SENPI_CODING_AGENT_DIR = previousAgentDir
+    }
+  }
+  const runIdOf = (entry: { readonly details?: unknown }): string | undefined => (entry.details as { readonly runId?: string } | undefined)?.runId
+  // The probe's 3 s smoke timeout is the one verdict it never caches, so a smoke that outlives it is followed by a
+  // fresh probe on the next spawn. The marker file lets the fake answer its first smoke differently.
+  const firstSmokeTimesOut = (root: string, then: string) =>
+    `if [ ! -e '${join(root, "first-smoke-ran")}' ]; then : > '${join(root, "first-smoke-ran")}'; exec sleep 10; fi\n${then}`
+
+  test.skipIf(process.platform !== "linux")(
+    "#given auto policy and a bwrap whose smoke is denied at spawn time #when three reflection spawns run #then each runs unsandboxed and the degradation is logged once",
+    async () => {
+      // given / when
+      const { commands, transitions, innerCommand } = await deferredSandboxRuns(
+        "omc-memory-identity-runtime-deferred-",
+        () => "echo 'bwrap: setting up uid map: Permission denied' >&2\nexit 1\n",
+        3,
+      )
+
+      // then
+      expect(commands).toEqual([innerCommand, innerCommand, innerCommand])
+      expect(transitions).toHaveLength(1)
+      expect(transitions[0]).toMatchObject({
+        level: "warn",
+        message: "memory reflection sandbox degraded",
+        details: { identity: "agent-test", runId: "reflection-run-1" },
+      })
+      expect(JSON.stringify(transitions[0]?.details)).toContain("setting up uid map: Permission denied")
+    },
+    30_000,
+  )
+
+  test.skipIf(process.platform !== "linux")(
+    "#given auto policy and a bwrap whose first smoke times out and later smokes pass #when three reflection spawns run #then the first runs unsandboxed, the second restores the sandbox, and each transition is logged once",
+    async () => {
+      // given / when
+      const { commands, transitions, bwrap, innerCommand } = await deferredSandboxRuns(
+        "omc-memory-identity-runtime-recovered-",
+        (root) => firstSmokeTimesOut(root, "exit 0\n"),
+        3,
+      )
+
+      // then
+      expect(commands).toEqual([innerCommand, bwrap, bwrap])
+      expect(transitions.map((entry) => [entry.message, runIdOf(entry)])).toEqual([
+        ["memory reflection sandbox degraded", "reflection-run-1"],
+        ["memory reflection sandbox restored", "reflection-run-2"],
+      ])
+      expect(transitions[0]?.level).toBe("warn")
+      expect(transitions[1]?.level).toBe("info")
+      expect(JSON.stringify(transitions[0]?.details)).toContain("smoke test timed out")
+    },
+    30_000,
+  )
+
+  test.skipIf(process.platform !== "linux")(
+    "#given auto policy and a bwrap whose first smoke times out and later smokes are denied #when three reflection spawns run #then each new reason logs its own degraded warning and a repeat logs nothing",
+    async () => {
+      // given / when: run 1 degrades on the timeout, run 2 on the (now cached) denial, run 3 on the same denial
+      const { commands, transitions, innerCommand } = await deferredSandboxRuns(
+        "omc-memory-identity-runtime-reasons-",
+        (root) => firstSmokeTimesOut(root, "echo 'bwrap: setting up uid map: Permission denied' >&2\nexit 1\n"),
+        3,
+      )
+
+      // then
+      expect(commands).toEqual([innerCommand, innerCommand, innerCommand])
+      expect(transitions.map((entry) => [entry.message, runIdOf(entry)])).toEqual([
+        ["memory reflection sandbox degraded", "reflection-run-1"],
+        ["memory reflection sandbox degraded", "reflection-run-2"],
+      ])
+      expect(JSON.stringify(transitions[0]?.details)).toContain("smoke test timed out")
+      expect(JSON.stringify(transitions[1]?.details)).toContain("setting up uid map: Permission denied")
+    },
+    30_000,
+  )
+})
+
+async function renderReflectionSandboxAgentDir(envShape: {
+  readonly omc?: string
+  readonly senpi?: string
+  /** Environment the reflection child would inherit before the runtime transforms it. */
+  readonly inheritedChildEnv?: NodeJS.ProcessEnv
+}): Promise<{
+  readonly fakeHome: string
+  readonly renderedArgs: readonly string[]
+  readonly childEnv: NodeJS.ProcessEnv
+}> {
+  // given: an isolated identity root, a fake sandbox-exec/bwrap on PATH so the seatbelt profile or
+  // bwrap args render, and a fake absolute inner command so the sandbox does not degrade.
+  const root = await mkdtemp(join(tmpdir(), "omc-memory-agent-dir-"))
+  roots.push(root)
+  const paths = buildIdentityPaths(root, "agent-dir-test")
+  await Promise.all(
+    [paths.repo, paths.transcripts, paths.reflection, paths.reflectionSessions, paths.worktrees].map((path) =>
+      mkdir(path, { recursive: true }),
+    ),
+  )
+  const binDir = join(root, "bin")
+  await mkdir(binDir)
+  for (const name of [process.platform === "darwin" ? "sandbox-exec" : "bwrap", "senpi-fake"]) {
+    const exe = join(binDir, name)
+    await writeFile(exe, "#!/bin/sh\nexit 0\n")
+    await chmod(exe, 0o755)
+  }
+  // Seeded fake home: agent-dir resolution stays HOST-INDEPENDENT (never reads the real $HOME or
+  // its ambient ~/.omc/settings.json sentinel) and the seeded sentinel forces the flat `~/.omc`
+  // branch for the no-env case. Only this temp tree is mkdir'd, so the suite never writes into a
+  // contributor's or runner's real home.
+  const fakeHome = join(root, "fake-home")
+  await mkdir(join(fakeHome, ".omc"), { recursive: true })
+  const sentinelPath = join(fakeHome, ".omc", "settings.json")
+  const injectedEnv: Record<string, string | undefined> = {}
+  if (envShape.omc !== undefined) injectedEnv.OMC_CODING_AGENT_DIR = envShape.omc
+  if (envShape.senpi !== undefined) injectedEnv.SENPI_CODING_AGENT_DIR = envShape.senpi
+  const snapshot = {
+    PATH: process.env.PATH,
+    OMC_CODING_AGENT_DIR: process.env.OMC_CODING_AGENT_DIR,
+    SENPI_CODING_AGENT_DIR: process.env.SENPI_CODING_AGENT_DIR,
+    PI_CODING_AGENT_DIR: process.env.PI_CODING_AGENT_DIR,
+    XDG_CONFIG_HOME: process.env.XDG_CONFIG_HOME,
+  }
+  process.env.PATH = `${binDir}${process.platform === "win32" ? ";" : ":"}${snapshot.PATH ?? ""}`
+  delete process.env.OMC_CODING_AGENT_DIR
+  delete process.env.SENPI_CODING_AGENT_DIR
+  delete process.env.PI_CODING_AGENT_DIR
+  delete process.env.XDG_CONFIG_HOME
+  try {
+    const identity = createMemoryIdentityContext({
+      identity: "agent-dir-test",
+      identityPaths: paths,
+      binding: { identity: "agent-dir-test", repoPathHash: "hash", boundAt: 1 },
+    })
+    const runtime = createIdentityRuntime(identity, {
+      loadConfig: () => loadedMemoryConfig(memorySettings()),
+      cwd: () => root,
+      resolveModelRegistry: () => undefined,
+      resolveAgentDir: () =>
+        resolveAgentHome({ env: injectedEnv, homeDir: fakeHome, exists: (p) => p === sentinelPath }),
+    })
+    const sandbox = (runtime.runner as unknown as { options: { sandbox: ReflectionSandbox } }).options.sandbox
+    const transformed = await sandbox({
+      runId: "reflection-run-agent-dir",
+      attempt: 1,
+      hardDeadlineAt: Date.now() + 10_000,
+      category: "quick",
+      conversationIds: ["conversation-a"],
+      model: "fixture/model",
+      command: join(binDir, "senpi-fake"),
+      args: [],
+      cwd: paths.worktrees,
+      env: { PATH: "", ...(envShape.inheritedChildEnv ?? {}) },
+      detached: true,
+      paths: {
+        sessionDir: paths.reflectionSessions,
+        worktree: paths.worktrees,
+        gitCommonDir: paths.repo,
+        transcript: join(paths.transcripts, "transcript.json"),
+        persona: join(paths.reflectionSessions, "persona.md"),
+        prompt: join(paths.reflectionSessions, "prompt.md"),
+      },
+    })
+    return { fakeHome, renderedArgs: transformed.args, childEnv: transformed.env }
+  } finally {
+    for (const [key, value] of Object.entries(snapshot)) {
+      if (value === undefined) delete process.env[key]
+      else process.env[key] = value
+    }
+  }
+}
+
+function sandboxGrantsAgentDir(renderedArgs: readonly string[], agentDirReal: string): boolean {
+  if (process.platform === "darwin") {
+    const profile = renderedArgs[1]
+    return typeof profile === "string" && profile.includes(`(allow file-write* (subpath ${JSON.stringify(agentDirReal)}))`)
+  }
+  for (let i = 0; i + 2 < renderedArgs.length; i++) {
+    if (renderedArgs[i] === "--bind" && renderedArgs[i + 1] === agentDirReal && renderedArgs[i + 2] === agentDirReal) {
+      return true
+    }
+  }
+  return false
+}
+
+describe("memory identity runtime backfills runtime dirs of existing identities (#7012)", () => {
+  // From the WSL2 report on #7012: identities created before newer layout entries existed have
+  // some runtime dirs but not reflection-sessions/viewers/push-queue, and nothing backfilled them,
+  // so bwrap's writable bind of runtime/reflection-sessions died with "Can't find source path".
+  // Approach ported from #7236 by @AceRothstein71: ensure every runtime dir before each launch.
+  test("#given an identity that predates the layout #when a reserved reflection run launches #then every missing runtime dir exists before the runner builds the sandbox", async () => {
+    // given
+    const root = await mkdtemp(join(tmpdir(), "omc-memory-identity-runtime-predates-layout-"))
+    roots.push(root)
+    const paths = buildIdentityPaths(root, "agent-old")
+    await mkdir(paths.transcripts, { recursive: true })
+    await mkdir(paths.locks, { recursive: true })
+    await mkdir(paths.reflection, { recursive: true })
+    expect(existsSync(paths.reflectionSessions)).toBe(false)
+    expect(existsSync(paths.viewers)).toBe(false)
+    expect(existsSync(paths.pushQueue)).toBe(false)
+    const identity = createMemoryIdentityContext({
+      identity: "agent-old",
+      identityPaths: paths,
+      binding: { identity: "agent-old", repoPathHash: "hash", boundAt: 1 },
+    })
+    const ctx = componentContext()
+    const runtime = createIdentityRuntime(identity, {
+      loadConfig: () => loadedMemoryConfig(memorySettings()),
+      cwd: () => root,
+      resolveModelRegistry: () => undefined,
+      logger: ctx.logger,
+    })
+    const reserved = await runtime.store.tryReserve({ trigger: "manual", conversationIds: ["conversation-a"], snapshots: [] })
+    if (reserved.status !== "active") throw new Error("expected an active manual reservation")
+
+    // when
+    await runtime.launch(reserved.run)
+
+    // then
+    expect(existsSync(paths.reflectionSessions)).toBe(true)
+    expect(existsSync(paths.viewers)).toBe(true)
+    expect(existsSync(paths.pushQueue)).toBe(true)
+  }, 30_000)
+
+  test("#given the backfill failed once #when the blocker is gone and a later run launches #then the backfill is retried instead of the failure being cached", async () => {
+    // given: a plain file where runtime/reflection-sessions belongs makes the first backfill fail
+    const root = await mkdtemp(join(tmpdir(), "omc-memory-identity-runtime-backfill-retry-"))
+    roots.push(root)
+    const paths = buildIdentityPaths(root, "agent-retry")
+    await mkdir(join(paths.reflectionSessions, ".."), { recursive: true })
+    await writeFile(paths.reflectionSessions, "not a directory")
+    const identity = createMemoryIdentityContext({
+      identity: "agent-retry",
+      identityPaths: paths,
+      binding: { identity: "agent-retry", repoPathHash: "hash", boundAt: 1 },
+    })
+    const ctx = componentContext()
+    const runtime = createIdentityRuntime(identity, {
+      loadConfig: () => loadedMemoryConfig(memorySettings()),
+      cwd: () => root,
+      resolveModelRegistry: () => undefined,
+      logger: ctx.logger,
+    })
+    const first = await runtime.store.tryReserve({ trigger: "manual", conversationIds: ["conversation-a"], snapshots: [] })
+    if (first.status !== "active") throw new Error("expected an active manual reservation")
+    await runtime.launch(first.run)
+    const warning = ctx.logs.find((log) => log.level === "warn" && log.message.includes("could not create its runtime directories"))
+    expect(warning?.message).toContain("retries on the next run")
+    expect(existsSync(paths.viewers)).toBe(true)
+
+    // when: the blocker is removed and the next launch runs in the same runtime
+    await rm(paths.reflectionSessions)
+    await runtime.launch(first.run)
+
+    // then
+    expect(statSync(paths.reflectionSessions).isDirectory()).toBe(true)
+  }, 30_000)
+
+  test.skipIf(process.platform === "win32")("#given a fresh identity #when the backfill creates its runtime dirs #then they are owner-only (0700)", async () => {
+    // given
+    const root = await mkdtemp(join(tmpdir(), "omc-memory-identity-runtime-backfill-mode-"))
+    roots.push(root)
+    const paths = buildIdentityPaths(root, "agent-mode")
+    const identity = createMemoryIdentityContext({
+      identity: "agent-mode",
+      identityPaths: paths,
+      binding: { identity: "agent-mode", repoPathHash: "hash", boundAt: 1 },
+    })
+    const ctx = componentContext()
+    const runtime = createIdentityRuntime(identity, {
+      loadConfig: () => loadedMemoryConfig(memorySettings()),
+      cwd: () => root,
+      resolveModelRegistry: () => undefined,
+      logger: ctx.logger,
+    })
+    const reserved = await runtime.store.tryReserve({ trigger: "manual", conversationIds: ["conversation-a"], snapshots: [] })
+    if (reserved.status !== "active") throw new Error("expected an active manual reservation")
+
+    // when
+    await runtime.launch(reserved.run)
+
+    // then
+    for (const dir of [paths.reflectionSessions, paths.viewers, paths.pushQueue]) {
+      expect(statSync(dir).mode & 0o777).toBe(0o700)
+    }
+  }, 30_000)
+})
+
+describe("memory identity runtime agent-dir resolution", () => {
+  test.skipIf(process.platform !== "darwin" && process.platform !== "linux")(
+    "#given a rendered reflection sandbox #when OMC_CODING_AGENT_DIR is set #then the agent-dir runtimeWrites grant equals the resolved agent dir",
+    async () => {
+      // given
+      const omoAgentDir = await mkdtemp(join(tmpdir(), "omc-omc-agent-dir-"))
+      roots.push(omoAgentDir)
+      // when
+      const { renderedArgs } = await renderReflectionSandboxAgentDir({ omc: omoAgentDir })
+      // then: assert the LITERAL injected dir. The stale expression ignores
+      // OMC_CODING_AGENT_DIR, so it can never grant this dir on any host.
+      expect(sandboxGrantsAgentDir(renderedArgs, realpathSync(omoAgentDir))).toBe(true)
+    },
+    30_000,
+  )
+
+  test.skipIf(process.platform !== "darwin" && process.platform !== "linux")(
+    "#given a rendered reflection sandbox #when only SENPI_CODING_AGENT_DIR is set #then the agent-dir runtimeWrites grant equals the resolved agent dir",
+    async () => {
+      // given
+      const senpiAgentDir = await mkdtemp(join(tmpdir(), "omc-senpi-agent-dir-"))
+      roots.push(senpiAgentDir)
+      // when: SENPI_ is visible only to the injected resolver, not process.env, so the
+      // stale expression's process.env.SENPI_CODING_AGENT_DIR read cannot mimic it.
+      const { renderedArgs } = await renderReflectionSandboxAgentDir({ senpi: senpiAgentDir })
+      // then
+      expect(sandboxGrantsAgentDir(renderedArgs, realpathSync(senpiAgentDir))).toBe(true)
+    },
+    30_000,
+  )
+
+  test.skipIf(process.platform !== "darwin" && process.platform !== "linux")(
+    "#given a rendered reflection sandbox #when no agent-dir env is set #then the agent-dir runtimeWrites grant equals the sentinel-gated branded home",
+    async () => {
+      // when: OMC_, SENPI_ and PI_ unset; the seeded sentinel forces the flat `~/.omc` branch.
+      const { fakeHome, renderedArgs } = await renderReflectionSandboxAgentDir({})
+      // then: assert the LITERAL join(fakeHome, ".omc"). The stale expression resolves
+      // join(realHome, ".senpi", "agent"), which a fresh fakeHome can never equal on any host,
+      // sentinel present or absent - so this discriminates on CI runners too, not just here.
+      expect(sandboxGrantsAgentDir(renderedArgs, realpathSync(join(fakeHome, ".omc")))).toBe(true)
+    },
+    30_000,
+  )
+
+  test.skipIf(process.platform !== "darwin" && process.platform !== "linux")(
+    "#given a rendered reflection sandbox #when the child environment is transformed #then every agent-dir variable pins the granted directory",
+    async () => {
+      // given
+      const omoAgentDir = await mkdtemp(join(tmpdir(), "omc-pinned-agent-dir-"))
+      roots.push(omoAgentDir)
+
+      // when
+      const { renderedArgs, childEnv } = await renderReflectionSandboxAgentDir({ omc: omoAgentDir })
+
+      // then: the child cannot re-resolve its agent dir from the reflection worktree cwd, and the
+      // pin names the SAME directory the sandbox granted - a pin outside the grant is the EPERM
+      // the credential lock reported.
+      expect(sandboxGrantsAgentDir(renderedArgs, realpathSync(omoAgentDir))).toBe(true)
+      expect(childEnv.OMC_CODING_AGENT_DIR).toBe(omoAgentDir)
+      expect(childEnv.SENPI_CODING_AGENT_DIR).toBe(omoAgentDir)
+      expect(childEnv.PI_CODING_AGENT_DIR).toBe(omoAgentDir)
+    },
+    30_000,
+  )
+
+  test.skipIf(process.platform !== "darwin" && process.platform !== "linux")(
+    "#given an inherited agent-dir variable pointing elsewhere #when the reflection child environment is built #then the pin wins and no second home is granted",
+    async () => {
+      // given: the parent leaked an agent dir the sandbox never granted (the engine reads the first
+      // DEFINED name across OMC_/SENPI_/PI_, so a stale value would otherwise beat the pin).
+      const grantedAgentDir = await mkdtemp(join(tmpdir(), "omc-granted-agent-dir-"))
+      const staleAgentDir = await mkdtemp(join(tmpdir(), "omc-stale-agent-dir-"))
+      roots.push(grantedAgentDir, staleAgentDir)
+
+      // when
+      const { renderedArgs, childEnv } = await renderReflectionSandboxAgentDir({
+        omc: grantedAgentDir,
+        inheritedChildEnv: {
+          OMC_CODING_AGENT_DIR: staleAgentDir,
+          SENPI_CODING_AGENT_DIR: staleAgentDir,
+          PI_CODING_AGENT_DIR: staleAgentDir,
+        },
+      })
+
+      // then
+      expect(childEnv.OMC_CODING_AGENT_DIR).toBe(grantedAgentDir)
+      expect(childEnv.SENPI_CODING_AGENT_DIR).toBe(grantedAgentDir)
+      expect(childEnv.PI_CODING_AGENT_DIR).toBe(grantedAgentDir)
+      expect(sandboxGrantsAgentDir(renderedArgs, realpathSync(grantedAgentDir))).toBe(true)
+      expect(sandboxGrantsAgentDir(renderedArgs, realpathSync(staleAgentDir))).toBe(false)
+    },
+    30_000,
+  )
+})
+
+describe("memory identity runtime binds every launch to its own run (#10339)", () => {
+  async function runtimeSeeingScopes(name: string): Promise<{ runtime: ReturnType<typeof createIdentityRuntime>; seen: (LaunchScope | undefined)[] }> {
+    const root = await mkdtemp(join(tmpdir(), `omc-memory-identity-runtime-scope-${name}-`))
+    roots.push(root)
+    const identity = createMemoryIdentityContext({
+      identity: name,
+      identityPaths: buildIdentityPaths(root, name),
+      binding: { identity: name, repoPathHash: "hash", boundAt: 1 },
+    })
+    const seen: (LaunchScope | undefined)[] = []
+    const runtime = createIdentityRuntime(identity, {
+      loadConfig: () => loadedMemoryConfig(memorySettings()),
+      cwd: () => root,
+      // The runner resolves the model registry at the start of every launch: record the scope it runs in.
+      resolveModelRegistry: () => {
+        seen.push(currentLaunchScope())
+        return undefined
+      },
+      logger: componentContext().logger,
+    })
+    return { runtime, seen }
+  }
+
+  test("#given a reconcile-style launch with no trigger snapshot #when the runner resolves its facts #then it runs in a scope of its own run's conversations", async () => {
+    // given
+    const { runtime, seen } = await runtimeSeeingScopes("agent-scope-plain")
+    const reserved = await runtime.store.tryReserve({ trigger: "manual", conversationIds: ["conversation-a"], snapshots: [] })
+    if (reserved.status !== "active") throw new Error("expected an active manual reservation")
+
+    // when
+    await runtime.launch(reserved.run)
+
+    // then
+    expect(seen).toEqual([{ conversationIds: ["conversation-a"] }])
+  }, 30_000)
+
+  test("#given a launch for conversation A started inside session B's trigger scope #when the runner resolves its facts #then it never sees B's snapshot", async () => {
+    // given: B's trigger scope carries B's snapshot (a queued follow-up for A is launched from inside it)
+    const { runtime, seen } = await runtimeSeeingScopes("agent-scope-nested")
+    const reserved = await runtime.store.tryReserve({ trigger: "manual", conversationIds: ["conversation-a"], snapshots: [] })
+    if (reserved.status !== "active") throw new Error("expected an active manual reservation")
+    const sessionB = {
+      conversationIds: ["conversation-b"],
+      snapshot: {
+        modelRegistry: undefined,
+        sessionModel: { provider: "b", id: "b-model" },
+        parentContextTokens: 9,
+        parentSessionFile: "/B.jsonl",
+        parentCacheReusable: true,
+        agentDir: "/B",
+      },
+    }
+
+    // when
+    await withLaunchScope(sessionB, () => runtime.launch(reserved.run))
+
+    // then
+    expect(seen).toEqual([{ conversationIds: ["conversation-a"] }])
+  }, 30_000)
+})

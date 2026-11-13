@@ -1,0 +1,31 @@
+{
+  "name": "@oh-my-cybersecurity/attack-playbook-core",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "description": "Absorbed MITRE Atomic Red Team corpus: 353 technique playbooks as typed, disk-loaded JSON with a frozen query contract. MIT, Copyright (c) 2018 Red Canary, Inc.",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./src/index.ts"
+    },
+    "./types": {
+      "types": "./types.d.ts",
+      "import": "./src/types.ts"
+    },
+    "./loader": {
+      "types": "./loader.d.ts",
+      "import": "./src/loader.ts"
+    },
+    "./resolve": {
+      "types": "./resolve.d.ts",
+      "import": "./src/resolve.ts"
+    }
+  },
+  "types": "./index.d.ts",
+  "scripts": {
+    "typecheck": "tsgo --noEmit -p tsconfig.json",
+    "test": "bun test src"
+  },
+  "dependencies": {}
+}

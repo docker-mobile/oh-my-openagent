@@ -1,5 +1,5 @@
 /** Directory name that prefixes every embedded asset name. */
-export const EMBEDDED_PAYLOAD_ROOT = "omo-runtime"
+export const EMBEDDED_PAYLOAD_ROOT = "omc-runtime"
 /** Relative path of the embedded runtime manifest inside the payload root. */
 export const RUNTIME_MANIFEST_REL_PATH = "runtime-manifest.json"
 

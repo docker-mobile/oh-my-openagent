@@ -28,7 +28,7 @@ interface TokenUsageSummary {
   totalCost: number
 }
 
-const DB_DIR = join(tmpdir(), "oh-my-opencode", "token-usage")
+const DB_DIR = join(tmpdir(), "oh-my-cybersecurity", "token-usage")
 const SUMMARY_FILE = join(DB_DIR, "session-summaries.jsonl")
 
 function ensureDir(): void {

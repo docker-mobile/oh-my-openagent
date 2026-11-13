@@ -202,7 +202,7 @@ describe("validateSenpiTeamMembers", () => {
   test("#given an ulw reviewer agent #when validated #then it is rejected before the known-agent check", () => {
     // given
     const spec = normalizeSenpiTeamSpec(
-      { members: [{ kind: "agent", subagent_type: "omo-senpi-code-reviewer" }] },
+      { members: [{ kind: "agent", subagent_type: "omc-senpi-code-reviewer" }] },
       "reviewer-agent-team",
     )
 
@@ -219,7 +219,7 @@ describe("validateSenpiTeamMembers", () => {
     if (caught instanceof SenpiTeamSpecError) {
       expect(caught.code).toBe("UNKNOWN_SUBAGENT_TYPE")
       expect(caught.message).toBe(
-        'ulw reviewer agent "omo-senpi-code-reviewer" cannot be a team member; process-mode members drop reviewer instructions and tool allowlists, so delegate via the task tool instead',
+        'ulw reviewer agent "omc-senpi-code-reviewer" cannot be a team member; process-mode members drop reviewer instructions and tool allowlists, so delegate via the task tool instead',
       )
     }
   })

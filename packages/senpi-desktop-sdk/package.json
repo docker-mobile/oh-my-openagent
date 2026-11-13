@@ -1,5 +1,5 @@
 {
-	"name": "@oh-my-opencode/senpi-desktop-sdk",
+	"name": "@oh-my-cybersecurity/senpi-desktop-sdk",
 	"version": "0.1.0",
 	"type": "module",
 	"private": true,
@@ -17,7 +17,7 @@
 		"generate": "bun scripts/generate-facade-manifest.ts"
 	},
 	"dependencies": {
-		"@oh-my-opencode/senpi-desktop-protocol": "workspace:*"
+		"@oh-my-cybersecurity/senpi-desktop-protocol": "workspace:*"
 	},
 	"devDependencies": {
 		"@types/node": "26.6.2",

@@ -18,7 +18,7 @@ async function createTemporaryRoot(): Promise<string> {
 
 function getFixturePaths(rootDirectory: string, teamName: string) {
   const projectRoot = path.join(rootDirectory, "project")
-  const userBaseDir = path.join(rootDirectory, "home", ".omo")
+  const userBaseDir = path.join(rootDirectory, "home", ".omc")
 
   return {
     projectRoot,

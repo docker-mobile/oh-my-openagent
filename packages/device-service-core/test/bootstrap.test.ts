@@ -13,8 +13,8 @@ import { defaultWorld } from "./local-api/conformance/world.ts"
 import { testSecure } from "./local-api/support.ts"
 
 const PIN = "1.4.0"
-const AGENT_DIR = "/home/user/.omo/agent"
-const REFRESHER = { binaryPath: "/opt/omo/omo-cli", version: "5.1.52" }
+const AGENT_DIR = "/home/user/.omc/agent"
+const REFRESHER = { binaryPath: "/opt/omc/omc-cli", version: "5.1.52" }
 
 const owners: FakeOwner[] = []
 const services: DeviceService[] = []
@@ -52,7 +52,7 @@ type Harness = { readonly deps: BootstrapDependencies; readonly calls: { install
 const harness = (stateDir: string, overrides: Partial<BootstrapDependencies> = {}): Harness => {
   const calls = { install: 0, connect: 0 }
   // Design D r9 section 3: the bootstrap's own credential read is OFF relay's path. A credential reader is still
-  // offered here (as omo 1dc315f1cc wired one), and the bootstrap must never call it.
+  // offered here (as omc 1dc315f1cc wired one), and the bootstrap must never call it.
   let reads = 0
   const offered = { credential: async (): Promise<DeviceCredential> => { reads += 1; return credential() } }
   const deps: BootstrapDependencies = {
@@ -104,7 +104,7 @@ describe("device service bootstrap", () => {
     expect([...(owner?.state.endpoints ?? [])]).toEqual([AGENT_DIR])
   })
 
-  // D1 (#12051): the per-device opt-out belongs to the user; starting omo must never turn remote control back on.
+  // D1 (#12051): the per-device opt-out belongs to the user; starting omc must never turn remote control back on.
   test("a connected bootstrap leaves a detached host detached", async () => {
     const stateDir = home()
     const owner = await ownerAt(stateDir, PIN)
@@ -134,13 +134,13 @@ describe("device service bootstrap", () => {
   })
 
   test.each([
-    ["signedIn false stops with omo login hint", { exitCode: 0, stdout: JSON.stringify({ signedIn: false }) }, "signed_out", "omo login"],
+    ["signedIn false stops with omc login hint", { exitCode: 0, stdout: JSON.stringify({ signedIn: false }) }, "signed_out", "omc login"],
     ["locked store reports keychain_locked and installs nothing", { exitCode: 7, stdout: JSON.stringify({ keychain: "locked" }) }, "keychain_locked", "Unlock"],
     // No store means no proof of a sign-in: its own state, which the start-up component keeps quiet (a never-signed-in
     // machine without a keyring must not warn at every start).
     ["store unavailable reports store_unavailable", { exitCode: 9, stdout: JSON.stringify({ error: "store-unavailable" }) }, "store_unavailable", "credential store"],
     ["keychain unavailable (exit 8) reports store_unavailable", { exitCode: 8, stdout: JSON.stringify({ keychain: "unavailable" }) }, "store_unavailable", "credential store"],
-    ["invalid json is account_unavailable", { exitCode: 0, stdout: "{signedIn: true" }, "account_unavailable", "omo login"],
+    ["invalid json is account_unavailable", { exitCode: 0, stdout: "{signedIn: true" }, "account_unavailable", "omc login"],
   ])("%s", async (_name, account, state, hint) => {
     const { deps, calls } = harness(home(), { accountShow: async () => account })
     const outcome = await bootstrapDeviceService(deps)
@@ -151,12 +151,12 @@ describe("device service bootstrap", () => {
 
   test("a refused acquisition stops with its own state and action and never connects", async () => {
     const { deps, calls } = harness(home(), {
-      install: async () => ({ ok: false, state: "update_required", action: "Update OmO to use the device service." }),
+      install: async () => ({ ok: false, state: "update_required", action: "Update OmC to use the device service." }),
     })
     expect(await bootstrapDeviceService(deps)).toEqual({
       kind: "stopped",
       state: "update_required",
-      notice: "Update OmO to use the device service.",
+      notice: "Update OmC to use the device service.",
       exitCode: 3,
     })
     expect(calls.connect).toBe(0)
@@ -209,8 +209,8 @@ describe("device service bootstrap", () => {
   })
 })
 
-describe("omo logout and the device service", () => {
-  test("omo logout calls device.forget on a running service", async () => {
+describe("omc logout and the device service", () => {
+  test("omc logout calls device.forget on a running service", async () => {
     const stateDir = home()
     const owner = await ownerAt(stateDir, PIN)
     const { deps } = harness(stateDir)

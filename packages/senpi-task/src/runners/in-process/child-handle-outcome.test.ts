@@ -221,13 +221,13 @@ describe("createChildHandle turn outcomes", () => {
     const fake = createEmittingSession()
     const handle = createChildHandle({ taskId: "task-1", session: fake.session, promptText: "judge" })
 
-    fake.emit(assistantEnd("all done", "stop", undefined, "omo-mock", "healthy-fallback"))
+    fake.emit(assistantEnd("all done", "stop", undefined, "omc-mock", "healthy-fallback"))
     fake.resolvePrompt()
 
     expect(await handle.waitForIdle()).toEqual({
       status: "completed",
       finalResponse: "all done",
-      model: "omo-mock/healthy-fallback",
+      model: "omc-mock/healthy-fallback",
     })
   })
 
@@ -235,13 +235,13 @@ describe("createChildHandle turn outcomes", () => {
     const fake = createEmittingSession()
     const handle = createChildHandle({ taskId: "task-1", session: fake.session, promptText: "judge" })
 
-    fake.emit(assistantEnd("", "error", "upstream gateway timeout", "omo-mock", "healthy-fallback"))
+    fake.emit(assistantEnd("", "error", "upstream gateway timeout", "omc-mock", "healthy-fallback"))
     fake.resolvePrompt()
 
     expect(await handle.waitForIdle()).toEqual({
       status: "error",
       failure: { kind: "child-turn-failed", message: "upstream gateway timeout" },
-      model: "omo-mock/healthy-fallback",
+      model: "omc-mock/healthy-fallback",
     })
   })
 })

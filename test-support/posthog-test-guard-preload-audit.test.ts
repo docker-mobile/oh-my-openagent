@@ -18,10 +18,10 @@ const NON_WORKSPACE_TEST_RUNNERS = [
   "packages/web",
   "packages/get-worker",
   // Codex plugin bundle: installed by the plugin's own npm install and shipped to users
-  "packages/omo-codex/plugin/components/bootstrap",
-  "packages/omo-codex/plugin/components/git-bash",
-  "packages/omo-codex/plugin/components/teammode",
-  "packages/omo-codex/plugin/shared",
+  "packages/omc-codex/plugin/components/bootstrap",
+  "packages/omc-codex/plugin/components/git-bash",
+  "packages/omc-codex/plugin/components/teammode",
+  "packages/omc-codex/plugin/shared",
 ]
 
 type PackageJson = {
@@ -98,6 +98,6 @@ describe("PostHog test guard preload audit (#10394)", () => {
 
     // then
     expect(unguarded).toEqual([])
-    expect(configs).toEqual(expect.arrayContaining(["bunfig.toml", "packages/omo-senpi/bunfig.toml", "packages/senpi-task/bunfig.toml", "packages/telemetry-core/bunfig.toml"]))
+    expect(configs).toEqual(expect.arrayContaining(["bunfig.toml", "packages/omc-senpi/bunfig.toml", "packages/senpi-task/bunfig.toml", "packages/telemetry-core/bunfig.toml"]))
   })
 })

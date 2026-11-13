@@ -6,7 +6,7 @@ import { join } from "node:path"
 /** The server owns the directory; pane shells consume and unlink individual files. */
 export function createPaneAuthDirectory(): () => void {
   const previousDirectory = process.env.OPENCODE_SERVER_PASSWORD_DIR
-  const directory = mkdtempSync(join(tmpdir(), "omo-run-auth-"))
+  const directory = mkdtempSync(join(tmpdir(), "omc-run-auth-"))
   chmodSync(directory, 0o700)
   process.env.OPENCODE_SERVER_PASSWORD_DIR = directory
   const cleanup = (): void => {

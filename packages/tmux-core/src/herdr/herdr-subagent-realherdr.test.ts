@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 import { homedir } from "node:os"
-import { spawn, type SpawnedProcess } from "@oh-my-opencode/utils/runtime"
+import { spawn, type SpawnedProcess } from "@oh-my-cybersecurity/utils/runtime"
 import {
   herdrClosePaneIfExists,
   herdrCloseWorkspace,
@@ -37,7 +37,7 @@ function realEnv(): Record<string, string | undefined> {
   env["HOME"] = homedir()
   for (const key of ["XDG_DATA_HOME", "XDG_CACHE_HOME", "XDG_CONFIG_HOME"]) {
     const value = env[key]
-    if (typeof value === "string" && value.includes("omo-test")) delete env[key]
+    if (typeof value === "string" && value.includes("omc-test")) delete env[key]
   }
   return env
 }

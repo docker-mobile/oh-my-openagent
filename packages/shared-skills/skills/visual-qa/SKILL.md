@@ -83,7 +83,7 @@ await page.evaluate(() => [...document.querySelectorAll("*")]
 node script/qa/web-terminal-visual-qa.mjs --title "TUI Visual QA" \
   --command "<tui-command>" \
   --input "{ArrowDown}" --input "{Enter}" \
-  --evidence-dir .omo/evidence/<slug>/tui-web-terminal
+  --evidence-dir .omc/evidence/<slug>/tui-web-terminal
 ```
 
    Replay a saved raw stream with `--from-file <capture.ansi>` instead of
@@ -95,7 +95,7 @@ node script/qa/web-terminal-visual-qa.mjs --title "TUI Visual QA" \
 2. Run the width check on the produced text and keep the JSON:
 
 ```
-node "$SKILL_DIR/scripts/visual-qa.mjs" tui-check .omo/evidence/<slug>/tui-web-terminal/terminal.txt --cols <N>
+node "$SKILL_DIR/scripts/visual-qa.mjs" tui-check .omc/evidence/<slug>/tui-web-terminal/terminal.txt --cols <N>
 ```
 
 Key fields: `maxWidth`, `expectedColumns`, `overflowLines[]`, `borderMisaligned`, `wideCharColumns[]`, `hasAnsi`.

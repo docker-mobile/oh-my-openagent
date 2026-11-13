@@ -77,7 +77,7 @@ export async function ensureIsolation(options: EnsureIsolationOptions): Promise<
     let startAttempted = false
     try {
       await writeOwnerMarker(creating, id, options.owner)
-      await writeFile(join(creating, ".omo-isolation-backend.json"), JSON.stringify({ backend: kind }))
+      await writeFile(join(creating, ".omc-isolation-backend.json"), JSON.stringify({ backend: kind }))
       startAttempted = true
       let detail: void | { strategy_detail: string }
       let nested: NestedGitResult = { nested_git_rewritten: [], nested_git_skipped: [] }
@@ -97,7 +97,7 @@ export async function ensureIsolation(options: EnsureIsolationOptions): Promise<
         // Mount backends may remove the whole base during teardown.
         await mkdir(creating, { recursive: true })
         await writeOwnerMarker(creating, id, options.owner)
-        await writeFile(join(creating, ".omo-isolation-backend.json"), JSON.stringify({ backend: kind }))
+        await writeFile(join(creating, ".omc-isolation-backend.json"), JSON.stringify({ backend: kind }))
       }
       await relocateSandbox(backend, creating, baseDir)
       return {
@@ -129,7 +129,7 @@ export async function cleanupIsolation(handle: IsolationHandle): Promise<void> {
 
 export async function retainIsolation(handle: IsolationHandle, reason: string): Promise<string> {
   const retained = `${handle.baseDir}.retained-${Date.now()}-${randomBytes(6).toString("hex")}`
-  await writeFile(join(handle.baseDir, ".omo-isolation-retained.json"), JSON.stringify({ reason }))
+  await writeFile(join(handle.baseDir, ".omc-isolation-retained.json"), JSON.stringify({ reason }))
   await relocateSandbox(handle, handle.baseDir, retained)
   return retained
 }

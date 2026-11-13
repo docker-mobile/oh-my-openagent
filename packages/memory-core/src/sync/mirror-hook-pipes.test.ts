@@ -12,7 +12,7 @@ import { probeUntil } from "../locks/process-liveness.test-support"
 import { CONFIG_KEY, getPostCommitHookScript, mirrorLogPath } from "./mirror"
 import { removeTree } from "../../../../test-support/remove-tree"
 
-// omo #10199 delta review LOW: the mirror post-commit hook backgrounds its push. If that background
+// omc #10199 delta review LOW: the mirror post-commit hook backgrounds its push. If that background
 // push keeps git's stdout/stderr open, every mirrored commit waits out the exit drain. The commit
 // here runs with a drain far longer than the test's breaker while the push is held open, so it
 // settles only if the hook leaves git's pipes alone.
@@ -53,7 +53,7 @@ async function repoMirroringToABlockedRemote(shell: string) {
 // background subshell; bash (macOS's /bin/sh) does not. Run the hook under each shell present.
 const SHELLS = ["/bin/sh", "/bin/dash"].filter((shell) => existsSync(shell))
 
-describe("a mirrored memory commit (omo #10199 delta review)", () => {
+describe("a mirrored memory commit (omc #10199 delta review)", () => {
   test.skipIf(process.platform === "win32").each(SHELLS)("#given the mirror push is still running in the background under %s #when the commit finishes #then it settles without waiting on the push or the exit drain", async (shell) => {
     // #given
     const { repo, release, pushing } = await repoMirroringToABlockedRemote(shell)

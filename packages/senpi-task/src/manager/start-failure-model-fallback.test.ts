@@ -190,7 +190,7 @@ describe("category chain fallback on a start-time admission refusal", () => {
   })
 })
 
-describe("a start-time fallback whose model lane is full (omo#9069)", () => {
+describe("a start-time fallback whose model lane is full (omc#9069)", () => {
   test("#given the fallback model's lane is full #when the refused start walks the chain #then the task reports pending with its queue position and launches once the lane frees", async () => {
     // given - one slot per model, and a task already holding the fallback model's slot
     const runner = new AdmissionRefusingRunner(new Set([PACKAGE_MODEL.display]))

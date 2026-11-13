@@ -32,11 +32,11 @@ describe.skipIf(process.platform === "win32")("the POSIX alternate shard root", 
       process.env["TMPDIR"] = `/var/folders/xx/${"a".repeat(30)}/T`
       try {
         // when
-        const root = altRoot("/h/.omo/agent")
+        const root = altRoot("/h/.omc/agent")
 
         // then
-        expect(root).toMatch(/^\/tmp\/omo-rpc-[0-9a-f]{8}$/)
-        expect(root).toBe(join("/tmp", `omo-rpc-${createHash("sha256").update("/h/.omo/agent").digest("hex").slice(0, 8)}`))
+        expect(root).toMatch(/^\/tmp\/omc-rpc-[0-9a-f]{8}$/)
+        expect(root).toBe(join("/tmp", `omc-rpc-${createHash("sha256").update("/h/.omc/agent").digest("hex").slice(0, 8)}`))
         expect(root.startsWith(tmpdir())).toBe(false)
       } finally {
         if (previous === undefined) delete process.env["TMPDIR"]
@@ -200,7 +200,7 @@ describe.skipIf(process.platform === "win32")("the POSIX alternate shard root", 
 
         // then
         const name = basename(resolution.socket)
-        expect(resolution.socket.startsWith("/private/tmp/omo-rpc-")).toBe(true)
+        expect(resolution.socket.startsWith("/private/tmp/omc-rpc-")).toBe(true)
         const viaTmp = join(realpathSync(alt), name)
         const viaPrivate = join(realpathSync(alt.replace(/^\/tmp\//, "/private/tmp/")), name)
         expect(daemonDirectoryName(viaTmp)).toBe(daemonDirectoryName(resolution.socket))

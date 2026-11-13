@@ -14,11 +14,11 @@ test("sweep stops dead backends, retains live/foreign/unknown/retained and skips
     const name = `t${String(i).padStart(10, "0")}${kind === "retained" ? ".retained-1-x" : ""}`
     const base = join(sweepRoot, name)
     await mkdir(join(base, "m"), { recursive: true })
-    await writeFile(join(base, ".omo-isolation-owner.json"), JSON.stringify({
+    await writeFile(join(base, ".omc-isolation-owner.json"), JSON.stringify({
       id: kind, hostname: kind === "foreign" ? "foreign.example" : hostname(), created_at: 0,
       host: { pid: i + 1, start_identity: null },
     }))
-    await writeFile(join(base, ".omo-isolation-backend.json"), JSON.stringify({ backend: "rcopy" }))
+    await writeFile(join(base, ".omc-isolation-backend.json"), JSON.stringify({ backend: "rcopy" }))
   }
   await symlink(repoRoot, join(sweepRoot, "t9999999999"), "dir")
   const stopped: string[] = []
@@ -36,10 +36,10 @@ test("sweep keeps dead trees when backend teardown fails", async () => {
   const { root } = await fixture()
   const base = join(root, "t0123456789")
   await mkdir(base)
-  await writeFile(join(base, ".omo-isolation-owner.json"), JSON.stringify({
+  await writeFile(join(base, ".omc-isolation-owner.json"), JSON.stringify({
     id: "dead", hostname: hostname(), created_at: 0, host: { pid: 1, start_identity: null },
   }))
-  await writeFile(join(base, ".omo-isolation-backend.json"), JSON.stringify({ backend: "rcopy" }))
+  await writeFile(join(base, ".omc-isolation-backend.json"), JSON.stringify({ backend: "rcopy" }))
   const result = await sweepStaleIsolations([root], {
     probe: { pidAlive: () => "dead" },
     backends: [backend({ stop: async () => { throw new Error("unmount denied") } })],

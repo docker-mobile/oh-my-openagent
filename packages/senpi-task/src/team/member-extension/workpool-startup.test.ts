@@ -17,8 +17,8 @@ test("#given a session with no member identity #when its shared extension loads 
       return { registerProcessWorkpoolWorker: () => false };
     });
     const { default: register } = await import(${JSON.stringify(entry)});
-    delete process.env.OMO_WORKPOOL_STATE_DIR;
-    delete process.env.OMO_WORKPOOL_TASK_ID;
+    delete process.env.OMC_WORKPOOL_STATE_DIR;
+    delete process.env.OMC_WORKPOOL_TASK_ID;
     delete process.env.SENPI_TASK_MEMBER;
     let errorCode = null;
     try { await register({}); } catch (error) { errorCode = error.code; }

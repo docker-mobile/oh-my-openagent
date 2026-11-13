@@ -22,13 +22,13 @@ export interface RuleFileCandidate {
 }
 
 export type RuleSource =
-  | ".omo/rules"
+  | ".omc/rules"
   | ".claude/rules"
   | ".cursor/rules"
   | ".github/instructions"
   | ".github/copilot-instructions.md"
   | ".sisyphus/rules"
-  | "~/.omo/rules"
+  | "~/.omc/rules"
   | "~/.opencode/rules"
   | "~/.claude/rules"
   | "~/.sisyphus/rules";

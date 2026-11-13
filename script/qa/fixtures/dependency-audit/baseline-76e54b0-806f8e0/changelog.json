@@ -42,7 +42,7 @@
   "commands": [
     {
       "command": [
-        "$SANDBOX/omo",
+        "$SANDBOX/omc",
         "--version"
       ],
       "exitCode": 0,

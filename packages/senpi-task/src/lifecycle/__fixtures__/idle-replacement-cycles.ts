@@ -4,7 +4,7 @@ import { join } from "node:path"
 import { createTaskRecordStore } from "../../store"
 import { createTaskManager } from "../../manager/manager"
 import { FakeRunner, tempProject, settings } from "../../manager/__fixtures__/manager-fakes"
-import { createManagerResidencyRegistry } from "../../../../omo-senpi/src/components/task/residency-registry"
+import { createManagerResidencyRegistry } from "../../../../omc-senpi/src/components/task/residency-registry"
 import { createTaskLifecycle } from "../create"
 import { NO_HOST_ENDPOINT } from "../host-session"
 

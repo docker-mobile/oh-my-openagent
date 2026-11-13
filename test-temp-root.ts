@@ -17,7 +17,7 @@ import { isOsCreatedTempEntry, reportOnlyOwner as ownerIn } from "./test-temp-le
 //   directories fails the run, naming the leftover, so every test keeps removing what it creates.
 //   Owners whose tests still leak are listed in test-temp-leak-report-only.json: their leftovers are
 //   printed instead of failing, and that list may only shrink (script/check-temp-leak-report-only.mjs).
-const RUN_ROOT_PREFIX = "omo-test-run-"
+const RUN_ROOT_PREFIX = "omc-test-run-"
 const OWNER_PID_FILE = ".owner-pid"
 // A run root renamed aside for a detached remover; it keeps the prefix, so the abandoned-root sweep still finds it.
 const ASIDE_SUFFIX = ".removing"
@@ -81,13 +81,13 @@ for (const name of ["TMPDIR", "TEMP", "TMP"] as const) process.env[name] = runRo
 // the plugin logger's file (LOG_FILENAME in shared/plugin-identity.ts) and the module compile cache that
 // Node children enable under os.tmpdir(), and jiti's transpile cache. No test owns them; they are
 // removed with the root.
-const infrastructureEntries = new Set<string>([OWNER_PID_FILE, "oh-my-opencode.log", "node-compile-cache", "jiti"])
+const infrastructureEntries = new Set<string>([OWNER_PID_FILE, "oh-my-cybersecurity.log", "node-compile-cache", "jiti"])
 
 // A directory that lives for the whole process (a module-level fixture shared by every test file the
 // process runs) has no test or file to own its removal; it goes here and leaves with the root.
-const processScopedDir = mkdtempSync(join(runRoot, "omo-test-process-"))
+const processScopedDir = mkdtempSync(join(runRoot, "omc-test-process-"))
 infrastructureEntries.add(basename(processScopedDir))
-process.env.OMO_TEST_PROCESS_TMPDIR = processScopedDir
+process.env.OMC_TEST_PROCESS_TMPDIR = processScopedDir
 
 /** Marks a directory a preload creates for the whole process, so the leak check does not report it. */
 export function markTestInfrastructureDir(path: string): void {

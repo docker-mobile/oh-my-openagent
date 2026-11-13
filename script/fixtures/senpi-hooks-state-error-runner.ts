@@ -32,7 +32,7 @@ mock.module("node:fs", () => ({
 const { FileHookStateStorage } = await import(
   "../../node_modules/@code-yeongyu/senpi/dist/core/extensions/builtin/hooks/trust-storage.js"
 )
-const root = actualFs.mkdtempSync(join(tmpdir(), "omo-hooks-errors-"))
+const root = actualFs.mkdtempSync(join(tmpdir(), "omc-hooks-errors-"))
 const cwd = join(root, "project")
 const agentDir = join(root, "agent")
 const storage = new FileHookStateStorage({ cwd, agentDir })

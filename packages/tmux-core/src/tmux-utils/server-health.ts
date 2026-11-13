@@ -1,7 +1,7 @@
 let serverAvailable: boolean | null = null
 let serverCheckUrl: string | null = null
 
-const SERVER_RUNNING_KEY = Symbol.for("oh-my-opencode:server-running-in-process")
+const SERVER_RUNNING_KEY = Symbol.for("oh-my-cybersecurity:server-running-in-process")
 
 export type ServerHealthState = {
 	serverAvailable: boolean | null
@@ -64,8 +64,8 @@ export async function isServerRunning(serverUrl: string, options: IsServerRunnin
 			}).catch(() => null)
 			clearTimeout(timeout)
 
-			// 401/403 means a server is listening and requires auth (omo run sets a per-run password,
-			// omo#11367); this probe only asks whether the server is alive, and a sweeping process
+			// 401/403 means a server is listening and requires auth (omc run sets a per-run password,
+			// omc#11367); this probe only asks whether the server is alive, and a sweeping process
 			// never holds another run's password.
 			if (response?.ok || response?.status === 401 || response?.status === 403) {
 				if (state) {

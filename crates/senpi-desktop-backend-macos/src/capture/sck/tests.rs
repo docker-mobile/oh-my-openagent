@@ -55,7 +55,7 @@ pixels(1, 1, [0, 0, 0, 255])
     let mut client = HelperClient::start(&helper).unwrap();
     let targets = request_batch(&[TargetRequest::display(
         7,
-        &["OmO HUD".to_owned(), "Pi".to_owned()],
+        &["OmC HUD".to_owned(), "Pi".to_owned()],
         &[4242],
     )]);
     client.capture(&targets).unwrap();
@@ -63,7 +63,7 @@ pixels(1, 1, [0, 0, 0, 255])
         serde_json::from_str(&std::fs::read_to_string(&capture_log).unwrap()).unwrap();
     assert_eq!(
         sent["requests"][0]["excludeWindowTitles"],
-        serde_json::json!(["OmO HUD", "Pi"])
+        serde_json::json!(["OmC HUD", "Pi"])
     );
     assert_eq!(sent["requests"][0]["excludeWindowIds"], serde_json::json!([4242]));
     assert_eq!(sent["requests"][0]["kind"], serde_json::json!("display"));

@@ -10,7 +10,7 @@ import {
   loadDesktopEngineTargets,
   stageCompiledDesktopEngine,
 } from "./release-desktop-engine-target"
-import { buildRuntimeManifest, RELEASE_BINARY_TARGETS, resolveExpectedSidecarRelPaths, stageSidecarPayload } from "./build-omo-binary"
+import { buildRuntimeManifest, RELEASE_BINARY_TARGETS, resolveExpectedSidecarRelPaths, stageSidecarPayload } from "./build-omc-binary"
 
 // The CLI test spawns three bun children. On 16 windows-latest runs it passed in at most 0.2 s,
 // while cold runners went past Bun's 5 s default (#9386): the per-test budget absorbs those slow
@@ -92,7 +92,7 @@ describe("desktop engine target fixture", () => {
 describe("compiled desktop engine staging", () => {
   test("stages only the exact target-specific Rust binary into the expected manifest path", async () => {
     // Given a Darwin cross-target binary and a different host-release binary.
-    const root = mkdtempSync(join(tmpdir(), "omo-desktop-engine-target-"))
+    const root = mkdtempSync(join(tmpdir(), "omc-desktop-engine-target-"))
     try {
       const entry = desktopEngineTarget("darwin-x64-baseline")
       if (entry.source === null || entry.payload === null) throw new Error("available target expected")
@@ -121,7 +121,7 @@ describe("compiled desktop engine staging", () => {
 
   test("available missing target binary fails even if host release exists; unavailable stages nothing", () => {
     // Given only a generic release binary, not the required target-specific one.
-    const root = mkdtempSync(join(tmpdir(), "omo-desktop-engine-missing-"))
+    const root = mkdtempSync(join(tmpdir(), "omc-desktop-engine-missing-"))
     try {
       const fallback = join(root, "target", "release", "senpi-desktop-engine")
       mkdirSync(dirname(fallback), { recursive: true })
@@ -141,7 +141,7 @@ describe("compiled desktop engine staging", () => {
 
   test("the release builder refuses an available target without its compiled Rust payload", () => {
     // Given an isolated source root with no Windows Rust output, even when CI built one.
-    const root = mkdtempSync(join(tmpdir(), "omo-desktop-builder-missing-"))
+    const root = mkdtempSync(join(tmpdir(), "omc-desktop-builder-missing-"))
     try {
       const target = RELEASE_BINARY_TARGETS.find((entry) => entry.target === "windows-x64")
       if (target === undefined) throw new Error("windows-x64 target expected")

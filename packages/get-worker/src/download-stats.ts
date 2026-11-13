@@ -43,7 +43,7 @@ export async function readDownloadStats(db: D1Database): Promise<DownloadStats> 
 }
 
 export async function serveDownloadStats(ctx: RequestContext): Promise<Response> {
-  const cacheKey = new Request("https://get.omo.dev/stats/downloads", { method: "GET" })
+  const cacheKey = new Request("https://get.omc.nga.hm/stats/downloads", { method: "GET" })
   const cached = await ctx.cache.match(cacheKey)
   if (cached !== undefined) return cached
   const stats = await readDownloadStats(ctx.env.DB)

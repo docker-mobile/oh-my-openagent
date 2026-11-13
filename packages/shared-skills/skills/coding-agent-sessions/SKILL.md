@@ -17,7 +17,7 @@ Find local coding-agent sessions across agent products before answering from mem
    | Claude Code / Claude Desktop histories | `references/claude.md` |
    | OMO / Senpi / pi coding-agent logs | `references/senpi.md` |
    | oh-my-pi (`omp`, `~/.omp`) and gajae-code (`gjc`, `~/.gjc`) logs | `references/senpi.md` |
-   | OpenCode / oh-my-openagent (formerly oh-my-opencode) storage | `references/opencode.md` |
+   | OpenCode / oh-my-cybersecurity (formerly oh-my-cybersecurity) storage | `references/opencode.md` |
    | OpenClaw, Droid, Amp, Gemini, Kimi, Qwen, Codebuff, Roo/Kilo/Cline, Kodu, Cursor CLI, Aider, Kiro, Goose, Hermes, Crush, Zed, Aside | `references/all-platforms.md` |
    | Unknown / "any session" / cross-agent search | `references/all-platforms.md` |
 
@@ -121,7 +121,7 @@ Use `references/codex.md` for Codex storage details.
 |---|---|
 | Missing Codex sessions | Set `CODEX_HOME` or pass `--root /path/to/.codex`. |
 | Missing oh-my-pi / gajae-code sessions | Those stores live in `~/.omp/agent/sessions` and `~/.gjc/agent/sessions`. For a custom `PI_CONFIG_DIR` / `PI_CODING_AGENT_DIR`, pass that agent dir with `--root`. |
-| Missing OMO / Senpi sessions | The `senpi` platform searches `~/.omo/agent/sessions`, `~/.senpi/agent/sessions`, and `~/.pi/agent/sessions` (plus matching profile roots). Pass a nonstandard agent directory with `--root`. |
+| Missing OMO / Senpi sessions | The `senpi` platform searches `~/.omc/agent/sessions`, `~/.senpi/agent/sessions`, and `~/.pi/agent/sessions` (plus matching profile roots). Pass a nonstandard agent directory with `--root`. |
 | Missing OpenCode sessions | Pass the data dir that contains `messages/` and `parts/`, often `~/.opencode` or `~/.local/share/opencode`. |
 | Missing Claude sessions | Search `~/.claude/projects`, `~/.claude/transcripts`, and `~/.claude/pre-compact-session-histories`; use `--root` for nonstandard config dirs. |
 | Missing Aside sessions | The Aside browser agent stores per-user data under `~/.aside/u/<n>/` (`sessions/<date>_<id>/messages.jsonl` transcripts + a `state.db` index; `agents/*/sessions/` is just a hardlink mirror). Pass `--root` for a nonstandard `.aside` dir or an exported user dir. |

@@ -90,15 +90,15 @@ export type { AttachEnd, CommandResult, RemoteAttach, RemoteAttachEvent } from "
 
 type Env = Readonly<Record<string, string | undefined>>
 
-/** `~/.omo/device-service` (POSIX) or `%LOCALAPPDATA%\OmO\device-service` (Windows): where the service's endpoint and per-boot token live. */
+/** `~/.omc/device-service` (POSIX) or `%LOCALAPPDATA%\OmC\device-service` (Windows): where the service's endpoint and per-boot token live. */
 export function deviceServiceStateDir(
   platform: NodeJS.Platform = process.platform,
   env: Env = process.env,
   home: string = homedir(),
 ): string {
-  if (platform !== "win32") return join(home, ".omo", "device-service")
+  if (platform !== "win32") return join(home, ".omc", "device-service")
   const localAppData = env.LOCALAPPDATA ?? join(home, "AppData", "Local")
-  return join(localAppData, "OmO", "device-service")
+  return join(localAppData, "OmC", "device-service")
 }
 
 /** The file a running service publishes in its state dir: the socket on POSIX, the port file on Windows. */
@@ -167,7 +167,7 @@ export type DeviceCredential = {
 
 /**
  * relay-spec ADOPT_ACCOUNT_MIN_SERVICE_VERSION: the first relayd whose device.adopt accepts the optional `account`
- * (omo-relay-daemon#730). 0.1.2 shipped without it, and every older relayd refuses any unknown field, so below 0.1.3
+ * (omc-relay-daemon#730). 0.1.2 shipped without it, and every older relayd refuses any unknown field, so below 0.1.3
  * device.adopt is sent exactly as before. Gated on welcome.service_version, never on a capability word (design D r9
  * section 3).
  */
@@ -177,7 +177,7 @@ const acceptsAdoptAccount = (serviceVersion: string): boolean =>
   compareVersions(serviceVersion, ADOPT_ACCOUNT_MIN_SERVICE_VERSION) >= 0
 
 export type ConnectDeviceServiceOptions = {
-  /** The version of this omo build, reported to the service in its hello. */
+  /** The version of this omc build, reported to the service in its hello. */
   readonly version: string
   readonly stateDir?: string
   /** The connection never keeps the process alive: a long-lived engine-side client, not a CLI verb. */
@@ -191,7 +191,7 @@ export async function connectDeviceService(options: ConnectDeviceServiceOptions)
   const stateDir = options.stateDir ?? deviceServiceStateDir()
   const client = await (options.connect ?? connectLocalApi)({
     stateDir,
-    client: { name: "omo", version: options.version },
+    client: { name: "omc", version: options.version },
     ...(options.background === true ? { transport: () => connectLocal(stateDir, { background: true }) } : {}),
   })
   return {

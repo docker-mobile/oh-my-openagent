@@ -19,7 +19,7 @@ function makeProjectDir(): string {
 }
 
 function writeProjectTeamSpec(projectRoot: string, teamName: string, spec: unknown): void {
-  const teamDir = join(projectRoot, ".omo", "teams", teamName)
+  const teamDir = join(projectRoot, ".omc", "teams", teamName)
   mkdirSync(teamDir, { recursive: true })
   writeFileSync(join(teamDir, "config.json"), JSON.stringify(spec), "utf8")
 }
@@ -32,7 +32,7 @@ afterEach(() => {
 })
 
 describe("loadTeamRegistry", () => {
-  test("#given an omo.json teams section with a category and agent-alias member #when loaded #then it round-trips into a team-core spec", async () => {
+  test("#given an omc.json teams section with a category and agent-alias member #when loaded #then it round-trips into a team-core spec", async () => {
     // given
     const projectRoot = makeProjectDir()
     const omoTeams = {
@@ -52,12 +52,12 @@ describe("loadTeamRegistry", () => {
     expect(result.teams).toHaveLength(1)
     const entry = result.teams[0]
     expect(entry?.name).toBe("research-team")
-    expect(entry?.source).toBe("omo-json")
+    expect(entry?.source).toBe("omc-json")
     expect(entry?.spec.leadAgentId).toBe("lead")
     expect(entry?.spec.members).toHaveLength(2)
   })
 
-  test("#given a directory spec and an omo.json spec sharing a name #when loaded #then the project directory wins", async () => {
+  test("#given a directory spec and an omc.json spec sharing a name #when loaded #then the project directory wins", async () => {
     // given
     const projectRoot = makeProjectDir()
     writeProjectTeamSpec(projectRoot, "shared", {

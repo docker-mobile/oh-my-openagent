@@ -1,4 +1,4 @@
-import { TeamModeConfigSchema, type TeamModeConfig } from "@oh-my-opencode/team-core/config"
+import { TeamModeConfigSchema, type TeamModeConfig } from "@oh-my-cybersecurity/team-core/config"
 
 import { parseTaskId, type TaskId } from "../../state"
 import { MEMBER_IDENTITY_ENV } from "./identity"
