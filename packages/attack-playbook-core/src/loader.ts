@@ -56,7 +56,7 @@ export async function loadPlaybookIndex(dataRoot: string): Promise<PlaybookIndex
 async function readJsonFile(filePath: string): Promise<unknown> {
   let text: string
   try {
-    // `Bun.file` is unavailable under Node and this module ships in the compiled CLI,
+    // The Bun reader is unavailable under Node and this module ships in the compiled CLI,
     // so node:fs is the reader that works in both runtimes.
     text = await readFile(filePath, "utf-8")
   } catch (cause) {

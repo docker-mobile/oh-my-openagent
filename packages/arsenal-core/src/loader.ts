@@ -85,7 +85,7 @@ async function readJsonFile(filePath: string, source: ArsenalSource | undefined)
   try {
     text = await readFile(filePath, "utf-8")
   } catch (cause) {
-    // `Bun.file` is unavailable under Node, and this module is reachable from the
+    // The Bun reader is unavailable under Node, and this module is reachable from the
     // compiled CLI, so node:fs is the only reader that works in both runtimes.
     throw new CorpusLoadError(`Arsenal corpus file is missing: ${filePath}`, filePath, source, cause)
   }
