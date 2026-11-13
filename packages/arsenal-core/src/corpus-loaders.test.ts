@@ -1,4 +1,6 @@
 import { describe, expect, test } from "bun:test"
+import { existsSync } from "node:fs"
+import { dirname, join } from "node:path"
 
 import {
   defaultDataRoot as arsenalDataRoot,
@@ -16,6 +18,40 @@ import {
   loadTemplates,
   loadWordlists,
 } from "../../payload-forge-core/src/loader"
+
+// The corpora are generated local artifacts and are gitignored, so a fresh clone has
+// none. Generate them here exactly as the per-source tests do: an absent corpus means
+// "run the generator", never "fail" and never "skip", so this file is honest on a
+// clean checkout and in CI without pretending the data is committed.
+// Each generator writes its OWN artifact, so the presence check must name the file that
+// generator produces - checking a shared path would report a false failure.
+function ensureArtifact(artifact: string, generator: string): void {
+  if (existsSync(artifact)) return
+
+  const build = Bun.spawnSync(["node", generator], { stdout: "pipe", stderr: "pipe" })
+  if (build.exitCode !== 0 || !existsSync(artifact)) {
+    throw new Error(
+      `the corpus artifact is absent at ${artifact} and generation failed (exit ${build.exitCode}).\n` +
+        `stderr: ${build.stderr.toString().trim()}\n` +
+        `generate it from your own clone with:\n  node ${generator} <dir-with-upstream-clone>`,
+    )
+  }
+}
+
+const ARSENAL_PACKAGE = join(dirname(import.meta.dir), "..", "arsenal-core")
+const PLAYBOOK_PACKAGE = join(dirname(import.meta.dir), "..", "attack-playbook-core")
+const PAYLOAD_PACKAGE = join(dirname(import.meta.dir), "..", "payload-forge-core")
+
+function ensureAllCorpora(): void {
+  const arsenal = arsenalDataRoot()
+  ensureArtifact(join(arsenal, "gtfobins.json"), join(ARSENAL_PACKAGE, "script", "generate-gtfobins.mjs"))
+  ensureArtifact(join(arsenal, "lolbas.json"), join(ARSENAL_PACKAGE, "script", "generate-lolbas.mjs"))
+  ensureArtifact(join(arsenal, "index.json"), join(ARSENAL_PACKAGE, "script", "generate-index.mjs"))
+  ensureArtifact(join(playbookDataRoot(), "techniques.json"), join(PLAYBOOK_PACKAGE, "script", "generate-playbook.mjs"))
+  ensureArtifact(join(payloadDataRoot(), "templates.json"), join(PAYLOAD_PACKAGE, "script", "generate-payloads.mjs"))
+}
+
+ensureAllCorpora()
 
 // Guards the regression that survived a green suite: no other test called these
 // loaders, so an envelope/array mismatch between generator and reader went unseen.

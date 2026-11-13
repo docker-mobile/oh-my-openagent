@@ -9,7 +9,7 @@
  * path is provider-agnostic on purpose - the only inputs are a tool name, a raw
  * argument payload, and plain-data schema descriptions.
  *
- * Absorbed from pentagi (MIT, checkout /root/omo-cyber/src/pentagi)
+ * Absorbed from pentagi (MIT). See NOTICE for the pinned commit.
  * `repeatingDetector` / `repeatingToolResponse` in
  * `backend/pkg/providers/helpers.go`, the `fixToolCallArgs` retry gate in
  * `backend/pkg/providers/performer.go`, the repair contract of

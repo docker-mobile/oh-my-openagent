@@ -18,11 +18,17 @@
 import { execFileSync } from "node:child_process"
 import { createHash } from "node:crypto"
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises"
-import { basename, extname, join, relative, resolve, sep } from "node:path"
-import { pathToFileURL } from "node:url"
+import { basename, dirname, extname, join, relative, resolve, sep } from "node:path"
+import { fileURLToPath, pathToFileURL } from "node:url"
 
-const DEFAULT_SOURCE = "/root/omo-cyber/src/PayloadsAllTheThings"
-const DEFAULT_OUTPUT = "/root/oh-my-openagent/packages/payload-forge-core/data"
+// Repo-relative, like the sibling generators: an absolute output path would write into
+// whichever checkout the author happened to have, not the one being built.
+const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..", "..")
+const DEFAULT_OUTPUT = join(REPO_ROOT, "packages", "payload-forge-core", "data")
+
+// Upstream corpus location. Overridable by argv[2] or OMC_PAYLOAD_SOURCE, because a fresh
+// clone has no upstream checkout and must not silently read someone else's machine.
+const PINNED_SOURCE_FALLBACK = "/root/omo-cyber/src/PayloadsAllTheThings"
 const HOPLA_CONFIG = join(".github", "hopla_config.json")
 
 /**
@@ -220,7 +226,7 @@ function serialize(value) {
 }
 
 async function main() {
-  const sourceDir = resolve(process.argv[2] ?? DEFAULT_SOURCE)
+  const sourceDir = resolve(process.argv[2] ?? process.env.OMC_PAYLOAD_SOURCE ?? PINNED_SOURCE_FALLBACK)
   const outputDir = resolve(process.argv[3] ?? DEFAULT_OUTPUT)
 
   const pin = git(sourceDir, ["rev-parse", "HEAD"])
