@@ -75,7 +75,9 @@ export async function dash(options: DashOptions = {}): Promise<number> {
     let frame = 0
     process.stdout.write(HIDE_CURSOR)
     const stop = (): void => {
-      process.stdout.write(SHOW_CURSOR + CLEAR_FRAME)
+      // Restore the cursor but leave the last frame on screen: clearing here would
+      // erase the very output a screenshot or a scrolling terminal is meant to keep.
+      process.stdout.write(SHOW_CURSOR + "\n")
       process.exit(0)
     }
     process.on("SIGINT", stop)
