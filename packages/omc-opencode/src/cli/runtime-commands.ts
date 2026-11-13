@@ -4,6 +4,7 @@ import { configureArsenalCommand } from "./arsenal-command"
 import { boulder } from "./boulder"
 import { codexUlwLoop } from "./codex-ulw-loop"
 import { configureDashCommand } from "./dash-command"
+import { renderBrandHeader } from "./brand-banner"
 import { refreshModelCapabilities } from "./refresh-model-capabilities"
 import { worktreeSweep } from "./worktree-sweep"
 import { parseOlderThanDays } from "./worktree-sweep/options"
@@ -36,6 +37,11 @@ export function configureRuntimeCommands(program: Command): void {
     .command("version")
     .description("Show version information")
     .action(() => {
+      // The banner goes to stderr, and only on a TTY, so `omc version` keeps emitting
+      // exactly one parseable line on stdout for scripts while a human still sees it.
+      if (process.stderr.isTTY === true) {
+        process.stderr.write(renderBrandHeader().join("\n") + "\n")
+      }
       console.log(`${PLUGIN_NAME} v${VERSION}`)
     })
 

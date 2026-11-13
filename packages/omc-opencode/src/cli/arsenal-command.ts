@@ -156,7 +156,12 @@ function renderTable(rows: readonly TableRow[]): string[] {
   const idWidth = Math.max("ID".length, ...rows.map((row) => row.id.length))
   const actions = rows.map((row) => fit(row.actions, MAX_ACTION_WIDTH))
   const actionWidth = Math.max("ACTIONS".length, ...actions.map((value) => value.length))
-  const columns = process.stdout.columns ?? DEFAULT_TERMINAL_WIDTH
+  // An unsized pty reports 0, and `0 ?? fallback` stays 0, which would shrink the
+  // command column to its minimum on a terminal that simply had not been resized yet.
+  const columns =
+    process.stdout.columns !== undefined && process.stdout.columns > 0
+      ? process.stdout.columns
+      : DEFAULT_TERMINAL_WIDTH
   const commandWidth = Math.max(MIN_COMMAND_WIDTH, columns - idWidth - actionWidth - 4)
 
   return [

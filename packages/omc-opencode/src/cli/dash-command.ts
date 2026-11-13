@@ -33,12 +33,18 @@ interface FrameGeometry {
   readonly height: number
 }
 
+// An unsized pty reports 0 rows/columns, and `0 ?? fallback` stays 0, so a nullish default
+// never fires there and the frame silently collapsed to the minimum size.
+function positiveOr(value: number | undefined, fallback: number): number {
+  return value !== undefined && value > 0 ? value : fallback
+}
+
 function resolveGeometry(options: DashOptions): FrameGeometry {
-  const columns = process.stdout.columns ?? DEFAULT_WIDTH
-  const rows = process.stdout.rows ?? DEFAULT_HEIGHT
+  const columns = positiveOr(process.stdout.columns, DEFAULT_WIDTH)
+  const rows = positiveOr(process.stdout.rows, DEFAULT_HEIGHT)
   return {
-    width: Math.max(MIN_WIDTH, options.width ?? columns),
-    height: Math.max(MIN_HEIGHT, options.height ?? rows),
+    width: Math.max(MIN_WIDTH, positiveOr(options.width, columns)),
+    height: Math.max(MIN_HEIGHT, positiveOr(options.height, rows)),
   }
 }
 

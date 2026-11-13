@@ -1,7 +1,17 @@
 import { createPalette, isColorEnabled, pickSlogan, renderWordmark, visibleWidth } from "@oh-my-cybersecurity/omc-console-core"
 
+// An unsized pty reports 0, and `0 ?? fallback` stays 0 (only null/undefined trigger a
+// nullish default), which silently suppressed the banner on every terminal that had not
+// been resized yet. Treat a non-positive width as unknown instead.
+function resolveWidth(explicit?: number): number {
+  if (explicit !== undefined && explicit > 0) return explicit
+  const columns = process.stdout.columns
+  return columns !== undefined && columns > 0 ? columns : DEFAULT_BANNER_WIDTH
+}
+
 const MIN_BANNER_WIDTH = 52
 const FULL_BANNER_WIDTH = 100
+const DEFAULT_BANNER_WIDTH = 100
 
 export interface BannerOptions {
   readonly width?: number
@@ -15,7 +25,7 @@ export interface BannerOptions {
  * a banner that wraps is worse than no banner.
  */
 export function renderBanner(options: BannerOptions = {}): string[] {
-  const width = options.width ?? process.stdout.columns ?? 100
+  const width = resolveWidth(options.width)
   if (width < MIN_BANNER_WIDTH) return []
 
   const palette = createPalette(options.color === false ? false : isColorEnabled())
