@@ -60,6 +60,16 @@ described as ported, migrated, or at parity with an upstream implementation of i
 | `packages/omc-console-core` | **Offensive console**: semantic ANSI palette, box-drawing block wordmark, operator slogans, and a width-correct dashboard frame over the engagement graph and the arsenal corpus | NEW - no upstream | none | `palette.test.ts`, `wordmark.test.ts`, `slogans.test.ts`, `dashboard.test.ts` (53 tests) |
 | `packages/shared-skills/skills/{offensive-doctrine,exploitation,tradecraft}` | **Offensive doctrine as skills**: sequencing/evidence/timeboxing/discipline, exploit selection through privilege escalation, and persistence/credentials/pivoting/cleanup - re-authored in our voice from the upstream doctrine's shape, never copied prose | sapper `templates/*.md`, `docker/commander/SKILL.md` | MIT (c) 2026 N1nEmAn | frontmatter parses with exactly `name`+`description`; repo loader tests 12 pass / 0 fail |
 
+### How the absorbed capability reaches a user
+
+| Surface | What it does | Proof |
+|---|---|---|
+| `omc arsenal index` | Prints the corpus location, generated timestamp, per-source record counts and the pinned upstream commit | 478 + 248 records with real pins; see the SC2 capture |
+| `omc arsenal search <text>` | Filters the corpus by action, platform, source, MITRE id and free text, rendering an aligned table | returns MITRE-mapped rows, e.g. `lolbas:Schtasks.exe  execute  schtasks /create ...` |
+| `omc arsenal for-state` | Ranks primitives for a privilege/platform state (privilege-escalation and credential-access first) | `query.test.ts` ranking ladder |
+| `omc dash` | Renders the engagement graph, the frontier and the arsenal as one frame; `--watch` redraws, `--json` emits the model | screenshots inspected in both modes; live corpus shown in the ARSENAL panel |
+| `omc --help`, `omc version` | Greet with the wordmark and the slogan of the day | `--help` capture; `version` writes the banner to stderr so stdout stays one parseable line |
+
 ## NEW - designed here, no upstream equivalent
 
 | Capability | Why it is new | Where |
@@ -96,7 +106,7 @@ These carry real value per the harvests and are **not implemented**:
 8. ~~**Untrusted-data fence**~~ - **ABSORBED**, see the absorbed table above (`src/untrusted.ts`, 15 tests).
 9. **Fleet/sweep tmux control** - sapper rank 18, and the harvest ranks it the lowest-value surface ("useful only if we keep a pane-driving mode"). Not started, and the legion runtime is explicitly dropped above.
 10. ~~**Offensive doctrine as skill assets**~~ - **ABSORBED** as three shared skills (`offensive-doctrine`, `exploitation`, `tradecraft`).
-11. **MITRE ATT&CK tactic derivation for `attack-playbook-core`** - `tactics` is currently empty unless derived cheaply from the upstream index; the T-code and technique name are authoritative, the tactic is not yet populated.
+11. ~~**MITRE ATT&CK tactic derivation for `attack-playbook-core`**~~ - **ABSORBED**. Every technique is anchored to its tactic from the upstream index: all 353 techniques carry a non-empty `tactics` array (for example `T1003` -> `["credential-access"]`), asserted by `playbook.test.ts`.
 12. **Corpus content beyond the indexed catalogs** - the wordlist bodies and the payload artifacts behind the 132 templates ship as generated local data, not as vendored text; nothing upstream is copied into the repository.
 
 Nothing in this section may be described as absorbed until it exists and has a test that fails
